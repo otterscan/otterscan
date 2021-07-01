@@ -116,7 +116,7 @@ npm run build
 
 ### Run it from the source
 
-First, as brief explanation about the app:
+First, a brief explanation about the app:
 
 - The app itself is a simple React app which will be run locally and communicates with your Erigon node.
 - The app makes use of two sources of external databases for cosmetic reasons:
