@@ -1,0 +1,15 @@
+{
+  "public": "4bytes/signatures",
+  "headers": [
+    {
+      "source": "**",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=600"
+        }
+      ]
+    }
+  ],
+  "directoryListing": false
+}
