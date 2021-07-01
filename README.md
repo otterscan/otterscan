@@ -140,7 +140,9 @@ npm run serve
 
 Otterscan should now be running at http://localhost:5000/.
 
-You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.
+For now, it assumes the `rpcdaemon` is running on 127.0.0.1:8545. If for some reason your installation is running in another host/port, change it in the `src/ethersconfig.ts` file (patches to make it parameterized are welcome).
+
+**You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.**
 
 ## Kudos
 
