@@ -68,9 +68,10 @@ Add our forked Erigon git tree as an additional remote and checkout the correspo
 git remote add otterscan git@github.com:wmitsuda/erigon.git
 ```
 
-Checkout the branch corresponding to the Erigon's stable tag you are using, or the `otterscan-develop` branch to the current development branch (be sure to check from which tag it is branched from to be sure it is a compatible branch).
+Checkout the `otterscan-develop` branch (be sure to check from which tag it is branched from to be sure it is a compatible branch).
 
 ```
+git fetch --all
 git checkout otterscan-develop
 ```
 
