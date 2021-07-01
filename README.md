@@ -30,7 +30,7 @@ We've implemented some custom methods at rpcdaemon level, less information is ne
 
 Current offerings are either closed source or lack many features the most famous Ethereum block explorer has, or simply have high requirements like having an archive node + additional indexers.
 
-Otterscan requires only a patched Erigon installation + running Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
+Otterscan requires only mainline Erigon executing node, patched Erigon RPC daemon and running Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
 
 ## Why the name?
 
