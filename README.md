@@ -26,6 +26,12 @@ The standard web3 jsonrpc methods are quite verbose and generic requiring many c
 
 We've implemented some custom methods at rpcdaemon level, less information is needed to be json-marshalled and transmitted over network.
 
+## Alpha warning
+
+This software is in alpha stage, and for sure lots of features, error handling, edge cases are missing.
+
+Be sure to check it often or send patches 😀
+
 ## Why?
 
 Current offerings are either closed source or lack many features the most famous Ethereum block explorer has, or simply have high requirements like having an archive node + additional indexers.
