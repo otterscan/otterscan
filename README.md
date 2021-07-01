@@ -54,7 +54,7 @@ It depends heavily on a working Erigon installation with Otterscan patches appli
 
 ### Install Erigon
 
-You will need an Erigon installation with Otterscan patches. Since setting up an Erigon environment itself can take some work, make sure to follow their instructions and have a working archive node before continuing.
+You will need an Erigon executing node (`erigon`). Also you will need Erigon RPC daemon (`rpcdaemon`) with Otterscan patches. Since setting up an Erigon environment itself can take some work, make sure to follow their instructions and have a working archive node before continuing.
 
 My personal experience: at the moment of this writing (~block 12,700,000), setting up an archive node takes over 5-6 days and ~1.3 TB of SSD.
 
@@ -145,7 +145,7 @@ You can make sure it is working correctly if the homepage is able to show the la
 
 To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
-To the [Erigon](https://github.com/ledgerwatch/erigon) team that made possible for regular humans to run an archive node in a retail laptop. Also, they have been very helpful explaining Erigon's internals which made possible the modifications Otterscan requires.
+To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node in a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the modifications Otterscan requires possible.
 
 To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fast database that empowers Erigon.
 
