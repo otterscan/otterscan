@@ -36,6 +36,7 @@ const AddressTransactions: React.FC = () => {
 
   const [checksummedAddress, setChecksummedAddress] = useState<string>();
   const [isENS, setENS] = useState<boolean>();
+  const [error, setError] = useState<boolean>();
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
@@ -50,6 +51,9 @@ const AddressTransactions: React.FC = () => {
       if (resolvedAddress !== null) {
         setENS(true);
         setChecksummedAddress(resolvedAddress);
+        setError(false);
+      } else {
+        setError(true);
       }
     };
     resolveName();
@@ -129,82 +133,88 @@ const AddressTransactions: React.FC = () => {
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
-  if (!checksummedAddress) {
-    return <></>;
-  }
-
   return (
     <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex space-x-2 items-baseline">
-          <Blockies
-            className="self-center rounded"
-            seed={checksummedAddress.toLowerCase()}
-            scale={3}
-          />
-          <span>Address</span>
-          <span className="font-address text-base text-gray-500">
-            {checksummedAddress}
-          </span>
-          <Copy value={checksummedAddress} rounded />
-          {isENS && (
-            <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
-              ENS: {params.addressOrName}
-            </span>
-          )}
-        </div>
-      </StandardSubtitle>
-      <ContentFrame>
-        <div className="flex justify-between items-baseline py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>{page.length} transactions on this page</>
-            )}
-          </div>
-          <UndefinedPageControl
-            address={params.addressOrName}
-            isFirst={controller?.isFirst}
-            isLast={controller?.isLast}
-            prevHash={page ? page[0].hash : ""}
-            nextHash={page ? page[page.length - 1].hash : ""}
-            disabled={controller === undefined}
-          />
-        </div>
-        <ResultHeader
-          feeDisplay={feeDisplay}
-          feeDisplayToggler={feeDisplayToggler}
-        />
-        {controller ? (
+      {error ? (
+        <span className="text-base">
+          "{params.addressOrName}" is not an ETH address or ENS name.
+        </span>
+      ) : (
+        checksummedAddress && (
           <>
-            {controller.getPage().map((tx) => (
-              <TransactionItem
-                key={tx.hash}
-                tx={tx}
-                selectedAddress={params.addressOrName}
-                feeDisplay={feeDisplay}
-              />
-            ))}
-            <div className="flex justify-between items-baseline py-3">
-              <div className="text-sm text-gray-500">
-                {page !== undefined && (
-                  <>{page.length} transactions on this page</>
+            <StandardSubtitle>
+              <div className="flex space-x-2 items-baseline">
+                <Blockies
+                  className="self-center rounded"
+                  seed={checksummedAddress.toLowerCase()}
+                  scale={3}
+                />
+                <span>Address</span>
+                <span className="font-address text-base text-gray-500">
+                  {checksummedAddress}
+                </span>
+                <Copy value={checksummedAddress} rounded />
+                {isENS && (
+                  <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
+                    ENS: {params.addressOrName}
+                  </span>
                 )}
               </div>
-              <UndefinedPageControl
-                address={params.addressOrName}
-                isFirst={controller.isFirst}
-                isLast={controller.isLast}
-                prevHash={page ? page[0].hash : ""}
-                nextHash={page ? page[page.length - 1].hash : ""}
+            </StandardSubtitle>
+            <ContentFrame>
+              <div className="flex justify-between items-baseline py-3">
+                <div className="text-sm text-gray-500">
+                  {page === undefined ? (
+                    <>Waiting for search results...</>
+                  ) : (
+                    <>{page.length} transactions on this page</>
+                  )}
+                </div>
+                <UndefinedPageControl
+                  address={params.addressOrName}
+                  isFirst={controller?.isFirst}
+                  isLast={controller?.isLast}
+                  prevHash={page ? page[0].hash : ""}
+                  nextHash={page ? page[page.length - 1].hash : ""}
+                  disabled={controller === undefined}
+                />
+              </div>
+              <ResultHeader
+                feeDisplay={feeDisplay}
+                feeDisplayToggler={feeDisplayToggler}
               />
-            </div>
+              {controller ? (
+                <>
+                  {controller.getPage().map((tx) => (
+                    <TransactionItem
+                      key={tx.hash}
+                      tx={tx}
+                      selectedAddress={checksummedAddress}
+                      feeDisplay={feeDisplay}
+                    />
+                  ))}
+                  <div className="flex justify-between items-baseline py-3">
+                    <div className="text-sm text-gray-500">
+                      {page !== undefined && (
+                        <>{page.length} transactions on this page</>
+                      )}
+                    </div>
+                    <UndefinedPageControl
+                      address={params.addressOrName}
+                      isFirst={controller.isFirst}
+                      isLast={controller.isLast}
+                      prevHash={page ? page[0].hash : ""}
+                      nextHash={page ? page[page.length - 1].hash : ""}
+                    />
+                  </div>
+                </>
+              ) : (
+                <PendingResults />
+              )}
+            </ContentFrame>
           </>
-        ) : (
-          <PendingResults />
-        )}
-      </ContentFrame>
+        )
+      )}
     </StandardFrame>
   );
 };
