@@ -2,6 +2,8 @@
 
 An open-source, fast, local, laptop-friendly Ethereum block explorer.
 
+https://user-images.githubusercontent.com/28685/124196700-4fe71200-daa3-11eb-912c-b66494fe4b23.mov
+
 ## What?
 
 This is an Ethereum block explorer designed to be run locally with an archive node companion, more specifically, with [Erigon](https://github.com/ledgerwatch/erigon).
