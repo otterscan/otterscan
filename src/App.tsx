@@ -30,7 +30,7 @@ const App = () => (
           <Route path="/tx/:txhash">
             <Transaction />
           </Route>
-          <Route path="/address/:address/:direction?">
+          <Route path="/address/:addressOrName/:direction?">
             <AddressTransactions />
           </Route>
         </Route>
