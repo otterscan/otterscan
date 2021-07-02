@@ -64,7 +64,7 @@ const Home: React.FC = () => {
             className="w-full border rounded focus:outline-none px-2 py-1 mb-10"
             type="text"
             size={50}
-            placeholder="Search by address / txn hash / block number"
+            placeholder="Search by address / txn hash / block number / ENS name"
             onChange={handleChange}
             autoFocus
           ></input>
