@@ -27,7 +27,8 @@ const Search: React.FC = () => {
     return <></>;
   }
 
-  history.replace("/");
+  // Assume it is an ENS name
+  history.replace(`/address/${q}`);
   return <></>;
 };
 

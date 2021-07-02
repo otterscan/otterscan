@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
+import { ethers } from "ethers";
 import queryString from "query-string";
 import Blockies from "react-blockies";
 import StandardFrame from "./StandardFrame";
@@ -12,10 +13,10 @@ import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
 import { useFeeToggler } from "./search/useFeeToggler";
-import { ethers } from "ethers";
+import { provider } from "./ethersconfig";
 
 type BlockParams = {
-  address: string;
+  addressOrName: string;
   direction?: string;
 };
 
@@ -33,13 +34,33 @@ const AddressTransactions: React.FC = () => {
     hash = qs.h as string;
   }
 
-  // Normalize to checksummed address
-  const checksummedAddress = useMemo(
-    () => ethers.utils.getAddress(params.address),
-    [params.address]
-  );
-  if (params.address !== checksummedAddress) {
-    console.log("NORMALIZE");
+  const [checksummedAddress, setChecksummedAddress] = useState<string>();
+  const [isENS, setENS] = useState<boolean>();
+
+  // If it looks like it is an ENS name, try to resolve it
+  useEffect(() => {
+    if (ethers.utils.isAddress(params.addressOrName)) {
+      // Normalize to checksummed address
+      setChecksummedAddress(ethers.utils.getAddress(params.addressOrName));
+      return;
+    }
+
+    const resolveName = async () => {
+      const resolvedAddress = await provider.resolveName(params.addressOrName);
+      if (resolvedAddress !== null) {
+        setENS(true);
+        setChecksummedAddress(resolvedAddress);
+      }
+    };
+    resolveName();
+  }, [params.addressOrName]);
+
+  // Request came with a non-checksummed address; fix the URL
+  if (
+    !isENS &&
+    checksummedAddress &&
+    params.addressOrName !== checksummedAddress
+  ) {
     history.replace(
       `/address/${checksummedAddress}${
         params.direction ? "/" + params.direction : ""
@@ -49,6 +70,10 @@ const AddressTransactions: React.FC = () => {
 
   const [controller, setController] = useState<SearchController>();
   useEffect(() => {
+    if (!checksummedAddress) {
+      return;
+    }
+
     const readFirstPage = async () => {
       const _controller = await SearchController.firstPage(checksummedAddress);
       setController(_controller);
@@ -100,9 +125,13 @@ const AddressTransactions: React.FC = () => {
 
   const page = useMemo(() => controller?.getPage(), [controller]);
 
-  document.title = `Address ${params.address} | Otterscan`;
+  document.title = `Address ${params.addressOrName} | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+
+  if (!checksummedAddress) {
+    return <></>;
+  }
 
   return (
     <StandardFrame>
@@ -110,14 +139,19 @@ const AddressTransactions: React.FC = () => {
         <div className="flex space-x-2 items-baseline">
           <Blockies
             className="self-center rounded"
-            seed={params.address.toLowerCase()}
+            seed={checksummedAddress.toLowerCase()}
             scale={3}
           />
           <span>Address</span>
           <span className="font-address text-base text-gray-500">
-            {params.address}
+            {checksummedAddress}
           </span>
-          <Copy value={params.address} rounded />
+          <Copy value={checksummedAddress} rounded />
+          {isENS && (
+            <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
+              ENS: {params.addressOrName}
+            </span>
+          )}
         </div>
       </StandardSubtitle>
       <ContentFrame>
@@ -130,7 +164,7 @@ const AddressTransactions: React.FC = () => {
             )}
           </div>
           <UndefinedPageControl
-            address={params.address}
+            address={params.addressOrName}
             isFirst={controller?.isFirst}
             isLast={controller?.isLast}
             prevHash={page ? page[0].hash : ""}
@@ -148,7 +182,7 @@ const AddressTransactions: React.FC = () => {
               <TransactionItem
                 key={tx.hash}
                 tx={tx}
-                selectedAddress={params.address}
+                selectedAddress={params.addressOrName}
                 feeDisplay={feeDisplay}
               />
             ))}
@@ -159,7 +193,7 @@ const AddressTransactions: React.FC = () => {
                 )}
               </div>
               <UndefinedPageControl
-                address={params.address}
+                address={params.addressOrName}
                 isFirst={controller.isFirst}
                 isLast={controller.isLast}
                 prevHash={page ? page[0].hash : ""}
