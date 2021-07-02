@@ -76,11 +76,15 @@ Add our forked Erigon git tree as an additional remote and checkout the correspo
 git remote add otterscan git@github.com:wmitsuda/erigon.git
 ```
 
-Checkout the `otterscan-develop` branch (be sure to check from which tag it is branched from to be sure it is a compatible branch).
+Checkout the tag corresponding to the stable version you are running. For each supported Erigon version, there should be a corresponding tag containing Otterscan patches.
+
+For example, if you are running Erigon from `v2021.07.01` tag, checkout the tag `v2021.07.01-otterscan` and rebuild `rpcdaemon`.
+
+We intend to release a compatible rebased version containig our changes every week just after Erigon's weekly release, as time permits.
 
 ```
 git fetch --all
-git checkout otterscan-develop
+git checkout <version-tag-otterscan>
 ```
 
 Build the patched `rpcdaemon` binary.
@@ -107,11 +111,12 @@ Now you should have an Erigon node with Otterscan jsonrpc APIs enabled, running 
 
 Make sure you have a working node 12/npm installation.
 
-Clone Otterscan repo and its submodules. For now, only the default `develop` branch is available (it is alpha...).
+Clone Otterscan repo and its submodules. Checkout the tag corresponding to your Erigon + Otterscan patches. It uses the same version tag from Erigon + Otterscan repo, i.e., if you built the `v2021.07.01-otterscan`, you should build the `v2021.07.01-otterscan` of Otterscan.
 
 ```
 git clone --recurse-submodules git@github.com:wmitsuda/otterscan.git
 cd otterscan
+git checkout <version-tag-otterscan>
 npm install
 npm run build
 ```
