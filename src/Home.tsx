@@ -66,6 +66,7 @@ const Home: React.FC = () => {
             size={50}
             placeholder="Search by address / txn hash / block number"
             onChange={handleChange}
+            autoFocus
           ></input>
           <button
             className="mx-auto px-3 py-1 mb-10 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none"
