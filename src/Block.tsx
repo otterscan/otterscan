@@ -84,6 +84,7 @@ const Block: React.FC = () => {
     try {
       return block && ethers.utils.toUtf8String(block.extraData);
     } catch (err) {
+      console.error("Error while converting block extra data to string");
       console.error(err);
     }
   }, [block]);
