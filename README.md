@@ -167,7 +167,7 @@ To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fa
 
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make available their icons under a permissive license.
 
-To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate and method selector to human-friendly strings.
+To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
 
 ## Future
 
