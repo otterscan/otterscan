@@ -19,3 +19,7 @@ export type TransactionChunk = {
   firstPage: boolean;
   lastPage: boolean;
 };
+
+export type ENSReverseCache = {
+  [address: string]: string;
+};

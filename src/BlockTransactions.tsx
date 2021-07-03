@@ -14,6 +14,7 @@ import BlockLink from "./components/BlockLink";
 import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
+import { useENSCache } from "./useReverseCache";
 
 type BlockParams = {
   blockNumber: string;
@@ -80,6 +81,8 @@ const BlockTransactions: React.FC = () => {
   }, [txs, pageNumber]);
   const total = useMemo(() => txs?.length ?? 0, [txs]);
 
+  const reverseCache = useENSCache(page);
+
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
@@ -112,7 +115,12 @@ const BlockTransactions: React.FC = () => {
         {page ? (
           <>
             {page.map((tx) => (
-              <TransactionItem key={tx.hash} tx={tx} feeDisplay={feeDisplay} />
+              <TransactionItem
+                key={tx.hash}
+                tx={tx}
+                ensCache={reverseCache}
+                feeDisplay={feeDisplay}
+              />
             ))}
             <div className="flex justify-between items-baseline py-3">
               <div className="text-sm text-gray-500">
