@@ -11,7 +11,7 @@ import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import BlockLink from "./components/BlockLink";
-import { ProcessedTransaction } from "./types";
+import { ProcessedTransaction, ENSReverseCache } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
 
@@ -80,6 +80,44 @@ const BlockTransactions: React.FC = () => {
   }, [txs, pageNumber]);
   const total = useMemo(() => txs?.length ?? 0, [txs]);
 
+  const [reverseCache, setReverseCache] = useState<ENSReverseCache>();
+  useEffect(() => {
+    if (!page) {
+      return;
+    }
+
+    const addrSet = new Set<string>();
+    for (const tx of page) {
+      if (tx.from) {
+        addrSet.add(tx.from);
+      }
+      if (tx.to) {
+        addrSet.add(tx.to);
+      }
+    }
+    const addresses = Array.from(addrSet);
+
+    const reverseResolve = async () => {
+      const solvers: Promise<string>[] = [];
+      for (const a of addresses) {
+        solvers.push(provider.lookupAddress(a));
+      }
+
+      const results = await Promise.all(solvers);
+      const cache: ENSReverseCache = {};
+      for (let i = 0; i < results.length; i++) {
+        if (results[i] === null) {
+          continue;
+        }
+        cache[addresses[i]] = results[i];
+      }
+      console.log("RESOLVED");
+      console.log(cache);
+      setReverseCache(cache);
+    };
+    reverseResolve();
+  }, [page]);
+
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
@@ -112,7 +150,12 @@ const BlockTransactions: React.FC = () => {
         {page ? (
           <>
             {page.map((tx) => (
-              <TransactionItem key={tx.hash} tx={tx} feeDisplay={feeDisplay} />
+              <TransactionItem
+                key={tx.hash}
+                tx={tx}
+                ensCache={reverseCache}
+                feeDisplay={feeDisplay}
+              />
             ))}
             <div className="flex justify-between items-baseline py-3">
               <div className="text-sm text-gray-500">

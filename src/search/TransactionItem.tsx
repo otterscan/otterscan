@@ -4,25 +4,26 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
-import Address from "../components/Address";
-import AddressLink from "../components/AddressLink";
+import AddressOrENSName from "../components/AddressOrENSName";
 import TimestampAge from "../components/TimestampAge";
 import TransactionDirection, {
   Direction,
 } from "../components/TransactionDirection";
 import TransactionValue from "../components/TransactionValue";
-import { ProcessedTransaction } from "../types";
+import { ENSReverseCache, ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
+  ensCache?: ENSReverseCache;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
+  ensCache,
   selectedAddress,
   feeDisplay,
 }) => {
@@ -38,6 +39,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       direction = Direction.INTERNAL;
     }
   }
+
+  const ensFrom = ensCache && tx.from && ensCache[tx.from];
+  const ensTo = ensCache && tx.to && ensCache[tx.to];
 
   return (
     <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-gray-100 px-2 py-3">
@@ -58,24 +62,26 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       <TimestampAge timestamp={tx.timestamp} />
       <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
         <span className="truncate" title={tx.from}>
-          {tx.from &&
-            (tx.from === selectedAddress ? (
-              <Address>{tx.from}</Address>
-            ) : (
-              <AddressLink address={tx.from} />
-            ))}
+          {tx.from && (
+            <AddressOrENSName
+              address={tx.from}
+              ensName={ensFrom}
+              selectedAddress={selectedAddress}
+            />
+          )}
         </span>
         <span>
           <TransactionDirection direction={direction} />
         </span>
       </span>
       <span className="col-span-2 truncate" title={tx.to}>
-        {tx.to &&
-          (tx.to === selectedAddress ? (
-            <Address>{tx.to}</Address>
-          ) : (
-            <AddressLink address={tx.to} />
-          ))}
+        {tx.to && (
+          <AddressOrENSName
+            address={tx.to}
+            ensName={ensTo}
+            selectedAddress={selectedAddress}
+          />
+        )}
       </span>
       <span className="col-span-2 truncate">
         <TransactionValue value={tx.value} />
