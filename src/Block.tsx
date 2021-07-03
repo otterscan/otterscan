@@ -43,16 +43,24 @@ const Block: React.FC = () => {
           false,
         ]);
       }
-      const [_rawBlock, _rawIssuance] = await Promise.all([
+      const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
         blockPromise,
         provider.send("erigon_issuance", [params.blockNumberOrHash]),
+        provider.send("eth_getBlockReceipts", [params.blockNumberOrHash]),
       ]);
+      const receipts = (_rawReceipts as any[]).map((r) =>
+        provider.formatter.receipt(r)
+      );
+      const fees = receipts.reduce(
+        (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
+        BigNumber.from(0)
+      );
 
       const _block = provider.formatter.block(_rawBlock);
       const extBlock: ExtendedBlock = {
         blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward),
         unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward),
-        feeReward: provider.formatter.bigNumber("0"),
+        feeReward: fees,
         size: provider.formatter.number(_rawBlock.size),
         sha3Uncles: _rawBlock.sha3Uncles,
         stateRoot: _rawBlock.stateRoot,
@@ -113,7 +121,14 @@ const Block: React.FC = () => {
             </div>
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue value={block.blockReward} />
+            <TransactionValue value={block.blockReward.add(block.feeReward)} />
+            {!block.feeReward.isZero() && (
+              <>
+                {" "}
+                (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
+                <TransactionValue value={block.feeReward} hideUnit />)
+              </>
+            )}
           </InfoRow>
           <InfoRow title="Uncles Reward">
             <TransactionValue value={block.unclesReward} />
