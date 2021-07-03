@@ -106,11 +106,12 @@ const Transaction: React.FC = () => {
         }
         tokenTransfers.push({
           token: l.address,
-          from: ethers.utils.hexDataSlice(
-            ethers.utils.arrayify(l.topics[1]),
-            12
+          from: ethers.utils.getAddress(
+            ethers.utils.hexDataSlice(ethers.utils.arrayify(l.topics[1]), 12)
           ),
-          to: ethers.utils.hexDataSlice(ethers.utils.arrayify(l.topics[2]), 12),
+          to: ethers.utils.getAddress(
+            ethers.utils.hexDataSlice(ethers.utils.arrayify(l.topics[2]), 12)
+          ),
           value: BigNumber.from(l.data),
         });
       }
