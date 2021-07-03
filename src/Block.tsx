@@ -10,6 +10,7 @@ import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
 import AddressLink from "./components/AddressLink";
 import TransactionValue from "./components/TransactionValue";
+import HexValue from "./components/HexValue";
 
 type BlockParams = {
   blockNumberOrHash: string;
@@ -155,16 +156,16 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
           <InfoRow title="Hash">
-            <span className="font-hash">{block.hash}</span>
+          <HexValue value={block.hash} />
           </InfoRow>
           <InfoRow title="Parent Hash">
             <BlockLink blockTag={block.parentHash} />
           </InfoRow>
           <InfoRow title="Sha3Uncles">
-            <span className="font-hash">{block.sha3Uncles}</span>
+            <HexValue value={block.sha3Uncles} />
           </InfoRow>
           <InfoRow title="StateRoot">
-            <span className="font-hash">{block.stateRoot}</span>
+            <HexValue value={block.stateRoot} />
           </InfoRow>
           <InfoRow title="Nonce">
             <span className="font-data">{block.nonce}</span>
