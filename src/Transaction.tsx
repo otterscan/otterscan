@@ -217,8 +217,8 @@ const Transaction: React.FC = () => {
     const _transfers: Transfer[] = [];
     for (const t of r) {
       _transfers.push({
-        from: t.from,
-        to: t.to,
+        from: ethers.utils.getAddress(t.from),
+        to: ethers.utils.getAddress(t.to),
         value: t.value,
       });
     }
