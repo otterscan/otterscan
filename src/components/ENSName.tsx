@@ -12,7 +12,7 @@ const ENSName: React.FC<ENSNameProps> = ({ name, address }) => (
     title={`${name}: ${address}`}
   >
     <img
-      className="self-center"
+      className="self-center filter grayscale"
       src={ENSLogo}
       alt="ENS Logo"
       width={12}
