@@ -12,6 +12,7 @@ import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
+import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { provider } from "./ethersconfig";
 
@@ -41,8 +42,20 @@ const AddressTransactions: React.FC = () => {
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
     if (ethers.utils.isAddress(params.addressOrName)) {
+      setENS(false);
+      setError(false);
+
       // Normalize to checksummed address
-      setChecksummedAddress(ethers.utils.getAddress(params.addressOrName));
+      const _checksummedAddress = ethers.utils.getAddress(params.addressOrName);
+      if (_checksummedAddress !== params.addressOrName) {
+        // Request came with a non-checksummed address; fix the URL
+        history.replace(
+          `/address/${_checksummedAddress}${
+            params.direction ? "/" + params.direction : ""
+          }${location.search}`
+        );
+      }
+      setChecksummedAddress(_checksummedAddress);
       return;
     }
 
@@ -50,27 +63,16 @@ const AddressTransactions: React.FC = () => {
       const resolvedAddress = await provider.resolveName(params.addressOrName);
       if (resolvedAddress !== null) {
         setENS(true);
-        setChecksummedAddress(resolvedAddress);
         setError(false);
+        setChecksummedAddress(resolvedAddress);
       } else {
+        setENS(false);
         setError(true);
+        setChecksummedAddress(undefined);
       }
     };
     resolveName();
-  }, [params.addressOrName]);
-
-  // Request came with a non-checksummed address; fix the URL
-  if (
-    !isENS &&
-    checksummedAddress &&
-    params.addressOrName !== checksummedAddress
-  ) {
-    history.replace(
-      `/address/${checksummedAddress}${
-        params.direction ? "/" + params.direction : ""
-      }${location.search}`
-    );
-  }
+  }, [params.addressOrName, history, params.direction, location.search]);
 
   const [controller, setController] = useState<SearchController>();
   useEffect(() => {
@@ -128,6 +130,7 @@ const AddressTransactions: React.FC = () => {
   }, [checksummedAddress, params.direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
+  const reverseCache = useENSCache(page);
 
   document.title = `Address ${params.addressOrName} | Otterscan`;
 
@@ -189,6 +192,7 @@ const AddressTransactions: React.FC = () => {
                     <TransactionItem
                       key={tx.hash}
                       tx={tx}
+                      ensCache={reverseCache}
                       selectedAddress={checksummedAddress}
                       feeDisplay={feeDisplay}
                     />
