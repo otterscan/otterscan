@@ -129,6 +129,16 @@ const Block: React.FC = () => {
               >
                 <FontAwesomeIcon icon={faChevronRight} />
               </NavButton>
+              <NavButton
+                blockNum={latestBlockNumber!}
+                disabled={
+                  latestBlockNumber === undefined ||
+                  block.number >= latestBlockNumber
+                }
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+                <FontAwesomeIcon icon={faChevronRight} />
+              </NavButton>
             </div>
           </InfoRow>
           <InfoRow title="Timestamp">
