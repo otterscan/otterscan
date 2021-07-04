@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { useLatestBlock } from "./useLatestBlock";
+import { ERIGON_NODE } from "./ethersconfig";
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState<string>();
@@ -63,6 +64,9 @@ const Home: React.FC = () => {
               <Timestamp value={latestBlock.timestamp} />
             </NavLink>
           )}
+          <span className="mx-auto mt-5 text-xs text-gray-500">
+            Using Erigon node at {ERIGON_NODE}
+          </span>
         </form>
       </div>
     </div>
