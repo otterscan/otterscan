@@ -60,10 +60,12 @@ const BlockTransactions: React.FC = () => {
               from: t.from,
               to: t.to,
               value: t.value,
-              fee: t.gasLimit.mul(t.gasPrice!),
+              fee: provider.formatter
+                .bigNumber(_receipts[i].gasUsed)
+                .mul(t.gasPrice!),
               gasPrice: t.gasPrice!,
               data: t.data,
-              status: _receipts[i].status,
+              status: provider.formatter.number(_receipts[i].status),
             };
           })
           .reverse()
