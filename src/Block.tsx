@@ -17,6 +17,7 @@ import BlockLink from "./components/BlockLink";
 import AddressLink from "./components/AddressLink";
 import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
+import { useLatestBlockNumber } from "./useLatestBlock";
 
 type BlockParams = {
   blockNumberOrHash: string;
@@ -96,6 +97,8 @@ const Block: React.FC = () => {
     }
   }, [block]);
 
+  const latestBlockNumber = useLatestBlockNumber();
+
   return (
     <StandardFrame>
       <StandardSubtitle>
@@ -119,7 +122,10 @@ const Block: React.FC = () => {
               </NavButton>
               <NavButton
                 blockNum={block.number + 1}
-                disabled={block.number === 0}
+                disabled={
+                  latestBlockNumber === undefined ||
+                  block.number >= latestBlockNumber
+                }
               >
                 <FontAwesomeIcon icon={faChevronRight} />
               </NavButton>
