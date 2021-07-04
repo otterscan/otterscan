@@ -121,6 +121,14 @@ npm install
 npm run build
 ```
 
+By default, it assumes your Erigon `rpcdaemon` processs is serving requests at http://127.0.0.1:8545. You can customize this URL by specifying the `REACT_APP_ERIGON_URL` environment variable at build time (it needs to be done at build time because the build process generates a static website).
+
+To do that, export the variable before running `npm run build`:
+
+```
+export REACT_APP_ERIGON_URL=<rpcdaemon-url>
+```
+
 ### Run it from the source
 
 First, a brief explanation about the app:
