@@ -1,10 +1,16 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { ethers, BigNumber } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
+import NavButton from "./components/NavButton";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
@@ -101,9 +107,23 @@ const Block: React.FC = () => {
       {block && (
         <ContentFrame>
           <InfoRow title="Block Height">
-            <span className="font-bold">
-              {ethers.utils.commify(block.number)}
-            </span>
+            <div className="flex space-x-1 items-baseline">
+              <span className="font-bold mr-1">
+                {ethers.utils.commify(block.number)}
+              </span>
+              <NavButton
+                blockNum={block.number - 1}
+                disabled={block.number === 0}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </NavButton>
+              <NavButton
+                blockNum={block.number + 1}
+                disabled={block.number === 0}
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </NavButton>
+            </div>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />
@@ -156,7 +176,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
           <InfoRow title="Hash">
-          <HexValue value={block.hash} />
+            <HexValue value={block.hash} />
           </InfoRow>
           <InfoRow title="Parent Hash">
             <BlockLink blockTag={block.parentHash} />
