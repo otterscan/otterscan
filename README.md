@@ -80,7 +80,7 @@ Checkout the tag corresponding to the stable version you are running. For each s
 
 For example, if you are running Erigon from `v2021.07.01` tag, checkout the tag `v2021.07.01-otterscan` and rebuild `rpcdaemon`.
 
-We intend to release a compatible rebased version containig our changes every week just after Erigon's weekly release, as time permits.
+We intend to release a compatible rebased version containing our changes every week just after Erigon's weekly release, as time permits.
 
 ```
 git fetch --all
@@ -160,8 +160,6 @@ npm run serve
 ```
 
 Otterscan should now be running at http://localhost:5000/.
-
-For now, it assumes the `rpcdaemon` is running on 127.0.0.1:8545. If for some reason your installation is running in another host/port, change it in the `src/ethersconfig.ts` file (patches to make it parameterized are welcome).
 
 **You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.**
 
