@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
-import { provider } from "./ethersconfig";
+import { useLatestBlock } from "./useLatestBlock";
+import { ERIGON_NODE } from "./ethersconfig";
 
 const Home: React.FC = () => {
   const [search, setSearch] = useState<string>();
@@ -24,29 +25,7 @@ const Home: React.FC = () => {
     history.push(`/search?q=${search}`);
   };
 
-  const [latestBlock, setLatestBlock] = useState<ethers.providers.Block>();
-  useEffect(() => {
-    const readLatestBlock = async () => {
-      const blockNum = await provider.getBlockNumber();
-      const _raw = await provider.send("erigon_getHeaderByNumber", [blockNum]);
-      const _block = provider.formatter.block(_raw);
-      setLatestBlock(_block);
-    };
-    readLatestBlock();
-
-    const listener = async (blockNumber: number) => {
-      const _raw = await provider.send("erigon_getHeaderByNumber", [
-        blockNumber,
-      ]);
-      const _block = provider.formatter.block(_raw);
-      setLatestBlock(_block);
-    };
-
-    provider.on("block", listener);
-    return () => {
-      provider.removeListener("block", listener);
-    };
-  }, []);
+  const latestBlock = useLatestBlock();
 
   document.title = "Home | Otterscan";
 
@@ -85,6 +64,9 @@ const Home: React.FC = () => {
               <Timestamp value={latestBlock.timestamp} />
             </NavLink>
           )}
+          <span className="mx-auto mt-5 text-xs text-gray-500">
+            Using Erigon node at {ERIGON_NODE}
+          </span>
         </form>
       </div>
     </div>
