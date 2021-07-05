@@ -8,6 +8,7 @@ export type ProcessedTransaction = {
   hash: string;
   from?: string;
   to?: string;
+  internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
   gasPrice: BigNumber;

@@ -1,6 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCoins,
+  faLongArrowAltRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 export enum Direction {
   IN,
@@ -9,12 +12,18 @@ export enum Direction {
   INTERNAL,
 }
 
+export enum Flags {
+  MINER,
+}
+
 type TransactionDirectionProps = {
   direction?: Direction;
+  flags?: Flags;
 };
 
 const TransactionDirection: React.FC<TransactionDirectionProps> = ({
   direction,
+  flags,
 }) => {
   let bgColor = "bg-green-50";
   let fgColor = "text-green-500";
@@ -34,6 +43,11 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
     msg = "INT";
   }
 
+  if (flags === Flags.MINER) {
+    bgColor = "bg-yellow-50";
+    fgColor = "text-yellow-400";
+  }
+
   return (
     <span
       className={`${bgColor} ${fgColor} ${
@@ -42,10 +56,14 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
           : "w-5 h-5 rounded-full flex justify-center items-center"
       } text-xs font-bold`}
     >
-      {msg ?? (
-        <span>
-          <FontAwesomeIcon icon={faLongArrowAltRight} />
-        </span>
+      {flags === Flags.MINER ? (
+        <FontAwesomeIcon icon={faCoins} size="1x" />
+      ) : (
+        msg ?? (
+          <span>
+            <FontAwesomeIcon icon={faLongArrowAltRight} />
+          </span>
+        )
       )}
     </span>
   );

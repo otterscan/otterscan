@@ -11,6 +11,7 @@ import AddressOrENSName from "../components/AddressOrENSName";
 import TimestampAge from "../components/TimestampAge";
 import TransactionDirection, {
   Direction,
+  Flags,
 } from "../components/TransactionDirection";
 import TransactionValue from "../components/TransactionValue";
 import { ENSReverseCache, ProcessedTransaction } from "../types";
@@ -45,9 +46,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
 
   const ensFrom = ensCache && tx.from && ensCache[tx.from];
   const ensTo = ensCache && tx.to && ensCache[tx.to];
+  const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
 
   return (
-    <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-gray-100 px-2 py-3">
+    <div
+      className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-gray-100 ${
+        flash ? "bg-yellow-100" : ""
+      } px-2 py-3`}
+    >
       <div className="col-span-2 flex space-x-1 items-baseline">
         {tx.status === 0 && (
           <span className="text-red-600" title="Transaction reverted">
@@ -81,7 +87,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           )}
         </span>
         <span>
-          <TransactionDirection direction={direction} />
+          <TransactionDirection
+            direction={direction}
+            flags={tx.internalMinerInteraction ? Flags.MINER : undefined}
+          />
         </span>
       </span>
       <span className="col-span-2 truncate" title={tx.to}>
