@@ -11,7 +11,7 @@ import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import BlockLink from "./components/BlockLink";
-import { ProcessedTransaction, Transfer } from "./types";
+import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { useENSCache } from "./useReverseCache";
