@@ -41,6 +41,7 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
     msg = "SELF";
   } else if (direction === Direction.INTERNAL) {
     msg = "INT";
+    bgColor = "bg-green-100"
   }
 
   if (flags === Flags.MINER) {
