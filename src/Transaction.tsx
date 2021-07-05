@@ -21,15 +21,7 @@ import TokenLogo from "./components/TokenLogo";
 import GasValue from "./components/GasValue";
 import FormattedBalance from "./components/FormattedBalance";
 import erc20 from "./erc20.json";
-import {
-  From,
-  TokenMetas,
-  TokenTransfer,
-  TransactionData,
-  Transfer,
-} from "./types";
-
-const USE_OTS = true;
+import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -121,49 +113,6 @@ const Transaction: React.FC = () => {
 
   const [transfers, setTransfers] = useState<Transfer[]>();
 
-  const traceTransfersUsingDebugTrace = async () => {
-    const r = await provider.send("debug_traceTransaction", [
-      txData?.transactionHash,
-      { disableStorage: true, disableMemory: true },
-    ]);
-    const fromStack: From[] = [
-      {
-        current: txData!.to,
-        depth: 0,
-      },
-    ];
-    const _transfers: Transfer[] = [];
-    for (const l of r.structLogs) {
-      if (l.op !== "CALL") {
-        if (parseInt(l.depth) === fromStack[fromStack.length - 1].depth) {
-          fromStack.pop();
-        }
-        continue;
-      }
-
-      const { stack } = l;
-      const addr = stack[stack.length - 2].slice(24);
-      const value = BigNumber.from("0x" + stack[stack.length - 3]);
-      if (!value.isZero()) {
-        const t: Transfer = {
-          from: ethers.utils.getAddress(
-            fromStack[fromStack.length - 1].current
-          ),
-          to: ethers.utils.getAddress(addr),
-          value,
-        };
-        _transfers.push(t);
-      }
-
-      fromStack.push({
-        current: addr,
-        depth: parseInt(l.depth),
-      });
-    }
-
-    setTransfers(_transfers);
-  };
-
   const traceTransfersUsingOtsTrace = useCallback(async () => {
     if (!txData) {
       return;
@@ -184,9 +133,7 @@ const Transaction: React.FC = () => {
     setTransfers(_transfers);
   }, [txData]);
   useEffect(() => {
-    if (USE_OTS) {
-      traceTransfersUsingOtsTrace();
-    }
+    traceTransfersUsingOtsTrace();
   }, [traceTransfersUsingOtsTrace]);
 
   return (
@@ -244,7 +191,7 @@ const Transaction: React.FC = () => {
                     <AddressLink address={txData.to} />
                     <Copy value={txData.to} />
                   </div>
-                  {transfers ? (
+                  {transfers && (
                     <div className="mt-2 space-y-1">
                       {transfers.map((t, i) => (
                         <InternalTransfer
@@ -254,15 +201,6 @@ const Transaction: React.FC = () => {
                         />
                       ))}
                     </div>
-                  ) : (
-                    !USE_OTS && (
-                      <button
-                        className="rounded focus:outline-none bg-gray-100 mt-2 px-3 py-2"
-                        onClick={traceTransfersUsingDebugTrace}
-                      >
-                        Trace transfers
-                      </button>
-                    )
                   )}
                 </InfoRow>
                 <InfoRow title="Transaction Action"></InfoRow>
