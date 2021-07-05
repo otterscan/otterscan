@@ -55,6 +55,7 @@ const BlockTransactions: React.FC = () => {
             return {
               blockNumber: blockNumber.toNumber(),
               timestamp: _block.timestamp,
+              miner: _block.miner,
               idx: i,
               hash: t.hash,
               from: t.from,

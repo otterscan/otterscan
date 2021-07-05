@@ -1,6 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faExclamationCircle,
+  faCoins,
+} from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
@@ -63,11 +66,18 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
         <span className="truncate" title={tx.from}>
           {tx.from && (
-            <AddressOrENSName
-              address={tx.from}
-              ensName={ensFrom}
-              selectedAddress={selectedAddress}
-            />
+            <div className="flex items-baseline space-x-1">
+              {tx.miner && tx.miner === tx.from && (
+                <span className="text-yellow-400" title="Miner address">
+                  <FontAwesomeIcon icon={faCoins} size="1x" />
+                </span>
+              )}
+              <AddressOrENSName
+                address={tx.from}
+                ensName={ensFrom}
+                selectedAddress={selectedAddress}
+              />
+            </div>
           )}
         </span>
         <span>
