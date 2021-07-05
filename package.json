@@ -4,7 +4,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@craco/craco": "^6.1.2",
+    "@craco/craco": "^6.2.0",
     "@fontsource/fira-code": "^4.4.5",
     "@fontsource/roboto": "^4.4.5",
     "@fontsource/roboto-mono": "^4.4.5",
