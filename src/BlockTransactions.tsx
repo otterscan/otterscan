@@ -49,27 +49,51 @@ const BlockTransactions: React.FC = () => {
       ]);
       document.title = `Block #${_block.number} Transactions | Otterscan`;
 
-      setTxs(
-        _block.transactions
-          .map((t, i) => {
-            return {
-              blockNumber: blockNumber.toNumber(),
-              timestamp: _block.timestamp,
-              idx: i,
-              hash: t.hash,
-              from: t.from,
-              to: t.to,
-              value: t.value,
-              fee: provider.formatter
-                .bigNumber(_receipts[i].gasUsed)
-                .mul(t.gasPrice!),
-              gasPrice: t.gasPrice!,
-              data: t.data,
-              status: provider.formatter.number(_receipts[i].status),
-            };
-          })
-          .reverse()
+      const responses = _block.transactions
+        .map((t, i): ProcessedTransaction => {
+          return {
+            blockNumber: blockNumber.toNumber(),
+            timestamp: _block.timestamp,
+            miner: _block.miner,
+            idx: i,
+            hash: t.hash,
+            from: t.from,
+            to: t.to,
+            value: t.value,
+            fee: provider.formatter
+              .bigNumber(_receipts[i].gasUsed)
+              .mul(t.gasPrice!),
+            gasPrice: t.gasPrice!,
+            data: t.data,
+            status: provider.formatter.number(_receipts[i].status),
+          };
+        })
+        .reverse();
+
+      const internalChecks = await Promise.all(
+        responses.map(async (res) => {
+          const r = await provider.send("ots_getTransactionTransfers", [
+            res.hash,
+          ]);
+          for (const t of r) {
+            if (
+              res.miner &&
+              (res.miner === ethers.utils.getAddress(t.from) ||
+                res.miner === ethers.utils.getAddress(t.to))
+            ) {
+              return true;
+            }
+          }
+          return false;
+        })
       );
+      for (let i = 0; i < responses.length; i++) {
+        if (internalChecks[i]) {
+          responses[i].internalMinerInteraction = true;
+        }
+      }
+
+      setTxs(responses);
     };
     readBlock();
   }, [blockNumber]);

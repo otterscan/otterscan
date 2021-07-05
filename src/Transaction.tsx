@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
-  faAngleRight,
   faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { provider } from "./ethersconfig";
@@ -17,10 +16,18 @@ import BlockLink from "./components/BlockLink";
 import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
 import Timestamp from "./components/Timestamp";
+import InternalTransfer from "./components/InternalTransfer";
 import TokenLogo from "./components/TokenLogo";
 import GasValue from "./components/GasValue";
 import FormattedBalance from "./components/FormattedBalance";
 import erc20 from "./erc20.json";
+import {
+  From,
+  TokenMetas,
+  TokenTransfer,
+  TransactionData,
+  Transfer,
+} from "./types";
 
 const USE_OTS = true;
 
@@ -29,56 +36,6 @@ const TRANSFER_TOPIC =
 
 type TransactionParams = {
   txhash: string;
-};
-
-type TransactionData = {
-  transactionHash: string;
-  status: boolean;
-  blockNumber: number;
-  transactionIndex: number;
-  confirmations: number;
-  timestamp: number;
-  from: string;
-  to: string;
-  value: BigNumber;
-  tokenTransfers: TokenTransfer[];
-  tokenMetas: TokenMetas;
-  fee: BigNumber;
-  gasPrice: BigNumber;
-  gasLimit: BigNumber;
-  gasUsed: BigNumber;
-  gasUsedPerc: number;
-  nonce: number;
-  data: string;
-  logs: ethers.providers.Log[];
-};
-
-type From = {
-  current: string;
-  depth: number;
-};
-
-type Transfer = {
-  from: string;
-  to: string;
-  value: BigNumber;
-};
-
-type TokenTransfer = {
-  token: string;
-  from: string;
-  to: string;
-  value: BigNumber;
-};
-
-type TokenMeta = {
-  name: string;
-  symbol: string;
-  decimals: number;
-};
-
-type TokenMetas = {
-  [tokenAddress: string]: TokenMeta;
 };
 
 const Transaction: React.FC = () => {
@@ -142,6 +99,7 @@ const Transaction: React.FC = () => {
         transactionIndex: _receipt.transactionIndex,
         confirmations: _receipt.confirmations,
         timestamp: _block.timestamp,
+        miner: _block.miner,
         from: _receipt.from,
         to: _receipt.to,
         value: _response.value,
@@ -289,17 +247,11 @@ const Transaction: React.FC = () => {
                   {transfers ? (
                     <div className="mt-2 space-y-1">
                       {transfers.map((t, i) => (
-                        <div key={i} className="flex space-x-1 text-xs">
-                          <span className="text-gray-500">
-                            <FontAwesomeIcon icon={faAngleRight} size="1x" />{" "}
-                            TRANSFER
-                          </span>
-                          <span>{ethers.utils.formatEther(t.value)} Ether</span>
-                          <span className="text-gray-500">From</span>
-                          <AddressLink address={t.from} />
-                          <span className="text-gray-500">To</span>
-                          <AddressLink address={t.to} />
-                        </div>
+                        <InternalTransfer
+                          key={i}
+                          txData={txData}
+                          transfer={t}
+                        />
                       ))}
                     </div>
                   ) : (
