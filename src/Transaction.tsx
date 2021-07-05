@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -112,6 +112,18 @@ const Transaction: React.FC = () => {
   }, [txhash]);
 
   const [transfers, setTransfers] = useState<Transfer[]>();
+  const sendsEthToMiner = useMemo(() => {
+    if (!txData || !transfers) {
+      return false;
+    }
+
+    for (const t of transfers) {
+      if (t.to === txData.miner) {
+        return true;
+      }
+    }
+    return false;
+  }, [txData, transfers]);
 
   const traceTransfersUsingOtsTrace = useCallback(async () => {
     if (!txData) {
@@ -263,9 +275,17 @@ const Transaction: React.FC = () => {
                   <FormattedBalance value={txData.fee} /> Ether
                 </InfoRow>
                 <InfoRow title="Gas Price">
-                  <FormattedBalance value={txData.gasPrice} /> Ether (
-                  <FormattedBalance value={txData.gasPrice} decimals={9} />{" "}
-                  Gwei)
+                  <div className="flex items-baseline space-x-1">
+                    <span>
+                      <FormattedBalance value={txData.gasPrice} /> Ether (
+                      <FormattedBalance
+                        value={txData.gasPrice}
+                        decimals={9}
+                      />{" "}
+                      Gwei)
+                    </span>
+                    {sendsEthToMiner && <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">Flashbots</span>}
+                  </div>
                 </InfoRow>
                 <InfoRow title="Ether Price">N/A</InfoRow>
                 <InfoRow title="Gas Limit">
