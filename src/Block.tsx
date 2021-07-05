@@ -14,7 +14,7 @@ import NavButton from "./components/NavButton";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
-import AddressLink from "./components/AddressLink";
+import AddressOrENSName from "./components/AddressOrENSName";
 import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
 import { useLatestBlockNumber } from "./useLatestBlock";
@@ -154,9 +154,10 @@ const Block: React.FC = () => {
             in this block
           </InfoRow>
           <InfoRow title="Mined by">
-            <div className="flex">
-              <AddressLink address={block.miner} />
-            </div>
+            <AddressOrENSName
+              address={block.miner}
+              minerAddress={block.miner}
+            />
           </InfoRow>
           <InfoRow title="Block Reward">
             <TransactionValue value={block.blockReward.add(block.feeReward)} />

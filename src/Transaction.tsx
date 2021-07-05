@@ -13,6 +13,7 @@ import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
 import ContentFrame from "./ContentFrame";
 import BlockLink from "./components/BlockLink";
+import AddressOrENSName from "./components/AddressOrENSName";
 import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
 import Timestamp from "./components/Timestamp";
@@ -194,13 +195,19 @@ const Transaction: React.FC = () => {
                 </InfoRow>
                 <InfoRow title="From">
                   <div className="flex items-baseline space-x-2">
-                    <AddressLink address={txData.from} />
+                    <AddressOrENSName
+                      address={txData.from}
+                      minerAddress={txData.miner}
+                    />
                     <Copy value={txData.from} />
                   </div>
                 </InfoRow>
                 <InfoRow title="Interacted With (To)">
                   <div className="flex items-baseline space-x-2">
-                    <AddressLink address={txData.to} />
+                    <AddressOrENSName
+                      address={txData.to}
+                      minerAddress={txData.miner}
+                    />
                     <Copy value={txData.to} />
                   </div>
                   {transfers && (
@@ -284,7 +291,11 @@ const Transaction: React.FC = () => {
                       />{" "}
                       Gwei)
                     </span>
-                    {sendsEthToMiner && <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">Flashbots</span>}
+                    {sendsEthToMiner && (
+                      <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
+                        Flashbots
+                      </span>
+                    )}
                   </div>
                 </InfoRow>
                 <InfoRow title="Ether Price">N/A</InfoRow>
