@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
-  faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
@@ -13,23 +12,16 @@ import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
 import ContentFrame from "./ContentFrame";
 import BlockLink from "./components/BlockLink";
+import AddressOrENSName from "./components/AddressOrENSName";
 import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
 import Timestamp from "./components/Timestamp";
 import InternalTransfer from "./components/InternalTransfer";
-import TokenLogo from "./components/TokenLogo";
 import GasValue from "./components/GasValue";
 import FormattedBalance from "./components/FormattedBalance";
+import TokenTransferItem from "./TokenTransferItem";
 import erc20 from "./erc20.json";
-import {
-  From,
-  TokenMetas,
-  TokenTransfer,
-  TransactionData,
-  Transfer,
-} from "./types";
-
-const USE_OTS = true;
+import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -120,49 +112,18 @@ const Transaction: React.FC = () => {
   }, [txhash]);
 
   const [transfers, setTransfers] = useState<Transfer[]>();
-
-  const traceTransfersUsingDebugTrace = async () => {
-    const r = await provider.send("debug_traceTransaction", [
-      txData?.transactionHash,
-      { disableStorage: true, disableMemory: true },
-    ]);
-    const fromStack: From[] = [
-      {
-        current: txData!.to,
-        depth: 0,
-      },
-    ];
-    const _transfers: Transfer[] = [];
-    for (const l of r.structLogs) {
-      if (l.op !== "CALL") {
-        if (parseInt(l.depth) === fromStack[fromStack.length - 1].depth) {
-          fromStack.pop();
-        }
-        continue;
-      }
-
-      const { stack } = l;
-      const addr = stack[stack.length - 2].slice(24);
-      const value = BigNumber.from("0x" + stack[stack.length - 3]);
-      if (!value.isZero()) {
-        const t: Transfer = {
-          from: ethers.utils.getAddress(
-            fromStack[fromStack.length - 1].current
-          ),
-          to: ethers.utils.getAddress(addr),
-          value,
-        };
-        _transfers.push(t);
-      }
-
-      fromStack.push({
-        current: addr,
-        depth: parseInt(l.depth),
-      });
+  const sendsEthToMiner = useMemo(() => {
+    if (!txData || !transfers) {
+      return false;
     }
 
-    setTransfers(_transfers);
-  };
+    for (const t of transfers) {
+      if (t.to === txData.miner) {
+        return true;
+      }
+    }
+    return false;
+  }, [txData, transfers]);
 
   const traceTransfersUsingOtsTrace = useCallback(async () => {
     if (!txData) {
@@ -184,9 +145,7 @@ const Transaction: React.FC = () => {
     setTransfers(_transfers);
   }, [txData]);
   useEffect(() => {
-    if (USE_OTS) {
-      traceTransfersUsingOtsTrace();
-    }
+    traceTransfersUsingOtsTrace();
   }, [traceTransfersUsingOtsTrace]);
 
   return (
@@ -235,16 +194,22 @@ const Transaction: React.FC = () => {
                 </InfoRow>
                 <InfoRow title="From">
                   <div className="flex items-baseline space-x-2">
-                    <AddressLink address={txData.from} />
+                    <AddressOrENSName
+                      address={txData.from}
+                      minerAddress={txData.miner}
+                    />
                     <Copy value={txData.from} />
                   </div>
                 </InfoRow>
                 <InfoRow title="Interacted With (To)">
                   <div className="flex items-baseline space-x-2">
-                    <AddressLink address={txData.to} />
+                    <AddressOrENSName
+                      address={txData.to}
+                      minerAddress={txData.miner}
+                    />
                     <Copy value={txData.to} />
                   </div>
-                  {transfers ? (
+                  {transfers && (
                     <div className="mt-2 space-y-1">
                       {transfers.map((t, i) => (
                         <InternalTransfer
@@ -254,15 +219,6 @@ const Transaction: React.FC = () => {
                         />
                       ))}
                     </div>
-                  ) : (
-                    !USE_OTS && (
-                      <button
-                        className="rounded focus:outline-none bg-gray-100 mt-2 px-3 py-2"
-                        onClick={traceTransfersUsingDebugTrace}
-                      >
-                        Trace transfers
-                      </button>
-                    )
                   )}
                 </InfoRow>
                 <InfoRow title="Transaction Action"></InfoRow>
@@ -271,48 +227,13 @@ const Transaction: React.FC = () => {
                     title={`Tokens Transferred (${txData.tokenTransfers.length})`}
                   >
                     <div className="space-y-2">
-                      {txData.tokenTransfers &&
-                        txData.tokenTransfers.map((t, i) => (
-                          <div
-                            className="flex items-baseline space-x-2 truncate"
-                            key={i}
-                          >
-                            <span className="text-gray-500">
-                              <FontAwesomeIcon icon={faCaretRight} size="1x" />
-                            </span>
-                            <span className="font-bold">From</span>
-                            <AddressLink address={t.from} />
-                            <span className="font-bold">To</span>
-                            <AddressLink address={t.to} />
-                            <span className="font-bold">For</span>
-                            <span>
-                              <FormattedBalance
-                                value={t.value}
-                                decimals={txData.tokenMetas[t.token].decimals}
-                              />
-                            </span>
-                            <span className="flex space-x-1 items-baseline truncate">
-                              {txData.tokenMetas[t.token] ? (
-                                <>
-                                  <div className="self-center">
-                                    <TokenLogo
-                                      address={t.token}
-                                      name={txData.tokenMetas[t.token].name}
-                                    />
-                                  </div>
-                                  <AddressLink
-                                    address={t.token}
-                                    text={`${
-                                      txData.tokenMetas[t.token].name
-                                    } (${txData.tokenMetas[t.token].symbol})`}
-                                  />
-                                </>
-                              ) : (
-                                <AddressLink address={t.token} />
-                              )}
-                            </span>
-                          </div>
-                        ))}
+                      {txData.tokenTransfers.map((t, i) => (
+                        <TokenTransferItem
+                          key={i}
+                          t={t}
+                          tokenMetas={txData.tokenMetas}
+                        />
+                      ))}
                     </div>
                   </InfoRow>
                 )}
@@ -325,9 +246,21 @@ const Transaction: React.FC = () => {
                   <FormattedBalance value={txData.fee} /> Ether
                 </InfoRow>
                 <InfoRow title="Gas Price">
-                  <FormattedBalance value={txData.gasPrice} /> Ether (
-                  <FormattedBalance value={txData.gasPrice} decimals={9} />{" "}
-                  Gwei)
+                  <div className="flex items-baseline space-x-1">
+                    <span>
+                      <FormattedBalance value={txData.gasPrice} /> Ether (
+                      <FormattedBalance
+                        value={txData.gasPrice}
+                        decimals={9}
+                      />{" "}
+                      Gwei)
+                    </span>
+                    {sendsEthToMiner && (
+                      <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
+                        Flashbots
+                      </span>
+                    )}
+                  </div>
                 </InfoRow>
                 <InfoRow title="Ether Price">N/A</InfoRow>
                 <InfoRow title="Gas Limit">

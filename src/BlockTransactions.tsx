@@ -69,6 +69,7 @@ const BlockTransactions: React.FC = () => {
           };
         })
         .reverse();
+      setTxs(responses);
 
       const internalChecks = await Promise.all(
         responses.map(async (res) => {
@@ -87,13 +88,10 @@ const BlockTransactions: React.FC = () => {
           return false;
         })
       );
-      for (let i = 0; i < responses.length; i++) {
-        if (internalChecks[i]) {
-          responses[i].internalMinerInteraction = true;
-        }
-      }
-
-      setTxs(responses);
+      const processedResponses = responses.map((r, i): ProcessedTransaction => {
+        return { ...r, internalMinerInteraction: internalChecks[i] };
+      });
+      setTxs(processedResponses);
     };
     readBlock();
   }, [blockNumber]);
