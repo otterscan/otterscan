@@ -19,7 +19,7 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   selectedAddress,
   minerAddress,
 }) => (
-  <div className="flex items-baseline space-x-1">
+  <div className="flex items-baseline space-x-1 truncate">
     {minerAddress !== undefined && minerAddress === address && (
       <span className="text-yellow-400" title="Miner address">
         <FontAwesomeIcon icon={faCoins} size="1x" />

@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressLink from "./components/AddressLink";
+import AddressOrENSName from "./components/AddressOrENSName";
 import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
 import { TokenMetas, TokenTransfer } from "./types";
@@ -20,9 +21,9 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
     <span className="font-bold">From</span>
-    <AddressLink address={t.from} />
+    <AddressOrENSName address={t.from} />
     <span className="font-bold">To</span>
-    <AddressLink address={t.to} />
+    <AddressOrENSName address={t.to} />
     <span className="font-bold">For</span>
     <span>
       <FormattedBalance
@@ -42,7 +43,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           />
         </>
       ) : (
-        <AddressLink address={t.token} />
+        <AddressOrENSName address={t.token} />
       )}
     </span>
   </div>
