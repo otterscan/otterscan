@@ -11,7 +11,7 @@ const AddressLink: React.FC<AddressLinkProps> = ({ address, text }) => (
     className="text-link-blue hover:text-link-blue-hover font-address truncate"
     to={`/address/${address}`}
   >
-    <p className="truncate" title={text}>
+    <p className="truncate" title={text ?? address}>
       {text ?? address}
     </p>
   </NavLink>
