@@ -16,7 +16,8 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
 
     // Try to resolve 4bytes name
     const fourBytes = _name.slice(2);
-    const signatureURL = `http://localhost:3001/${fourBytes}`;
+    const fourBytesURL = process.env.FOUR_BYTES_URL ? process.env.FOUR_BYTES_URL : "http://localhost:3001"
+    const signatureURL = `${fourBytesURL}/${fourBytes}`;
     fetch(signatureURL)
       .then(async (res) => {
         if (!res.ok) {

@@ -13,9 +13,10 @@ const TokenLogo: React.FC<TokenLogoProps> = (props) => (
 );
 
 const InternalTokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
+  const assetsURL = process.env.ASSETS_URL ? process.env.ASSETS_URL : "http://localhost:3002";
   const { src } = useImage({
     srcList: [
-      `http://localhost:3002/${address}/logo.png`,
+      `${assetsURL}/${address}/logo.png`,
       "/eth-diamond-black.png",
     ],
   });
