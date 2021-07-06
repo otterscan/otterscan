@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
-  faCaretRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
@@ -18,9 +17,9 @@ import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
 import Timestamp from "./components/Timestamp";
 import InternalTransfer from "./components/InternalTransfer";
-import TokenLogo from "./components/TokenLogo";
 import GasValue from "./components/GasValue";
 import FormattedBalance from "./components/FormattedBalance";
+import TokenTransferItem from "./TokenTransferItem";
 import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
 
@@ -228,48 +227,13 @@ const Transaction: React.FC = () => {
                     title={`Tokens Transferred (${txData.tokenTransfers.length})`}
                   >
                     <div className="space-y-2">
-                      {txData.tokenTransfers &&
-                        txData.tokenTransfers.map((t, i) => (
-                          <div
-                            className="flex items-baseline space-x-2 truncate"
-                            key={i}
-                          >
-                            <span className="text-gray-500">
-                              <FontAwesomeIcon icon={faCaretRight} size="1x" />
-                            </span>
-                            <span className="font-bold">From</span>
-                            <AddressLink address={t.from} />
-                            <span className="font-bold">To</span>
-                            <AddressLink address={t.to} />
-                            <span className="font-bold">For</span>
-                            <span>
-                              <FormattedBalance
-                                value={t.value}
-                                decimals={txData.tokenMetas[t.token].decimals}
-                              />
-                            </span>
-                            <span className="flex space-x-1 items-baseline truncate">
-                              {txData.tokenMetas[t.token] ? (
-                                <>
-                                  <div className="self-center">
-                                    <TokenLogo
-                                      address={t.token}
-                                      name={txData.tokenMetas[t.token].name}
-                                    />
-                                  </div>
-                                  <AddressLink
-                                    address={t.token}
-                                    text={`${
-                                      txData.tokenMetas[t.token].name
-                                    } (${txData.tokenMetas[t.token].symbol})`}
-                                  />
-                                </>
-                              ) : (
-                                <AddressLink address={t.token} />
-                              )}
-                            </span>
-                          </div>
-                        ))}
+                      {txData.tokenTransfers.map((t, i) => (
+                        <TokenTransferItem
+                          key={i}
+                          t={t}
+                          tokenMetas={txData.tokenMetas}
+                        />
+                      ))}
                     </div>
                   </InfoRow>
                 )}
