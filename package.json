@@ -42,11 +42,10 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "start-4bytes": "docker run --rm -p 3001:80 --name otterscan-4bytes -d otterscan/4bytes",
-    "stop-4bytes": "docker stop otterscan-4bytes",
-    "serve-trustwallet-assets": "serve -p 3002 -C -c serve-trustwallet-assets.json",
+    "start-docker": "docker run --rm -p 3001:80 --name otterscan -d otterscan",
+    "stop-docker": "docker stop otterscan",
     "serve": "serve -s build",
-    "build-docker-4bytes": "docker build -t otterscan/4bytes -f Dockerfile-4bytes ."
+    "build-docker": "docker build -t otterscan -f Dockerfile ."
   },
   "eslintConfig": {
     "extends": [
