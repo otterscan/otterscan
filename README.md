@@ -98,10 +98,10 @@ Run it paying attention to enable the `erigon`, `ots`, `eth` apis to whatever cl
 `ots` stands for Otterscan and it is the namespace we use for our own custom APIs.
 
 ```
-./build/bin/rpcdaemon --http.api "eth,erigon,ots,<your-other-apis>" --private.api.addr 127.0.0.1:9090 --chaindata <erigon-chaindata-dir> --http.corsdomain "*"
+./build/bin/rpcdaemon --http.api "eth,erigon,ots,<your-other-apis>" --private.api.addr 127.0.0.1:9090 --datadir <erigon-datadir> --http.corsdomain "*"
 ```
 
-Be sure to include both `--private.api.addr` and `--chaindata` parameter so you run it in dual mode, otherwise the performance will be much worse.
+Be sure to include both `--private.api.addr` and `--datadir` parameter so you run it in dual mode, otherwise the performance will be much worse.
 
 Also pay attention to the `--http.corsdomain` parameter, CORS is required for the browser to call the node directly.
 
