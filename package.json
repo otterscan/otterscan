@@ -6,7 +6,7 @@
   "dependencies": {
     "@craco/craco": "^6.2.0",
     "@fontsource/fira-code": "^4.4.5",
-    "@fontsource/roboto": "^4.4.5",
+    "@fontsource/roboto": "^4.5.0",
     "@fontsource/roboto-mono": "^4.4.5",
     "@fontsource/space-grotesk": "^4.4.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
