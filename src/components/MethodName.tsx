@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {FOUR_BYTES_URL} from "../params";
 
 type MethodNameProps = {
   data: string;
@@ -16,8 +17,8 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
 
     // Try to resolve 4bytes name
     const fourBytes = _name.slice(2);
-    const fourBytesURL = process.env.FOUR_BYTES_URL ? process.env.FOUR_BYTES_URL : "http://localhost:3001"
-    const signatureURL = `${fourBytesURL}/${fourBytes}`;
+
+    const signatureURL = `${FOUR_BYTES_URL}/${fourBytes}`;
     fetch(signatureURL)
       .then(async (res) => {
         if (!res.ok) {

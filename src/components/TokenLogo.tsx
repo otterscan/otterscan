@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { useImage } from "react-image";
-
+import { ASSETS_URL } from "../params";
 type TokenLogoProps = {
   address: string;
   name: string;
@@ -13,10 +13,10 @@ const TokenLogo: React.FC<TokenLogoProps> = (props) => (
 );
 
 const InternalTokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
-  const assetsURL = process.env.ASSETS_URL ? process.env.ASSETS_URL : "http://localhost:3002";
+
   const { src } = useImage({
     srcList: [
-      `${assetsURL}/${address}/logo.png`,
+      `${ASSETS_URL}/${address}/logo.png`,
       "/eth-diamond-black.png",
     ],
   });
