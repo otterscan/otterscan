@@ -123,7 +123,7 @@ To stop Otterscan service, run:
 docker stop otterscan
 ```
 
-### (Alternative) Build Otterscan docker image locally and run it
+### (Alternative 1) Build Otterscan docker image locally and run it
 
 If you don't want to download from Docker Hub, you can build the docker image from the sources and run it.
 
@@ -149,7 +149,7 @@ docker run --rm -p 5000:80 --name otterscan -d otterscan
 docker stop otterscan
 ```
 
-### Run a development build from the source
+### (Alternative 2) Run a development build from the source
 
 First, a brief explanation about the app:
 
