@@ -42,9 +42,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "start-docker": "docker run --rm -p 3001:80 --name otterscan -d otterscan",
+    "start-docker": "docker run --rm -p 5000:80 --name otterscan -d otterscan",
     "stop-docker": "docker stop otterscan",
-    "serve": "serve -s build",
     "build-docker": "docker build -t otterscan -f Dockerfile ."
   },
   "eslintConfig": {
