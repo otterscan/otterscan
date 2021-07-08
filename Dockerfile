@@ -1,9 +1,10 @@
 FROM node:12.22.3-alpine AS builder
 WORKDIR /otterscan-build
-COPY ["run-nginx.sh", "package*.json", "tsconfig.json", "craco.config.js", "tailwind.config.js", "/otterscan-build"]
-COPY ["src", "/otterscan-build/src"]
-COPY ["public", "/otterscan-build/public"]
+COPY ["package.json", "package-lock.json", "/otterscan-build"]
 RUN npm install
+COPY ["run-nginx.sh", "tsconfig.json", "craco.config.js", "tailwind.config.js", "/otterscan-build"]
+COPY ["public", "/otterscan-build/public"]
+COPY ["src", "/otterscan-build/src"]
 RUN npm run build
 
 FROM nginx:1.21.1-alpine
