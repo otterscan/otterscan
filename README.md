@@ -107,9 +107,35 @@ Also pay attention to the `--http.corsdomain` parameter, CORS is required for th
 
 Now you should have an Erigon node with Otterscan jsonrpc APIs enabled, running in dual mode with CORS enabled.
 
-### Clone Otterscan repository and build the project
+### Run Otterscan docker image from Docker Hub
 
-Make sure you have a working node 12/npm installation.
+TODO: publish Otterscan official images as soon as it is validated.
+
+```
+docker run --rm -p 5000:80 --name otterscan -d otterscan/otterscan:<versiontag>
+```
+
+This will download the Otterscan image from Docker Hub, run it locally using the default parameters, binding it to port 5000 (see the `-p` docker run parameter).
+
+To stop Otterscan service, run:
+
+```
+docker stop otterscan
+```
+
+By default it assumes your Erigon node is at http://127.0.0.1:8545. You can override the URL by setting the `ERIGON_URL` env variable on `docker run`:
+
+```
+docker run --rm -p 5000:80 --name otterscan -d --env ERIGON_URL="<your-erigon-node-url>" otterscan/otterscan:<versiontag>
+```
+
+### (Alternative 1) Build Otterscan docker image locally and run it
+
+If you don't want to download from Docker Hub, you can build the docker image from the sources and run it.
+
+If you just want to build the image locally, there is no need to install the development toolchain, just make sure you have a recent working Docker installation.
+
+The entire build process will take place inside the docker multi-stage build.
 
 Clone Otterscan repo and its submodules. Checkout the tag corresponding to your Erigon + Otterscan patches. It uses the same version tag from Erigon + Otterscan repo, i.e., if you built the `v2021.07.01-otterscan`, you should build the `v2021.07.01-otterscan` of Otterscan.
 
@@ -117,19 +143,19 @@ Clone Otterscan repo and its submodules. Checkout the tag corresponding to your 
 git clone --recurse-submodules git@github.com:wmitsuda/otterscan.git
 cd otterscan
 git checkout <version-tag-otterscan>
-npm install
-npm run build
+docker build -t otterscan -f Dockerfile .
 ```
 
-By default, it assumes your Erigon `rpcdaemon` processs is serving requests at http://127.0.0.1:8545. You can customize this URL by specifying the `REACT_APP_ERIGON_URL` environment variable at build time (it needs to be done at build time because the build process generates a static website).
+This will run the entire build process inside a build container, merge the production build of the React app with the 4bytes and trustwallet assets into the same image format it is published in Docker Hub, but locally under the name `otterscan`.
 
-To do that, export the variable before running `npm run build`:
+Then you can start/stop it using the commands:
 
 ```
-export REACT_APP_ERIGON_URL=<rpcdaemon-url>
+docker run --rm -p 5000:80 --name otterscan -d otterscan
+docker stop otterscan
 ```
 
-### Run it from the source
+### (Alternative 2) Run a development build from the source
 
 First, a brief explanation about the app:
 
@@ -141,25 +167,38 @@ First, a brief explanation about the app:
 
 These instructions are subjected to changes in future for the sake of simplification.
 
-Open a new terminal and start the 4bytes method decoding service:
+Make sure you have a working node 12/npm installation.
+
+By default, it assumes your Erigon `rpcdaemon` processs is serving requests at http://127.0.0.1:8545. You can customize this URL by specifying the `REACT_APP_ERIGON_URL` environment variable at build time (it needs to be done at build time because the build process generates a static website).
+
+To do that, export the variable before running `npm run build`:
 
 ```
-npm run serve-4bytes
+export REACT_APP_ERIGON_URL=<rpcdaemon-url>
 ```
 
-Open another terminal and start the trustwallet assets service:
+Start serving 4bytes and trustwallet assets at `localhost:3001` using a dockerized nginx:
 
 ```
-npm run serve-trustwallet-assets
+npm run start-assets
 ```
 
-In another terminal start the Otterscan app:
+To stop it, run:
 
 ```
-npm run serve
+npm run stop-assets
 ```
 
-Otterscan should now be running at http://localhost:5000/.
+To run Otterscan development build:
+
+```
+npm install
+npm start
+```
+
+Otterscan should now be running at http://localhost:3000/.
+
+## Validating the installation (all methods)
 
 **You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.**
 

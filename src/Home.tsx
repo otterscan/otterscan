@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
+import { ProviderContext } from "./useProvider";
 import { useLatestBlock } from "./useLatestBlock";
-import { ERIGON_NODE } from "./ethersconfig";
 
 const Home: React.FC = () => {
+  const provider = useContext(ProviderContext);
   const [search, setSearch] = useState<string>();
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const history = useHistory();
@@ -25,7 +26,7 @@ const Home: React.FC = () => {
     history.push(`/search?q=${search}`);
   };
 
-  const latestBlock = useLatestBlock();
+  const latestBlock = useLatestBlock(provider);
 
   document.title = "Home | Otterscan";
 
@@ -65,7 +66,11 @@ const Home: React.FC = () => {
             </NavLink>
           )}
           <span className="mx-auto mt-5 text-xs text-gray-500">
-            Using Erigon node at {ERIGON_NODE}
+            {provider ? (
+              <>Using Erigon node at {provider.connection.url}</>
+            ) : (
+              <>Waiting for the provider...</>
+            )}
           </span>
         </form>
       </div>

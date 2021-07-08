@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useContext,
+} from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +12,6 @@ import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
@@ -22,6 +27,7 @@ import FormattedBalance from "./components/FormattedBalance";
 import TokenTransferItem from "./TokenTransferItem";
 import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
+import { ProviderContext } from "./useProvider";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -31,11 +37,16 @@ type TransactionParams = {
 };
 
 const Transaction: React.FC = () => {
+  const provider = useContext(ProviderContext);
   const params = useParams<TransactionParams>();
   const { txhash } = params;
 
   const [txData, setTxData] = useState<TransactionData>();
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readBlock = async () => {
       const [_response, _receipt] = await Promise.all([
         provider.getTransaction(txhash),
@@ -109,7 +120,7 @@ const Transaction: React.FC = () => {
       });
     };
     readBlock();
-  }, [txhash]);
+  }, [provider, txhash]);
 
   const [transfers, setTransfers] = useState<Transfer[]>();
   const sendsEthToMiner = useMemo(() => {
@@ -126,7 +137,7 @@ const Transaction: React.FC = () => {
   }, [txData, transfers]);
 
   const traceTransfersUsingOtsTrace = useCallback(async () => {
-    if (!txData) {
+    if (!provider || !txData) {
       return;
     }
 
@@ -143,7 +154,7 @@ const Transaction: React.FC = () => {
     }
 
     setTransfers(_transfers);
-  }, [txData]);
+  }, [provider, txData]);
   useEffect(() => {
     traceTransfersUsingOtsTrace();
   }, [traceTransfersUsingOtsTrace]);
