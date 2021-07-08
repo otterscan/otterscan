@@ -72,6 +72,8 @@ They have weekly stable releases, make sure you are running on of them, not deve
 
 Add our forked Erigon git tree as an additional remote and checkout the corresponding branch.
 
+The repository with Otterscan patches is [here](https://github.com/wmitsuda/erigon).
+
 ```
 git remote add otterscan git@github.com:wmitsuda/erigon.git
 ```
