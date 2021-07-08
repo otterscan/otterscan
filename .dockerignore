@@ -1,1 +1,3 @@
 node_modules
+trustwallet
+!trustwallet/blockchains/ethereum/assets
