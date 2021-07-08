@@ -1,12 +1,15 @@
 import { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import { ENSReverseCache, ProcessedTransaction } from "./types";
-import { provider } from "./ethersconfig";
 
-export const useENSCache = (page?: ProcessedTransaction[]) => {
+export const useENSCache = (
+  provider?: ethers.providers.JsonRpcProvider,
+  page?: ProcessedTransaction[]
+) => {
   const [reverseCache, setReverseCache] = useState<ENSReverseCache>();
 
   useEffect(() => {
-    if (!page) {
+    if (!provider || !page) {
       return;
     }
 
@@ -38,7 +41,7 @@ export const useENSCache = (page?: ProcessedTransaction[]) => {
       setReverseCache(cache);
     };
     reverseResolve();
-  }, [page]);
+  }, [provider, page]);
 
   return reverseCache;
 };

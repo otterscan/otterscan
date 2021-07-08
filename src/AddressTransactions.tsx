@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import queryString from "query-string";
@@ -12,9 +12,9 @@ import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
+import { ProviderContext } from "./useProvider";
 import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
-import { provider } from "./ethersconfig";
 
 type BlockParams = {
   addressOrName: string;
@@ -26,6 +26,7 @@ type PageParams = {
 };
 
 const AddressTransactions: React.FC = () => {
+  const provider = useContext(ProviderContext);
   const params = useParams<BlockParams>();
   const location = useLocation<PageParams>();
   const history = useHistory();
@@ -59,6 +60,9 @@ const AddressTransactions: React.FC = () => {
       return;
     }
 
+    if (!provider) {
+      return;
+    }
     const resolveName = async () => {
       const resolvedAddress = await provider.resolveName(params.addressOrName);
       if (resolvedAddress !== null) {
@@ -72,20 +76,30 @@ const AddressTransactions: React.FC = () => {
       }
     };
     resolveName();
-  }, [params.addressOrName, history, params.direction, location.search]);
+  }, [
+    provider,
+    params.addressOrName,
+    history,
+    params.direction,
+    location.search,
+  ]);
 
   const [controller, setController] = useState<SearchController>();
   useEffect(() => {
-    if (!checksummedAddress) {
+    if (!provider || !checksummedAddress) {
       return;
     }
 
     const readFirstPage = async () => {
-      const _controller = await SearchController.firstPage(checksummedAddress);
+      const _controller = await SearchController.firstPage(
+        provider,
+        checksummedAddress
+      );
       setController(_controller);
     };
     const readMiddlePage = async (next: boolean) => {
       const _controller = await SearchController.middlePage(
+        provider,
         checksummedAddress,
         hash!,
         next
@@ -93,15 +107,18 @@ const AddressTransactions: React.FC = () => {
       setController(_controller);
     };
     const readLastPage = async () => {
-      const _controller = await SearchController.lastPage(checksummedAddress);
+      const _controller = await SearchController.lastPage(
+        provider,
+        checksummedAddress
+      );
       setController(_controller);
     };
     const prevPage = async () => {
-      const _controller = await controller!.prevPage(hash!);
+      const _controller = await controller!.prevPage(provider, hash!);
       setController(_controller);
     };
     const nextPage = async () => {
-      const _controller = await controller!.nextPage(hash!);
+      const _controller = await controller!.nextPage(provider, hash!);
       setController(_controller);
     };
 
@@ -127,10 +144,10 @@ const AddressTransactions: React.FC = () => {
         readLastPage();
       }
     }
-  }, [checksummedAddress, params.direction, hash, controller]);
+  }, [provider, checksummedAddress, params.direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
-  const reverseCache = useENSCache(page);
+  const reverseCache = useENSCache(provider, page);
 
   document.title = `Address ${params.addressOrName} | Otterscan`;
 

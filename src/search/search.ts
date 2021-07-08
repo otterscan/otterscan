@@ -1,5 +1,4 @@
 import { ethers } from "ethers";
-import { provider } from "../ethersconfig";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 
@@ -27,7 +26,10 @@ export class SearchController {
     }
   }
 
-  private static rawToProcessed = (_rawRes: any) => {
+  private static rawToProcessed = (
+    provider: ethers.providers.JsonRpcProvider,
+    _rawRes: any
+  ) => {
     const _res: ethers.providers.TransactionResponse[] = _rawRes.txs.map(
       (t: any) => provider.formatter.transactionResponse(t)
     );
@@ -56,6 +58,7 @@ export class SearchController {
   };
 
   private static async readBackPage(
+    provider: ethers.providers.JsonRpcProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -64,10 +67,11 @@ export class SearchController {
       baseBlock,
       PAGE_SIZE,
     ]);
-    return this.rawToProcessed(_rawRes);
+    return this.rawToProcessed(provider, _rawRes);
   }
 
   private static async readForwardPage(
+    provider: ethers.providers.JsonRpcProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -76,11 +80,14 @@ export class SearchController {
       baseBlock,
       PAGE_SIZE,
     ]);
-    return this.rawToProcessed(_rawRes);
+    return this.rawToProcessed(provider, _rawRes);
   }
 
-  static async firstPage(address: string): Promise<SearchController> {
-    const newTxs = await SearchController.readBackPage(address, 0);
+  static async firstPage(
+    provider: ethers.providers.JsonRpcProvider,
+    address: string
+  ): Promise<SearchController> {
+    const newTxs = await SearchController.readBackPage(provider, address, 0);
     return new SearchController(
       address,
       newTxs.txs,
@@ -91,14 +98,19 @@ export class SearchController {
   }
 
   static async middlePage(
+    provider: ethers.providers.JsonRpcProvider,
     address: string,
     hash: string,
     next: boolean
   ): Promise<SearchController> {
     const tx = await provider.getTransaction(hash);
     const newTxs = next
-      ? await SearchController.readBackPage(address, tx.blockNumber!)
-      : await SearchController.readForwardPage(address, tx.blockNumber!);
+      ? await SearchController.readBackPage(provider, address, tx.blockNumber!)
+      : await SearchController.readForwardPage(
+          provider,
+          address,
+          tx.blockNumber!
+        );
     return new SearchController(
       address,
       newTxs.txs,
@@ -108,8 +120,11 @@ export class SearchController {
     );
   }
 
-  static async lastPage(address: string): Promise<SearchController> {
-    const newTxs = await SearchController.readForwardPage(address, 0);
+  static async lastPage(
+    provider: ethers.providers.JsonRpcProvider,
+    address: string
+  ): Promise<SearchController> {
+    const newTxs = await SearchController.readForwardPage(provider, address, 0);
     return new SearchController(
       address,
       newTxs.txs,
@@ -123,7 +138,10 @@ export class SearchController {
     return this.txs.slice(this.pageStart, this.pageEnd);
   }
 
-  async prevPage(hash: string): Promise<SearchController> {
+  async prevPage(
+    provider: ethers.providers.JsonRpcProvider,
+    hash: string
+  ): Promise<SearchController> {
     // Already on this page
     if (this.txs[this.pageEnd - 1].hash === hash) {
       return this;
@@ -133,6 +151,7 @@ export class SearchController {
       const overflowPage = this.txs.slice(0, this.pageStart);
       const baseBlock = this.txs[0].blockNumber;
       const prevPage = await SearchController.readForwardPage(
+        provider,
         this.address,
         baseBlock
       );
@@ -148,7 +167,10 @@ export class SearchController {
     return this;
   }
 
-  async nextPage(hash: string): Promise<SearchController> {
+  async nextPage(
+    provider: ethers.providers.JsonRpcProvider,
+    hash: string
+  ): Promise<SearchController> {
     // Already on this page
     if (this.txs[this.pageStart].hash === hash) {
       return this;
@@ -158,6 +180,7 @@ export class SearchController {
       const overflowPage = this.txs.slice(this.pageEnd);
       const baseBlock = this.txs[this.txs.length - 1].blockNumber;
       const nextPage = await SearchController.readBackPage(
+        provider,
         this.address,
         baseBlock
       );

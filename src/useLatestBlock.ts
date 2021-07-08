@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { provider } from "./ethersconfig";
 
-export const useLatestBlock = () => {
+export const useLatestBlock = (provider?: ethers.providers.JsonRpcProvider) => {
   const [latestBlock, setLatestBlock] = useState<ethers.providers.Block>();
 
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readLatestBlock = async () => {
       const blockNum = await provider.getBlockNumber();
       const _raw = await provider.send("erigon_getHeaderByNumber", [blockNum]);
@@ -26,15 +29,21 @@ export const useLatestBlock = () => {
     return () => {
       provider.removeListener("block", listener);
     };
-  }, []);
+  }, [provider]);
 
   return latestBlock;
 };
 
-export const useLatestBlockNumber = () => {
+export const useLatestBlockNumber = (
+  provider?: ethers.providers.JsonRpcProvider
+) => {
   const [latestBlock, setLatestBlock] = useState<number>();
 
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readLatestBlock = async () => {
       const blockNum = await provider.getBlockNumber();
       setLatestBlock(blockNum);
@@ -49,7 +58,7 @@ export const useLatestBlockNumber = () => {
     return () => {
       provider.removeListener("block", listener);
     };
-  }, []);
+  }, [provider]);
 
   return latestBlock;
 };

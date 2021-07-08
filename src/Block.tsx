@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { ethers, BigNumber } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +6,6 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
@@ -17,6 +16,7 @@ import BlockLink from "./components/BlockLink";
 import AddressOrENSName from "./components/AddressOrENSName";
 import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
+import { ProviderContext } from "./useProvider";
 import { useLatestBlockNumber } from "./useLatestBlock";
 
 type BlockParams = {
@@ -34,10 +34,15 @@ interface ExtendedBlock extends ethers.providers.Block {
 }
 
 const Block: React.FC = () => {
+  const provider = useContext(ProviderContext);
   const params = useParams<BlockParams>();
 
   const [block, setBlock] = useState<ExtendedBlock>();
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readBlock = async () => {
       let blockPromise: Promise<any>;
       if (ethers.utils.isHexString(params.blockNumberOrHash, 32)) {
@@ -80,7 +85,7 @@ const Block: React.FC = () => {
       setBlock(extBlock);
     };
     readBlock();
-  }, [params.blockNumberOrHash]);
+  }, [provider, params.blockNumberOrHash]);
 
   useEffect(() => {
     if (block) {
@@ -97,7 +102,7 @@ const Block: React.FC = () => {
     }
   }, [block]);
 
-  const latestBlockNumber = useLatestBlockNumber();
+  const latestBlockNumber = useLatestBlockNumber(provider);
 
   return (
     <StandardFrame>

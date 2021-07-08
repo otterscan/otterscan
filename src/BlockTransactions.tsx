@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
-import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
@@ -14,6 +13,7 @@ import BlockLink from "./components/BlockLink";
 import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
+import { ProviderContext } from "./useProvider";
 import { useENSCache } from "./useReverseCache";
 
 type BlockParams = {
@@ -25,6 +25,7 @@ type PageParams = {
 };
 
 const BlockTransactions: React.FC = () => {
+  const provider = useContext(ProviderContext);
   const params = useParams<BlockParams>();
   const location = useLocation<PageParams>();
   const qs = queryString.parse(location.search);
@@ -42,6 +43,10 @@ const BlockTransactions: React.FC = () => {
 
   const [txs, setTxs] = useState<ProcessedTransaction[]>();
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readBlock = async () => {
       const [_block, _receipts] = await Promise.all([
         provider.getBlockWithTransactions(blockNumber.toNumber()),
@@ -94,7 +99,7 @@ const BlockTransactions: React.FC = () => {
       setTxs(processedResponses);
     };
     readBlock();
-  }, [blockNumber]);
+  }, [provider, blockNumber]);
 
   const page = useMemo(() => {
     if (!txs) {
@@ -105,7 +110,7 @@ const BlockTransactions: React.FC = () => {
   }, [txs, pageNumber]);
   const total = useMemo(() => txs?.length ?? 0, [txs]);
 
-  const reverseCache = useENSCache(page);
+  const reverseCache = useENSCache(provider, page);
 
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
