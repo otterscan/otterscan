@@ -111,7 +111,7 @@ Now you should have an Erigon node with Otterscan jsonrpc APIs enabled, running 
 
 ### Run Otterscan docker image from Docker Hub
 
-TODO: publish Otterscan official images as soon as it is validated.
+The Otterscan official repo on Docker Hub is [here](https://hub.docker.com/orgs/otterscan/repositories).
 
 ```
 docker run --rm -p 5000:80 --name otterscan -d otterscan/otterscan:<versiontag>
