@@ -123,6 +123,12 @@ To stop Otterscan service, run:
 docker stop otterscan
 ```
 
+By default it assumes your Erigon node is at http://127.0.0.1:8545. You can override the URL by setting the `ERIGON_URL` env variable on `docker run`:
+
+```
+docker run --rm -p 5000:80 --name otterscan -d --env ERIGON_URL="<your-erigon-node-url>" otterscan/otterscan:<versiontag>
+```
+
 ### (Alternative 1) Build Otterscan docker image locally and run it
 
 If you don't want to download from Docker Hub, you can build the docker image from the sources and run it.
