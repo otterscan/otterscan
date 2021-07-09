@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { fourBytesURL } from "../url";
+import { RuntimeContext } from "../useRuntime";
 
 type MethodNameProps = {
   data: string;
 };
 
 const MethodName: React.FC<MethodNameProps> = ({ data }) => {
+  const runtime = useContext(RuntimeContext);
+
   const [name, setName] = useState<string>();
   useEffect(() => {
     if (data === "0x") {
@@ -16,7 +20,13 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
 
     // Try to resolve 4bytes name
     const fourBytes = _name.slice(2);
-    const signatureURL = `http://localhost:3001/signatures/${fourBytes}`;
+    const { config } = runtime;
+    if (!config) {
+      setName(_name);
+      return;
+    }
+
+    const signatureURL = fourBytesURL(config.assetsURLPrefix ?? "", fourBytes);
     fetch(signatureURL)
       .then(async (res) => {
         if (!res.ok) {
@@ -37,7 +47,7 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
 
     // Use the default 4 bytes as name
     setName(_name);
-  }, [data]);
+  }, [runtime, data]);
 
   return (
     <div className="bg-blue-50 rounded-lg px-3 py-1 min-h-full flex items-baseline text-xs max-w-max">

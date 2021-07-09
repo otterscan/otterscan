@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 
 export type OtterscanConfig = {
-  erigonURL: string;
+  erigonURL?: string;
+  assetsURLPrefix?: string;
 };
 
-export const useErigon = (): [boolean?, OtterscanConfig?] => {
+export const useConfig = (): [boolean?, OtterscanConfig?] => {
   const [configOK, setConfigOK] = useState<boolean>();
   const [config, setConfig] = useState<OtterscanConfig>();
 
@@ -14,6 +15,8 @@ export const useErigon = (): [boolean?, OtterscanConfig?] => {
 
       if (res.ok) {
         const _config: OtterscanConfig = await res.json();
+        console.info("Loaded app config");
+        console.info(_config);
         setConfig(_config);
         setConfigOK(res.ok);
       }

@@ -1,16 +1,11 @@
-import React from "react";
+import { useMemo } from "react";
 import { ethers } from "ethers";
-import { useErigon } from "./useErigon";
 
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
-export const useProvider = (): ethers.providers.JsonRpcProvider | undefined => {
-  const [configOK, config] = useErigon();
-  if (!configOK) {
-    return undefined;
-  }
-
-  let erigonURL = config?.erigonURL;
+export const useProvider = (
+  erigonURL?: string
+): ethers.providers.JsonRpcProvider | undefined => {
   if (erigonURL === "") {
     console.info(`Using default erigon URL: ${DEFAULT_ERIGON_URL}`);
     erigonURL = DEFAULT_ERIGON_URL;
@@ -18,9 +13,12 @@ export const useProvider = (): ethers.providers.JsonRpcProvider | undefined => {
     console.log(`Using configured erigon URL: ${erigonURL}`);
   }
 
-  return new ethers.providers.JsonRpcProvider(erigonURL, "mainnet");
+  const provider = useMemo(
+    () => new ethers.providers.JsonRpcProvider(erigonURL, "mainnet"),
+    [erigonURL]
+  );
+  if (!erigonURL) {
+    return undefined;
+  }
+  return provider;
 };
-
-export const ProviderContext = React.createContext<
-  ethers.providers.JsonRpcProvider | undefined
->(undefined);
