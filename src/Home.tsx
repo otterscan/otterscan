@@ -3,11 +3,11 @@ import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
-import { ProviderContext } from "./useProvider";
+import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
 
 const Home: React.FC = () => {
-  const provider = useContext(ProviderContext);
+  const { provider } = useContext(RuntimeContext);
   const [search, setSearch] = useState<string>();
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const history = useHistory();

@@ -27,7 +27,7 @@ import FormattedBalance from "./components/FormattedBalance";
 import TokenTransferItem from "./TokenTransferItem";
 import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
-import { ProviderContext } from "./useProvider";
+import { RuntimeContext } from "./useRuntime";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -37,7 +37,7 @@ type TransactionParams = {
 };
 
 const Transaction: React.FC = () => {
-  const provider = useContext(ProviderContext);
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<TransactionParams>();
   const { txhash } = params;
 

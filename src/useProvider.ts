@@ -1,12 +1,12 @@
-import React from "react";
 import { ethers } from "ethers";
-import { useErigon } from "./useErigon";
+import { OtterscanConfig } from "./useConfig";
 
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
-export const useProvider = (): ethers.providers.JsonRpcProvider | undefined => {
-  const [configOK, config] = useErigon();
-  if (!configOK) {
+export const useProvider = (
+  config?: OtterscanConfig
+): ethers.providers.JsonRpcProvider | undefined => {
+  if (!config) {
     return undefined;
   }
 
@@ -20,7 +20,3 @@ export const useProvider = (): ethers.providers.JsonRpcProvider | undefined => {
 
   return new ethers.providers.JsonRpcProvider(erigonURL, "mainnet");
 };
-
-export const ProviderContext = React.createContext<
-  ethers.providers.JsonRpcProvider | undefined
->(undefined);

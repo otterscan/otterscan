@@ -4,7 +4,7 @@ export type OtterscanConfig = {
   erigonURL: string;
 };
 
-export const useErigon = (): [boolean?, OtterscanConfig?] => {
+export const useConfig = (): [boolean?, OtterscanConfig?] => {
   const [configOK, setConfigOK] = useState<boolean>();
   const [config, setConfig] = useState<OtterscanConfig>();
 

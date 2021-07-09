@@ -16,7 +16,7 @@ import BlockLink from "./components/BlockLink";
 import AddressOrENSName from "./components/AddressOrENSName";
 import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
-import { ProviderContext } from "./useProvider";
+import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
 
 type BlockParams = {
@@ -34,7 +34,7 @@ interface ExtendedBlock extends ethers.providers.Block {
 }
 
 const Block: React.FC = () => {
-  const provider = useContext(ProviderContext);
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
 
   const [block, setBlock] = useState<ExtendedBlock>();

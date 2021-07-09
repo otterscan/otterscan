@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
-import { useProvider, ProviderContext } from "./useProvider";
+import { RuntimeContext, useRuntime } from "./useRuntime";
 
 const Block = React.lazy(() => import("./Block"));
 const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
@@ -11,11 +11,11 @@ const AddressTransactions = React.lazy(() => import("./AddressTransactions"));
 const Transaction = React.lazy(() => import("./Transaction"));
 
 const App = () => {
-  const provider = useProvider();
+  const runtime = useRuntime();
 
   return (
     <Suspense fallback={<>LOADING</>}>
-      <ProviderContext.Provider value={provider}>
+      <RuntimeContext.Provider value={runtime}>
         <Router>
           <Switch>
             <Route path="/" exact>
@@ -41,7 +41,7 @@ const App = () => {
             </Route>
           </Switch>
         </Router>
-      </ProviderContext.Provider>
+      </RuntimeContext.Provider>
     </Suspense>
   );
 };

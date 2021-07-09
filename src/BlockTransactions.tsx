@@ -13,7 +13,7 @@ import BlockLink from "./components/BlockLink";
 import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
-import { ProviderContext } from "./useProvider";
+import { RuntimeContext } from "./useRuntime";
 import { useENSCache } from "./useReverseCache";
 
 type BlockParams = {
@@ -25,7 +25,7 @@ type PageParams = {
 };
 
 const BlockTransactions: React.FC = () => {
-  const provider = useContext(ProviderContext);
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
   const location = useLocation<PageParams>();
   const qs = queryString.parse(location.search);
