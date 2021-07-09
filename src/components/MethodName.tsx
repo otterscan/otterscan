@@ -26,7 +26,7 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
       return;
     }
 
-    const signatureURL = fourBytesURL(config.assetsURLPrefix, fourBytes);
+    const signatureURL = fourBytesURL(config.assetsURLPrefix ?? "", fourBytes);
     fetch(signatureURL)
       .then(async (res) => {
         if (!res.ok) {

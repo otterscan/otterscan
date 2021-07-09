@@ -19,7 +19,7 @@ const InternalTokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
 
   const srcList: string[] = [];
   if (config) {
-    srcList.push(tokenLogoURL(config.assetsURLPrefix, address));
+    srcList.push(tokenLogoURL(config.assetsURLPrefix ?? "", address));
   }
   srcList.push("/eth-diamond-black.png");
   const { src } = useImage({ srcList });

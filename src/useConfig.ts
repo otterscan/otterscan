@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
 export type OtterscanConfig = {
-  erigonURL: string;
-  assetsURLPrefix: string;
+  erigonURL?: string;
+  assetsURLPrefix?: string;
 };
 
 export const useConfig = (): [boolean?, OtterscanConfig?] => {
