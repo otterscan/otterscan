@@ -1,7 +1,7 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useContext } from "react";
 import { useImage } from "react-image";
 import { tokenLogoURL } from "../url";
-import { useRuntime } from "../useRuntime";
+import { RuntimeContext } from "../useRuntime";
 
 type TokenLogoProps = {
   address: string;
@@ -15,7 +15,7 @@ const TokenLogo: React.FC<TokenLogoProps> = (props) => (
 );
 
 const InternalTokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
-  const { config } = useRuntime();
+  const { config } = useContext(RuntimeContext);
 
   const srcList: string[] = [];
   if (config) {

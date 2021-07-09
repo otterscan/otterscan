@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { fourBytesURL } from "../url";
-import { useRuntime } from "../useRuntime";
+import { RuntimeContext } from "../useRuntime";
 
 type MethodNameProps = {
   data: string;
 };
 
 const MethodName: React.FC<MethodNameProps> = ({ data }) => {
-  const runtime = useRuntime();
+  const runtime = useContext(RuntimeContext);
 
   const [name, setName] = useState<string>();
   useEffect(() => {
