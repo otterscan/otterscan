@@ -1,5 +1,7 @@
 import React, { Suspense } from "react";
 import { useImage } from "react-image";
+import { tokenLogoURL } from "../url";
+import { useRuntime } from "../useRuntime";
 
 type TokenLogoProps = {
   address: string;
@@ -13,12 +15,14 @@ const TokenLogo: React.FC<TokenLogoProps> = (props) => (
 );
 
 const InternalTokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
-  const { src } = useImage({
-    srcList: [
-      `http://localhost:3001/assets/${address}/logo.png`,
-      "/eth-diamond-black.png",
-    ],
-  });
+  const { config } = useRuntime();
+
+  const srcList: string[] = [];
+  if (config) {
+    srcList.push(tokenLogoURL(config.assetsURLPrefix, address));
+  }
+  srcList.push("/eth-diamond-black.png");
+  const { src } = useImage({ srcList });
 
   return (
     <div className="flex items-center justify-center w-5 h-5">

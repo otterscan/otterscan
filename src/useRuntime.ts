@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { ethers } from "ethers";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
@@ -10,13 +10,17 @@ export type OtterscanRuntime = {
 
 export const useRuntime = (): OtterscanRuntime => {
   const [configOK, config] = useConfig();
-  const provider = useProvider(config);
+  const provider = useProvider(configOK ? config?.erigonURL : undefined);
+
+  const runtime = useMemo(
+    (): OtterscanRuntime => ({ config, provider }),
+    [config, provider]
+  );
 
   if (!configOK) {
     return {};
   }
-
-  return { config, provider };
+  return runtime;
 };
 
 export const RuntimeContext = React.createContext<OtterscanRuntime>(null!);
