@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
-import { provider } from "./ethersconfig";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
@@ -14,6 +13,8 @@ import BlockLink from "./components/BlockLink";
 import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
+import { RuntimeContext } from "./useRuntime";
+import { useENSCache } from "./useReverseCache";
 
 type BlockParams = {
   blockNumber: string;
@@ -24,6 +25,7 @@ type PageParams = {
 };
 
 const BlockTransactions: React.FC = () => {
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
   const location = useLocation<PageParams>();
   const qs = queryString.parse(location.search);
@@ -41,6 +43,10 @@ const BlockTransactions: React.FC = () => {
 
   const [txs, setTxs] = useState<ProcessedTransaction[]>();
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readBlock = async () => {
       const [_block, _receipts] = await Promise.all([
         provider.getBlockWithTransactions(blockNumber.toNumber()),
@@ -48,28 +54,52 @@ const BlockTransactions: React.FC = () => {
       ]);
       document.title = `Block #${_block.number} Transactions | Otterscan`;
 
-      setTxs(
-        _block.transactions
-          .map((t, i) => {
-            return {
-              blockNumber: blockNumber.toNumber(),
-              timestamp: _block.timestamp,
-              idx: i,
-              hash: t.hash,
-              from: t.from,
-              to: t.to,
-              value: t.value,
-              fee: t.gasLimit.mul(t.gasPrice!),
-              gasPrice: t.gasPrice!,
-              data: t.data,
-              status: _receipts[i].status,
-            };
-          })
-          .reverse()
+      const responses = _block.transactions
+        .map((t, i): ProcessedTransaction => {
+          return {
+            blockNumber: blockNumber.toNumber(),
+            timestamp: _block.timestamp,
+            miner: _block.miner,
+            idx: i,
+            hash: t.hash,
+            from: t.from,
+            to: t.to,
+            value: t.value,
+            fee: provider.formatter
+              .bigNumber(_receipts[i].gasUsed)
+              .mul(t.gasPrice!),
+            gasPrice: t.gasPrice!,
+            data: t.data,
+            status: provider.formatter.number(_receipts[i].status),
+          };
+        })
+        .reverse();
+      setTxs(responses);
+
+      const internalChecks = await Promise.all(
+        responses.map(async (res) => {
+          const r = await provider.send("ots_getTransactionTransfers", [
+            res.hash,
+          ]);
+          for (const t of r) {
+            if (
+              res.miner &&
+              (res.miner === ethers.utils.getAddress(t.from) ||
+                res.miner === ethers.utils.getAddress(t.to))
+            ) {
+              return true;
+            }
+          }
+          return false;
+        })
       );
+      const processedResponses = responses.map((r, i): ProcessedTransaction => {
+        return { ...r, internalMinerInteraction: internalChecks[i] };
+      });
+      setTxs(processedResponses);
     };
     readBlock();
-  }, [blockNumber]);
+  }, [provider, blockNumber]);
 
   const page = useMemo(() => {
     if (!txs) {
@@ -79,6 +109,8 @@ const BlockTransactions: React.FC = () => {
     return txs.slice(pageStart, pageStart + PAGE_SIZE);
   }, [txs, pageNumber]);
   const total = useMemo(() => txs?.length ?? 0, [txs]);
+
+  const reverseCache = useENSCache(provider, page);
 
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
@@ -112,7 +144,12 @@ const BlockTransactions: React.FC = () => {
         {page ? (
           <>
             {page.map((tx) => (
-              <TransactionItem key={tx.hash} tx={tx} feeDisplay={feeDisplay} />
+              <TransactionItem
+                key={tx.hash}
+                tx={tx}
+                ensCache={reverseCache}
+                feeDisplay={feeDisplay}
+              />
             ))}
             <div className="flex justify-between items-baseline py-3">
               <div className="text-sm text-gray-500">

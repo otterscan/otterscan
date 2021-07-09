@@ -1,0 +1,4 @@
+{
+  "erigonURL": "http://localhost:8545",
+  "assetsURLPrefix": "http://localhost:3001"
+}

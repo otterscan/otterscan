@@ -1,9 +1,13 @@
 import React from "react";
 
-const Address: React.FC = ({ children }) => (
-  <span className="font-address text-gray-400 truncate">
-    <p className="truncate">{children}</p>
+type AddressProps = {
+  address: string;
+};
+
+const Address: React.FC<AddressProps> = ({ address }) => (
+  <span className="font-address text-gray-400 truncate" title={address}>
+    <p className="truncate">{address}</p>
   </span>
 );
 
-export default Address;
+export default React.memo(Address);

@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
-import { provider } from "./ethersconfig";
+import { RuntimeContext } from "./useRuntime";
+import { useLatestBlock } from "./useLatestBlock";
 
 const Home: React.FC = () => {
+  const { provider } = useContext(RuntimeContext);
   const [search, setSearch] = useState<string>();
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const history = useHistory();
@@ -24,29 +26,7 @@ const Home: React.FC = () => {
     history.push(`/search?q=${search}`);
   };
 
-  const [latestBlock, setLatestBlock] = useState<ethers.providers.Block>();
-  useEffect(() => {
-    const readLatestBlock = async () => {
-      const blockNum = await provider.getBlockNumber();
-      const _raw = await provider.send("erigon_getHeaderByNumber", [blockNum]);
-      const _block = provider.formatter.block(_raw);
-      setLatestBlock(_block);
-    };
-    readLatestBlock();
-
-    const listener = async (blockNumber: number) => {
-      const _raw = await provider.send("erigon_getHeaderByNumber", [
-        blockNumber,
-      ]);
-      const _block = provider.formatter.block(_raw);
-      setLatestBlock(_block);
-    };
-
-    provider.on("block", listener);
-    return () => {
-      provider.removeListener("block", listener);
-    };
-  }, []);
+  const latestBlock = useLatestBlock(provider);
 
   document.title = "Home | Otterscan";
 
@@ -64,8 +44,9 @@ const Home: React.FC = () => {
             className="w-full border rounded focus:outline-none px-2 py-1 mb-10"
             type="text"
             size={50}
-            placeholder="Search by address / txn hash / block number"
+            placeholder="Search by address / txn hash / block number / ENS name"
             onChange={handleChange}
+            autoFocus
           ></input>
           <button
             className="mx-auto px-3 py-1 mb-10 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none"
@@ -84,6 +65,13 @@ const Home: React.FC = () => {
               <Timestamp value={latestBlock.timestamp} />
             </NavLink>
           )}
+          <span className="mx-auto mt-5 text-xs text-gray-500">
+            {provider ? (
+              <>Using Erigon node at {provider.connection.url}</>
+            ) : (
+              <>Waiting for the provider...</>
+            )}
+          </span>
         </form>
       </div>
     </div>

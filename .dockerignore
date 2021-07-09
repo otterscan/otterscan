@@ -1,0 +1,6 @@
+.git
+node_modules
+4bytes
+!4bytes/signatures
+trustwallet
+!trustwallet/blockchains/ethereum/assets

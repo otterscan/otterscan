@@ -1,20 +1,32 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { ethers, BigNumber } from "ethers";
-import { provider } from "./ethersconfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
+import NavButton from "./components/NavButton";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
-import AddressLink from "./components/AddressLink";
+import AddressOrENSName from "./components/AddressOrENSName";
+import TransactionValue from "./components/TransactionValue";
+import HexValue from "./components/HexValue";
+import { RuntimeContext } from "./useRuntime";
+import { useLatestBlockNumber } from "./useLatestBlock";
 
 type BlockParams = {
   blockNumberOrHash: string;
 };
 
 interface ExtendedBlock extends ethers.providers.Block {
+  blockReward: BigNumber;
+  unclesReward: BigNumber;
+  feeReward: BigNumber;
   size: number;
   sha3Uncles: string;
   stateRoot: string;
@@ -22,26 +34,46 @@ interface ExtendedBlock extends ethers.providers.Block {
 }
 
 const Block: React.FC = () => {
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
 
   const [block, setBlock] = useState<ExtendedBlock>();
   useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
     const readBlock = async () => {
-      let _rawBlock: any;
+      let blockPromise: Promise<any>;
       if (ethers.utils.isHexString(params.blockNumberOrHash, 32)) {
-        _rawBlock = await provider.send("eth_getBlockByHash", [
+        blockPromise = provider.send("eth_getBlockByHash", [
           params.blockNumberOrHash,
           false,
         ]);
       } else {
-        _rawBlock = await provider.send("eth_getBlockByNumber", [
+        blockPromise = provider.send("eth_getBlockByNumber", [
           params.blockNumberOrHash,
           false,
         ]);
       }
+      const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
+        blockPromise,
+        provider.send("erigon_issuance", [params.blockNumberOrHash]),
+        provider.send("eth_getBlockReceipts", [params.blockNumberOrHash]),
+      ]);
+      const receipts = (_rawReceipts as any[]).map((r) =>
+        provider.formatter.receipt(r)
+      );
+      const fees = receipts.reduce(
+        (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
+        BigNumber.from(0)
+      );
 
       const _block = provider.formatter.block(_rawBlock);
       const extBlock: ExtendedBlock = {
+        blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward),
+        unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward),
+        feeReward: fees,
         size: provider.formatter.number(_rawBlock.size),
         sha3Uncles: _rawBlock.sha3Uncles,
         stateRoot: _rawBlock.stateRoot,
@@ -53,7 +85,7 @@ const Block: React.FC = () => {
       setBlock(extBlock);
     };
     readBlock();
-  }, [params.blockNumberOrHash]);
+  }, [provider, params.blockNumberOrHash]);
 
   useEffect(() => {
     if (block) {
@@ -65,9 +97,12 @@ const Block: React.FC = () => {
     try {
       return block && ethers.utils.toUtf8String(block.extraData);
     } catch (err) {
+      console.error("Error while converting block extra data to string");
       console.error(err);
     }
   }, [block]);
+
+  const latestBlockNumber = useLatestBlockNumber(provider);
 
   return (
     <StandardFrame>
@@ -80,9 +115,36 @@ const Block: React.FC = () => {
       {block && (
         <ContentFrame>
           <InfoRow title="Block Height">
-            <span className="font-bold">
-              {ethers.utils.commify(block.number)}
-            </span>
+            <div className="flex space-x-1 items-baseline">
+              <span className="font-bold mr-1">
+                {ethers.utils.commify(block.number)}
+              </span>
+              <NavButton
+                blockNum={block.number - 1}
+                disabled={block.number === 0}
+              >
+                <FontAwesomeIcon icon={faChevronLeft} />
+              </NavButton>
+              <NavButton
+                blockNum={block.number + 1}
+                disabled={
+                  latestBlockNumber === undefined ||
+                  block.number >= latestBlockNumber
+                }
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+              </NavButton>
+              <NavButton
+                blockNum={latestBlockNumber!}
+                disabled={
+                  latestBlockNumber === undefined ||
+                  block.number >= latestBlockNumber
+                }
+              >
+                <FontAwesomeIcon icon={faChevronRight} />
+                <FontAwesomeIcon icon={faChevronRight} />
+              </NavButton>
+            </div>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />
@@ -97,12 +159,24 @@ const Block: React.FC = () => {
             in this block
           </InfoRow>
           <InfoRow title="Mined by">
-            <div className="flex">
-              <AddressLink address={block.miner} />
-            </div>
+            <AddressOrENSName
+              address={block.miner}
+              minerAddress={block.miner}
+            />
           </InfoRow>
-          <InfoRow title="Block Reward">N/A</InfoRow>
-          <InfoRow title="Uncles Reward">N/A</InfoRow>
+          <InfoRow title="Block Reward">
+            <TransactionValue value={block.blockReward.add(block.feeReward)} />
+            {!block.feeReward.isZero() && (
+              <>
+                {" "}
+                (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
+                <TransactionValue value={block.feeReward} hideUnit />)
+              </>
+            )}
+          </InfoRow>
+          <InfoRow title="Uncles Reward">
+            <TransactionValue value={block.unclesReward} />
+          </InfoRow>
           <InfoRow title="Difficult">
             {ethers.utils.commify(block.difficulty)}
           </InfoRow>
@@ -124,16 +198,16 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
           <InfoRow title="Hash">
-            <span className="font-hash">{block.hash}</span>
+            <HexValue value={block.hash} />
           </InfoRow>
           <InfoRow title="Parent Hash">
             <BlockLink blockTag={block.parentHash} />
           </InfoRow>
           <InfoRow title="Sha3Uncles">
-            <span className="font-hash">{block.sha3Uncles}</span>
+            <HexValue value={block.sha3Uncles} />
           </InfoRow>
           <InfoRow title="StateRoot">
-            <span className="font-hash">{block.stateRoot}</span>
+            <HexValue value={block.stateRoot} />
           </InfoRow>
           <InfoRow title="Nonce">
             <span className="font-data">{block.nonce}</span>

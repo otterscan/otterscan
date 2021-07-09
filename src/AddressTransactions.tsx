@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
+import { ethers } from "ethers";
 import queryString from "query-string";
 import Blockies from "react-blockies";
 import StandardFrame from "./StandardFrame";
@@ -11,11 +12,12 @@ import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
+import { RuntimeContext } from "./useRuntime";
+import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
-import { ethers } from "ethers";
 
 type BlockParams = {
-  address: string;
+  addressOrName: string;
   direction?: string;
 };
 
@@ -24,6 +26,7 @@ type PageParams = {
 };
 
 const AddressTransactions: React.FC = () => {
+  const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
   const location = useLocation<PageParams>();
   const history = useHistory();
@@ -33,28 +36,70 @@ const AddressTransactions: React.FC = () => {
     hash = qs.h as string;
   }
 
-  // Normalize to checksummed address
-  const checksummedAddress = useMemo(
-    () => ethers.utils.getAddress(params.address),
-    [params.address]
-  );
-  if (params.address !== checksummedAddress) {
-    console.log("NORMALIZE");
-    history.replace(
-      `/address/${checksummedAddress}${
-        params.direction ? "/" + params.direction : ""
-      }${location.search}`
-    );
-  }
+  const [checksummedAddress, setChecksummedAddress] = useState<string>();
+  const [isENS, setENS] = useState<boolean>();
+  const [error, setError] = useState<boolean>();
+
+  // If it looks like it is an ENS name, try to resolve it
+  useEffect(() => {
+    if (ethers.utils.isAddress(params.addressOrName)) {
+      setENS(false);
+      setError(false);
+
+      // Normalize to checksummed address
+      const _checksummedAddress = ethers.utils.getAddress(params.addressOrName);
+      if (_checksummedAddress !== params.addressOrName) {
+        // Request came with a non-checksummed address; fix the URL
+        history.replace(
+          `/address/${_checksummedAddress}${
+            params.direction ? "/" + params.direction : ""
+          }${location.search}`
+        );
+      }
+      setChecksummedAddress(_checksummedAddress);
+      return;
+    }
+
+    if (!provider) {
+      return;
+    }
+    const resolveName = async () => {
+      const resolvedAddress = await provider.resolveName(params.addressOrName);
+      if (resolvedAddress !== null) {
+        setENS(true);
+        setError(false);
+        setChecksummedAddress(resolvedAddress);
+      } else {
+        setENS(false);
+        setError(true);
+        setChecksummedAddress(undefined);
+      }
+    };
+    resolveName();
+  }, [
+    provider,
+    params.addressOrName,
+    history,
+    params.direction,
+    location.search,
+  ]);
 
   const [controller, setController] = useState<SearchController>();
   useEffect(() => {
+    if (!provider || !checksummedAddress) {
+      return;
+    }
+
     const readFirstPage = async () => {
-      const _controller = await SearchController.firstPage(checksummedAddress);
+      const _controller = await SearchController.firstPage(
+        provider,
+        checksummedAddress
+      );
       setController(_controller);
     };
     const readMiddlePage = async (next: boolean) => {
       const _controller = await SearchController.middlePage(
+        provider,
         checksummedAddress,
         hash!,
         next
@@ -62,15 +107,18 @@ const AddressTransactions: React.FC = () => {
       setController(_controller);
     };
     const readLastPage = async () => {
-      const _controller = await SearchController.lastPage(checksummedAddress);
+      const _controller = await SearchController.lastPage(
+        provider,
+        checksummedAddress
+      );
       setController(_controller);
     };
     const prevPage = async () => {
-      const _controller = await controller!.prevPage(hash!);
+      const _controller = await controller!.prevPage(provider, hash!);
       setController(_controller);
     };
     const nextPage = async () => {
-      const _controller = await controller!.nextPage(hash!);
+      const _controller = await controller!.nextPage(provider, hash!);
       setController(_controller);
     };
 
@@ -96,81 +144,98 @@ const AddressTransactions: React.FC = () => {
         readLastPage();
       }
     }
-  }, [checksummedAddress, params.direction, hash, controller]);
+  }, [provider, checksummedAddress, params.direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
+  const reverseCache = useENSCache(provider, page);
 
-  document.title = `Address ${params.address} | Otterscan`;
+  document.title = `Address ${params.addressOrName} | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   return (
     <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex space-x-2 items-baseline">
-          <Blockies
-            className="self-center rounded"
-            seed={params.address.toLowerCase()}
-            scale={3}
-          />
-          <span>Address</span>
-          <span className="font-address text-base text-gray-500">
-            {params.address}
-          </span>
-          <Copy value={params.address} rounded />
-        </div>
-      </StandardSubtitle>
-      <ContentFrame>
-        <div className="flex justify-between items-baseline py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>{page.length} transactions on this page</>
-            )}
-          </div>
-          <UndefinedPageControl
-            address={params.address}
-            isFirst={controller?.isFirst}
-            isLast={controller?.isLast}
-            prevHash={page ? page[0].hash : ""}
-            nextHash={page ? page[page.length - 1].hash : ""}
-            disabled={controller === undefined}
-          />
-        </div>
-        <ResultHeader
-          feeDisplay={feeDisplay}
-          feeDisplayToggler={feeDisplayToggler}
-        />
-        {controller ? (
+      {error ? (
+        <span className="text-base">
+          "{params.addressOrName}" is not an ETH address or ENS name.
+        </span>
+      ) : (
+        checksummedAddress && (
           <>
-            {controller.getPage().map((tx) => (
-              <TransactionItem
-                key={tx.hash}
-                tx={tx}
-                selectedAddress={params.address}
-                feeDisplay={feeDisplay}
-              />
-            ))}
-            <div className="flex justify-between items-baseline py-3">
-              <div className="text-sm text-gray-500">
-                {page !== undefined && (
-                  <>{page.length} transactions on this page</>
+            <StandardSubtitle>
+              <div className="flex space-x-2 items-baseline">
+                <Blockies
+                  className="self-center rounded"
+                  seed={checksummedAddress.toLowerCase()}
+                  scale={3}
+                />
+                <span>Address</span>
+                <span className="font-address text-base text-gray-500">
+                  {checksummedAddress}
+                </span>
+                <Copy value={checksummedAddress} rounded />
+                {isENS && (
+                  <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
+                    ENS: {params.addressOrName}
+                  </span>
                 )}
               </div>
-              <UndefinedPageControl
-                address={params.address}
-                isFirst={controller.isFirst}
-                isLast={controller.isLast}
-                prevHash={page ? page[0].hash : ""}
-                nextHash={page ? page[page.length - 1].hash : ""}
+            </StandardSubtitle>
+            <ContentFrame>
+              <div className="flex justify-between items-baseline py-3">
+                <div className="text-sm text-gray-500">
+                  {page === undefined ? (
+                    <>Waiting for search results...</>
+                  ) : (
+                    <>{page.length} transactions on this page</>
+                  )}
+                </div>
+                <UndefinedPageControl
+                  address={params.addressOrName}
+                  isFirst={controller?.isFirst}
+                  isLast={controller?.isLast}
+                  prevHash={page ? page[0].hash : ""}
+                  nextHash={page ? page[page.length - 1].hash : ""}
+                  disabled={controller === undefined}
+                />
+              </div>
+              <ResultHeader
+                feeDisplay={feeDisplay}
+                feeDisplayToggler={feeDisplayToggler}
               />
-            </div>
+              {controller ? (
+                <>
+                  {controller.getPage().map((tx) => (
+                    <TransactionItem
+                      key={tx.hash}
+                      tx={tx}
+                      ensCache={reverseCache}
+                      selectedAddress={checksummedAddress}
+                      feeDisplay={feeDisplay}
+                    />
+                  ))}
+                  <div className="flex justify-between items-baseline py-3">
+                    <div className="text-sm text-gray-500">
+                      {page !== undefined && (
+                        <>{page.length} transactions on this page</>
+                      )}
+                    </div>
+                    <UndefinedPageControl
+                      address={params.addressOrName}
+                      isFirst={controller.isFirst}
+                      isLast={controller.isLast}
+                      prevHash={page ? page[0].hash : ""}
+                      nextHash={page ? page[page.length - 1].hash : ""}
+                    />
+                  </div>
+                </>
+              ) : (
+                <PendingResults />
+              )}
+            </ContentFrame>
           </>
-        ) : (
-          <PendingResults />
-        )}
-      </ContentFrame>
+        )
+      )}
     </StandardFrame>
   );
 };

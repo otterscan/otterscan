@@ -72,15 +72,21 @@ They have weekly stable releases, make sure you are running on of them, not deve
 
 Add our forked Erigon git tree as an additional remote and checkout the corresponding branch.
 
+The repository with Otterscan patches is [here](https://github.com/wmitsuda/erigon).
+
 ```
 git remote add otterscan git@github.com:wmitsuda/erigon.git
 ```
 
-Checkout the `otterscan-develop` branch (be sure to check from which tag it is branched from to be sure it is a compatible branch).
+Checkout the tag corresponding to the stable version you are running. For each supported Erigon version, there should be a corresponding tag containing Otterscan patches.
+
+For example, if you are running Erigon from `v2021.07.01` tag, checkout the tag `v2021.07.01-otterscan` and rebuild `rpcdaemon`.
+
+We intend to release a compatible rebased version containing our changes every week just after Erigon's weekly release, as time permits.
 
 ```
 git fetch --all
-git checkout otterscan-develop
+git checkout <version-tag-otterscan>
 ```
 
 Build the patched `rpcdaemon` binary.
@@ -94,63 +100,42 @@ Run it paying attention to enable the `erigon`, `ots`, `eth` apis to whatever cl
 `ots` stands for Otterscan and it is the namespace we use for our own custom APIs.
 
 ```
-./build/bin/rpcdaemon --http.api "eth,erigon,ots,<your-other-apis>" --private.api.addr 127.0.0.1:9090 --chaindata <erigon-chaindata-dir> --http.corsdomain "*"
+./build/bin/rpcdaemon --http.api "eth,erigon,ots,<your-other-apis>" --private.api.addr 127.0.0.1:9090 --datadir <erigon-datadir> --http.corsdomain "*"
 ```
 
-Be sure to include both `--private.api.addr` and `--chaindata` parameter so you run it in dual mode, otherwise the performance will be much worse.
+Be sure to include both `--private.api.addr` and `--datadir` parameter so you run it in dual mode, otherwise the performance will be much worse.
 
 Also pay attention to the `--http.corsdomain` parameter, CORS is required for the browser to call the node directly.
 
 Now you should have an Erigon node with Otterscan jsonrpc APIs enabled, running in dual mode with CORS enabled.
 
-### Clone Otterscan repository and build the project
+### Run Otterscan docker image from Docker Hub
 
-Make sure you have a working node 12/npm installation.
-
-Clone Otterscan repo and its submodules. For now, only the default `develop` branch is available (it is alpha...).
+The Otterscan official repo on Docker Hub is [here](https://hub.docker.com/orgs/otterscan/repositories).
 
 ```
-git clone --recurse-submodules git@github.com:wmitsuda/otterscan.git
-cd otterscan
-npm install
-npm run build
+docker run --rm -p 5000:80 --name otterscan -d otterscan/otterscan:<versiontag>
 ```
 
-### Run it from the source
+This will download the Otterscan image from Docker Hub, run it locally using the default parameters, binding it to port 5000 (see the `-p` docker run parameter).
 
-First, a brief explanation about the app:
-
-- The app itself is a simple React app which will be run locally and communicates with your Erigon node.
-- The app makes use of two sources of external databases for cosmetic reasons:
-  - Token icons come from the trustwallet public assets repository.
-  - Method names come from the 4bytes database.
-- These 2 repositories were cloned as submodules and are made available to the app through separate http services. They are accessed at browser level and are optional, if the service is down the result will be broken icons and default 4bytes method selectors instead of human-readable names.
-
-These instructions are subjected to changes in future for the sake of simplification.
-
-Open a new terminal and start the 4bytes method decoding service:
+To stop Otterscan service, run:
 
 ```
-npm run serve-4bytes
+docker stop otterscan
 ```
 
-Open another terminal and start the trustwallet assets service:
+By default it assumes your Erigon node is at `http://127.0.0.1:8545`. You can override the URL by setting the `ERIGON_URL` env variable on `docker run`:
 
 ```
-npm run serve-trustwallet-assets
+docker run --rm -p 5000:80 --name otterscan -d --env ERIGON_URL="<your-erigon-node-url>" otterscan/otterscan:<versiontag>
 ```
 
-In another terminal start the Otterscan app:
+This is the preferred way to run Otterscan. You can read about other ways [here](docs/other-ways-to-run-otterscan.md).
 
-```
-npm run serve
-```
+## Validating the installation (all methods)
 
-Otterscan should now be running at http://localhost:5000/.
-
-For now, it assumes the `rpcdaemon` is running on 127.0.0.1:8545. If for some reason your installation is running in another host/port, change it in the `src/ethersconfig.ts` file (patches to make it parameterized are welcome).
-
-**You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.**
+You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.
 
 ## Kudos
 
@@ -162,7 +147,7 @@ To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fa
 
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make available their icons under a permissive license.
 
-To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate and method selector to human-friendly strings.
+To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
 
 ## Future
 
