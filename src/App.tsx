@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
+import Footer from "./Footer";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 
 const Block = React.lazy(() => import("./Block"));
@@ -16,31 +17,36 @@ const App = () => {
   return (
     <Suspense fallback={<>LOADING</>}>
       <RuntimeContext.Provider value={runtime}>
-        <Router>
-          <Switch>
-            <Route path="/" exact>
-              <Home />
-            </Route>
-            <Route path="/search" exact>
-              <Search />
-            </Route>
-            <Route>
-              <Title />
-              <Route path="/block/:blockNumberOrHash" exact>
-                <Block />
+        <div className="h-screen flex flex-col">
+          <Router>
+            <Switch>
+              <Route path="/" exact>
+                <Home />
               </Route>
-              <Route path="/block/:blockNumber/txs" exact>
-                <BlockTransactions />
+              <Route path="/search" exact>
+                <Search />
               </Route>
-              <Route path="/tx/:txhash">
-                <Transaction />
+              <Route>
+                <div className="mb-auto">
+                  <Title />
+                  <Route path="/block/:blockNumberOrHash" exact>
+                    <Block />
+                  </Route>
+                  <Route path="/block/:blockNumber/txs" exact>
+                    <BlockTransactions />
+                  </Route>
+                  <Route path="/tx/:txhash">
+                    <Transaction />
+                  </Route>
+                  <Route path="/address/:addressOrName/:direction?">
+                    <AddressTransactions />
+                  </Route>
+                </div>
               </Route>
-              <Route path="/address/:addressOrName/:direction?">
-                <AddressTransactions />
-              </Route>
-            </Route>
-          </Switch>
-        </Router>
+            </Switch>
+          </Router>
+          <Footer />
+        </div>
       </RuntimeContext.Provider>
     </Suspense>
   );
