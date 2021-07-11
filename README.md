@@ -75,7 +75,7 @@ Add our forked Erigon git tree as an additional remote and checkout the correspo
 The repository with Otterscan patches is [here](https://github.com/wmitsuda/erigon).
 
 ```
-git remote add otterscan git@github.com:wmitsuda/erigon.git
+git remote add otterscan https://github.com/wmitsuda/erigon.git
 ```
 
 Checkout the tag corresponding to the stable version you are running. For each supported Erigon version, there should be a corresponding tag containing Otterscan patches.
