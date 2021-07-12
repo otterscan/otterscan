@@ -17,7 +17,6 @@ const ConnectionErrorPanel: React.FC<ConnectionErrorPanelProps> = ({
   connStatus,
   config,
 }) => {
-  console.log("PRINT");
   return (
     <div className="h-screen flex flex-col bg-gray-300 font-sans">
       <div className="m-auto h-60 text-gray-700 text-lg min-w-lg max-w-lg">
