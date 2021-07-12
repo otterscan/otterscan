@@ -1,7 +1,7 @@
 import React from "react";
 
 const Logo: React.FC = () => (
-  <div className="mx-auto -mt-32 mb-16 text-6xl text-link-blue font-title font-bold cursor-default flex items-center space-x-4">
+  <div className="mx-auto mb-16 text-6xl text-link-blue font-title font-bold cursor-default flex items-center space-x-4">
     <img
       className="rounded-full"
       src="/otter.jpg"
