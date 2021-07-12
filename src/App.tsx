@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
+import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
+import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 
 const Block = React.lazy(() => import("./Block"));
@@ -16,38 +18,45 @@ const App = () => {
 
   return (
     <Suspense fallback={<>LOADING</>}>
-      <RuntimeContext.Provider value={runtime}>
-        <div className="h-screen flex flex-col">
-          <Router>
-            <Switch>
-              <Route path="/" exact>
-                <Home />
-              </Route>
-              <Route path="/search" exact>
-                <Search />
-              </Route>
-              <Route>
-                <div className="mb-auto">
-                  <Title />
-                  <Route path="/block/:blockNumberOrHash" exact>
-                    <Block />
-                  </Route>
-                  <Route path="/block/:blockNumber/txs" exact>
-                    <BlockTransactions />
-                  </Route>
-                  <Route path="/tx/:txhash">
-                    <Transaction />
-                  </Route>
-                  <Route path="/address/:addressOrName/:direction?">
-                    <AddressTransactions />
-                  </Route>
-                </div>
-              </Route>
-            </Switch>
-          </Router>
-          <Footer />
-        </div>
-      </RuntimeContext.Provider>
+      {runtime.connStatus !== ConnectionStatus.CONNECTED ? (
+        <ConnectionErrorPanel
+          connStatus={runtime.connStatus}
+          config={runtime.config}
+        />
+      ) : (
+        <RuntimeContext.Provider value={runtime}>
+          <div className="h-screen flex flex-col">
+            <Router>
+              <Switch>
+                <Route path="/" exact>
+                  <Home />
+                </Route>
+                <Route path="/search" exact>
+                  <Search />
+                </Route>
+                <Route>
+                  <div className="mb-auto">
+                    <Title />
+                    <Route path="/block/:blockNumberOrHash" exact>
+                      <Block />
+                    </Route>
+                    <Route path="/block/:blockNumber/txs" exact>
+                      <BlockTransactions />
+                    </Route>
+                    <Route path="/tx/:txhash">
+                      <Transaction />
+                    </Route>
+                    <Route path="/address/:addressOrName/:direction?">
+                      <AddressTransactions />
+                    </Route>
+                  </div>
+                </Route>
+              </Switch>
+            </Router>
+            <Footer />
+          </div>
+        </RuntimeContext.Provider>
+      )}
     </Suspense>
   );
 };
