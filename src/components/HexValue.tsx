@@ -14,6 +14,7 @@ const HexValue: React.FC<HexValueProps> = ({ value }) => {
     <>
       {shards.map((s, i) => (
         <span
+          key={i}
           className={`font-hash ${
             i % 2 === 0 ? "text-black" : "text-gray-400"
           }`}
