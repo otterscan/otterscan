@@ -45,7 +45,7 @@ const PriceBox: React.FC = () => {
     readData();
   }, [ethFeed, gasFeed]);
 
-  const [latestPrice, timestamp] = useMemo(() => {
+  const [latestPrice, latestPriceTimestamp] = useMemo(() => {
     if (!latestPriceData) {
       return [undefined, undefined];
     }
@@ -59,27 +59,32 @@ const PriceBox: React.FC = () => {
     return [formattedPrice, timestamp];
   }, [latestPriceData]);
 
-  const latestGasPrice = useMemo(() => {
+  const [latestGasPrice, latestGasPriceTimestamp] = useMemo(() => {
     if (!latestGasData) {
-      return undefined;
+      return [undefined, undefined];
     }
-    return formatValue(latestGasData.answer, 9);
+
+    const formattedGas = formatValue(latestGasData.answer, 9);
+    const timestamp = new Date(latestGasData.updatedAt * 1000);
+    return [formattedGas, timestamp];
   }, [latestGasData]);
 
   return (
     <>
       {latestPriceData && (
-        <div
-          className="flex rounded-lg px-2 py-1 space-x-2 bg-gray-100 font-sans text-xs text-gray-800"
-          title={`Updated at: ${timestamp?.toString()}`}
-        >
-          <span>
+        <div className="flex rounded-lg px-2 py-1 space-x-2 bg-gray-100 font-sans text-xs text-gray-800">
+          <span
+            title={`ETH/USD last updated at: ${latestPriceTimestamp?.toString()}`}
+          >
             Eth: $<span className="font-balance">{latestPrice}</span>
           </span>
           {latestGasData && (
             <>
               <span>|</span>
-              <span className="text-gray-400">
+              <span
+                className="text-gray-400"
+                title={`Fast gas price last updated at: ${latestGasPriceTimestamp?.toString()}`}
+              >
                 <FontAwesomeIcon icon={faGasPump} size="1x" />
                 <span className="ml-1">{latestGasPrice} Gwei</span>
               </span>
