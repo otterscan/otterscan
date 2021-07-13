@@ -149,6 +149,8 @@ To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make av
 
 To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
 
+To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library we used to interact with the ETH node. It is high level enough to hide most jsonrpc particularities, but flexible enough to allow easy interaction with custom jsonrpc methods.
+
 ## Future
 
 Erigon keeps evolving at a fast pace, with weekly releases, sometimes with (necessary) breaking changes.
