@@ -5,11 +5,17 @@ import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
+import { useLatestBlock } from "./useLatestBlock";
 
 const ETH_FEED_DECIMALS = 8;
 
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
+  const latestBlock = useLatestBlock(provider);
+
+  const maybeOutdated: boolean =
+    latestBlock !== undefined &&
+    Date.now() / 1000 - latestBlock.timestamp > 3600;
   const ethFeed = useMemo(
     () =>
       provider &&
@@ -72,7 +78,11 @@ const PriceBox: React.FC = () => {
   return (
     <>
       {latestPriceData && (
-        <div className="flex rounded-lg px-2 py-1 space-x-2 bg-gray-100 font-sans text-xs text-gray-800">
+        <div
+          className={`flex rounded-lg px-2 py-1 space-x-2 ${
+            maybeOutdated ? "bg-orange-200" : "bg-gray-100"
+          } font-sans text-xs text-gray-800`}
+        >
           <span
             title={`ETH/USD last updated at: ${latestPriceTimestamp?.toString()}`}
           >
