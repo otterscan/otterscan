@@ -22,6 +22,7 @@ import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
 import Timestamp from "./components/Timestamp";
 import InternalTransfer from "./components/InternalTransfer";
+import MethodName from "./components/MethodName";
 import GasValue from "./components/GasValue";
 import FormattedBalance from "./components/FormattedBalance";
 import TokenTransferItem from "./TokenTransferItem";
@@ -232,7 +233,9 @@ const Transaction: React.FC = () => {
                     </div>
                   )}
                 </InfoRow>
-                <InfoRow title="Transaction Action"></InfoRow>
+                <InfoRow title="Transaction Action">
+                  <MethodName data={txData.data} />
+                </InfoRow>
                 {txData.tokenTransfers.length > 0 && (
                   <InfoRow
                     title={`Tokens Transferred (${txData.tokenTransfers.length})`}
