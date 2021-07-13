@@ -1,3 +1,5 @@
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   darkMode: false, // or 'media' or 'class'
@@ -6,6 +8,7 @@ module.exports = {
       colors: {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
+        orange: colors.orange,
       },
       fontFamily: {
         sans: ["Roboto"],
