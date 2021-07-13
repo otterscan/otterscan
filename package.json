@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
+    "@chainlink/contracts": "^0.2.1",
     "@craco/craco": "^6.2.0",
     "@fontsource/fira-code": "^4.5.0",
     "@fontsource/roboto": "^4.5.0",
