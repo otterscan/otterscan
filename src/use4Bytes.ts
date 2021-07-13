@@ -4,11 +4,9 @@ import { fourBytesURL } from "./url";
 
 const cache = new Map<string, string | null>();
 
-export const use4Bytes = (data: string) => {
+export const use4Bytes = (rawFourBytes: string) => {
   const runtime = useContext(RuntimeContext);
   const assetsURLPrefix = runtime.config?.assetsURLPrefix;
-
-  let rawFourBytes = data.slice(0, 10);
 
   const [name, setName] = useState<string>();
   const [fourBytes, setFourBytes] = useState<string>();
@@ -45,7 +43,7 @@ export const use4Bytes = (data: string) => {
       });
   }, [rawFourBytes, assetsURLPrefix, fourBytes]);
 
-  if (data === "0x") {
+  if (rawFourBytes === "0x") {
     return "Transfer";
   }
   if (assetsURLPrefix === undefined) {
