@@ -43,11 +43,11 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "start-assets": "docker run --rm -p 3001:80 --name otterscan-assets -d -v$(pwd)/4bytes/signatures:/usr/share/nginx/html/signatures/ -v$(pwd)/trustwallet/blockchains/ethereum/assets:/usr/share/nginx/html/assets -v$(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:1.21.1-alpine",
-    "stop-assets": "docker stop otterscan-assets",
-    "build-docker": "DOCKER_BUILDKIT=1 docker build -t otterscan -f Dockerfile .",
-    "start-docker": "docker run --rm -p 5000:80 --name otterscan -d otterscan",
-    "stop-docker": "docker stop otterscan"
+    "assets-start": "docker run --rm -p 3001:80 --name otterscan-assets -d -v$(pwd)/4bytes/signatures:/usr/share/nginx/html/signatures/ -v$(pwd)/trustwallet/blockchains/ethereum/assets:/usr/share/nginx/html/assets -v$(pwd)/nginx.conf:/etc/nginx/conf.d/default.conf nginx:1.21.1-alpine",
+    "assets-stop": "docker stop otterscan-assets",
+    "docker-build": "DOCKER_BUILDKIT=1 docker build -t otterscan -f Dockerfile .",
+    "docker-start": "docker run --rm -p 5000:80 --name otterscan -d otterscan",
+    "docker-stop": "docker stop otterscan"
   },
   "eslintConfig": {
     "extends": [
