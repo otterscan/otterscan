@@ -154,7 +154,7 @@ const AddressTransactions: React.FC = () => {
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
-  const selection = useSelection();
+  const selectionCtx = useSelection();
 
   return (
     <StandardFrame>
@@ -207,7 +207,7 @@ const AddressTransactions: React.FC = () => {
                 feeDisplayToggler={feeDisplayToggler}
               />
               {controller ? (
-                <SelectionContext.Provider value={selection}>
+                <SelectionContext.Provider value={selectionCtx}>
                   {controller.getPage().map((tx) => (
                     <TransactionItem
                       key={tx.hash}

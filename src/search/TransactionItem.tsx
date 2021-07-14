@@ -6,6 +6,7 @@ import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
 import AddressOrENSName from "../components/AddressOrENSName";
 import TimestampAge from "../components/TimestampAge";
+import AddressHighlighter from "../components/AddressHighlighter";
 import TransactionDirection, {
   Direction,
   Flags,
@@ -14,7 +15,6 @@ import TransactionValue from "../components/TransactionValue";
 import { ENSReverseCache, ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
-import { useSelectionContext } from "../useSelection";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
@@ -46,14 +46,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   const ensTo = ensCache && tx.to && ensCache[tx.to];
   const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
 
-  const [selection, setSelection] = useSelectionContext();
-  const select = (address: string) => {
-    setSelection({ type: "address", content: address });
-  };
-  const deselect = () => {
-    setSelection(null);
-  };
-
   return (
     <div
       className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
@@ -78,24 +70,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
         <span className="truncate" title={tx.from}>
           {tx.from && (
-            <div
-              className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 ${
-                selection !== null &&
-                selection.type === "address" &&
-                selection.content === tx.from
-                  ? "border-orange-400 bg-yellow-100"
-                  : "border-transparent"
-              }`}
-              onMouseEnter={() => select(tx.from!)}
-              onMouseLeave={deselect}
-            >
+            <AddressHighlighter address={tx.from}>
               <AddressOrENSName
                 address={tx.from}
                 ensName={ensFrom}
                 selectedAddress={selectedAddress}
                 minerAddress={tx.miner}
               />
-            </div>
+            </AddressHighlighter>
           )}
         </span>
         <span>
@@ -107,24 +89,14 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <span className="col-span-2 truncate" title={tx.to}>
         {tx.to && (
-          <div
-            className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 ${
-              selection !== null &&
-              selection.type === "address" &&
-              selection.content === tx.to
-                ? "border-orange-400 bg-yellow-100"
-                : "border-transparent"
-            }`}
-            onMouseEnter={() => select(tx.to!)}
-            onMouseLeave={deselect}
-          >
+          <AddressHighlighter address={tx.to}>
             <AddressOrENSName
               address={tx.to}
               ensName={ensTo}
               selectedAddress={selectedAddress}
               minerAddress={tx.miner}
             />
-          </div>
+          </AddressHighlighter>
         )}
       </span>
       <span className="col-span-2 truncate">
