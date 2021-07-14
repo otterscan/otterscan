@@ -19,7 +19,7 @@ const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
 
   return (
     <div
-      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 ${
+      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
         selection !== null &&
         selection.type === "address" &&
         selection.content === address

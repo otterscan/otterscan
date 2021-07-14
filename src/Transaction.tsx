@@ -17,6 +17,7 @@ import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
 import ContentFrame from "./ContentFrame";
 import BlockLink from "./components/BlockLink";
+import AddressHighlighter from "./components/AddressHighlighter";
 import AddressOrENSName from "./components/AddressOrENSName";
 import AddressLink from "./components/AddressLink";
 import Copy from "./components/Copy";
@@ -29,6 +30,7 @@ import TokenTransferItem from "./TokenTransferItem";
 import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
 import { RuntimeContext } from "./useRuntime";
+import { SelectionContext, useSelection } from "./useSelection";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -160,11 +162,13 @@ const Transaction: React.FC = () => {
     traceTransfersUsingOtsTrace();
   }, [traceTransfersUsingOtsTrace]);
 
+  const selectionCtx = useSelection();
+
   return (
     <StandardFrame>
       <StandardSubtitle>Transaction Details</StandardSubtitle>
       {txData && (
-        <>
+        <SelectionContext.Provider value={selectionCtx}>
           <div className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
             <Tab href={`/tx/${txhash}`}>Overview</Tab>
             <Tab href={`/tx/${txhash}/logs`}>
@@ -206,19 +210,23 @@ const Transaction: React.FC = () => {
                 </InfoRow>
                 <InfoRow title="From">
                   <div className="flex items-baseline space-x-2">
-                    <AddressOrENSName
-                      address={txData.from}
-                      minerAddress={txData.miner}
-                    />
+                    <AddressHighlighter address={txData.from}>
+                      <AddressOrENSName
+                        address={txData.from}
+                        minerAddress={txData.miner}
+                      />
+                    </AddressHighlighter>
                     <Copy value={txData.from} />
                   </div>
                 </InfoRow>
                 <InfoRow title="Interacted With (To)">
                   <div className="flex items-baseline space-x-2">
-                    <AddressOrENSName
-                      address={txData.to}
-                      minerAddress={txData.miner}
-                    />
+                    <AddressHighlighter address={txData.to}>
+                      <AddressOrENSName
+                        address={txData.to}
+                        minerAddress={txData.miner}
+                      />
+                    </AddressHighlighter>
                     <Copy value={txData.to} />
                   </div>
                   {transfers && (
@@ -350,7 +358,7 @@ const Transaction: React.FC = () => {
               </ContentFrame>
             </Route>
           </Switch>
-        </>
+        </SelectionContext.Provider>
       )}
     </StandardFrame>
   );
