@@ -3,19 +3,11 @@ import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
-import StandardSubtitle from "./StandardSubtitle";
-import ContentFrame from "./ContentFrame";
-import PageControl from "./search/PageControl";
-import ResultHeader from "./search/ResultHeader";
-import PendingResults from "./search/PendingResults";
-import TransactionItem from "./search/TransactionItem";
-import BlockLink from "./components/BlockLink";
+import BlockTransactionHeader from "./BlockTransactionHeader";
+import BlockTransactionResults from "./BlockTransactionResults";
 import { ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
-import { useFeeToggler } from "./search/useFeeToggler";
 import { RuntimeContext } from "./useRuntime";
-import { useENSCache } from "./useReverseCache";
-import { SelectionContext, useSelection } from "./useSelection";
 
 type BlockParams = {
   blockNumber: string;
@@ -111,64 +103,16 @@ const BlockTransactions: React.FC = () => {
   }, [txs, pageNumber]);
   const total = useMemo(() => txs?.length ?? 0, [txs]);
 
-  const reverseCache = useENSCache(provider, page);
-
   document.title = `Block #${blockNumber} Txns | Otterscan`;
-
-  const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-
-  const selectionCtx = useSelection();
 
   return (
     <StandardFrame>
-      <StandardSubtitle>Transactions</StandardSubtitle>
-      <div className="pb-2 text-sm text-gray-500">
-        For Block <BlockLink blockTag={blockNumber.toNumber()} />
-      </div>
-      <ContentFrame>
-        <div className="flex justify-between items-baseline py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>A total of {total} transactions found</>
-            )}
-          </div>
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={PAGE_SIZE}
-            total={total}
-          />
-        </div>
-        <ResultHeader
-          feeDisplay={feeDisplay}
-          feeDisplayToggler={feeDisplayToggler}
-        />
-        {page ? (
-          <SelectionContext.Provider value={selectionCtx}>
-            {page.map((tx) => (
-              <TransactionItem
-                key={tx.hash}
-                tx={tx}
-                ensCache={reverseCache}
-                feeDisplay={feeDisplay}
-              />
-            ))}
-            <div className="flex justify-between items-baseline py-3">
-              <div className="text-sm text-gray-500">
-                A total of {total} transactions found
-              </div>
-              <PageControl
-                pageNumber={pageNumber}
-                pageSize={PAGE_SIZE}
-                total={total}
-              />
-            </div>
-          </SelectionContext.Provider>
-        ) : (
-          <PendingResults />
-        )}
-      </ContentFrame>
+      <BlockTransactionHeader blockTag={blockNumber.toNumber()} />
+      <BlockTransactionResults
+        page={page}
+        total={total}
+        pageNumber={pageNumber}
+      />
     </StandardFrame>
   );
 };
