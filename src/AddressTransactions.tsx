@@ -15,6 +15,7 @@ import { SearchController } from "./search/search";
 import { RuntimeContext } from "./useRuntime";
 import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
+import { SelectionContext, useSelection } from "./useSelection";
 
 type BlockParams = {
   addressOrName: string;
@@ -153,6 +154,8 @@ const AddressTransactions: React.FC = () => {
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
+  const selectionCtx = useSelection();
+
   return (
     <StandardFrame>
       {error ? (
@@ -204,7 +207,7 @@ const AddressTransactions: React.FC = () => {
                 feeDisplayToggler={feeDisplayToggler}
               />
               {controller ? (
-                <>
+                <SelectionContext.Provider value={selectionCtx}>
                   {controller.getPage().map((tx) => (
                     <TransactionItem
                       key={tx.hash}
@@ -228,7 +231,7 @@ const AddressTransactions: React.FC = () => {
                       nextHash={page ? page[page.length - 1].hash : ""}
                     />
                   </div>
-                </>
+                </SelectionContext.Provider>
               ) : (
                 <PendingResults />
               )}

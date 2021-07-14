@@ -15,8 +15,8 @@ const ResultHeader: React.FC<ResultHeaderProps> = ({
     <div>Method</div>
     <div>Block</div>
     <div>Age</div>
-    <div className="col-span-2">From</div>
-    <div className="col-span-2">To</div>
+    <div className="col-span-2 ml-1">From</div>
+    <div className="col-span-2 ml-1">To</div>
     <div className="col-span-2">Value</div>
     <div>
       <button

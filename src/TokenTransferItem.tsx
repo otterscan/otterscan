@@ -1,8 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import AddressLink from "./components/AddressLink";
+import AddressHighlighter from "./components/AddressHighlighter";
 import AddressOrENSName from "./components/AddressOrENSName";
+import AddressLink from "./components/AddressLink";
 import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
 import { TokenMetas, TokenTransfer } from "./types";
@@ -20,16 +21,20 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
-    <div className="grid grid-cols-5">
-      <div className="flex space-x-2">
+    <div className="grid grid-cols-5 gap-x-1">
+      <div className="flex space-x-1">
         <span className="font-bold">From</span>
-        <AddressOrENSName address={t.from} />
+        <AddressHighlighter address={t.from}>
+          <AddressOrENSName address={t.from} />
+        </AddressHighlighter>
       </div>
-      <div className="flex space-x-2">
+      <div className="flex space-x-1">
         <span className="font-bold">To</span>
-        <AddressOrENSName address={t.to} />
+        <AddressHighlighter address={t.to}>
+          <AddressOrENSName address={t.to} />
+        </AddressHighlighter>
       </div>
-      <div className="col-span-3 flex space-x-2">
+      <div className="col-span-3 flex space-x-1">
         <span className="font-bold">For</span>
         <span>
           <FormattedBalance
