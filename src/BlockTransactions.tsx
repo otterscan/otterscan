@@ -15,6 +15,7 @@ import { PAGE_SIZE } from "./params";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { RuntimeContext } from "./useRuntime";
 import { useENSCache } from "./useReverseCache";
+import { SelectionContext, useSelection } from "./useSelection";
 
 type BlockParams = {
   blockNumber: string;
@@ -116,6 +117,8 @@ const BlockTransactions: React.FC = () => {
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
+  const selection = useSelection();
+
   return (
     <StandardFrame>
       <StandardSubtitle>Transactions</StandardSubtitle>
@@ -142,7 +145,7 @@ const BlockTransactions: React.FC = () => {
           feeDisplayToggler={feeDisplayToggler}
         />
         {page ? (
-          <>
+          <SelectionContext.Provider value={selection}>
             {page.map((tx) => (
               <TransactionItem
                 key={tx.hash}
@@ -161,7 +164,7 @@ const BlockTransactions: React.FC = () => {
                 total={total}
               />
             </div>
-          </>
+          </SelectionContext.Provider>
         ) : (
           <PendingResults />
         )}
