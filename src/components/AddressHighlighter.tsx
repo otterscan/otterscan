@@ -1,9 +1,9 @@
 import React from "react";
 import { useSelectionContext } from "../useSelection";
 
-type AddressHighlighterProps = {
+type AddressHighlighterProps = React.PropsWithChildren<{
   address: string;
-};
+}>;
 
 const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   address,
@@ -34,4 +34,4 @@ const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   );
 };
 
-export default AddressHighlighter;
+export default React.memo(AddressHighlighter);

@@ -16,6 +16,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
 import ContentFrame from "./ContentFrame";
+import InfoRow from "./components/InfoRow";
 import BlockLink from "./components/BlockLink";
 import AddressHighlighter from "./components/AddressHighlighter";
 import AddressOrENSName from "./components/AddressOrENSName";
@@ -363,16 +364,5 @@ const Transaction: React.FC = () => {
     </StandardFrame>
   );
 };
-
-type InfoRowProps = {
-  title: string;
-};
-
-const InfoRow: React.FC<InfoRowProps> = ({ title, children }) => (
-  <div className="grid grid-cols-4 py-4 text-sm">
-    <div>{title}:</div>
-    <div className="col-span-3">{children}</div>
-  </div>
-);
 
 export default React.memo(Transaction);
