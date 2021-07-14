@@ -1,4 +1,5 @@
 FROM node:12.22.3-alpine AS builder
+RUN npm i -g npm@7.19.1
 WORKDIR /otterscan-build
 COPY ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm install
