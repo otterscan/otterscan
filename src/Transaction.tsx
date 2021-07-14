@@ -209,7 +209,7 @@ const Transaction: React.FC = () => {
                   <Timestamp value={txData.timestamp} />
                 </InfoRow>
                 <InfoRow title="From">
-                  <div className="flex items-baseline space-x-2">
+                  <div className="flex items-baseline space-x-2 -ml-1">
                     <AddressHighlighter address={txData.from}>
                       <AddressOrENSName
                         address={txData.from}
@@ -220,7 +220,7 @@ const Transaction: React.FC = () => {
                   </div>
                 </InfoRow>
                 <InfoRow title="Interacted With (To)">
-                  <div className="flex items-baseline space-x-2">
+                  <div className="flex items-baseline space-x-2 -ml-1">
                     <AddressHighlighter address={txData.to}>
                       <AddressOrENSName
                         address={txData.to}
