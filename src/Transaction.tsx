@@ -7,27 +7,11 @@ import React, {
 } from "react";
 import { Route, Switch, useParams } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Tab from "./components/Tab";
-import ContentFrame from "./ContentFrame";
-import InfoRow from "./components/InfoRow";
-import BlockLink from "./components/BlockLink";
-import AddressHighlighter from "./components/AddressHighlighter";
-import AddressOrENSName from "./components/AddressOrENSName";
-import AddressLink from "./components/AddressLink";
-import Copy from "./components/Copy";
-import Timestamp from "./components/Timestamp";
-import InternalTransfer from "./components/InternalTransfer";
-import MethodName from "./components/MethodName";
-import GasValue from "./components/GasValue";
-import FormattedBalance from "./components/FormattedBalance";
-import TokenTransferItem from "./TokenTransferItem";
+import Details from "./transaction/Details";
+import Logs from "./transaction/Logs";
 import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData, Transfer } from "./types";
 import { RuntimeContext } from "./useRuntime";
@@ -140,7 +124,7 @@ const Transaction: React.FC = () => {
     return false;
   }, [txData, transfers]);
 
-  const traceTransfersUsingOtsTrace = useCallback(async () => {
+  const traceTransfers = useCallback(async () => {
     if (!provider || !txData) {
       return;
     }
@@ -160,8 +144,8 @@ const Transaction: React.FC = () => {
     setTransfers(_transfers);
   }, [provider, txData]);
   useEffect(() => {
-    traceTransfersUsingOtsTrace();
-  }, [traceTransfersUsingOtsTrace]);
+    traceTransfers();
+  }, [traceTransfers]);
 
   const selectionCtx = useSelection();
 
@@ -178,185 +162,14 @@ const Transaction: React.FC = () => {
           </div>
           <Switch>
             <Route path="/tx/:txhash/" exact>
-              <ContentFrame tabs>
-                <InfoRow title="Transaction Hash">
-                  <div className="flex items-baseline space-x-2">
-                    <span className="font-hash">{txData.transactionHash}</span>
-                    <Copy value={txData.transactionHash} />
-                  </div>
-                </InfoRow>
-                <InfoRow title="Status">
-                  {txData.status ? (
-                    <span className="flex items-center w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
-                      <FontAwesomeIcon icon={faCheckCircle} size="1x" />
-                      <span>Success</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center w-min rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
-                      <FontAwesomeIcon icon={faTimesCircle} size="1x" />
-                      <span>Fail</span>
-                    </span>
-                  )}
-                </InfoRow>
-                <InfoRow title="Block">
-                  <div className="flex items-baseline space-x-2">
-                    <BlockLink blockTag={txData.blockNumber} />
-                    <span className="rounded text-xs bg-gray-100 text-gray-500 px-2 py-1">
-                      {txData.confirmations} Block Confirmations
-                    </span>
-                  </div>
-                </InfoRow>
-                <InfoRow title="Timestamp">
-                  <Timestamp value={txData.timestamp} />
-                </InfoRow>
-                <InfoRow title="From">
-                  <div className="flex items-baseline space-x-2 -ml-1">
-                    <AddressHighlighter address={txData.from}>
-                      <AddressOrENSName
-                        address={txData.from}
-                        minerAddress={txData.miner}
-                      />
-                    </AddressHighlighter>
-                    <Copy value={txData.from} />
-                  </div>
-                </InfoRow>
-                <InfoRow title="Interacted With (To)">
-                  <div className="flex items-baseline space-x-2 -ml-1">
-                    <AddressHighlighter address={txData.to}>
-                      <AddressOrENSName
-                        address={txData.to}
-                        minerAddress={txData.miner}
-                      />
-                    </AddressHighlighter>
-                    <Copy value={txData.to} />
-                  </div>
-                  {transfers && (
-                    <div className="mt-2 space-y-1">
-                      {transfers.map((t, i) => (
-                        <InternalTransfer
-                          key={i}
-                          txData={txData}
-                          transfer={t}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </InfoRow>
-                <InfoRow title="Transaction Action">
-                  <MethodName data={txData.data} />
-                </InfoRow>
-                {txData.tokenTransfers.length > 0 && (
-                  <InfoRow
-                    title={`Tokens Transferred (${txData.tokenTransfers.length})`}
-                  >
-                    <div className="space-y-2">
-                      {txData.tokenTransfers.map((t, i) => (
-                        <TokenTransferItem
-                          key={i}
-                          t={t}
-                          tokenMetas={txData.tokenMetas}
-                        />
-                      ))}
-                    </div>
-                  </InfoRow>
-                )}
-                <InfoRow title="Value">
-                  <span className="rounded bg-gray-100 px-2 py-1 text-xs">
-                    {ethers.utils.formatEther(txData.value)} Ether
-                  </span>
-                </InfoRow>
-                <InfoRow title="Transaction Fee">
-                  <FormattedBalance value={txData.fee} /> Ether
-                </InfoRow>
-                <InfoRow title="Gas Price">
-                  <div className="flex items-baseline space-x-1">
-                    <span>
-                      <FormattedBalance value={txData.gasPrice} /> Ether (
-                      <FormattedBalance
-                        value={txData.gasPrice}
-                        decimals={9}
-                      />{" "}
-                      Gwei)
-                    </span>
-                    {sendsEthToMiner && (
-                      <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
-                        Flashbots
-                      </span>
-                    )}
-                  </div>
-                </InfoRow>
-                <InfoRow title="Ether Price">N/A</InfoRow>
-                <InfoRow title="Gas Limit">
-                  <GasValue value={txData.gasLimit} />
-                </InfoRow>
-                <InfoRow title="Gas Used by Transaction">
-                  <GasValue value={txData.gasUsed} /> (
-                  {(txData.gasUsedPerc * 100).toFixed(2)}%)
-                </InfoRow>
-                <InfoRow title="Nonce">{txData.nonce}</InfoRow>
-                <InfoRow title="Position in Block">
-                  <span className="rounded px-2 py-1 bg-gray-100 text-gray-500 text-xs">
-                    {txData.transactionIndex}
-                  </span>
-                </InfoRow>
-                <InfoRow title="Input Data">
-                  <textarea
-                    className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                    value={txData.data}
-                    readOnly
-                  />
-                </InfoRow>
-              </ContentFrame>
+              <Details
+                txData={txData}
+                transfers={transfers}
+                sendsEthToMiner={sendsEthToMiner}
+              />
             </Route>
             <Route path="/tx/:txhash/logs/" exact>
-              <ContentFrame tabs>
-                <div className="text-sm py-4">
-                  Transaction Receipt Event Logs
-                </div>
-                {txData &&
-                  txData.logs.map((l, i) => (
-                    <div className="flex space-x-10 py-5" key={i}>
-                      <div>
-                        <span className="rounded-full w-12 h-12 flex items-center justify-center bg-green-50 text-green-500">
-                          {l.logIndex}
-                        </span>
-                      </div>
-                      <div className="w-full space-y-2">
-                        <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                          <div className="font-bold text-right">Address</div>
-                          <div className="col-span-11">
-                            <AddressLink address={l.address} />
-                          </div>
-                        </div>
-                        {l.topics.map((t, i) => (
-                          <div
-                            className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm"
-                            key={i}
-                          >
-                            <div className="text-right">
-                              {i === 0 && "Topics"}
-                            </div>
-                            <div className="flex space-x-2 items-center col-span-11 font-mono">
-                              <span className="rounded bg-gray-100 text-gray-500 px-2 py-1 text-xs">
-                                {i}
-                              </span>
-                              <span>{t}</span>
-                            </div>
-                          </div>
-                        ))}
-                        <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                          <div className="text-right pt-2">Data</div>
-                          <div className="col-span-11">
-                            <textarea
-                              className="w-full h-20 bg-gray-50 font-mono focus:outline-none border rounded p-2"
-                              value={l.data}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-              </ContentFrame>
+              <Logs txData={txData} />
             </Route>
           </Switch>
         </SelectionContext.Provider>
