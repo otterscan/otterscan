@@ -75,7 +75,7 @@ Add our forked Erigon git tree as an additional remote and checkout the correspo
 The repository with Otterscan patches is [here](https://github.com/wmitsuda/erigon).
 
 ```
-git remote add otterscan git@github.com:wmitsuda/erigon.git
+git remote add otterscan https://github.com/wmitsuda/erigon.git
 ```
 
 Checkout the tag corresponding to the stable version you are running. For each supported Erigon version, there should be a corresponding tag containing Otterscan patches.
@@ -148,6 +148,8 @@ To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fa
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make available their icons under a permissive license.
 
 To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
+
+To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library we used to interact with the ETH node. It is high level enough to hide most jsonrpc particularities, but flexible enough to allow easy interaction with custom jsonrpc methods.
 
 ## Future
 

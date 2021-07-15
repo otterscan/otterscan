@@ -1,58 +1,28 @@
-import React, { useState, useEffect, useContext } from "react";
-import { fourBytesURL } from "../url";
-import { RuntimeContext } from "../useRuntime";
+import React from "react";
+import { use4Bytes } from "../use4Bytes";
 
 type MethodNameProps = {
   data: string;
 };
 
 const MethodName: React.FC<MethodNameProps> = ({ data }) => {
-  const runtime = useContext(RuntimeContext);
-
-  const [name, setName] = useState<string>();
-  useEffect(() => {
-    if (data === "0x") {
-      setName("Transfer");
-      return;
-    }
-
-    let _name = data.slice(0, 10);
-
-    // Try to resolve 4bytes name
-    const fourBytes = _name.slice(2);
-    const { config } = runtime;
-    if (!config) {
-      setName(_name);
-      return;
-    }
-
-    const signatureURL = fourBytesURL(config.assetsURLPrefix ?? "", fourBytes);
-    fetch(signatureURL)
-      .then(async (res) => {
-        if (!res.ok) {
-          console.error(`Signature does not exist in 4bytes DB: ${fourBytes}`);
-          return;
-        }
-
-        const sig = await res.text();
-        const cut = sig.indexOf("(");
-        let method = sig.slice(0, cut);
-        method = method.charAt(0).toUpperCase() + method.slice(1);
-        setName(method);
-        return;
-      })
-      .catch((err) => {
-        console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
-      });
-
-    // Use the default 4 bytes as name
-    setName(_name);
-  }, [runtime, data]);
+  const rawFourBytes = data.slice(0, 10);
+  const methodName = use4Bytes(rawFourBytes);
+  const isSimpleTransfer = data === "0x";
+  const methodTitle = isSimpleTransfer
+    ? "ETH Transfer"
+    : methodName === rawFourBytes
+    ? methodName
+    : `${methodName} [${rawFourBytes}]`;
 
   return (
-    <div className="bg-blue-50 rounded-lg px-3 py-1 min-h-full flex items-baseline text-xs max-w-max">
-      <p className="truncate" title={name}>
-        {name}
+    <div
+      className={`${
+        isSimpleTransfer ? "bg-yellow-100" : "bg-blue-50"
+      } rounded-lg px-3 py-1 min-h-full flex items-baseline text-xs max-w-max`}
+    >
+      <p className="truncate" title={methodTitle}>
+        {methodName}
       </p>
     </div>
   );

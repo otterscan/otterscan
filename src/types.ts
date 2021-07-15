@@ -1,5 +1,13 @@
 import { ethers, BigNumber } from "ethers";
 
+export enum ConnectionStatus {
+  CONNECTING,
+  NOT_ETH_NODE,
+  NOT_ERIGON,
+  NOT_OTTERSCAN_PATCHED,
+  CONNECTED,
+}
+
 export type ProcessedTransaction = {
   blockNumber: number;
   timestamp: number;

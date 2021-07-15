@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Link, useHistory } from "react-router-dom";
 import useKeyboardShortcut from "use-keyboard-shortcut";
+import PriceBox from "./PriceBox";
 
 const Title: React.FC = () => {
   const [search, setSearch] = useState<string>();
@@ -41,27 +42,30 @@ const Title: React.FC = () => {
           <span>Otterscan</span>
         </div>
       </Link>
-      <form
-        className="flex"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-        spellCheck={false}
-      >
-        <input
-          className="w-full border-t border-b border-l rounded-l focus:outline-none px-2 py-1 text-sm"
-          type="text"
-          size={60}
-          placeholder='Type "/" to search by address / txn hash / block number / ENS name'
-          onChange={handleChange}
-          ref={searchRef}
-        />
-        <button
-          className="rounded-r border-t border-b border-r bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
-          type="submit"
+      <div className="flex items-baseline space-x-3">
+        <PriceBox />
+        <form
+          className="flex"
+          onSubmit={handleSubmit}
+          autoComplete="off"
+          spellCheck={false}
         >
-          Search
-        </button>
-      </form>
+          <input
+            className="w-full border-t border-b border-l rounded-l focus:outline-none px-2 py-1 text-sm"
+            type="text"
+            size={60}
+            placeholder='Type "/" to search by address / txn hash / block number / ENS name'
+            onChange={handleChange}
+            ref={searchRef}
+          />
+          <button
+            className="rounded-r border-t border-b border-r bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
+            type="submit"
+          >
+            Search
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

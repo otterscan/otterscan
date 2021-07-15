@@ -6,6 +6,7 @@ import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
 import AddressOrENSName from "../components/AddressOrENSName";
 import TimestampAge from "../components/TimestampAge";
+import AddressHighlighter from "../components/AddressHighlighter";
 import TransactionDirection, {
   Direction,
   Flags,
@@ -67,14 +68,16 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <TimestampAge timestamp={tx.timestamp} />
       <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
-        <span className="truncate" title={tx.from}>
+        <span className="truncate">
           {tx.from && (
-            <AddressOrENSName
-              address={tx.from}
-              ensName={ensFrom}
-              selectedAddress={selectedAddress}
-              minerAddress={tx.miner}
-            />
+            <AddressHighlighter address={tx.from}>
+              <AddressOrENSName
+                address={tx.from}
+                ensName={ensFrom}
+                selectedAddress={selectedAddress}
+                minerAddress={tx.miner}
+              />
+            </AddressHighlighter>
           )}
         </span>
         <span>
@@ -84,15 +87,19 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           />
         </span>
       </span>
-      <span className="col-span-2 truncate" title={tx.to}>
-        {tx.to && (
-          <AddressOrENSName
-            address={tx.to}
-            ensName={ensTo}
-            selectedAddress={selectedAddress}
-            minerAddress={tx.miner}
-          />
-        )}
+      <span className="col-span-2 flex items-baseline" title={tx.to}>
+        <span className="truncate">
+          {tx.to && (
+            <AddressHighlighter address={tx.to}>
+              <AddressOrENSName
+                address={tx.to}
+                ensName={ensTo}
+                selectedAddress={selectedAddress}
+                minerAddress={tx.miner}
+              />
+            </AddressHighlighter>
+          )}
+        </span>
       </span>
       <span className="col-span-2 truncate">
         <TransactionValue value={tx.value} />
