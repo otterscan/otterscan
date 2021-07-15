@@ -68,7 +68,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <TimestampAge timestamp={tx.timestamp} />
       <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
-        <span className="truncate" title={tx.from}>
+        <span className="truncate">
           {tx.from && (
             <AddressHighlighter address={tx.from}>
               <AddressOrENSName
@@ -87,17 +87,19 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           />
         </span>
       </span>
-      <span className="col-span-2 truncate" title={tx.to}>
-        {tx.to && (
-          <AddressHighlighter address={tx.to}>
-            <AddressOrENSName
-              address={tx.to}
-              ensName={ensTo}
-              selectedAddress={selectedAddress}
-              minerAddress={tx.miner}
-            />
-          </AddressHighlighter>
-        )}
+      <span className="col-span-2 flex items-baseline" title={tx.to}>
+        <span className="truncate">
+          {tx.to && (
+            <AddressHighlighter address={tx.to}>
+              <AddressOrENSName
+                address={tx.to}
+                ensName={ensTo}
+                selectedAddress={selectedAddress}
+                minerAddress={tx.miner}
+              />
+            </AddressHighlighter>
+          )}
+        </span>
       </span>
       <span className="col-span-2 truncate">
         <TransactionValue value={tx.value} />
