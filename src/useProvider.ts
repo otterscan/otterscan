@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { ConnectionStatus } from "./types";
+import { MIN_API_LEVEL } from "./params";
 
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
@@ -60,12 +61,14 @@ export const useProvider = (
 
       // Check if it has Otterscan patches by probing a lightweight method
       try {
-        // TODO: replace by a custom made method that works in all networks
-        await provider.send("ots_getTransactionTransfers", [
-          "0x793e079fbc427cba0857b4e878194ab508f33983f45415e50af3c3c0e662fdf3",
-        ]);
-        setConnStatus(ConnectionStatus.CONNECTED);
-        setProvider(provider);
+        const level = await provider.send("ots_getApiLevel", []);
+        if (level < MIN_API_LEVEL) {
+          setConnStatus(ConnectionStatus.NOT_OTTERSCAN_PATCHED);
+          setProvider(undefined);
+        } else {
+          setConnStatus(ConnectionStatus.CONNECTED);
+          setProvider(provider);
+        }
       } catch (err) {
         console.log(err);
         setConnStatus(ConnectionStatus.NOT_OTTERSCAN_PATCHED);

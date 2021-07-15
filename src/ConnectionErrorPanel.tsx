@@ -66,10 +66,10 @@ const ConnectionErrorPanel: React.FC<ConnectionErrorPanelProps> = ({
             <Step type="ok" msg="It is an Erigon node" />
             <Step
               type="error"
-              msg="It does not seem to contain Otterscan patches"
+              msg="It does not seem to contain up-to-date Otterscan patches"
             >
-              Make sure you compiled rpcdaemon with Otterscan patches and
-              enabled <strong>ots_</strong> namespace according to the{" "}
+              Make sure you compiled rpcdaemon with compatible Otterscan patches
+              and enabled <strong>ots_</strong> namespace according to the{" "}
               <a
                 href="https://github.com/wmitsuda/otterscan#install-otterscan-patches-on-top-of-erigon"
                 target="_blank"
