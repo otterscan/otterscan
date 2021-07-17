@@ -13,21 +13,22 @@ import AddressOrENSName from "../components/AddressOrENSName";
 import Copy from "../components/Copy";
 import Timestamp from "../components/Timestamp";
 import InternalTransfer from "../components/InternalTransfer";
+import InternalSelfDestruct from "../components/InternalSelfDestruct";
 import MethodName from "../components/MethodName";
 import GasValue from "../components/GasValue";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
-import { TransactionData, Transfer } from "../types";
+import { InternalTransfers, TransactionData } from "../types";
 
 type DetailsProps = {
   txData: TransactionData;
-  transfers?: Transfer[];
+  internalTransfers?: InternalTransfers;
   sendsEthToMiner: boolean;
 };
 
 const Details: React.FC<DetailsProps> = ({
   txData,
-  transfers,
+  internalTransfers,
   sendsEthToMiner,
 }) => (
   <ContentFrame tabs>
@@ -76,12 +77,19 @@ const Details: React.FC<DetailsProps> = ({
         </AddressHighlighter>
         <Copy value={txData.to} />
       </div>
-      {transfers && (
-        <div className="mt-2 space-y-1">
-          {transfers.map((t, i) => (
-            <InternalTransfer key={i} txData={txData} transfer={t} />
-          ))}
-        </div>
+      {internalTransfers && (
+        <>
+          <div className="mt-2 space-y-1">
+            {internalTransfers.transfers.map((t, i) => (
+              <InternalTransfer key={i} txData={txData} transfer={t} />
+            ))}
+          </div>
+          <div className="mt-2 space-y-1">
+            {internalTransfers.selfDestructs.map((t, i) => (
+              <InternalSelfDestruct key={i} txData={txData} transfer={t} />
+            ))}
+          </div>
+        </>
       )}
     </InfoRow>
     <InfoRow title="Transaction Action">

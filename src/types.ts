@@ -68,6 +68,11 @@ export type Transfer = {
   value: BigNumber;
 };
 
+export type InternalTransfers = {
+  transfers: Transfer[];
+  selfDestructs: Transfer[];
+};
+
 export type TokenTransfer = {
   token: string;
   from: string;

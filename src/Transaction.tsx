@@ -105,19 +105,24 @@ const Transaction: React.FC = () => {
     readBlock();
   }, [provider, txhash]);
 
-  const transfers = useInternalTransfers(provider, txData);
+  const intTransfers = useInternalTransfers(provider, txData);
   const sendsEthToMiner = useMemo(() => {
-    if (!txData || !transfers) {
+    if (!txData || !intTransfers) {
       return false;
     }
 
-    for (const t of transfers) {
+    for (const t of intTransfers.transfers) {
+      if (t.to === txData.miner) {
+        return true;
+      }
+    }
+    for (const t of intTransfers.selfDestructs) {
       if (t.to === txData.miner) {
         return true;
       }
     }
     return false;
-  }, [txData, transfers]);
+  }, [txData, intTransfers]);
 
   const selectionCtx = useSelection();
 
@@ -136,7 +141,7 @@ const Transaction: React.FC = () => {
             <Route path="/tx/:txhash/" exact>
               <Details
                 txData={txData}
-                transfers={transfers}
+                internalTransfers={intTransfers}
                 sendsEthToMiner={sendsEthToMiner}
               />
             </Route>
