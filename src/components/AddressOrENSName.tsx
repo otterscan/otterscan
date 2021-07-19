@@ -1,6 +1,4 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import Address from "./Address";
 import AddressLink from "./AddressLink";
 import ENSName from "./ENSName";
@@ -10,21 +8,18 @@ type AddressOrENSNameProps = {
   address: string;
   ensName?: string;
   selectedAddress?: string;
-  minerAddress?: string;
+  text?: string;
+  dontOverrideColors?: boolean;
 };
 
 const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   address,
   ensName,
   selectedAddress,
-  minerAddress,
+  text,
+  dontOverrideColors,
 }) => (
-  <div className="flex items-baseline space-x-1 truncate">
-    {minerAddress !== undefined && minerAddress === address && (
-      <span className="text-yellow-400" title="Miner address">
-        <FontAwesomeIcon icon={faCoins} size="1x" />
-      </span>
-    )}
+  <>
     {address === selectedAddress ? (
       <>
         {ensName ? (
@@ -36,13 +31,21 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     ) : (
       <>
         {ensName ? (
-          <ENSNameLink name={ensName} address={address} />
+          <ENSNameLink
+            name={ensName}
+            address={address}
+            dontOverrideColors={dontOverrideColors}
+          />
         ) : (
-          <AddressLink address={address} />
+          <AddressLink
+            address={address}
+            text={text}
+            dontOverrideColors={dontOverrideColors}
+          />
         )}
       </>
     )}
-  </div>
+  </>
 );
 
 export default React.memo(AddressOrENSName);

@@ -2,11 +2,10 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./components/AddressHighlighter";
-import AddressOrENSName from "./components/AddressOrENSName";
-import AddressLink from "./components/AddressLink";
+import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
-import { TokenMetas, TokenTransfer } from "./types";
+import { AddressContext, TokenMetas, TokenTransfer } from "./types";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
@@ -17,7 +16,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMetas,
 }) => (
-  <div className="flex items-baseline space-x-2 truncate">
+  <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
@@ -25,13 +24,16 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
       <div className="flex space-x-1">
         <span className="font-bold">From</span>
         <AddressHighlighter address={t.from}>
-          <AddressOrENSName address={t.from} />
+          <DecoratedAddressLink
+            address={t.from}
+            addressCtx={AddressContext.FROM}
+          />
         </AddressHighlighter>
       </div>
       <div className="flex space-x-1">
         <span className="font-bold">To</span>
         <AddressHighlighter address={t.to}>
-          <AddressOrENSName address={t.to} />
+          <DecoratedAddressLink address={t.to} addressCtx={AddressContext.TO} />
         </AddressHighlighter>
       </div>
       <div className="col-span-3 flex space-x-1">
@@ -48,7 +50,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
               <div className="self-center">
                 <TokenLogo address={t.token} name={tokenMetas[t.token].name} />
               </div>
-              <AddressLink
+              <DecoratedAddressLink
                 address={t.token}
                 text={`${tokenMetas[t.token].name} (${
                   tokenMetas[t.token].symbol
@@ -56,7 +58,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
               />
             </>
           ) : (
-            <AddressOrENSName address={t.token} />
+            <DecoratedAddressLink address={t.token} />
           )}
         </span>
       </div>

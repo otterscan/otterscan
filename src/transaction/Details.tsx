@@ -9,7 +9,7 @@ import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
 import AddressHighlighter from "../components/AddressHighlighter";
-import AddressOrENSName from "../components/AddressOrENSName";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
 import Timestamp from "../components/Timestamp";
 import InternalTransfer from "../components/InternalTransfer";
@@ -65,7 +65,10 @@ const Details: React.FC<DetailsProps> = ({
     <InfoRow title="From">
       <div className="flex items-baseline space-x-2 -ml-1">
         <AddressHighlighter address={txData.from}>
-          <AddressOrENSName address={txData.from} minerAddress={txData.miner} />
+          <DecoratedAddressLink
+            address={txData.from}
+            miner={txData.from === txData.miner}
+          />
         </AddressHighlighter>
         <Copy value={txData.from} />
       </div>
@@ -73,7 +76,10 @@ const Details: React.FC<DetailsProps> = ({
     <InfoRow title="Interacted With (To)">
       <div className="flex items-baseline space-x-2 -ml-1">
         <AddressHighlighter address={txData.to}>
-          <AddressOrENSName address={txData.to} minerAddress={txData.miner} />
+          <DecoratedAddressLink
+            address={txData.to}
+            miner={txData.to === txData.miner}
+          />
         </AddressHighlighter>
         <Copy value={txData.to} />
       </div>
@@ -97,7 +103,7 @@ const Details: React.FC<DetailsProps> = ({
     </InfoRow>
     {txData.tokenTransfers.length > 0 && (
       <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-        <div className="space-y-2">
+        <div>
           {txData.tokenTransfers.map((t, i) => (
             <TokenTransferItem key={i} t={t} tokenMetas={txData.tokenMetas} />
           ))}
