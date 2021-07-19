@@ -35,7 +35,7 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
       className={`flex items-baseline space-x-1 ${
         mint ? "italic text-green-500 hover:text-green-700" : ""
       } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""} ${
-        selfDestruct ? "line-through" : ""
+        selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
       }`}
     >
       {mint && (
