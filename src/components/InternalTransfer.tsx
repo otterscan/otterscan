@@ -1,9 +1,9 @@
 import React from "react";
 import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import AddressLink from "./AddressLink";
+import DecoratedAddressLink from "./DecoratedAddressLink";
 import { TransactionData, Transfer } from "../types";
 
 type InternalTransferProps = {
@@ -33,12 +33,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               fromMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
             }`}
           >
-            {fromMiner && (
-              <span className="text-yellow-400" title="Miner address">
-                <FontAwesomeIcon icon={faCoins} size="1x" />
-              </span>
-            )}
-            <AddressLink address={transfer.from} />
+            <DecoratedAddressLink
+              address={transfer.from}
+              miner={fromMiner}
+              txFrom={transfer.from === txData.from}
+              txTo={transfer.from === txData.to}
+            />
           </div>
         </AddressHighlighter>
       </div>
@@ -50,12 +50,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
             }`}
           >
-            {toMiner && (
-              <span className="text-yellow-400" title="Miner address">
-                <FontAwesomeIcon icon={faCoins} size="1x" />
-              </span>
-            )}
-            <AddressLink address={transfer.to} />
+            <DecoratedAddressLink
+              address={transfer.to}
+              miner={toMiner}
+              txFrom={transfer.to === txData.from}
+              txTo={transfer.to === txData.to}
+            />
           </div>
         </AddressHighlighter>
       </div>

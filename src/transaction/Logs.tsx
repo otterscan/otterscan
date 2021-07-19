@@ -1,6 +1,6 @@
 import React from "react";
 import ContentFrame from "../ContentFrame";
-import AddressLink from "../components/AddressLink";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import { TransactionData } from "../types";
 
 type LogsProps = {
@@ -22,7 +22,12 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
             <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
               <div className="font-bold text-right">Address</div>
               <div className="col-span-11">
-                <AddressLink address={l.address} />
+                <DecoratedAddressLink
+                  address={l.address}
+                  miner={l.address === txData.miner}
+                  txFrom={l.address === txData.from}
+                  txTo={l.address === txData.to}
+                />
               </div>
             </div>
             {l.topics.map((t, i) => (
@@ -45,6 +50,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
                 <textarea
                   className="w-full h-20 bg-gray-50 font-mono focus:outline-none border rounded p-2"
                   value={l.data}
+                  readOnly
                 />
               </div>
             </div>

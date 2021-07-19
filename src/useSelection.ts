@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 
 export type Selection = {
-  type: string;
+  type: "address";
   content: string;
 };
 

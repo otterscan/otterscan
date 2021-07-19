@@ -18,7 +18,7 @@ const ENSName: React.FC<ENSNameProps> = ({ name, address }) => (
       width={12}
       height={12}
     />
-    <p className="truncate">{name}</p>
+    <span className="truncate">{name}</span>
   </div>
 );
 
