@@ -12,17 +12,16 @@ import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
 import Timestamp from "../components/Timestamp";
-import InternalTransfer from "../components/InternalTransfer";
-import InternalSelfDestruct from "../components/InternalSelfDestruct";
+import InternalOperation from "../components/InternalOperation";
 import MethodName from "../components/MethodName";
 import GasValue from "../components/GasValue";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
-import { InternalTransfers, TransactionData } from "../types";
+import { TransactionData, Transfer } from "../types";
 
 type DetailsProps = {
   txData: TransactionData;
-  internalTransfers?: InternalTransfers;
+  internalTransfers?: Transfer[];
   sendsEthToMiner: boolean;
 };
 
@@ -87,11 +86,8 @@ const Details: React.FC<DetailsProps> = ({
       </div>
       {internalTransfers && (
         <div className="mt-2 space-y-1">
-          {internalTransfers.transfers.map((t, i) => (
-            <InternalTransfer key={i} txData={txData} transfer={t} />
-          ))}
-          {internalTransfers.selfDestructs.map((t, i) => (
-            <InternalSelfDestruct key={i} txData={txData} transfer={t} />
+          {internalTransfers.map((t, i) => (
+            <InternalOperation key={i} txData={txData} transfer={t} />
           ))}
         </div>
       )}

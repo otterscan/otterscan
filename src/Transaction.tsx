@@ -111,12 +111,7 @@ const Transaction: React.FC = () => {
       return false;
     }
 
-    for (const t of intTransfers.transfers) {
-      if (t.to === txData.miner) {
-        return true;
-      }
-    }
-    for (const t of intTransfers.selfDestructs) {
+    for (const t of intTransfers) {
       if (t.to === txData.miner) {
         return true;
       }

@@ -1,16 +1,13 @@
 import { ethers } from "ethers";
 import { useState, useEffect } from "react";
-import {
-  getTransactionSelfDestructs,
-  getTransactionTransfers,
-} from "./nodeFunctions";
-import { InternalTransfers, TransactionData } from "./types";
+import { getTransactionTransfers } from "./nodeFunctions";
+import { TransactionData, Transfer } from "./types";
 
 export const useInternalTransfers = (
   provider: ethers.providers.JsonRpcProvider | undefined,
   txData: TransactionData | undefined
-): InternalTransfers | undefined => {
-  const [intTransfers, setIntTransfers] = useState<InternalTransfers>();
+): Transfer[] | undefined => {
+  const [intTransfers, setIntTransfers] = useState<Transfer[]>();
 
   useEffect(() => {
     const traceTransfers = async () => {
@@ -19,16 +16,12 @@ export const useInternalTransfers = (
       }
 
       const _transfers = await getTransactionTransfers(provider, txData);
-      const _selfDestructs = await getTransactionSelfDestructs(
-        provider,
-        txData
-      );
-      for (const s of _selfDestructs) {
-        s.from = provider.formatter.address(s.from);
-        s.to = provider.formatter.address(s.to);
-        s.value = provider.formatter.bigNumber(s.value);
+      for (const t of _transfers) {
+        t.from = provider.formatter.address(t.from);
+        t.to = provider.formatter.address(t.to);
+        t.value = provider.formatter.bigNumber(t.value);
       }
-      setIntTransfers({ transfers: _transfers, selfDestructs: _selfDestructs });
+      setIntTransfers(_transfers);
     };
     traceTransfers();
   }, [provider, txData]);

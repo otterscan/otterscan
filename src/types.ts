@@ -70,15 +70,16 @@ export type From = {
   depth: number;
 };
 
+export enum TransferType {
+  TRANSFER = 0,
+  SELF_DESTRUCT = 1,
+}
+
 export type Transfer = {
+  type: TransferType;
   from: string;
   to: string;
   value: BigNumber;
-};
-
-export type InternalTransfers = {
-  transfers: Transfer[];
-  selfDestructs: Transfer[];
 };
 
 export type TokenTransfer = {
