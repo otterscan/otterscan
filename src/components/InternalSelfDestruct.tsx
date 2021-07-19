@@ -36,11 +36,11 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
         <span>Contract</span>
         <div className="flex items-baseline">
           <AddressHighlighter address={transfer.from}>
-            <DecoratedAddressLink address={transfer.from} />
+            <DecoratedAddressLink address={transfer.from} selfDestruct />
           </AddressHighlighter>
         </div>
         {network?.chainId === 1 && transfer.to === CHI_ADDRESS && (
-          <span className="text-gray-400">(CHI Gastoken)</span>
+          <span className="text-gray-400">(Chi Gastoken)</span>
         )}
         {network?.chainId === 1 && transfer.to === GST2_ADDRESS && (
           <span className="text-gray-400">(GST2 Gastoken)</span>

@@ -15,6 +15,7 @@ type DecoratedAddressLinkProps = {
   text?: string;
   addressCtx?: AddressContext;
   miner?: boolean;
+  selfDestruct?: boolean;
 };
 
 const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
@@ -24,6 +25,7 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
   text,
   addressCtx,
   miner,
+  selfDestruct,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -32,7 +34,9 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
     <div
       className={`flex items-baseline space-x-1 ${
         mint ? "italic text-green-500 hover:text-green-700" : ""
-      } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""}`}
+      } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""} ${
+        selfDestruct ? "line-through" : ""
+      }`}
     >
       {mint && (
         <span className="text-green-500" title="Mint address">
