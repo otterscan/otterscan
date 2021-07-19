@@ -1,6 +1,6 @@
 import React from "react";
 import ContentFrame from "../ContentFrame";
-import AddressOrENSName from "../components/AddressOrENSName";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import { TransactionData } from "../types";
 
 type LogsProps = {
@@ -22,7 +22,12 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
             <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
               <div className="font-bold text-right">Address</div>
               <div className="col-span-11">
-                <AddressOrENSName address={l.address} />
+                <DecoratedAddressLink
+                  address={l.address}
+                  miner={l.address === txData.miner}
+                  txFrom={l.address === txData.from}
+                  txTo={l.address === txData.to}
+                />
               </div>
             </div>
             {l.topics.map((t, i) => (
