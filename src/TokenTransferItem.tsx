@@ -16,7 +16,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMetas,
 }) => (
-  <div className="flex items-baseline space-x-2 truncate">
+  <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
