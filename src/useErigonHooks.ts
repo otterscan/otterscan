@@ -24,6 +24,8 @@ export const useInternalTransfers = (
         txData
       );
       for (const s of _selfDestructs) {
+        s.from = provider.formatter.address(s.from);
+        s.to = provider.formatter.address(s.to);
         s.value = provider.formatter.bigNumber(s.value);
       }
       setIntTransfers({ transfers: _transfers, selfDestructs: _selfDestructs });

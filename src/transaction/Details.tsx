@@ -84,18 +84,14 @@ const Details: React.FC<DetailsProps> = ({
         <Copy value={txData.to} />
       </div>
       {internalTransfers && (
-        <>
-          <div className="mt-2 space-y-1">
-            {internalTransfers.transfers.map((t, i) => (
-              <InternalTransfer key={i} txData={txData} transfer={t} />
-            ))}
-          </div>
-          <div className="mt-2 space-y-1">
-            {internalTransfers.selfDestructs.map((t, i) => (
-              <InternalSelfDestruct key={i} txData={txData} transfer={t} />
-            ))}
-          </div>
-        </>
+        <div className="mt-2 space-y-1">
+          {internalTransfers.transfers.map((t, i) => (
+            <InternalTransfer key={i} txData={txData} transfer={t} />
+          ))}
+          {internalTransfers.selfDestructs.map((t, i) => (
+            <InternalSelfDestruct key={i} txData={txData} transfer={t} />
+          ))}
+        </div>
       )}
     </InfoRow>
     <InfoRow title="Transaction Action">

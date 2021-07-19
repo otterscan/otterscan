@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleRight,
-  faBomb,
-  faCoins,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faBomb } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import AddressLink from "./AddressLink";
+import DecoratedAddressLink from "./DecoratedAddressLink";
+import { RuntimeContext } from "../useRuntime";
 import { TransactionData, Transfer } from "../types";
+
+const CHI_ADDRESS = "0x0000000000004946c0e9F43F4Dee607b0eF1fA1c";
+const GST2_ADDRESS = "0x0000000000b3F879cb30FE243b4Dfee438691c04";
 
 type InternalSelfDestructProps = {
   txData: TransactionData;
@@ -19,8 +19,9 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   txData,
   transfer,
 }) => {
-  const fromMiner =
-    txData.miner !== undefined && transfer.from === txData.miner;
+  const { provider } = useContext(RuntimeContext);
+  const network = provider?.network;
+
   const toMiner = txData.miner !== undefined && transfer.to === txData.miner;
 
   return (
@@ -35,20 +36,15 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
         <span>Contract</span>
         <div className="flex items-baseline">
           <AddressHighlighter address={transfer.from}>
-            <div
-              className={`flex items-baseline space-x-1 ${
-                fromMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
-              }`}
-            >
-              {fromMiner && (
-                <span className="text-yellow-400" title="Miner address">
-                  <FontAwesomeIcon icon={faCoins} size="1x" />
-                </span>
-              )}
-              <AddressLink address={transfer.from} />
-            </div>
+            <DecoratedAddressLink address={transfer.from} />
           </AddressHighlighter>
         </div>
+        {network?.chainId === 1 && transfer.to === CHI_ADDRESS && (
+          <span className="text-gray-400">(CHI Gastoken)</span>
+        )}
+        {network?.chainId === 1 && transfer.to === GST2_ADDRESS && (
+          <span className="text-gray-400">(GST2 Gastoken)</span>
+        )}
       </div>
       {!transfer.value.isZero() && (
         <div className="ml-5 flex items-baseline space-x-1 text-xs">
@@ -64,12 +60,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
                   toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
                 }`}
               >
-                {toMiner && (
-                  <span className="text-yellow-400" title="Miner address">
-                    <FontAwesomeIcon icon={faCoins} size="1x" />
-                  </span>
-                )}
-                <AddressLink address={transfer.to} />
+                <DecoratedAddressLink address={transfer.to} miner={toMiner} />
               </div>
             </AddressHighlighter>
           </div>
