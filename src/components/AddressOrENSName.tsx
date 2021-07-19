@@ -9,6 +9,7 @@ type AddressOrENSNameProps = {
   ensName?: string;
   selectedAddress?: string;
   text?: string;
+  dontOverrideColors?: boolean;
 };
 
 const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
@@ -16,6 +17,7 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   ensName,
   selectedAddress,
   text,
+  dontOverrideColors,
 }) => (
   <>
     {address === selectedAddress ? (
@@ -29,9 +31,17 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     ) : (
       <>
         {ensName ? (
-          <ENSNameLink name={ensName} address={address} />
+          <ENSNameLink
+            name={ensName}
+            address={address}
+            dontOverrideColors={dontOverrideColors}
+          />
         ) : (
-          <AddressLink address={address} text={text} />
+          <AddressLink
+            address={address}
+            text={text}
+            dontOverrideColors={dontOverrideColors}
+          />
         )}
       </>
     )}

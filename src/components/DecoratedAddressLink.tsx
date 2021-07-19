@@ -30,9 +30,9 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
 
   return (
     <div
-      className={`flex items-baseline space-x-1 ${mint ? "italic" : ""} ${
-        burn ? "line-through" : ""
-      }`}
+      className={`flex items-baseline space-x-1 ${
+        mint ? "italic text-green-500 hover:text-green-700" : ""
+      } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""}`}
     >
       {mint && (
         <span className="text-green-500" title="Mint address">
@@ -54,6 +54,7 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
         ensName={ensName}
         selectedAddress={selectedAddress}
         text={text}
+        dontOverrideColors={mint || burn}
       />
     </div>
   );
