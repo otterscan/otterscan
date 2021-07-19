@@ -18,9 +18,9 @@ const AddressLink: React.FC<AddressLinkProps> = ({
     } font-address truncate`}
     to={`/address/${address}`}
   >
-    <p className="truncate" title={text ?? address}>
+    <span className="truncate" title={text ?? address}>
       {text ?? address}
-    </p>
+    </span>
   </NavLink>
 );
 

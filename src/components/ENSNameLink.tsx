@@ -27,7 +27,7 @@ const ENSNameLink: React.FC<ENSNameLinkProps> = ({
       width={12}
       height={12}
     />
-    <p className="truncate">{name}</p>
+    <span className="truncate">{name}</span>
   </NavLink>
 );
 

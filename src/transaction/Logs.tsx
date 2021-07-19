@@ -1,6 +1,6 @@
 import React from "react";
 import ContentFrame from "../ContentFrame";
-import AddressLink from "../components/AddressLink";
+import AddressOrENSName from "../components/AddressOrENSName";
 import { TransactionData } from "../types";
 
 type LogsProps = {
@@ -22,7 +22,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
             <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
               <div className="font-bold text-right">Address</div>
               <div className="col-span-11">
-                <AddressLink address={l.address} />
+                <AddressOrENSName address={l.address} />
               </div>
             </div>
             {l.topics.map((t, i) => (
