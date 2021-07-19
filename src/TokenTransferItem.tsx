@@ -57,15 +57,17 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             decimals={tokenMetas[t.token].decimals}
           />
         </span>
-        <DecoratedAddressLink
-          address={t.token}
-          text={
-            tokenMetas[t.token]
-              ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
-              : ""
-          }
-          tokenMeta={tokenMetas[t.token]}
-        />
+        <AddressHighlighter address={t.token}>
+          <DecoratedAddressLink
+            address={t.token}
+            text={
+              tokenMetas[t.token]
+                ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
+                : ""
+            }
+            tokenMeta={tokenMetas[t.token]}
+          />
+        </AddressHighlighter>
       </div>
     </div>
   </div>
