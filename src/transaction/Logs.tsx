@@ -45,6 +45,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
                 <textarea
                   className="w-full h-20 bg-gray-50 font-mono focus:outline-none border rounded p-2"
                   value={l.data}
+                  readOnly
                 />
               </div>
             </div>
