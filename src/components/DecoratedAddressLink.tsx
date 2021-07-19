@@ -5,8 +5,9 @@ import {
   faBurn,
   faCoins,
 } from "@fortawesome/free-solid-svg-icons";
+import TokenLogo from "./TokenLogo";
 import AddressOrENSName from "./AddressOrENSName";
-import { AddressContext, ZERO_ADDRESS } from "../types";
+import { AddressContext, TokenMeta, ZERO_ADDRESS } from "../types";
 
 type DecoratedAddressLinkProps = {
   address: string;
@@ -18,6 +19,7 @@ type DecoratedAddressLinkProps = {
   selfDestruct?: boolean;
   txFrom?: boolean;
   txTo?: boolean;
+  tokenMeta?: TokenMeta;
 };
 
 const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
@@ -30,6 +32,7 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
   selfDestruct,
   txFrom,
   txTo,
+  tokenMeta,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -56,6 +59,11 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
         <span className="text-yellow-400" title="Miner address">
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
+      )}
+      {tokenMeta && (
+        <div className="self-center">
+          <TokenLogo address={address} name={tokenMeta.name} />
+        </div>
       )}
       <AddressOrENSName
         address={address}

@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./components/AddressHighlighter";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
-import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
 import {
   AddressContext,
@@ -58,23 +57,15 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             decimals={tokenMetas[t.token].decimals}
           />
         </span>
-        <span className="flex space-x-1 items-baseline truncate">
-          {tokenMetas[t.token] ? (
-            <>
-              <div className="self-center">
-                <TokenLogo address={t.token} name={tokenMetas[t.token].name} />
-              </div>
-              <DecoratedAddressLink
-                address={t.token}
-                text={`${tokenMetas[t.token].name} (${
-                  tokenMetas[t.token].symbol
-                })`}
-              />
-            </>
-          ) : (
-            <DecoratedAddressLink address={t.token} />
-          )}
-        </span>
+        <DecoratedAddressLink
+          address={t.token}
+          text={
+            tokenMetas[t.token]
+              ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
+              : ""
+          }
+          tokenMeta={tokenMetas[t.token]}
+        />
       </div>
     </div>
   </div>
