@@ -3,17 +3,23 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./components/AddressHighlighter";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
-import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
-import { AddressContext, TokenMetas, TokenTransfer } from "./types";
+import {
+  AddressContext,
+  TokenMetas,
+  TokenTransfer,
+  TransactionData,
+} from "./types";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
+  txData: TransactionData;
   tokenMetas: TokenMetas;
 };
 
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
+  txData,
   tokenMetas,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
@@ -27,13 +33,20 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <DecoratedAddressLink
             address={t.from}
             addressCtx={AddressContext.FROM}
+            txFrom={t.from === txData.from}
+            txTo={t.from === txData.to}
           />
         </AddressHighlighter>
       </div>
       <div className="flex space-x-1">
         <span className="font-bold">To</span>
         <AddressHighlighter address={t.to}>
-          <DecoratedAddressLink address={t.to} addressCtx={AddressContext.TO} />
+          <DecoratedAddressLink
+            address={t.to}
+            addressCtx={AddressContext.TO}
+            txFrom={t.to === txData.from}
+            txTo={t.to === txData.to}
+          />
         </AddressHighlighter>
       </div>
       <div className="col-span-3 flex space-x-1">
@@ -44,23 +57,17 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             decimals={tokenMetas[t.token].decimals}
           />
         </span>
-        <span className="flex space-x-1 items-baseline truncate">
-          {tokenMetas[t.token] ? (
-            <>
-              <div className="self-center">
-                <TokenLogo address={t.token} name={tokenMetas[t.token].name} />
-              </div>
-              <DecoratedAddressLink
-                address={t.token}
-                text={`${tokenMetas[t.token].name} (${
-                  tokenMetas[t.token].symbol
-                })`}
-              />
-            </>
-          ) : (
-            <DecoratedAddressLink address={t.token} />
-          )}
-        </span>
+        <AddressHighlighter address={t.token}>
+          <DecoratedAddressLink
+            address={t.token}
+            text={
+              tokenMetas[t.token]
+                ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
+                : ""
+            }
+            tokenMeta={tokenMetas[t.token]}
+          />
+        </AddressHighlighter>
       </div>
     </div>
   </div>
