@@ -33,7 +33,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               fromMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
             }`}
           >
-            <DecoratedAddressLink address={transfer.from} miner={fromMiner} />
+            <DecoratedAddressLink
+              address={transfer.from}
+              miner={fromMiner}
+              txFrom={transfer.from === txData.from}
+              txTo={transfer.from === txData.to}
+            />
           </div>
         </AddressHighlighter>
       </div>
@@ -45,7 +50,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
             }`}
           >
-            <DecoratedAddressLink address={transfer.to} miner={toMiner} />
+            <DecoratedAddressLink
+              address={transfer.to}
+              miner={toMiner}
+              txFrom={transfer.to === txData.from}
+              txTo={transfer.to === txData.to}
+            />
           </div>
         </AddressHighlighter>
       </div>

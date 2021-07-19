@@ -5,15 +5,22 @@ import AddressHighlighter from "./components/AddressHighlighter";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TokenLogo from "./components/TokenLogo";
 import FormattedBalance from "./components/FormattedBalance";
-import { AddressContext, TokenMetas, TokenTransfer } from "./types";
+import {
+  AddressContext,
+  TokenMetas,
+  TokenTransfer,
+  TransactionData,
+} from "./types";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
+  txData: TransactionData;
   tokenMetas: TokenMetas;
 };
 
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
+  txData,
   tokenMetas,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
@@ -27,13 +34,20 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <DecoratedAddressLink
             address={t.from}
             addressCtx={AddressContext.FROM}
+            txFrom={t.from === txData.from}
+            txTo={t.from === txData.to}
           />
         </AddressHighlighter>
       </div>
       <div className="flex space-x-1">
         <span className="font-bold">To</span>
         <AddressHighlighter address={t.to}>
-          <DecoratedAddressLink address={t.to} addressCtx={AddressContext.TO} />
+          <DecoratedAddressLink
+            address={t.to}
+            addressCtx={AddressContext.TO}
+            txFrom={t.to === txData.from}
+            txTo={t.to === txData.to}
+          />
         </AddressHighlighter>
       </div>
       <div className="col-span-3 flex space-x-1">

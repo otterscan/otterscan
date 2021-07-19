@@ -68,6 +68,7 @@ const Details: React.FC<DetailsProps> = ({
           <DecoratedAddressLink
             address={txData.from}
             miner={txData.from === txData.miner}
+            txFrom
           />
         </AddressHighlighter>
         <Copy value={txData.from} />
@@ -79,6 +80,7 @@ const Details: React.FC<DetailsProps> = ({
           <DecoratedAddressLink
             address={txData.to}
             miner={txData.to === txData.miner}
+            txTo
           />
         </AddressHighlighter>
         <Copy value={txData.to} />
@@ -101,7 +103,12 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
         <div>
           {txData.tokenTransfers.map((t, i) => (
-            <TokenTransferItem key={i} t={t} tokenMetas={txData.tokenMetas} />
+            <TokenTransferItem
+              key={i}
+              t={t}
+              txData={txData}
+              tokenMetas={txData.tokenMetas}
+            />
           ))}
         </div>
       </InfoRow>
