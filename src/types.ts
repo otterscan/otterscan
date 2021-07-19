@@ -57,6 +57,14 @@ export type TransactionData = {
   logs: ethers.providers.Log[];
 };
 
+// The VOID...
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+export enum AddressContext {
+  FROM,
+  TO,
+}
+
 export type From = {
   current: string;
   depth: number;

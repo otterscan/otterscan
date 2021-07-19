@@ -13,7 +13,7 @@ import NavButton from "./components/NavButton";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
-import AddressOrENSName from "./components/AddressOrENSName";
+import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
@@ -159,10 +159,7 @@ const Block: React.FC = () => {
             in this block
           </InfoRow>
           <InfoRow title="Mined by">
-            <AddressOrENSName
-              address={block.miner}
-              minerAddress={block.miner}
-            />
+            <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
             <TransactionValue value={block.blockReward.add(block.feeReward)} />

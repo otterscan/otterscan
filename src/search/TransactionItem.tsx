@@ -4,7 +4,7 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
-import AddressOrENSName from "../components/AddressOrENSName";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TimestampAge from "../components/TimestampAge";
 import AddressHighlighter from "../components/AddressHighlighter";
 import TransactionDirection, {
@@ -71,11 +71,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span className="truncate">
           {tx.from && (
             <AddressHighlighter address={tx.from}>
-              <AddressOrENSName
+              <DecoratedAddressLink
                 address={tx.from}
                 ensName={ensFrom}
                 selectedAddress={selectedAddress}
-                minerAddress={tx.miner}
+                miner={tx.miner === tx.from}
               />
             </AddressHighlighter>
           )}
@@ -91,11 +91,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span className="truncate">
           {tx.to && (
             <AddressHighlighter address={tx.to}>
-              <AddressOrENSName
+              <DecoratedAddressLink
                 address={tx.to}
                 ensName={ensTo}
                 selectedAddress={selectedAddress}
-                minerAddress={tx.miner}
+                miner={tx.miner === tx.to}
               />
             </AddressHighlighter>
           )}

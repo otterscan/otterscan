@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faCoins } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import AddressLink from "./AddressLink";
+import DecoratedAddressLink from "./DecoratedAddressLink";
 import { TransactionData, Transfer } from "../types";
 
 type InternalTransferProps = {
@@ -38,7 +38,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
                 <FontAwesomeIcon icon={faCoins} size="1x" />
               </span>
             )}
-            <AddressLink address={transfer.from} />
+            <DecoratedAddressLink address={transfer.from} />
           </div>
         </AddressHighlighter>
       </div>
@@ -55,7 +55,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
                 <FontAwesomeIcon icon={faCoins} size="1x" />
               </span>
             )}
-            <AddressLink address={transfer.to} />
+            <DecoratedAddressLink address={transfer.to} />
           </div>
         </AddressHighlighter>
       </div>
