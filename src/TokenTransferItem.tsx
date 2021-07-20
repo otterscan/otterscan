@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./components/AddressHighlighter";
+import ValueHighlighter from "./components/ValueHighlighter";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import FormattedBalance from "./components/FormattedBalance";
 import {
@@ -52,10 +53,12 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
       <div className="col-span-3 flex space-x-1">
         <span className="font-bold">For</span>
         <span>
-          <FormattedBalance
-            value={t.value}
-            decimals={tokenMetas[t.token].decimals}
-          />
+          <ValueHighlighter value={t.value}>
+            <FormattedBalance
+              value={t.value}
+              decimals={tokenMetas[t.token].decimals}
+            />
+          </ValueHighlighter>
         </span>
         <AddressHighlighter address={t.token}>
           <DecoratedAddressLink
