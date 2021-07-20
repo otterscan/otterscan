@@ -160,3 +160,13 @@ This project intends to keep following their progress and mantaining compatibili
 Erigon itself is alpha, so I consider this software is also in alpha state, however it is pretty usable.
 
 Also there is room for many improvements that are not possible in the current centralized, closed source block explorer offerings and the author of this software would like to have.
+
+## Getting in touch
+
+### Erigon Discord server
+
+Otterscan has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server).
+
+### Twitter
+
+Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmitsuda)).
