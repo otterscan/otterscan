@@ -1,19 +1,18 @@
-import React, { useContext } from "react";
-import { ethers } from "ethers";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faBomb } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
-import { TransactionData, Transfer } from "../types";
+import { TransactionData, InternalOperation } from "../types";
 
 type InternalCreateProps = {
   txData: TransactionData;
-  transfer: Transfer;
+  internalOp: InternalOperation;
 };
 
 const InternalCreate: React.FC<InternalCreateProps> = ({
   txData,
-  transfer,
+  internalOp,
 }) => {
   return (
     <>
@@ -23,17 +22,17 @@ const InternalCreate: React.FC<InternalCreateProps> = ({
         </span>
         <span>Contract</span>
         <div className="flex items-baseline">
-          <AddressHighlighter address={transfer.to}>
-            <DecoratedAddressLink address={transfer.to} creation />
+          <AddressHighlighter address={internalOp.to}>
+            <DecoratedAddressLink address={internalOp.to} creation />
           </AddressHighlighter>
         </div>
         <span className="flex items-baseline text-gray-400">
           (Creator:{" "}
-          <AddressHighlighter address={transfer.from}>
+          <AddressHighlighter address={internalOp.from}>
             <DecoratedAddressLink
-              address={transfer.from}
-              txFrom={transfer.from === txData.from}
-              txTo={transfer.from === txData.to}
+              address={internalOp.from}
+              txFrom={internalOp.from === txData.from}
+              txTo={internalOp.from === txData.to}
             />
           </AddressHighlighter>
           )

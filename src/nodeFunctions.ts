@@ -1,15 +1,15 @@
 import { ethers } from "ethers";
-import { TransactionData, Transfer } from "./types";
+import { TransactionData, InternalOperation } from "./types";
 
-export const getTransactionTransfers = async (
+export const getInternalOperations = async (
   provider: ethers.providers.JsonRpcProvider,
   txData: TransactionData
 ) => {
-  const rawTransfers = await provider.send("ots_getTransactionTransfers", [
+  const rawTransfers = await provider.send("ots_getInternalOperations", [
     txData.transactionHash,
   ]);
 
-  const _transfers: Transfer[] = [];
+  const _transfers: InternalOperation[] = [];
   for (const t of rawTransfers) {
     _transfers.push({
       type: t.type,

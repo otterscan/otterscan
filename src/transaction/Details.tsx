@@ -12,22 +12,22 @@ import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
 import Timestamp from "../components/Timestamp";
-import InternalOperation from "../components/InternalOperation";
+import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
 import GasValue from "../components/GasValue";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
-import { TransactionData, Transfer } from "../types";
+import { TransactionData, InternalOperation } from "../types";
 
 type DetailsProps = {
   txData: TransactionData;
-  internalTransfers?: Transfer[];
+  internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
 };
 
 const Details: React.FC<DetailsProps> = ({
   txData,
-  internalTransfers,
+  internalOps,
   sendsEthToMiner,
 }) => (
   <ContentFrame tabs>
@@ -97,10 +97,14 @@ const Details: React.FC<DetailsProps> = ({
           <Copy value={txData.createdContractAddress!} />
         </div>
       )}
-      {internalTransfers && (
+      {internalOps && (
         <div className="mt-2 space-y-1">
-          {internalTransfers.map((t, i) => (
-            <InternalOperation key={i} txData={txData} transfer={t} />
+          {internalOps.map((op, i) => (
+            <InternalTransactionOperation
+              key={i}
+              txData={txData}
+              internalOp={op}
+            />
           ))}
         </div>
       )}
