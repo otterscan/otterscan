@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight, faBomb } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import { RuntimeContext } from "../useRuntime";
@@ -28,10 +28,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
     <>
       <div className="flex items-baseline space-x-1 text-xs">
         <span className="text-gray-500">
-          <span className="text-red-900">
-            <FontAwesomeIcon icon={faBomb} size="1x" />
-          </span>{" "}
-          SELF DESTRUCT
+          <FontAwesomeIcon icon={faAngleRight} size="1x" /> SELF DESTRUCT
         </span>
         <span>Contract</span>
         <div className="flex items-baseline">

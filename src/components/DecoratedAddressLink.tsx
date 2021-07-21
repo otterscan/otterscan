@@ -2,6 +2,7 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faStar,
+  faBomb,
   faMoneyBillAlt,
   faBurn,
   faCoins,
@@ -51,6 +52,11 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
       {creation && (
         <span className="text-yellow-300" title="Contract creation">
           <FontAwesomeIcon icon={faStar} size="1x" />
+        </span>
+      )}
+      {selfDestruct && (
+        <span className="text-red-800" title="Self destruct">
+          <FontAwesomeIcon icon={faBomb} size="1x" />
         </span>
       )}
       {mint && (
