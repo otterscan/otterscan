@@ -88,6 +88,7 @@ const Transaction: React.FC = () => {
         miner: _block.miner,
         from: _receipt.from,
         to: _receipt.to,
+        createdContractAddress: _receipt.contractAddress,
         value: _response.value,
         tokenTransfers,
         tokenMetas,

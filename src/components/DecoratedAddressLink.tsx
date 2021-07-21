@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faStar,
   faMoneyBillAlt,
   faBurn,
   faCoins,
@@ -15,6 +16,7 @@ type DecoratedAddressLinkProps = {
   selectedAddress?: string;
   text?: string;
   addressCtx?: AddressContext;
+  creation?: boolean;
   miner?: boolean;
   selfDestruct?: boolean;
   txFrom?: boolean;
@@ -28,6 +30,7 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
   selectedAddress,
   text,
   addressCtx,
+  creation,
   miner,
   selfDestruct,
   txFrom,
@@ -45,6 +48,11 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
         burn ? "line-through text-orange-500 hover:text-orange-700" : ""
       } ${selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""}`}
     >
+      {creation && (
+        <span className="text-yellow-300" title="Contract creation">
+          <FontAwesomeIcon icon={faStar} size="1x" />
+        </span>
+      )}
       {mint && (
         <span className="text-green-500" title="Mint address">
           <FontAwesomeIcon icon={faMoneyBillAlt} size="1x" />

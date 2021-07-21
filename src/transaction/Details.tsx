@@ -73,17 +73,30 @@ const Details: React.FC<DetailsProps> = ({
         <Copy value={txData.from} />
       </div>
     </InfoRow>
-    <InfoRow title="Interacted With (To)">
-      <div className="flex items-baseline space-x-2 -ml-1">
-        <AddressHighlighter address={txData.to}>
-          <DecoratedAddressLink
-            address={txData.to}
-            miner={txData.to === txData.miner}
-            txTo
-          />
-        </AddressHighlighter>
-        <Copy value={txData.to} />
-      </div>
+    <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
+      {txData.to ? (
+        <div className="flex items-baseline space-x-2 -ml-1">
+          <AddressHighlighter address={txData.to}>
+            <DecoratedAddressLink
+              address={txData.to}
+              miner={txData.to === txData.miner}
+              txTo
+            />
+          </AddressHighlighter>
+          <Copy value={txData.to} />
+        </div>
+      ) : (
+        <div className="flex items-baseline space-x-2 -ml-1">
+          <AddressHighlighter address={txData.createdContractAddress!}>
+            <DecoratedAddressLink
+              address={txData.createdContractAddress!}
+              creation
+              txTo
+            />
+          </AddressHighlighter>
+          <Copy value={txData.createdContractAddress!} />
+        </div>
+      )}
       {internalTransfers && (
         <div className="mt-2 space-y-1">
           {internalTransfers.map((t, i) => (

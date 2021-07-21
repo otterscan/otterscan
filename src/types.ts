@@ -44,6 +44,7 @@ export type TransactionData = {
   miner?: string;
   from: string;
   to: string;
+  createdContractAddress?: string;
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
   tokenMetas: TokenMetas;
