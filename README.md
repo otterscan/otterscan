@@ -170,3 +170,7 @@ Otterscan has a community channel under the "ecosystem" section of [Erigon's Dis
 ### Twitter
 
 Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmitsuda)).
+
+### Donation address
+
+If you like this project, feel free to send donations to `otterscan.eth`
