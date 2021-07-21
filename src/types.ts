@@ -16,6 +16,7 @@ export type ProcessedTransaction = {
   hash: string;
   from?: string;
   to?: string;
+  createdContractAddress?: string;
   internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
