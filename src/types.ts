@@ -75,6 +75,8 @@ export type From = {
 export enum TransferType {
   TRANSFER = 0,
   SELF_DESTRUCT = 1,
+  CREATE = 2,
+  CREATE2 = 3,
 }
 
 export type Transfer = {
