@@ -10,7 +10,7 @@ import erc20 from "./erc20.json";
 import { TokenMetas, TokenTransfer, TransactionData } from "./types";
 import { RuntimeContext } from "./useRuntime";
 import { SelectionContext, useSelection } from "./useSelection";
-import { useInternalTransfers } from "./useErigonHooks";
+import { useInternalOperations } from "./useErigonHooks";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -88,6 +88,7 @@ const Transaction: React.FC = () => {
         miner: _block.miner,
         from: _receipt.from,
         to: _receipt.to,
+        createdContractAddress: _receipt.contractAddress,
         value: _response.value,
         tokenTransfers,
         tokenMetas,
@@ -105,19 +106,19 @@ const Transaction: React.FC = () => {
     readBlock();
   }, [provider, txhash]);
 
-  const intTransfers = useInternalTransfers(provider, txData);
+  const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
-    if (!txData || !intTransfers) {
+    if (!txData || !internalOps) {
       return false;
     }
 
-    for (const t of intTransfers) {
+    for (const t of internalOps) {
       if (t.to === txData.miner) {
         return true;
       }
     }
     return false;
-  }, [txData, intTransfers]);
+  }, [txData, internalOps]);
 
   const selectionCtx = useSelection();
 
@@ -136,7 +137,7 @@ const Transaction: React.FC = () => {
             <Route path="/tx/:txhash/" exact>
               <Details
                 txData={txData}
-                internalTransfers={intTransfers}
+                internalOps={internalOps}
                 sendsEthToMiner={sendsEthToMiner}
               />
             </Route>

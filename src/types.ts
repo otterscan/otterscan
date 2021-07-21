@@ -16,6 +16,7 @@ export type ProcessedTransaction = {
   hash: string;
   from?: string;
   to?: string;
+  createdContractAddress?: string;
   internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
@@ -44,6 +45,7 @@ export type TransactionData = {
   miner?: string;
   from: string;
   to: string;
+  createdContractAddress?: string;
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
   tokenMetas: TokenMetas;
@@ -70,13 +72,15 @@ export type From = {
   depth: number;
 };
 
-export enum TransferType {
+export enum OperationType {
   TRANSFER = 0,
   SELF_DESTRUCT = 1,
+  CREATE = 2,
+  CREATE2 = 3,
 }
 
-export type Transfer = {
-  type: TransferType;
+export type InternalOperation = {
+  type: OperationType;
   from: string;
   to: string;
   value: BigNumber;

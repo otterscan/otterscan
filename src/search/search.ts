@@ -45,6 +45,7 @@ export class SearchController {
           hash: t.hash,
           from: t.from,
           to: t.to,
+          createdContractAddress: _receipt.contractAddress,
           value: t.value,
           fee: _receipt.gasUsed.mul(t.gasPrice!),
           gasPrice: t.gasPrice!,
