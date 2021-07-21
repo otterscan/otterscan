@@ -57,6 +57,7 @@ const BlockTransactions: React.FC = () => {
             hash: t.hash,
             from: t.from,
             to: t.to,
+            createdContractAddress: _receipts[i].contractAddress,
             value: t.value,
             fee: provider.formatter
               .bigNumber(_receipts[i].gasUsed)
