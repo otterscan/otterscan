@@ -16,6 +16,7 @@ export type ProcessedTransaction = {
   hash: string;
   from?: string;
   to?: string;
+  createdContractAddress?: string;
   internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
@@ -44,6 +45,7 @@ export type TransactionData = {
   miner?: string;
   from: string;
   to: string;
+  createdContractAddress?: string;
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
   tokenMetas: TokenMetas;
@@ -57,12 +59,28 @@ export type TransactionData = {
   logs: ethers.providers.Log[];
 };
 
+// The VOID...
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+export enum AddressContext {
+  FROM,
+  TO,
+}
+
 export type From = {
   current: string;
   depth: number;
 };
 
-export type Transfer = {
+export enum OperationType {
+  TRANSFER = 0,
+  SELF_DESTRUCT = 1,
+  CREATE = 2,
+  CREATE2 = 3,
+}
+
+export type InternalOperation = {
+  type: OperationType;
   from: string;
   to: string;
   value: BigNumber;

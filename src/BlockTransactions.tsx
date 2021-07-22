@@ -5,7 +5,11 @@ import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
 import BlockTransactionHeader from "./BlockTransactionHeader";
 import BlockTransactionResults from "./BlockTransactionResults";
-import { ProcessedTransaction } from "./types";
+import {
+  InternalOperation,
+  OperationType,
+  ProcessedTransaction,
+} from "./types";
 import { PAGE_SIZE } from "./params";
 import { RuntimeContext } from "./useRuntime";
 
@@ -57,6 +61,7 @@ const BlockTransactions: React.FC = () => {
             hash: t.hash,
             from: t.from,
             to: t.to,
+            createdContractAddress: _receipts[i].contractAddress,
             value: t.value,
             fee: provider.formatter
               .bigNumber(_receipts[i].gasUsed)
@@ -71,14 +76,18 @@ const BlockTransactions: React.FC = () => {
 
       const internalChecks = await Promise.all(
         responses.map(async (res) => {
-          const r = await provider.send("ots_getTransactionTransfers", [
-            res.hash,
-          ]);
-          for (const t of r) {
+          const r: InternalOperation[] = await provider.send(
+            "ots_getInternalOperations",
+            [res.hash]
+          );
+          for (const op of r) {
+            if (op.type !== OperationType.TRANSFER) {
+              continue;
+            }
             if (
               res.miner &&
-              (res.miner === ethers.utils.getAddress(t.from) ||
-                res.miner === ethers.utils.getAddress(t.to))
+              (res.miner === ethers.utils.getAddress(op.from) ||
+                res.miner === ethers.utils.getAddress(op.to))
             ) {
               return true;
             }

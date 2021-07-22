@@ -5,11 +5,18 @@ import ENSLogo from "./ensLogo.svg";
 type ENSNameLinkProps = {
   name: string;
   address: string;
+  dontOverrideColors?: boolean;
 };
 
-const ENSNameLink: React.FC<ENSNameLinkProps> = ({ name, address }) => (
+const ENSNameLink: React.FC<ENSNameLinkProps> = ({
+  name,
+  address,
+  dontOverrideColors,
+}) => (
   <NavLink
-    className="flex items-baseline space-x-1 font-sans text-link-blue hover:text-link-blue-hover truncate"
+    className={`flex items-baseline space-x-1 font-sans ${
+      dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
+    } truncate`}
     to={`/address/${name}`}
     title={`${name}: ${address}`}
   >
@@ -20,7 +27,7 @@ const ENSNameLink: React.FC<ENSNameLinkProps> = ({ name, address }) => (
       width={12}
       height={12}
     />
-    <p className="truncate">{name}</p>
+    <span className="truncate">{name}</span>
   </NavLink>
 );
 

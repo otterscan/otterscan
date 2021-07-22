@@ -4,7 +4,7 @@ import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
-import AddressOrENSName from "../components/AddressOrENSName";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TimestampAge from "../components/TimestampAge";
 import AddressHighlighter from "../components/AddressHighlighter";
 import TransactionDirection, {
@@ -35,7 +35,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       direction = Direction.SELF;
     } else if (tx.from === selectedAddress) {
       direction = Direction.OUT;
-    } else if (tx.to === selectedAddress) {
+    } else if (
+      tx.to === selectedAddress ||
+      tx.createdContractAddress === selectedAddress
+    ) {
       direction = Direction.IN;
     } else {
       direction = Direction.INTERNAL;
@@ -44,6 +47,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
 
   const ensFrom = ensCache && tx.from && ensCache[tx.from];
   const ensTo = ensCache && tx.to && ensCache[tx.to];
+  const ensCreated =
+    ensCache &&
+    tx.createdContractAddress &&
+    ensCache[tx.createdContractAddress];
   const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
 
   return (
@@ -71,11 +78,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span className="truncate">
           {tx.from && (
             <AddressHighlighter address={tx.from}>
-              <AddressOrENSName
+              <DecoratedAddressLink
                 address={tx.from}
                 ensName={ensFrom}
                 selectedAddress={selectedAddress}
-                minerAddress={tx.miner}
+                miner={tx.miner === tx.from}
               />
             </AddressHighlighter>
           )}
@@ -89,13 +96,22 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <span className="col-span-2 flex items-baseline" title={tx.to}>
         <span className="truncate">
-          {tx.to && (
+          {tx.to ? (
             <AddressHighlighter address={tx.to}>
-              <AddressOrENSName
+              <DecoratedAddressLink
                 address={tx.to}
                 ensName={ensTo}
                 selectedAddress={selectedAddress}
-                minerAddress={tx.miner}
+                miner={tx.miner === tx.to}
+              />
+            </AddressHighlighter>
+          ) : (
+            <AddressHighlighter address={tx.createdContractAddress!}>
+              <DecoratedAddressLink
+                address={tx.createdContractAddress!}
+                ensName={ensCreated}
+                selectedAddress={selectedAddress}
+                creation
               />
             </AddressHighlighter>
           )}

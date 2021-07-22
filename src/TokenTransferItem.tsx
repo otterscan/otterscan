@@ -2,22 +2,28 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./components/AddressHighlighter";
-import AddressOrENSName from "./components/AddressOrENSName";
-import AddressLink from "./components/AddressLink";
-import TokenLogo from "./components/TokenLogo";
+import ValueHighlighter from "./components/ValueHighlighter";
+import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import FormattedBalance from "./components/FormattedBalance";
-import { TokenMetas, TokenTransfer } from "./types";
+import {
+  AddressContext,
+  TokenMetas,
+  TokenTransfer,
+  TransactionData,
+} from "./types";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
+  txData: TransactionData;
   tokenMetas: TokenMetas;
 };
 
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
+  txData,
   tokenMetas,
 }) => (
-  <div className="flex items-baseline space-x-2 truncate">
+  <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
@@ -25,40 +31,46 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
       <div className="flex space-x-1">
         <span className="font-bold">From</span>
         <AddressHighlighter address={t.from}>
-          <AddressOrENSName address={t.from} />
+          <DecoratedAddressLink
+            address={t.from}
+            addressCtx={AddressContext.FROM}
+            txFrom={t.from === txData.from}
+            txTo={t.from === txData.to}
+          />
         </AddressHighlighter>
       </div>
       <div className="flex space-x-1">
         <span className="font-bold">To</span>
         <AddressHighlighter address={t.to}>
-          <AddressOrENSName address={t.to} />
+          <DecoratedAddressLink
+            address={t.to}
+            addressCtx={AddressContext.TO}
+            txFrom={t.to === txData.from}
+            txTo={t.to === txData.to}
+          />
         </AddressHighlighter>
       </div>
       <div className="col-span-3 flex space-x-1">
         <span className="font-bold">For</span>
         <span>
-          <FormattedBalance
-            value={t.value}
-            decimals={tokenMetas[t.token].decimals}
+          <ValueHighlighter value={t.value}>
+            <FormattedBalance
+              value={t.value}
+              decimals={tokenMetas[t.token].decimals}
+            />
+          </ValueHighlighter>
+        </span>
+        <AddressHighlighter address={t.token}>
+          <DecoratedAddressLink
+            address={t.token}
+            text={
+              tokenMetas[t.token]
+                ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
+                : ""
+            }
+            tokenMeta={tokenMetas[t.token]}
           />
-        </span>
-        <span className="flex space-x-1 items-baseline truncate">
-          {tokenMetas[t.token] ? (
-            <>
-              <div className="self-center">
-                <TokenLogo address={t.token} name={tokenMetas[t.token].name} />
-              </div>
-              <AddressLink
-                address={t.token}
-                text={`${tokenMetas[t.token].name} (${
-                  tokenMetas[t.token].symbol
-                })`}
-              />
-            </>
-          ) : (
-            <AddressOrENSName address={t.token} />
-          )}
-        </span>
+        </AddressHighlighter>
       </div>
     </div>
   </div>

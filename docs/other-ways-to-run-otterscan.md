@@ -40,7 +40,7 @@ First, a brief explanation about the app:
 
 These instructions are subjected to changes in future for the sake of simplification.
 
-Make sure you have a working node 12/npm installation.
+Make sure you have a working node 14/npm 7 installation.
 
 By default, it assumes your Erigon `rpcdaemon` processs is serving requests at `http://localhost:8545`. You can customize this URL by changing the `public/config.json` file.
 
