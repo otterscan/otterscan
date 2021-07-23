@@ -3,8 +3,8 @@ import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
-import BlockTransactionHeader from "./BlockTransactionHeader";
-import BlockTransactionResults from "./BlockTransactionResults";
+import BlockTransactionHeader from "./block/BlockTransactionHeader";
+import BlockTransactionResults from "./block/BlockTransactionResults";
 import {
   InternalOperation,
   OperationType,

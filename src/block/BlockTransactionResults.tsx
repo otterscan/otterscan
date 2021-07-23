@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
-import ContentFrame from "./ContentFrame";
-import PageControl from "./search/PageControl";
-import ResultHeader from "./search/ResultHeader";
-import PendingResults from "./search/PendingResults";
-import TransactionItem from "./search/TransactionItem";
-import { useFeeToggler } from "./search/useFeeToggler";
-import { RuntimeContext } from "./useRuntime";
-import { SelectionContext, useSelection } from "./useSelection";
-import { useENSCache } from "./useReverseCache";
-import { ProcessedTransaction } from "./types";
-import { PAGE_SIZE } from "./params";
+import ContentFrame from "../ContentFrame";
+import PageControl from "../search/PageControl";
+import ResultHeader from "../search/ResultHeader";
+import PendingResults from "../search/PendingResults";
+import TransactionItem from "../search/TransactionItem";
+import { useFeeToggler } from "../search/useFeeToggler";
+import { RuntimeContext } from "../useRuntime";
+import { SelectionContext, useSelection } from "../useSelection";
+import { useENSCache } from "../useReverseCache";
+import { ProcessedTransaction } from "../types";
+import { PAGE_SIZE } from "../params";
 
 type BlockTransactionResultsProps = {
   page?: ProcessedTransaction[];

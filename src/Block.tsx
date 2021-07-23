@@ -1,15 +1,10 @@
 import React, { useEffect, useState, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { ethers, BigNumber } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
+import NavBlock from "./block/NavBlock";
 import ContentFrame from "./ContentFrame";
-import NavButton from "./components/NavButton";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
@@ -18,6 +13,7 @@ import TransactionValue from "./components/TransactionValue";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
+import { blockTxsURL } from "./url";
 
 type BlockParams = {
   blockNumberOrHash: string;
@@ -107,44 +103,25 @@ const Block: React.FC = () => {
   return (
     <StandardFrame>
       <StandardSubtitle>
-        Block{" "}
-        <span className="text-base text-gray-500">
-          #{params.blockNumberOrHash}
-        </span>
+        <div className="flex space-x-1 items-baseline">
+          <span>Block</span>
+          <span className="text-base text-gray-500">
+            #{params.blockNumberOrHash}
+          </span>
+          {block && (
+            <NavBlock
+              blockNumber={block.number}
+              latestBlockNumber={latestBlockNumber}
+            />
+          )}
+        </div>
       </StandardSubtitle>
       {block && (
         <ContentFrame>
           <InfoRow title="Block Height">
-            <div className="flex space-x-1 items-baseline">
-              <span className="font-bold mr-1">
-                {ethers.utils.commify(block.number)}
-              </span>
-              <NavButton
-                blockNum={block.number - 1}
-                disabled={block.number === 0}
-              >
-                <FontAwesomeIcon icon={faChevronLeft} />
-              </NavButton>
-              <NavButton
-                blockNum={block.number + 1}
-                disabled={
-                  latestBlockNumber === undefined ||
-                  block.number >= latestBlockNumber
-                }
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-              </NavButton>
-              <NavButton
-                blockNum={latestBlockNumber!}
-                disabled={
-                  latestBlockNumber === undefined ||
-                  block.number >= latestBlockNumber
-                }
-              >
-                <FontAwesomeIcon icon={faChevronRight} />
-                <FontAwesomeIcon icon={faChevronRight} />
-              </NavButton>
-            </div>
+            <span className="font-bold">
+              {ethers.utils.commify(block.number)}
+            </span>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />
@@ -152,7 +129,7 @@ const Block: React.FC = () => {
           <InfoRow title="Transactions">
             <NavLink
               className="bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white rounded-lg px-2 py-1 text-xs"
-              to={`/block/${block.number}/txs`}
+              to={blockTxsURL(block.number)}
             >
               {block.transactions.length} transactions
             </NavLink>{" "}

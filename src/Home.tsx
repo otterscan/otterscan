@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
+import { blockURL } from "./url";
 
 const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -56,7 +57,7 @@ const Home: React.FC = () => {
         {latestBlock && (
           <NavLink
             className="mx-auto flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
-            to={`/block/${latestBlock.number}`}
+            to={blockURL(latestBlock.number)}
           >
             <div>Latest block: {ethers.utils.commify(latestBlock.number)}</div>
             <Timestamp value={latestBlock.timestamp} />
