@@ -8,6 +8,7 @@ import {
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
+import BlockConfirmations from "../components/BlockConfirmations";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
@@ -53,9 +54,7 @@ const Details: React.FC<DetailsProps> = ({
     <InfoRow title="Block">
       <div className="flex items-baseline space-x-2">
         <BlockLink blockTag={txData.blockNumber} />
-        <span className="rounded text-xs bg-gray-100 text-gray-500 px-2 py-1">
-          {txData.confirmations} Block Confirmations
-        </span>
+        <BlockConfirmations confirmations={txData.confirmations} />
       </div>
     </InfoRow>
     <InfoRow title="Timestamp">
