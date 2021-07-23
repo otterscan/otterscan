@@ -3,6 +3,7 @@ import { Route, Switch, useParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
+import TabGroup from "./components/TabGroup";
 import Tab from "./components/Tab";
 import Details from "./transaction/Details";
 import Logs from "./transaction/Logs";
@@ -55,14 +56,14 @@ const Transaction: React.FC = () => {
       )}
       {txData && (
         <SelectionContext.Provider value={selectionCtx}>
-          <div className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+          <TabGroup>
             <Tab href={`/tx/${txhash}`}>Overview</Tab>
             {txData.confirmedData?.blockNumber !== undefined && (
               <Tab href={`/tx/${txhash}/logs`}>
                 Logs{txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
               </Tab>
             )}
-          </div>
+          </TabGroup>
           <Switch>
             <Route path="/tx/:txhash/" exact>
               <Details

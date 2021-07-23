@@ -27,6 +27,7 @@ module.exports = {
         data: ["Roboto Mono"],
         balance: ["Fira Code"],
         blocknum: ["Roboto"],
+        code: ["Fira Code"],
       },
       borderColor: {
         skin: {
