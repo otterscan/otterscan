@@ -21,7 +21,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
           <div className="w-full space-y-2">
             <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
               <div className="font-bold text-right">Address</div>
-              <div className="col-span-11">
+              <div className="col-span-11 mr-auto">
                 <DecoratedAddressLink
                   address={l.address}
                   miner={l.address === txData.miner}
