@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { ethers } from "ethers";
-import StandardSubtitle from "./StandardSubtitle";
-import BlockLink from "./components/BlockLink";
-import NavBlock from "./block/NavBlock";
-import { RuntimeContext } from "./useRuntime";
-import { useLatestBlockNumber } from "./useLatestBlock";
-import { blockTxsURL } from "./url";
+import StandardSubtitle from "../StandardSubtitle";
+import BlockLink from "../components/BlockLink";
+import NavBlock from "./NavBlock";
+import { RuntimeContext } from "../useRuntime";
+import { useLatestBlockNumber } from "../useLatestBlock";
+import { blockTxsURL } from "../url";
 
 type BlockTransactionHeaderProps = {
   blockTag: ethers.providers.BlockTag;
