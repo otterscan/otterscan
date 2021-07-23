@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import ContentFrame from "../ContentFrame";
 import Highlight from "react-highlight";
+import InfoRow from "../components/InfoRow";
 
 import "highlight.js/styles/stackoverflow-light.css";
 import hljs from "highlight.js";
@@ -13,9 +15,7 @@ type ContractProps = {
 };
 
 const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
-  const [sources, setSources] = useState<
-    { [fileName: string]: any } | undefined | null
-  >(undefined);
+  const [rawMetadata, setRawMetadata] = useState<any>();
   useEffect(() => {
     if (!checksummedAddress) {
       return;
@@ -29,14 +29,14 @@ const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
         if (result.ok) {
           const json = await result.json();
           console.log(json);
-          setSources(json.sources);
+          setRawMetadata(json);
           setSelected(Object.keys(json.sources)[0]);
         } else {
-          setSources(null);
+          setRawMetadata(null);
         }
       } catch (err) {
         console.error(err);
-        setSources(null);
+        setRawMetadata(null);
       }
     };
     fetchMetadata();
@@ -44,15 +44,37 @@ const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
 
   const [selected, setSelected] = useState<string>();
 
+  const optimizer = rawMetadata?.settings?.optimizer;
+
   return (
     <ContentFrame tabs>
+      {rawMetadata && (
+        <>
+          <InfoRow title="Compiler">
+            <span>{rawMetadata.compiler?.version}</span>
+          </InfoRow>
+          <InfoRow title="Optimizer Enabled">
+            {optimizer?.enabled ? (
+              <span>
+                <span className="font-bold text-green-600">Yes</span> with{" "}
+                <span className="font-bold text-green-600">
+                  {ethers.utils.commify(optimizer?.runs)}
+                </span>{" "}
+                runs
+              </span>
+            ) : (
+              <span className="font-bold text-red-600">No</span>
+            )}
+          </InfoRow>
+        </>
+      )}
       <div className="py-5">
-        {sources === null && (
+        {rawMetadata === null && (
           <span>Couldn't find contract metadata in Sourcify repository.</span>
         )}
-        {sources !== undefined && sources !== null && (
-          <>
-            {Object.entries(sources).map(([k]) => (
+        {rawMetadata !== undefined && rawMetadata !== null && (
+          <div>
+            {Object.entries(rawMetadata.sources).map(([k]) => (
               <button
                 className={`border-b-2 border-transparent rounded-t text-sm px-2 py-1 bg-gray-200 text-gray-500 ${
                   selected === k ? "border-orange-300 font-bold" : ""
@@ -63,10 +85,10 @@ const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
             ))}
             {selected && (
               <Highlight className="w-full h-full border focus:outline-none font-code text-base">
-                {sources[selected].content}
+                {rawMetadata.sources[selected].content}
               </Highlight>
             )}
-          </>
+          </div>
         )}
       </div>
     </ContentFrame>
