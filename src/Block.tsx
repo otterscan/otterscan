@@ -107,18 +107,13 @@ const Block: React.FC = () => {
   return (
     <StandardFrame>
       <StandardSubtitle>
-        Block{" "}
-        <span className="text-base text-gray-500">
-          #{params.blockNumberOrHash}
-        </span>
-      </StandardSubtitle>
-      {block && (
-        <ContentFrame>
-          <InfoRow title="Block Height">
-            <div className="flex space-x-1 items-baseline">
-              <span className="font-bold mr-1">
-                {ethers.utils.commify(block.number)}
-              </span>
+        <div className="flex space-x-1 items-baseline">
+          <span>Block</span>
+          <span className="text-base text-gray-500">
+            #{params.blockNumberOrHash}
+          </span>
+          {block && (
+            <div className="pl-2 self-center flex space-x-1">
               <NavButton
                 blockNum={block.number - 1}
                 disabled={block.number === 0}
@@ -145,6 +140,15 @@ const Block: React.FC = () => {
                 <FontAwesomeIcon icon={faChevronRight} />
               </NavButton>
             </div>
+          )}
+        </div>
+      </StandardSubtitle>
+      {block && (
+        <ContentFrame>
+          <InfoRow title="Block Height">
+            <span className="font-bold">
+              {ethers.utils.commify(block.number)}
+            </span>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />
