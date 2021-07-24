@@ -67,8 +67,12 @@ const Block: React.FC = () => {
 
       const _block = provider.formatter.block(_rawBlock);
       const extBlock: ExtendedBlock = {
-        blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward),
-        unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward),
+        blockReward: provider.formatter.bigNumber(
+          _rawIssuance.blockReward ?? 0
+        ),
+        unclesReward: provider.formatter.bigNumber(
+          _rawIssuance.uncleReward ?? 0
+        ),
         feeReward: fees,
         size: provider.formatter.number(_rawBlock.size),
         sha3Uncles: _rawBlock.sha3Uncles,
