@@ -16,7 +16,7 @@ import Copy from "./components/Copy";
 import ContentFrame from "./ContentFrame";
 import TabGroup from "./components/TabGroup";
 import Tab from "./components/Tab";
-import Contract from "./address/Contract";
+import Contracts from "./address/Contracts";
 import UndefinedPageControl from "./search/UndefinedPageControl";
 import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
@@ -273,7 +273,7 @@ const AddressTransactions: React.FC = () => {
                 </ContentFrame>
               </Route>
               <Route path="/address/:addressOrName/contract" exact>
-                <Contract checksummedAddress={checksummedAddress} />
+                <Contracts checksummedAddress={checksummedAddress} />
               </Route>
             </Switch>
           </>

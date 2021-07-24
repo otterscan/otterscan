@@ -19,3 +19,10 @@ export const sourcifyMetadata = (
   networkId: number
 ) =>
   `http://localhost:7000/sourcify/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
+
+export const sourcifySourceFile = (
+  checksummedAddress: string,
+  networkId: number,
+  filepath: string
+) =>
+  `http://localhost:7000/sourcify/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
