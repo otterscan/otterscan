@@ -71,15 +71,20 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
         )}
         {rawMetadata !== undefined && rawMetadata !== null && (
           <div>
-            {Object.entries(rawMetadata.sources).map(([k]) => (
-              <button
-                className={`border-b-2 border-transparent rounded-t text-sm px-2 py-1 bg-gray-200 text-gray-500 ${
-                  selected === k ? "border-orange-300 font-bold" : ""
-                }`}
-              >
-                {k}
-              </button>
-            ))}
+            <div className="flex truncate">
+              {Object.entries(rawMetadata.sources).map(([k]) => (
+                <button
+                  className={`border-b-2 border-transparent rounded-t text-sm px-2 py-1 ${
+                    selected === k
+                      ? "border-orange-300 font-bold bg-gray-200 text-gray-500"
+                      : "bg-gray-100 text-gray-400 transform origin-bottom scale-95"
+                  }`}
+                  onClick={() => setSelected(k)}
+                >
+                  {k}
+                </button>
+              ))}
+            </div>
             {selected && (
               <Contract
                 checksummedAddress={checksummedAddress}
