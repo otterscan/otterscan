@@ -13,3 +13,9 @@ export const tokenLogoURL = (
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
+
+export const sourcifyMetadata = (
+  checksummedAddress: string,
+  networkId: number
+) =>
+  `http://localhost:7000/sourcify/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;

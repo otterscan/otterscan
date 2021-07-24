@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import ContentFrame from "../ContentFrame";
 import Highlight from "react-highlight";
 import InfoRow from "../components/InfoRow";
+import { sourcifyMetadata } from "../url";
+import { RuntimeContext } from "../useRuntime";
 
 import "highlight.js/styles/stackoverflow-light.css";
 import hljs from "highlight.js";
@@ -15,6 +17,7 @@ type ContractProps = {
 };
 
 const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
+  const { provider } = useContext(RuntimeContext);
   const [rawMetadata, setRawMetadata] = useState<any>();
   useEffect(() => {
     if (!checksummedAddress) {
@@ -24,7 +27,7 @@ const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
     const fetchMetadata = async () => {
       try {
         const result = await fetch(
-          `https://repo.sourcify.dev/contracts/full_match/1/${checksummedAddress}/metadata.json`
+          sourcifyMetadata(checksummedAddress, provider!.network.chainId)
         );
         if (result.ok) {
           const json = await result.json();
@@ -40,7 +43,7 @@ const Contract: React.FC<ContractProps> = ({ checksummedAddress }) => {
       }
     };
     fetchMetadata();
-  }, [checksummedAddress]);
+  }, [provider, checksummedAddress]);
 
   const [selected, setSelected] = useState<string>();
 
