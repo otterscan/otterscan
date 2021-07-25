@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import hljs from "highlight.js";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import docco from "react-syntax-highlighter/dist/esm/styles/hljs/docco";
 
 import { sourcifySourceFile } from "../url";
 
@@ -44,7 +44,12 @@ const Contract: React.FC<ContractProps> = ({
   }, [checksummedAddress, networkId, filename, source.content]);
 
   return (
-    <SyntaxHighlighter language="solidity" style={docco} showLineNumbers>
+    <SyntaxHighlighter
+      className="w-full h-full border font-code text-base"
+      language="solidity"
+      style={docco}
+      showLineNumbers
+    >
       {content ?? ""}
     </SyntaxHighlighter>
   );
