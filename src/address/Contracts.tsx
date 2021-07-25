@@ -77,7 +77,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
                   className={`border-b-2 border-transparent rounded-t text-sm px-2 py-1 ${
                     selected === k
                       ? "border-orange-300 font-bold bg-gray-200 text-gray-500"
-                      : "bg-gray-100 text-gray-400 transform origin-bottom scale-95"
+                      : "hover:border-orange-200 bg-gray-100 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75 transform origin-bottom scale-95 hover:scale-100"
                   }`}
                   onClick={() => setSelected(k)}
                 >
