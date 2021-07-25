@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import WarningHeader from "./WarningHeader";
 import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
@@ -26,6 +27,7 @@ const App = () => {
       ) : (
         <RuntimeContext.Provider value={runtime}>
           <div className="h-screen flex flex-col">
+            <WarningHeader />
             <Router>
               <Switch>
                 <Route path="/" exact>
