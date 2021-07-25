@@ -18,6 +18,7 @@ type Metadata = {
       keccak256: string;
       content?: string | undefined;
       urls?: string[];
+      license?: string;
     };
   };
   settings: {
