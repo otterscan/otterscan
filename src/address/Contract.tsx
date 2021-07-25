@@ -1,13 +1,12 @@
-import React, { useState } from "react";
-import Highlight from "react-highlight";
-
-import "highlight.js/styles/stackoverflow-light.css";
+import React, { useState, useEffect } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
 import hljs from "highlight.js";
-import hljsDefineSolidity from "highlightjs-solidity";
-import { useEffect } from "react";
+import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+
 import { sourcifySourceFile } from "../url";
+
+import hljsDefineSolidity from "highlightjs-solidity";
 hljsDefineSolidity(hljs);
-hljs.initHighlightingOnLoad();
 
 type ContractProps = {
   checksummedAddress: string;
@@ -45,9 +44,9 @@ const Contract: React.FC<ContractProps> = ({
   }, [checksummedAddress, networkId, filename, source.content]);
 
   return (
-    <Highlight className="w-full h-full border focus:outline-none font-code text-base">
-      {content}
-    </Highlight>
+    <SyntaxHighlighter language="solidity" style={docco} showLineNumbers>
+      {content ?? ""}
+    </SyntaxHighlighter>
   );
 };
 
