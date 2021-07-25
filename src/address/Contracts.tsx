@@ -6,13 +6,47 @@ import Contract from "./Contract";
 import { sourcifyMetadata } from "../url";
 import { RuntimeContext } from "../useRuntime";
 
+type Metadata = {
+  version: string;
+  language: string;
+  compiler: {
+    version: string;
+    keccak256?: string | undefined;
+  };
+  sources: {
+    [filename: string]: {
+      keccak256: string;
+      content?: string | undefined;
+      urls?: string[];
+    };
+  };
+  settings: {
+    remappings: string[];
+    optimizer?: {
+      enabled: boolean;
+      runs: number;
+    };
+    compilationTarget: {
+      [filename: string]: string;
+    };
+    libraries: {
+      [filename: string]: string;
+    };
+  };
+  output: {
+    abi: any[];
+    userdocs: any[];
+    devdoc: any[];
+  };
+};
+
 type ContractsProps = {
   checksummedAddress: string;
 };
 
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
   const { provider } = useContext(RuntimeContext);
-  const [rawMetadata, setRawMetadata] = useState<any>();
+  const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
   useEffect(() => {
     if (!checksummedAddress) {
       return;
@@ -24,10 +58,9 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
           sourcifyMetadata(checksummedAddress, provider!.network.chainId)
         );
         if (result.ok) {
-          const json = await result.json();
-          console.log(json);
-          setRawMetadata(json);
-          setSelected(Object.keys(json.sources)[0]);
+          const _metadata = await result.json();
+          setRawMetadata(_metadata);
+          setSelected(Object.keys(_metadata.sources)[0]);
         } else {
           setRawMetadata(null);
         }
@@ -47,8 +80,11 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
     <ContentFrame tabs>
       {rawMetadata && (
         <>
+          <InfoRow title="Language">
+            <span>{rawMetadata.language}</span>
+          </InfoRow>
           <InfoRow title="Compiler">
-            <span>{rawMetadata.compiler?.version}</span>
+            <span>{rawMetadata.compiler.version}</span>
           </InfoRow>
           <InfoRow title="Optimizer Enabled">
             {optimizer?.enabled ? (
