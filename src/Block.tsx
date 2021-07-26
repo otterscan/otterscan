@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useMemo, useContext } from "react";
+import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { ethers, BigNumber } from "ethers";
+import { ethers } from "ethers";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
@@ -14,79 +14,17 @@ import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
+import { useBlockData } from "./useErigonHooks";
 
 type BlockParams = {
   blockNumberOrHash: string;
 };
 
-interface ExtendedBlock extends ethers.providers.Block {
-  blockReward: BigNumber;
-  unclesReward: BigNumber;
-  feeReward: BigNumber;
-  size: number;
-  sha3Uncles: string;
-  stateRoot: string;
-  totalDifficulty: BigNumber;
-}
-
 const Block: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
 
-  const [block, setBlock] = useState<ExtendedBlock>();
-  useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
-    const readBlock = async () => {
-      let blockPromise: Promise<any>;
-      if (ethers.utils.isHexString(params.blockNumberOrHash, 32)) {
-        blockPromise = provider.send("eth_getBlockByHash", [
-          params.blockNumberOrHash,
-          false,
-        ]);
-      } else {
-        blockPromise = provider.send("eth_getBlockByNumber", [
-          params.blockNumberOrHash,
-          false,
-        ]);
-      }
-      const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
-        blockPromise,
-        provider.send("erigon_issuance", [params.blockNumberOrHash]),
-        provider.send("eth_getBlockReceipts", [params.blockNumberOrHash]),
-      ]);
-      const receipts = (_rawReceipts as any[]).map((r) =>
-        provider.formatter.receipt(r)
-      );
-      const fees = receipts.reduce(
-        (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
-        BigNumber.from(0)
-      );
-
-      const _block = provider.formatter.block(_rawBlock);
-      const extBlock: ExtendedBlock = {
-        blockReward: provider.formatter.bigNumber(
-          _rawIssuance.blockReward ?? 0
-        ),
-        unclesReward: provider.formatter.bigNumber(
-          _rawIssuance.uncleReward ?? 0
-        ),
-        feeReward: fees,
-        size: provider.formatter.number(_rawBlock.size),
-        sha3Uncles: _rawBlock.sha3Uncles,
-        stateRoot: _rawBlock.stateRoot,
-        totalDifficulty: provider.formatter.bigNumber(
-          _rawBlock.totalDifficulty
-        ),
-        ..._block,
-      };
-      setBlock(extBlock);
-    };
-    readBlock();
-  }, [provider, params.blockNumberOrHash]);
-
+  const block = useBlockData(provider, params.blockNumberOrHash);
   useEffect(() => {
     if (block) {
       document.title = `Block #${block.number} | Otterscan`;
