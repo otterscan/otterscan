@@ -15,6 +15,7 @@ import Copy from "../components/Copy";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
+import TransactionType from "../components/TransactionType";
 import GasValue from "../components/GasValue";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
@@ -130,6 +131,29 @@ const Details: React.FC<DetailsProps> = ({
         {ethers.utils.formatEther(txData.value)} Ether
       </span>
     </InfoRow>
+    <InfoRow title="Type (EIP-2718)">
+      <TransactionType type={txData.type} />
+    </InfoRow>
+    {txData.type === 2 && (
+      <>
+        <InfoRow title="Max Fee Per Gas">
+          <span>
+            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
+          </span>
+        </InfoRow>
+        <InfoRow title="Max Priority Fee Per Gas">
+          <span>
+            <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
+            <FormattedBalance
+              value={txData.maxPriorityFeePerGas!}
+              decimals={9}
+            />{" "}
+            Gwei)
+          </span>
+        </InfoRow>
+      </>
+    )}
     <InfoRow title="Transaction Fee">
       <FormattedBalance value={txData.fee} /> Ether
     </InfoRow>
