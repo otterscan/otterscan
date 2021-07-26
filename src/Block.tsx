@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
@@ -10,6 +10,7 @@ import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
+import FormattedBalance from "./components/FormattedBalance";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
@@ -39,6 +40,9 @@ const Block: React.FC = () => {
       console.error(err);
     }
   }, [block]);
+  const burnedFees =
+    block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
+  const netFeeReward = block && block.feeReward.sub(burnedFees ?? 0);
 
   const latestBlockNumber = useLatestBlockNumber(provider);
 
@@ -81,12 +85,18 @@ const Block: React.FC = () => {
             <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue value={block.blockReward.add(block.feeReward)} />
+            <TransactionValue
+              value={block.blockReward.add(netFeeReward ?? 0)}
+            />
             {!block.feeReward.isZero() && (
               <>
                 {" "}
                 (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-                <TransactionValue value={block.feeReward} hideUnit />)
+                <TransactionValue
+                  value={netFeeReward ?? BigNumber.from(0)}
+                  hideUnit
+                />
+                )
               </>
             )}
           </InfoRow>
@@ -102,6 +112,24 @@ const Block: React.FC = () => {
           <InfoRow title="Size">
             {ethers.utils.commify(block.size)} bytes
           </InfoRow>
+          {block.baseFeePerGas && (
+            <InfoRow title="Base Fee">
+              <span>
+                <FormattedBalance value={block.baseFeePerGas} decimals={9} />{" "}
+                Gwei (
+                <FormattedBalance
+                  value={block.baseFeePerGas}
+                  decimals={0}
+                />{" "}
+                wei)
+              </span>
+            </InfoRow>
+          )}
+          {burnedFees && (
+            <InfoRow title="Burned Fees">
+              <FormattedBalance value={burnedFees} /> Ether
+            </InfoRow>
+          )}
           <InfoRow title="Gas Used">
             <GasValue value={block.gasUsed} />
           </InfoRow>
