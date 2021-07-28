@@ -1,20 +1,29 @@
 import React from "react";
+import ExternalLink from "./ExternalLink";
 
 type TransactionTypeProps = {
   type: number;
 };
 
 const TransactionType: React.FC<TransactionTypeProps> = ({ type }) => {
-  let description: string;
+  let description: React.ReactNode;
   switch (type) {
     case 0:
       description = "legacy";
       break;
     case 1:
-      description = "EIP-2930";
+      description = (
+        <ExternalLink href="https://eips.ethereum.org/EIPS/eip-2930">
+          EIP-2930
+        </ExternalLink>
+      );
       break;
     case 2:
-      description = "EIP-1559";
+      description = (
+        <ExternalLink href="https://eips.ethereum.org/EIPS/eip-1559">
+          EIP-1559
+        </ExternalLink>
+      );
       break;
     default:
       description = "unknown";
