@@ -190,7 +190,7 @@ const Details: React.FC<DetailsProps> = ({
         </>
       )}
       <InfoRow title="Transaction Fee">
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div>
             <FormattedBalance value={txData.fee} /> Ether
           </div>
