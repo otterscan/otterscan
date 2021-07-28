@@ -5,7 +5,7 @@ type InfoRowProps = React.PropsWithChildren<{
 }>;
 
 const InfoRow: React.FC<InfoRowProps> = ({ title, children }) => (
-  <div className="grid grid-cols-4 py-4 text-sm items-baseline">
+  <div className="grid grid-cols-4 py-4 text-sm">
     <div>{title}:</div>
     <div className="col-span-3">{children}</div>
   </div>
