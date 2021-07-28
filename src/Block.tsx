@@ -5,6 +5,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
 import ContentFrame from "./ContentFrame";
+import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
 import BlockLink from "./components/BlockLink";
@@ -43,6 +44,8 @@ const Block: React.FC = () => {
   const burnedFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
   const netFeeReward = block && block.feeReward.sub(burnedFees ?? 0);
+  const gasUsedPerc =
+    block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
 
@@ -130,11 +133,24 @@ const Block: React.FC = () => {
               <FormattedBalance value={burnedFees} /> Ether
             </InfoRow>
           )}
-          <InfoRow title="Gas Used">
-            <GasValue value={block.gasUsed} />
-          </InfoRow>
-          <InfoRow title="Gas Limit">
-            <GasValue value={block.gasLimit} />
+          <InfoRow title="Gas Used/Limit">
+            <div className="flex space-x-3 items-baseline">
+              <div>
+                <GasValue value={block.gasUsed} /> /{" "}
+                <GasValue value={block.gasLimit} />
+              </div>
+              <div className="self-center w-40 border rounded border-gray-200">
+                <div className="w-full h-5 rounded bg-gradient-to-r from-red-400 via-yellow-300 to-green-400 relative">
+                  <div
+                    className="absolute top-0 right-0 bg-white h-full rounded-r"
+                    style={{ width: `${100 - gasUsedPerc!}%` }}
+                  ></div>
+                  <div className="w-full h-full absolute flex mix-blend-multiply text-sans text-gray-600">
+                    <span className="m-auto">{gasUsedPerc}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </InfoRow>
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
@@ -161,16 +177,5 @@ const Block: React.FC = () => {
     </StandardFrame>
   );
 };
-
-type InfoRowProps = {
-  title: string;
-};
-
-const InfoRow: React.FC<InfoRowProps> = ({ title, children }) => (
-  <div className="grid grid-cols-4 py-4 text-sm">
-    <div>{title}:</div>
-    <div className="col-span-3">{children}</div>
-  </div>
-);
 
 export default React.memo(Block);
