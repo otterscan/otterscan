@@ -21,6 +21,7 @@ import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
+import ExternalLink from "../components/ExternalLink";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -132,7 +133,17 @@ const Details: React.FC<DetailsProps> = ({
         {ethers.utils.formatEther(txData.value)} Ether
       </span>
     </InfoRow>
-    <InfoRow title="Type (EIP-2718)">
+    <InfoRow
+      title={
+        <>
+          Type (
+          <ExternalLink href="https://eips.ethereum.org/EIPS/eip-2718">
+            EIP-2718
+          </ExternalLink>
+          )
+        </>
+      }
+    >
       <TransactionType type={txData.type} />
     </InfoRow>
     {txData.blockBaseFeePerGas && (

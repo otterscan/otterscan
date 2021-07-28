@@ -1,7 +1,7 @@
 import React from "react";
 
 type InfoRowProps = React.PropsWithChildren<{
-  title: string;
+  title: React.ReactNode;
 }>;
 
 const InfoRow: React.FC<InfoRowProps> = ({ title, children }) => (

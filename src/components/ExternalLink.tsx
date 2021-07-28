@@ -13,9 +13,9 @@ const ExternalLink: React.FC<ExternalLinkProps> = ({ href, children }) => (
     target="_blank"
     rel="noopener noreferrer"
   >
-    <span className="inline-flex items-center space-x-1">
+    <span className="inline-flex items-baseline space-x-1">
       <span>{children}</span>
-      <FontAwesomeIcon icon={faExternalLinkAlt} size="1x" />
+      <FontAwesomeIcon icon={faExternalLinkAlt} size="sm" />
     </span>
   </a>
 );
