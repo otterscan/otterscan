@@ -106,12 +106,6 @@ const Block: React.FC = () => {
           <InfoRow title="Uncles Reward">
             <TransactionValue value={block.unclesReward} />
           </InfoRow>
-          <InfoRow title="Difficult">
-            {ethers.utils.commify(block.difficulty)}
-          </InfoRow>
-          <InfoRow title="Total Difficult">
-            {ethers.utils.commify(block.totalDifficulty.toString())}
-          </InfoRow>
           <InfoRow title="Size">
             {ethers.utils.commify(block.size)} bytes
           </InfoRow>
@@ -157,6 +151,12 @@ const Block: React.FC = () => {
             <span className="font-data">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
+          <InfoRow title="Difficult">
+            {ethers.utils.commify(block.difficulty)}
+          </InfoRow>
+          <InfoRow title="Total Difficult">
+            {ethers.utils.commify(block.totalDifficulty.toString())}
+          </InfoRow>
           <InfoRow title="Hash">
             <HexValue value={block.hash} />
           </InfoRow>
