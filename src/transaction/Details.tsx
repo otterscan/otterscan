@@ -170,14 +170,11 @@ const Details: React.FC<DetailsProps> = ({
         )}
       </div>
     </InfoRow>
+    <InfoRow title="Gas Used/Limit">
+      <GasValue value={txData.gasUsed} /> / <GasValue value={txData.gasLimit} />{" "}
+      ({(txData.gasUsedPerc * 100).toFixed(2)}%)
+    </InfoRow>
     <InfoRow title="Ether Price">N/A</InfoRow>
-    <InfoRow title="Gas Limit">
-      <GasValue value={txData.gasLimit} />
-    </InfoRow>
-    <InfoRow title="Gas Used by Transaction">
-      <GasValue value={txData.gasUsed} /> (
-      {(txData.gasUsedPerc * 100).toFixed(2)}%)
-    </InfoRow>
     <InfoRow title="Nonce">{txData.nonce}</InfoRow>
     <InfoRow title="Position in Block">
       <span className="rounded px-2 py-1 bg-gray-100 text-gray-500 text-xs">
