@@ -150,12 +150,6 @@ const Details: React.FC<DetailsProps> = ({
     )}
     {txData.type === 2 && (
       <>
-        <InfoRow title="Max Fee Per Gas">
-          <span>
-            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
-            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
-          </span>
-        </InfoRow>
         <InfoRow title="Max Priority Fee Per Gas">
           <span>
             <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
@@ -164,6 +158,12 @@ const Details: React.FC<DetailsProps> = ({
               decimals={9}
             />{" "}
             Gwei)
+          </span>
+        </InfoRow>
+        <InfoRow title="Max Fee Per Gas">
+          <span>
+            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
           </span>
         </InfoRow>
       </>
