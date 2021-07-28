@@ -94,6 +94,7 @@ const Transaction: React.FC = () => {
         tokenMetas,
         type: _response.type ?? 0,
         fee: _response.gasPrice!.mul(_receipt.gasUsed),
+        blockBaseFeePerGas: _block.baseFeePerGas,
         maxFeePerGas: _response.maxFeePerGas,
         maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
         gasPrice: _response.gasPrice!,

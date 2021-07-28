@@ -135,6 +135,19 @@ const Details: React.FC<DetailsProps> = ({
     <InfoRow title="Type (EIP-2718)">
       <TransactionType type={txData.type} />
     </InfoRow>
+    {txData.blockBaseFeePerGas && (
+      <InfoRow title="Block Base Fee">
+        <span>
+          <FormattedBalance value={txData.blockBaseFeePerGas} decimals={9} />{" "}
+          Gwei (
+          <FormattedBalance
+            value={txData.blockBaseFeePerGas}
+            decimals={0}
+          />{" "}
+          wei)
+        </span>
+      </InfoRow>
+    )}
     {txData.type === 2 && (
       <>
         <InfoRow title="Max Fee Per Gas">

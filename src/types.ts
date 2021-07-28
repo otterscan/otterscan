@@ -53,6 +53,7 @@ export type TransactionData = {
   maxFeePerGas?: BigNumber | undefined;
   maxPriorityFeePerGas?: BigNumber | undefined;
   fee: BigNumber;
+  blockBaseFeePerGas?: BigNumber | undefined | null;
   gasPrice: BigNumber;
   gasUsed: BigNumber;
   gasLimit: BigNumber;
