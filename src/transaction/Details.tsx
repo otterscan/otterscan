@@ -20,6 +20,7 @@ import GasValue from "../components/GasValue";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
+import PercentageBar from "../components/PercentageBar";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -171,8 +172,13 @@ const Details: React.FC<DetailsProps> = ({
       </div>
     </InfoRow>
     <InfoRow title="Gas Used/Limit">
-      <GasValue value={txData.gasUsed} /> / <GasValue value={txData.gasLimit} />{" "}
-      ({(txData.gasUsedPerc * 100).toFixed(2)}%)
+      <div className="flex space-x-3 items-baseline">
+        <div>
+          <GasValue value={txData.gasUsed} /> /{" "}
+          <GasValue value={txData.gasLimit} />
+        </div>
+        <PercentageBar perc={Math.round(txData.gasUsedPerc * 10000) / 100} />
+      </div>
     </InfoRow>
     <InfoRow title="Ether Price">N/A</InfoRow>
     <InfoRow title="Nonce">{txData.nonce}</InfoRow>

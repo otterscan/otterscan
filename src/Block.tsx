@@ -8,6 +8,7 @@ import ContentFrame from "./ContentFrame";
 import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
+import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
@@ -133,17 +134,7 @@ const Block: React.FC = () => {
                 <GasValue value={block.gasUsed} /> /{" "}
                 <GasValue value={block.gasLimit} />
               </div>
-              <div className="self-center w-40 border rounded border-gray-200">
-                <div className="w-full h-5 rounded bg-gradient-to-r from-red-400 via-yellow-300 to-green-400 relative">
-                  <div
-                    className="absolute top-0 right-0 bg-white h-full rounded-r"
-                    style={{ width: `${100 - gasUsedPerc!}%` }}
-                  ></div>
-                  <div className="w-full h-full absolute flex mix-blend-multiply text-sans text-gray-600">
-                    <span className="m-auto">{gasUsedPerc}%</span>
-                  </div>
-                </div>
-              </div>
+              <PercentageBar perc={gasUsedPerc!} />
             </div>
           </InfoRow>
           <InfoRow title="Extra Data">
