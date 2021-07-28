@@ -97,10 +97,8 @@ const Transaction: React.FC = () => {
         maxFeePerGas: _response.maxFeePerGas,
         maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
         gasPrice: _response.gasPrice!,
-        gasLimit: _response.gasLimit,
         gasUsed: _receipt.gasUsed,
-        gasUsedPerc:
-          _receipt.gasUsed.toNumber() / _response.gasLimit.toNumber(),
+        gasLimit: _response.gasLimit,
         nonce: _response.nonce,
         data: _response.data,
         logs: _receipt.logs,

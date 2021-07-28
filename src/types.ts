@@ -54,9 +54,8 @@ export type TransactionData = {
   maxPriorityFeePerGas?: BigNumber | undefined;
   fee: BigNumber;
   gasPrice: BigNumber;
-  gasLimit: BigNumber;
   gasUsed: BigNumber;
-  gasUsedPerc: number;
+  gasLimit: BigNumber;
   nonce: number;
   data: string;
   logs: ethers.providers.Log[];

@@ -177,7 +177,13 @@ const Details: React.FC<DetailsProps> = ({
           <GasValue value={txData.gasUsed} /> /{" "}
           <GasValue value={txData.gasLimit} />
         </div>
-        <PercentageBar perc={Math.round(txData.gasUsedPerc * 10000) / 100} />
+        <PercentageBar
+          perc={
+            Math.round(
+              (txData.gasUsed.toNumber() / txData.gasLimit.toNumber()) * 10000
+            ) / 100
+          }
+        />
       </div>
     </InfoRow>
     <InfoRow title="Ether Price">N/A</InfoRow>
