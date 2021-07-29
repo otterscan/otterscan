@@ -1,12 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleRight,
-  faBurn,
-  faCoins,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
 import FormattedBalance from "../components/FormattedBalance";
 import { TransactionData } from "../types";
+import PercentageGauge from "../components/PercentageGauge";
 
 type RewardSplitProps = {
   txData: TransactionData;
@@ -20,49 +17,43 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
     100;
 
   return (
-    <div className="space-y-2">
-      <div
-        className="self-center w-40 border rounded border-gray-200"
-        title="Burnt Fees Percentage"
-      >
-        <div className="w-full h-5 rounded bg-orange-500 relative">
-          <div
-            className="absolute top-0 right-0 bg-yellow-200 h-full rounded-r"
-            style={{ width: `${100 - burntPerc}%` }}
-          ></div>
-          <div className="w-full h-full absolute flex mix-blend-multiply text-sans text-orange-800">
-            <span className="m-auto">{burntPerc}%</span>
-          </div>
+    <div className="inline-block">
+      <div className="grid grid-cols-2 gap-x-2 gap-y-1 items-center text-sm">
+        <PercentageGauge
+          perc={burntPerc}
+          bgFull="bg-orange-100"
+          bgPerc="bg-orange-500"
+          textPerc="text-orange-800"
+        />
+        <div className="flex items-baseline space-x-1">
+          <span className="flex space-x-1 text-orange-500">
+            <span title="Burnt fees">
+              <FontAwesomeIcon icon={faBurn} size="1x" />
+            </span>
+            <span>
+              <span className="line-through">
+                <FormattedBalance value={burntFees} />
+              </span>{" "}
+              Ether
+            </span>
+          </span>
         </div>
-      </div>
-      <div className="flex items-baseline space-x-1 text-sm">
-        <span className="text-gray-500">
-          <FontAwesomeIcon icon={faAngleRight} size="1x" />
-        </span>
-        <span className="flex space-x-1 text-orange-500">
-          <span title="Burnt fees">
-            <FontAwesomeIcon icon={faBurn} size="1x" />
+        <PercentageGauge
+          perc={100 - burntPerc}
+          bgFull="bg-yellow-100"
+          bgPerc="bg-yellow-300"
+          textPerc="text-yellow-700"
+        />
+        <div className="flex items-baseline space-x-1">
+          <span className="flex space-x-1">
+            <span className="text-yellow-300" title="Miner fees">
+              <FontAwesomeIcon icon={faCoins} size="1x" />
+            </span>
+            <span>
+              <FormattedBalance value={minerReward} /> Ether
+            </span>
           </span>
-          <span>
-            <span className="line-through">
-              <FormattedBalance value={burntFees} />
-            </span>{" "}
-            Ether
-          </span>
-        </span>
-      </div>
-      <div className="flex items-baseline space-x-1 text-sm">
-        <span className="text-gray-500">
-          <FontAwesomeIcon icon={faAngleRight} size="1x" />
-        </span>
-        <span className="flex space-x-1">
-          <span className="text-yellow-300" title="Miner fees">
-            <FontAwesomeIcon icon={faCoins} size="1x" />
-          </span>
-          <span>
-            <FormattedBalance value={minerReward} /> Ether
-          </span>
-        </span>
+        </div>
       </div>
     </div>
   );
