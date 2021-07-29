@@ -152,19 +152,6 @@ const Details: React.FC<DetailsProps> = ({
       >
         <TransactionType type={txData.type} />
       </InfoRow>
-      {hasEIP1559 && (
-        <InfoRow title="Block Base Fee">
-          <span>
-            <FormattedBalance value={txData.blockBaseFeePerGas!} decimals={9} />{" "}
-            Gwei (
-            <FormattedBalance
-              value={txData.blockBaseFeePerGas!}
-              decimals={0}
-            />{" "}
-            wei)
-          </span>
-        </InfoRow>
-      )}
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
@@ -189,14 +176,6 @@ const Details: React.FC<DetailsProps> = ({
           </InfoRow>
         </>
       )}
-      <InfoRow title="Transaction Fee">
-        <div className="space-y-3">
-          <div>
-            <FormattedBalance value={txData.fee} /> Ether
-          </div>
-          {hasEIP1559 && <RewardSplit txData={txData} />}
-        </div>
-      </InfoRow>
       <InfoRow title="Gas Price">
         <div className="flex items-baseline space-x-1">
           <span>
@@ -223,6 +202,27 @@ const Details: React.FC<DetailsProps> = ({
               ) / 100
             }
           />
+        </div>
+      </InfoRow>
+      {hasEIP1559 && (
+        <InfoRow title="Block Base Fee">
+          <span>
+            <FormattedBalance value={txData.blockBaseFeePerGas!} decimals={9} />{" "}
+            Gwei (
+            <FormattedBalance
+              value={txData.blockBaseFeePerGas!}
+              decimals={0}
+            />{" "}
+            wei)
+          </span>
+        </InfoRow>
+      )}
+      <InfoRow title="Transaction Fee">
+        <div className="space-y-3">
+          <div>
+            <FormattedBalance value={txData.fee} /> Ether
+          </div>
+          {hasEIP1559 && <RewardSplit txData={txData} />}
         </div>
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
