@@ -54,6 +54,11 @@ const Home: React.FC = () => {
         >
           Search
         </button>
+        <div className="mx-auto mt-5 mb-5 text-lg text-link-blue hover:text-link-blue-hover font-bold">
+          <NavLink to="/special/london">
+            Check the special dashboard for EIP-1559
+          </NavLink>
+        </div>
         {latestBlock && (
           <NavLink
             className="mx-auto flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
