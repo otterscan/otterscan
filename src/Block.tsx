@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { BigNumber, ethers } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
@@ -42,9 +44,9 @@ const Block: React.FC = () => {
       console.error(err);
     }
   }, [block]);
-  const burnedFees =
+  const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
-  const netFeeReward = block && block.feeReward.sub(burnedFees ?? 0);
+  const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
@@ -123,9 +125,21 @@ const Block: React.FC = () => {
               </span>
             </InfoRow>
           )}
-          {burnedFees && (
-            <InfoRow title="Burned Fees">
-              <FormattedBalance value={burnedFees} /> Ether
+          {burntFees && (
+            <InfoRow title="Burnt Fees">
+              <div className="flex items-baseline space-x-1">
+                <span className="flex space-x-1 text-orange-500">
+                  <span title="Burnt fees">
+                    <FontAwesomeIcon icon={faBurn} size="1x" />
+                  </span>
+                  <span>
+                    <span className="line-through">
+                      <FormattedBalance value={burntFees} />
+                    </span>{" "}
+                    Ether
+                  </span>
+                </span>
+              </div>
             </InfoRow>
           )}
           <InfoRow title="Gas Used/Limit">
