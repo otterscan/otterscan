@@ -49,11 +49,14 @@ export type TransactionData = {
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
   tokenMetas: TokenMetas;
+  type: number;
+  maxFeePerGas?: BigNumber | undefined;
+  maxPriorityFeePerGas?: BigNumber | undefined;
   fee: BigNumber;
+  blockBaseFeePerGas?: BigNumber | undefined | null;
   gasPrice: BigNumber;
-  gasLimit: BigNumber;
   gasUsed: BigNumber;
-  gasUsedPerc: number;
+  gasLimit: BigNumber;
   nonce: number;
   data: string;
   logs: ethers.providers.Log[];

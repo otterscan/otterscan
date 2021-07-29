@@ -1,92 +1,35 @@
-import React, { useEffect, useState, useMemo, useContext } from "react";
+import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { ethers, BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
 import ContentFrame from "./ContentFrame";
+import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
+import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
+import FormattedBalance from "./components/FormattedBalance";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
+import { useBlockData } from "./useErigonHooks";
 
 type BlockParams = {
   blockNumberOrHash: string;
 };
 
-interface ExtendedBlock extends ethers.providers.Block {
-  blockReward: BigNumber;
-  unclesReward: BigNumber;
-  feeReward: BigNumber;
-  size: number;
-  sha3Uncles: string;
-  stateRoot: string;
-  totalDifficulty: BigNumber;
-}
-
 const Block: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const params = useParams<BlockParams>();
 
-  const [block, setBlock] = useState<ExtendedBlock>();
-  useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
-    const readBlock = async () => {
-      let blockPromise: Promise<any>;
-      if (ethers.utils.isHexString(params.blockNumberOrHash, 32)) {
-        blockPromise = provider.send("eth_getBlockByHash", [
-          params.blockNumberOrHash,
-          false,
-        ]);
-      } else {
-        blockPromise = provider.send("eth_getBlockByNumber", [
-          params.blockNumberOrHash,
-          false,
-        ]);
-      }
-      const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
-        blockPromise,
-        provider.send("erigon_issuance", [params.blockNumberOrHash]),
-        provider.send("eth_getBlockReceipts", [params.blockNumberOrHash]),
-      ]);
-      const receipts = (_rawReceipts as any[]).map((r) =>
-        provider.formatter.receipt(r)
-      );
-      const fees = receipts.reduce(
-        (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
-        BigNumber.from(0)
-      );
-
-      const _block = provider.formatter.block(_rawBlock);
-      const extBlock: ExtendedBlock = {
-        blockReward: provider.formatter.bigNumber(
-          _rawIssuance.blockReward ?? 0
-        ),
-        unclesReward: provider.formatter.bigNumber(
-          _rawIssuance.uncleReward ?? 0
-        ),
-        feeReward: fees,
-        size: provider.formatter.number(_rawBlock.size),
-        sha3Uncles: _rawBlock.sha3Uncles,
-        stateRoot: _rawBlock.stateRoot,
-        totalDifficulty: provider.formatter.bigNumber(
-          _rawBlock.totalDifficulty
-        ),
-        ..._block,
-      };
-      setBlock(extBlock);
-    };
-    readBlock();
-  }, [provider, params.blockNumberOrHash]);
-
+  const block = useBlockData(provider, params.blockNumberOrHash);
   useEffect(() => {
     if (block) {
       document.title = `Block #${block.number} | Otterscan`;
@@ -101,6 +44,11 @@ const Block: React.FC = () => {
       console.error(err);
     }
   }, [block]);
+  const burntFees =
+    block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
+  const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
+  const gasUsedPerc =
+    block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
 
@@ -143,38 +91,77 @@ const Block: React.FC = () => {
             <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue value={block.blockReward.add(block.feeReward)} />
+            <TransactionValue
+              value={block.blockReward.add(netFeeReward ?? 0)}
+            />
             {!block.feeReward.isZero() && (
               <>
                 {" "}
                 (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-                <TransactionValue value={block.feeReward} hideUnit />)
+                <TransactionValue
+                  value={netFeeReward ?? BigNumber.from(0)}
+                  hideUnit
+                />
+                )
               </>
             )}
           </InfoRow>
           <InfoRow title="Uncles Reward">
             <TransactionValue value={block.unclesReward} />
           </InfoRow>
-          <InfoRow title="Difficult">
-            {ethers.utils.commify(block.difficulty)}
-          </InfoRow>
-          <InfoRow title="Total Difficult">
-            {ethers.utils.commify(block.totalDifficulty.toString())}
-          </InfoRow>
           <InfoRow title="Size">
             {ethers.utils.commify(block.size)} bytes
           </InfoRow>
-          <InfoRow title="Gas Used">
-            <GasValue value={block.gasUsed} />
-          </InfoRow>
-          <InfoRow title="Gas Limit">
-            <GasValue value={block.gasLimit} />
+          {block.baseFeePerGas && (
+            <InfoRow title="Base Fee">
+              <span>
+                <FormattedBalance value={block.baseFeePerGas} decimals={9} />{" "}
+                Gwei (
+                <FormattedBalance
+                  value={block.baseFeePerGas}
+                  decimals={0}
+                />{" "}
+                wei)
+              </span>
+            </InfoRow>
+          )}
+          {burntFees && (
+            <InfoRow title="Burnt Fees">
+              <div className="flex items-baseline space-x-1">
+                <span className="flex space-x-1 text-orange-500">
+                  <span title="Burnt fees">
+                    <FontAwesomeIcon icon={faBurn} size="1x" />
+                  </span>
+                  <span>
+                    <span className="line-through">
+                      <FormattedBalance value={burntFees} />
+                    </span>{" "}
+                    Ether
+                  </span>
+                </span>
+              </div>
+            </InfoRow>
+          )}
+          <InfoRow title="Gas Used/Limit">
+            <div className="flex space-x-3 items-baseline">
+              <div>
+                <GasValue value={block.gasUsed} /> /{" "}
+                <GasValue value={block.gasLimit} />
+              </div>
+              <PercentageBar perc={gasUsedPerc!} />
+            </div>
           </InfoRow>
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
             <span className="font-data">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
+          <InfoRow title="Difficult">
+            {ethers.utils.commify(block.difficulty)}
+          </InfoRow>
+          <InfoRow title="Total Difficult">
+            {ethers.utils.commify(block.totalDifficulty.toString())}
+          </InfoRow>
           <InfoRow title="Hash">
             <HexValue value={block.hash} />
           </InfoRow>
@@ -195,16 +182,5 @@ const Block: React.FC = () => {
     </StandardFrame>
   );
 };
-
-type InfoRowProps = {
-  title: string;
-};
-
-const InfoRow: React.FC<InfoRowProps> = ({ title, children }) => (
-  <div className="grid grid-cols-4 py-4 text-sm">
-    <div>{title}:</div>
-    <div className="col-span-3">{children}</div>
-  </div>
-);
 
 export default React.memo(Block);
