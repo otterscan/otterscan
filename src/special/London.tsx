@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { useLatestBlock } from "../useLatestBlock";
 import { RuntimeContext } from "../useRuntime";
 import Countdown from "./Countdown";
+import Blocks from "./Blocks";
 
 const londonBlockNumber: { [chainId: string]: number } = {
   "1": 12965000,
@@ -30,7 +31,7 @@ const London: React.FC = () => {
     );
   }
 
-  return <div className="w-full h-full"></div>;
+  return <Blocks latestBlock={block} />;
 };
 
 export default React.memo(London);
