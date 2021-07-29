@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
+import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn, faGasPump } from "@fortawesome/free-solid-svg-icons";
 import BlockRecord from "./BlockRecord";
 import { ExtendedBlock, readBlock } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 
-const MAX_BLOCK_HISTORY = 10;
+const MAX_BLOCK_HISTORY = 20;
 
 type BlocksProps = {
   latestBlock: ethers.providers.Block;
@@ -27,7 +28,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
         if (_blocks.length > 0 && latestBlock.number === _blocks[0].number) {
           return _blocks;
         }
-        return [extBlock, ..._blocks].slice(0, MAX_BLOCK_HISTORY);
+        return [extBlock, ..._blocks].slice(0, MAX_BLOCK_HISTORY + 1);
       });
     };
     _readBlock();
@@ -54,8 +55,40 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
           <div className="text-right">Gas target</div>
           <div className="text-right col-span-2">Rewards</div>
         </div>
-        {blocks.map((b) => (
-          <BlockRecord key={b.hash} block={b} />
+        <div className="grid grid-cols-8 px-3 py-3 animate-pulse items-center">
+          <div>
+            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-10 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end col-span-2">
+            <div className="w-56 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+        </div>
+        {blocks.map((b, i) => (
+          <Transition
+            key={b.hash}
+            show={i < MAX_BLOCK_HISTORY}
+            appear
+            enter="transition transform ease-out duration-500"
+            enterFrom="opacity-0 -translate-y-10"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition transform ease-out duration-1000"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 translate-y-10"
+          >
+            <BlockRecord block={b} />
+          </Transition>
         ))}
       </div>
     </div>
