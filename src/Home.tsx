@@ -62,7 +62,7 @@ const Home: React.FC = () => {
               <span>
                 <FontAwesomeIcon icon={faBurn} />
               </span>
-              <span>Check the special dashboard for EIP-1559</span>
+              <span>Check out the special dashboard for EIP-1559</span>
               <span>
                 <FontAwesomeIcon icon={faBurn} />
               </span>
