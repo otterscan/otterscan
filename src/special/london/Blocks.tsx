@@ -11,8 +11,8 @@ import {
   faGasPump,
 } from "@fortawesome/free-solid-svg-icons";
 import BlockRecord from "./BlockRecord";
-import { ExtendedBlock, readBlock } from "../useErigonHooks";
-import { RuntimeContext } from "../useRuntime";
+import { ExtendedBlock, readBlock } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 
 const MAX_BLOCK_HISTORY = 20;
 

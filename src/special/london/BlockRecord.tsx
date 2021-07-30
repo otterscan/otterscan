@@ -1,8 +1,8 @@
 import { ethers } from "ethers";
 import React from "react";
-import BlockLink from "../components/BlockLink";
-import TimestampAge from "../components/TimestampAge";
-import { ExtendedBlock } from "../useErigonHooks";
+import BlockLink from "../../components/BlockLink";
+import TimestampAge from "../../components/TimestampAge";
+import { ExtendedBlock } from "../../useErigonHooks";
 
 const ELASTICITY_MULTIPLIER = 2;
 

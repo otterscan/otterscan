@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { useLatestBlock } from "../useLatestBlock";
-import { RuntimeContext } from "../useRuntime";
+import { useLatestBlock } from "../../useLatestBlock";
+import { RuntimeContext } from "../../useRuntime";
 import Countdown from "./Countdown";
 import Blocks from "./Blocks";
 

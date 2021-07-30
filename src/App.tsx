@@ -5,7 +5,7 @@ import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
-import London from "./special/London";
+import London from "./special/london/London";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
