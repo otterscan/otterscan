@@ -10,7 +10,7 @@ import {
   faCube,
   faGasPump,
 } from "@fortawesome/free-solid-svg-icons";
-import BlockRecord from "./BlockRecord";
+import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 
@@ -137,7 +137,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >
-            <BlockRecord now={now} block={b} />
+            <BlockRow now={now} block={b} />
           </Transition>
         ))}
       </div>

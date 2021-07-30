@@ -6,12 +6,12 @@ import { ExtendedBlock } from "../../useErigonHooks";
 
 const ELASTICITY_MULTIPLIER = 2;
 
-type BlockRecordProps = {
+type BlockRowProps = {
   now: number;
   block: ExtendedBlock;
 };
 
-const BlockRecord: React.FC<BlockRecordProps> = ({ now, block }) => {
+const BlockRow: React.FC<BlockRowProps> = ({ now, block }) => {
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
@@ -57,4 +57,4 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ now, block }) => {
   );
 };
 
-export default React.memo(BlockRecord);
+export default React.memo(BlockRow);
