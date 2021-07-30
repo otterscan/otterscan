@@ -139,6 +139,15 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   return (
     <div className="w-full mb-auto">
       <div className="px-9 pt-3 pb-12 divide-y-2">
+        <div className="flex justify-center items-baseline space-x-2 px-3 pb-2 text-lg text-orange-500 ">
+          <span>
+            <FontAwesomeIcon icon={faBurn} />
+          </span>
+          <span>London Hardfork is here. Watch the base fees burn.</span>
+          <span>
+            <FontAwesomeIcon icon={faBurn} />
+          </span>
+        </div>
         <div>
           <Line data={data} height={100} options={options} />
         </div>
