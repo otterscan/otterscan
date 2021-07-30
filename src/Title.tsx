@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
+import { RuntimeContext } from "./useRuntime";
 
 const Title: React.FC = () => {
+  const { provider } = useContext(RuntimeContext);
   const [search, setSearch] = useState<string>();
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const history = useHistory();
@@ -43,7 +45,7 @@ const Title: React.FC = () => {
         </div>
       </Link>
       <div className="flex items-baseline space-x-3">
-        <PriceBox />
+        {provider?.network.chainId === 1 && <PriceBox />}
         <form
           className="flex"
           onSubmit={handleSubmit}

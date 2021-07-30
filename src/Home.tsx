@@ -1,10 +1,13 @@
 import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
+import { blockURL } from "./url";
 
 const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -53,10 +56,23 @@ const Home: React.FC = () => {
         >
           Search
         </button>
+        <div className="mx-auto mt-5 mb-5 text-lg text-link-blue hover:text-link-blue-hover font-bold">
+          <NavLink to="/special/london">
+            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
+              </span>
+              <span>Check out the special dashboard for EIP-1559</span>
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
+              </span>
+            </div>
+          </NavLink>
+        </div>
         {latestBlock && (
           <NavLink
             className="mx-auto flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
-            to={`/block/${latestBlock.number}`}
+            to={blockURL(latestBlock.number)}
           >
             <div>Latest block: {ethers.utils.commify(latestBlock.number)}</div>
             <Timestamp value={latestBlock.timestamp} />

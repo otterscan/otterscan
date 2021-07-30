@@ -3,8 +3,8 @@ import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
-import BlockTransactionHeader from "./BlockTransactionHeader";
-import BlockTransactionResults from "./BlockTransactionResults";
+import BlockTransactionHeader from "./block/BlockTransactionHeader";
+import BlockTransactionResults from "./block/BlockTransactionResults";
 import {
   InternalOperation,
   OperationType,
@@ -63,10 +63,18 @@ const BlockTransactions: React.FC = () => {
             to: t.to,
             createdContractAddress: _receipts[i].contractAddress,
             value: t.value,
-            fee: provider.formatter
-              .bigNumber(_receipts[i].gasUsed)
-              .mul(t.gasPrice!),
-            gasPrice: t.gasPrice!,
+            fee:
+              t.type !== 2
+                ? provider.formatter
+                    .bigNumber(_receipts[i].gasUsed)
+                    .mul(t.gasPrice!)
+                : provider.formatter
+                    .bigNumber(_receipts[i].gasUsed)
+                    .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
+            gasPrice:
+              t.type !== 2
+                ? t.gasPrice!
+                : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
             data: t.data,
             status: provider.formatter.number(_receipts[i].status),
           };

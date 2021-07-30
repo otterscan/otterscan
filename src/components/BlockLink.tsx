@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { ethers } from "ethers";
+import { blockURL } from "../url";
 
 type BlockLinkProps = {
   blockTag: ethers.providers.BlockTag;
@@ -18,7 +19,7 @@ const BlockLink: React.FC<BlockLinkProps> = ({ blockTag }) => {
       className={`text-link-blue hover:text-link-blue-hover ${
         isNum ? "font-blocknum" : "font-hash"
       }`}
-      to={`/block/${blockTag}`}
+      to={blockURL(blockTag)}
     >
       {text}
     </NavLink>

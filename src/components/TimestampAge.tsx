@@ -1,11 +1,14 @@
 import React from "react";
 
 type TimestampAgeProps = {
+  now?: number | undefined;
   timestamp: number;
 };
 
-const TimestampAge: React.FC<TimestampAgeProps> = ({ timestamp }) => {
-  const now = Date.now() / 1000;
+const TimestampAge: React.FC<TimestampAgeProps> = ({ now, timestamp }) => {
+  if (now === undefined) {
+    now = Date.now() / 1000;
+  }
   let diff = now - timestamp;
 
   let desc = "";
