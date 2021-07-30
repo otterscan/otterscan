@@ -56,7 +56,7 @@ However, you will see that we made many UI improvements.
 
 ## Install instructions
 
-This software is currently available as compile-only form.
+This software is currently distributed as a docker image.
 
 It depends heavily on a working Erigon installation with Otterscan patches applied, so let's begin with it first.
 
