@@ -35,7 +35,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
   }, [provider, latestBlock]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full mb-auto">
       <div className="m-10 divide-y-2">
         <div className="grid grid-cols-8 px-3 py-2">
           <div>Block</div>
