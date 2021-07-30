@@ -5,6 +5,7 @@ import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
+import London from "./special/london/London";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
@@ -35,6 +36,9 @@ const App = () => {
                 </Route>
                 <Route path="/search" exact>
                   <Search />
+                </Route>
+                <Route path="/special/london" exact>
+                  <London />
                 </Route>
                 <Route>
                   <div className="mb-auto">

@@ -13,6 +13,49 @@ export interface ExtendedBlock extends ethers.providers.Block {
   totalDifficulty: BigNumber;
 }
 
+export const readBlock = async (
+  provider: ethers.providers.JsonRpcProvider,
+  blockNumberOrHash: string
+) => {
+  let blockPromise: Promise<any>;
+  if (ethers.utils.isHexString(blockNumberOrHash, 32)) {
+    blockPromise = provider.send("eth_getBlockByHash", [
+      blockNumberOrHash,
+      false,
+    ]);
+  } else {
+    blockPromise = provider.send("eth_getBlockByNumber", [
+      blockNumberOrHash,
+      false,
+    ]);
+  }
+  const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
+    blockPromise,
+    provider.send("erigon_issuance", [blockNumberOrHash]),
+    provider.send("eth_getBlockReceipts", [blockNumberOrHash]),
+  ]);
+  const receipts = (_rawReceipts as any[]).map((r) =>
+    provider.formatter.receipt(r)
+  );
+  const fees = receipts.reduce(
+    (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
+    BigNumber.from(0)
+  );
+
+  const _block = provider.formatter.block(_rawBlock);
+  const extBlock: ExtendedBlock = {
+    blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
+    unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
+    feeReward: fees,
+    size: provider.formatter.number(_rawBlock.size),
+    sha3Uncles: _rawBlock.sha3Uncles,
+    stateRoot: _rawBlock.stateRoot,
+    totalDifficulty: provider.formatter.bigNumber(_rawBlock.totalDifficulty),
+    ..._block,
+  };
+  return extBlock;
+};
+
 export const useBlockData = (
   provider: ethers.providers.JsonRpcProvider | undefined,
   blockNumberOrHash: string
@@ -23,52 +66,11 @@ export const useBlockData = (
       return;
     }
 
-    const readBlock = async () => {
-      let blockPromise: Promise<any>;
-      if (ethers.utils.isHexString(blockNumberOrHash, 32)) {
-        blockPromise = provider.send("eth_getBlockByHash", [
-          blockNumberOrHash,
-          false,
-        ]);
-      } else {
-        blockPromise = provider.send("eth_getBlockByNumber", [
-          blockNumberOrHash,
-          false,
-        ]);
-      }
-      const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
-        blockPromise,
-        provider.send("erigon_issuance", [blockNumberOrHash]),
-        provider.send("eth_getBlockReceipts", [blockNumberOrHash]),
-      ]);
-      const receipts = (_rawReceipts as any[]).map((r) =>
-        provider.formatter.receipt(r)
-      );
-      const fees = receipts.reduce(
-        (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
-        BigNumber.from(0)
-      );
-
-      const _block = provider.formatter.block(_rawBlock);
-      const extBlock: ExtendedBlock = {
-        blockReward: provider.formatter.bigNumber(
-          _rawIssuance.blockReward ?? 0
-        ),
-        unclesReward: provider.formatter.bigNumber(
-          _rawIssuance.uncleReward ?? 0
-        ),
-        feeReward: fees,
-        size: provider.formatter.number(_rawBlock.size),
-        sha3Uncles: _rawBlock.sha3Uncles,
-        stateRoot: _rawBlock.stateRoot,
-        totalDifficulty: provider.formatter.bigNumber(
-          _rawBlock.totalDifficulty
-        ),
-        ..._block,
-      };
+    const _readBlock = async () => {
+      const extBlock = await readBlock(provider, blockNumberOrHash);
       setBlock(extBlock);
     };
-    readBlock();
+    _readBlock();
   }, [provider, blockNumberOrHash]);
 
   return block;
