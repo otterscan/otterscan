@@ -143,7 +143,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           <span>
             <FontAwesomeIcon icon={faBurn} />
           </span>
-          <span>London Hardfork is here. Watch the base fees burn.</span>
+          <span>EIP-1559 is activated. Watch the fees burn.</span>
           <span>
             <FontAwesomeIcon icon={faBurn} />
           </span>
