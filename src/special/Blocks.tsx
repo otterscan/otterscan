@@ -2,7 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { ethers } from "ethers";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn, faGasPump } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBurn,
+  faCoins,
+  faCube,
+  faGasPump,
+} from "@fortawesome/free-solid-svg-icons";
 import BlockRecord from "./BlockRecord";
 import { ExtendedBlock, readBlock } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
@@ -38,13 +43,25 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
     <div className="w-full mb-auto">
       <div className="m-10 divide-y-2">
         <div className="grid grid-cols-8 px-3 py-2">
-          <div>Block</div>
-          <div className="text-right">Base fee</div>
+          <div className="flex space-x-1 items-baseline">
+            <span className="text-gray-500">
+              <FontAwesomeIcon icon={faCube} />
+            </span>
+            <span>Block</span>
+          </div>
           <div className="text-right flex space-x-1 justify-end items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faGasPump} />
             </span>
             <span>Gas used</span>
+          </div>
+          <div className="text-right">Gas target</div>
+          <div className="text-right">Base fee</div>
+          <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
+            <span className="text-yellow-400">
+              <FontAwesomeIcon icon={faCoins} />
+            </span>
+            <span>Rewards</span>
           </div>
           <div className="text-right flex space-x-1 justify-end items-baseline">
             <span className="text-orange-500">
@@ -52,27 +69,25 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
             </span>
             <span>Burnt fees</span>
           </div>
-          <div className="text-right">Gas target</div>
-          <div className="text-right col-span-2">Rewards</div>
         </div>
         <div className="grid grid-cols-8 px-3 py-3 animate-pulse items-center">
           <div>
             <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
           </div>
           <div className="justify-self-end">
+            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
             <div className="w-10 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
           </div>
           <div className="justify-self-end col-span-2">
             <div className="w-56 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
           </div>
         </div>
         {blocks.map((b, i) => (

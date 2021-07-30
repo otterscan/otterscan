@@ -21,7 +21,6 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
       <div>
         <BlockLink blockTag={block.number} />
       </div>
-      <div className="text-right">{block.baseFeePerGas?.toString()} wei</div>
       <div
         className={`text-right ${
           block.gasUsed.gt(gasTarget)
@@ -34,6 +33,13 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
         {ethers.utils.commify(block.gasUsed.toString())}
       </div>
       <div className="text-right">
+        {ethers.utils.commify(gasTarget.toString())}
+      </div>
+      <div className="text-right">{block.baseFeePerGas?.toString()} wei</div>
+      <div className="text-right col-span-2">
+        {ethers.utils.commify(ethers.utils.formatEther(totalReward))} Ether
+      </div>
+      <div className="text-right">
         {ethers.utils.commify(
           ethers.utils.formatUnits(
             block.gasUsed.mul(block.baseFeePerGas!).toString(),
@@ -41,12 +47,6 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
           )
         )}{" "}
         Gwei
-      </div>
-      <div className="text-right">
-        {ethers.utils.commify(gasTarget.toString())}
-      </div>
-      <div className="text-right col-span-2">
-        {ethers.utils.commify(ethers.utils.formatEther(totalReward))} Ether
       </div>
     </div>
   );
