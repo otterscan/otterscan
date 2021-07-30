@@ -66,7 +66,16 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
         if (_blocks.length > 0 && latestBlock.number === _blocks[0].number) {
           return _blocks;
         }
-        return [extBlock, ..._blocks].slice(0, MAX_BLOCK_HISTORY + 1);
+
+        // Leave the last block because of transition animation
+        const newBlocks = [extBlock, ..._blocks].slice(
+          0,
+          MAX_BLOCK_HISTORY + 1
+        );
+
+        // Little hack to fix out of order block notifications
+        newBlocks.sort((a, b) => a.number - b.number);
+        return newBlocks;
       });
     };
     _readBlock();
