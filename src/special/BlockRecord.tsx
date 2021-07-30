@@ -7,10 +7,11 @@ import { ExtendedBlock } from "../useErigonHooks";
 const ELASTICITY_MULTIPLIER = 2;
 
 type BlockRecordProps = {
+  now: number;
   block: ExtendedBlock;
 };
 
-const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
+const BlockRecord: React.FC<BlockRecordProps> = ({ now, block }) => {
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
@@ -50,7 +51,7 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
         Gwei
       </div>
       <div className="text-right">
-        <TimestampAge timestamp={block.timestamp} />
+        <TimestampAge now={now / 1000} timestamp={block.timestamp} />
       </div>
     </div>
   );

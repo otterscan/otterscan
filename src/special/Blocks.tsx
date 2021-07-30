@@ -21,6 +21,7 @@ type BlocksProps = {
 const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlock] = useState<ExtendedBlock[]>([]);
+  const [now, setNow] = useState<number>(Date.now());
 
   useEffect(() => {
     if (!provider) {
@@ -29,6 +30,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
 
     const _readBlock = async () => {
       const extBlock = await readBlock(provider, latestBlock.number.toString());
+      setNow(Date.now());
       setBlock((_blocks) => {
         if (_blocks.length > 0 && latestBlock.number === _blocks[0].number) {
           return _blocks;
@@ -106,7 +108,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >
-            <BlockRecord block={b} />
+            <BlockRecord now={now} block={b} />
           </Transition>
         ))}
       </div>
