@@ -22,6 +22,8 @@ import { RuntimeContext } from "../../useRuntime";
 
 const MAX_BLOCK_HISTORY = 20;
 
+const PREV_BLOCK_COUNT = 15;
+
 const options: ChartOptions = {
   animation: false,
   plugins: {
@@ -67,6 +69,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return;
       }
 
+      // Skip blocks before the hard fork during the transition
+      if (blockNumber < targetBlockNumber) {
+        return;
+      }
+
       const extBlock = await readBlock(provider, blockNumber.toString());
       setNow(Date.now());
       setBlock((_blocks) => {
@@ -85,7 +92,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return newBlocks;
       });
     },
-    [provider]
+    [provider, targetBlockNumber]
   );
 
   useEffect(() => {
@@ -109,6 +116,24 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
       ],
     };
   }, [blocks]);
+
+  // On page reload, pre-populate the last N blocks
+  useEffect(
+    () => {
+      const addPreviousBlocks = async () => {
+        for (
+          let i = latestBlock.number - PREV_BLOCK_COUNT;
+          i < latestBlock.number;
+          i++
+        ) {
+          await addBlock(i);
+        }
+      };
+      addPreviousBlocks();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   return (
     <div className="w-full mb-auto">
