@@ -33,7 +33,7 @@ const Countdown: React.FC<CountdownProps> = ({
         <h2 className="text-5xl">
           {ethers.utils.commify(targetBlock - currentBlock.number)}
         </h2>
-        <h6 className="text-sm mb-10">Block remaining</h6>
+        <h6 className="text-sm mb-10">Blocks remaining</h6>
         <h2 className="inline-flex space-x-10 text-base mb-10">
           <div>Current block: {ethers.utils.commify(currentBlock.number)}</div>
           <div>Target block: {ethers.utils.commify(targetBlock)}</div>
