@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { ethers } from "ethers";
+import { Line } from "react-chartjs-2";
+import { ChartData, ChartOptions } from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,6 +15,35 @@ import { ExtendedBlock, readBlock } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 
 const MAX_BLOCK_HISTORY = 20;
+
+const options: ChartOptions = {
+  animation: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        callback: function (v) {
+          // @ts-ignore
+          return ethers.utils.commify(this.getLabelForValue(v));
+        },
+      },
+    },
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: "Burnt fees",
+      },
+      ticks: {
+        callback: (v) => `${v} Gwei`,
+      },
+    },
+  },
+};
 
 type BlocksProps = {
   latestBlock: ethers.providers.Block;
@@ -41,10 +72,31 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
     _readBlock();
   }, [provider, latestBlock]);
 
+  const data: ChartData = useMemo(() => {
+    return {
+      labels: blocks.map((b) => b.number.toString()).reverse(),
+      datasets: [
+        {
+          label: "Burnt fees (Gwei)",
+          data: blocks
+            .map((b) => b.gasUsed.mul(b.baseFeePerGas!).toNumber() / 1e9)
+            .reverse(),
+          fill: true,
+          backgroundColor: "#FDBA74",
+          borderColor: "#F97316",
+          tension: 0.2,
+        },
+      ],
+    };
+  }, [blocks]);
+
   return (
     <div className="w-full mb-auto">
       <div className="px-9 pt-3 pb-12 divide-y-2">
-        <div className="grid grid-cols-8 px-3 py-2">
+        <div>
+          <Line data={data} height={100} options={options} />
+        </div>
+        <div className="mt-5 grid grid-cols-8 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
@@ -72,29 +124,6 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
             <span>Burnt fees</span>
           </div>
           <div className="text-right">Age</div>
-        </div>
-        <div className="grid grid-cols-8 px-3 py-3 animate-pulse items-center">
-          <div>
-            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-20 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-10 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end col-span-2">
-            <div className="w-56 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
-          </div>
-          <div className="justify-self-end">
-            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
-          </div>
         </div>
         {blocks.map((b, i) => (
           <Transition
