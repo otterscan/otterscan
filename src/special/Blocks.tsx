@@ -41,7 +41,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
 
   return (
     <div className="w-full mb-auto">
-      <div className="m-10 divide-y-2">
+      <div className="px-9 pt-3 pb-12 divide-y-2">
         <div className="grid grid-cols-8 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
             <span className="text-gray-500">
