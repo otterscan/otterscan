@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
 import { ethers } from "ethers";
 import { Line } from "react-chartjs-2";
 import { ChartData, ChartOptions } from "chart.js";
@@ -47,23 +53,24 @@ const options: ChartOptions = {
 
 type BlocksProps = {
   latestBlock: ethers.providers.Block;
+  targetBlockNumber: number;
 };
 
-const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
+const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlock] = useState<ExtendedBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
 
-  useEffect(() => {
-    if (!provider) {
-      return;
-    }
+  const addBlock = useCallback(
+    async (blockNumber: number) => {
+      if (!provider) {
+        return;
+      }
 
-    const _readBlock = async () => {
-      const extBlock = await readBlock(provider, latestBlock.number.toString());
+      const extBlock = await readBlock(provider, blockNumber.toString());
       setNow(Date.now());
       setBlock((_blocks) => {
-        if (_blocks.length > 0 && latestBlock.number === _blocks[0].number) {
+        if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
           return _blocks;
         }
 
@@ -74,12 +81,16 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
         );
 
         // Little hack to fix out of order block notifications
-        newBlocks.sort((a, b) => a.number - b.number);
+        newBlocks.sort((a, b) => b.number - a.number);
         return newBlocks;
       });
-    };
-    _readBlock();
-  }, [provider, latestBlock]);
+    },
+    [provider]
+  );
+
+  useEffect(() => {
+    addBlock(latestBlock.number);
+  }, [addBlock, latestBlock]);
 
   const data: ChartData = useMemo(() => {
     return {
