@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
@@ -56,7 +58,15 @@ const Home: React.FC = () => {
         </button>
         <div className="mx-auto mt-5 mb-5 text-lg text-link-blue hover:text-link-blue-hover font-bold">
           <NavLink to="/special/london">
-            Check the special dashboard for EIP-1559
+            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
+              </span>
+              <span>Check the special dashboard for EIP-1559</span>
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
+              </span>
+            </div>
           </NavLink>
         </div>
         {latestBlock && (

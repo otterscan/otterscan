@@ -15,6 +15,7 @@ import {
   faCoins,
   faCube,
   faGasPump,
+  faHistory,
 } from "@fortawesome/free-solid-svg-icons";
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
@@ -168,7 +169,12 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             </span>
             <span>Burnt fees</span>
           </div>
-          <div className="text-right">Age</div>
+          <div className="text-right flex space-x-1 justify-end items-baseline">
+            <span className="text-gray-500">
+              <FontAwesomeIcon icon={faHistory} />
+            </span>
+            <span>Age</span>
+          </div>
         </div>
         {blocks.map((b, i) => (
           <Transition

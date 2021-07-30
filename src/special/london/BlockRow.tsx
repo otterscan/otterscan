@@ -34,14 +34,14 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block }) => {
       >
         {ethers.utils.commify(block.gasUsed.toString())}
       </div>
-      <div className="text-right">
+      <div className="text-right text-gray-400">
         {ethers.utils.commify(gasTarget.toString())}
       </div>
       <div className="text-right">{block.baseFeePerGas?.toString()} wei</div>
       <div className="text-right col-span-2">
         {ethers.utils.commify(ethers.utils.formatEther(totalReward))} Ether
       </div>
-      <div className="text-right">
+      <div className="text-right line-through text-orange-500">
         {ethers.utils.commify(
           ethers.utils.formatUnits(
             block.gasUsed.mul(block.baseFeePerGas!).toString(),
@@ -50,7 +50,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block }) => {
         )}{" "}
         Gwei
       </div>
-      <div className="text-right">
+      <div className="text-right text-gray-400">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
       </div>
     </div>
