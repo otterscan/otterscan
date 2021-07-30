@@ -69,6 +69,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
             </span>
             <span>Burnt fees</span>
           </div>
+          <div className="text-right">Age</div>
         </div>
         <div className="grid grid-cols-8 px-3 py-3 animate-pulse items-center">
           <div>
@@ -85,6 +86,9 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
           </div>
           <div className="justify-self-end col-span-2">
             <div className="w-56 h-4 bg-gray-200 rounded-md"></div>
+          </div>
+          <div className="justify-self-end">
+            <div className="w-36 h-4 bg-gray-200 rounded-md"></div>
           </div>
           <div className="justify-self-end">
             <div className="w-36 h-4 bg-gray-200 rounded-md"></div>

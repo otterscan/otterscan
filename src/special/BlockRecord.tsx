@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import React from "react";
 import BlockLink from "../components/BlockLink";
+import TimestampAge from "../components/TimestampAge";
 import { ExtendedBlock } from "../useErigonHooks";
 
 const ELASTICITY_MULTIPLIER = 2;
@@ -47,6 +48,9 @@ const BlockRecord: React.FC<BlockRecordProps> = ({ block }) => {
           )
         )}{" "}
         Gwei
+      </div>
+      <div className="text-right">
+        <TimestampAge timestamp={block.timestamp} />
       </div>
     </div>
   );
