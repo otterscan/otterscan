@@ -64,9 +64,16 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         )}
       </InfoRow>
-      <InfoRow title="Position in Block">
-        <div className="flex items-baseline space-x-5">
-          <div className="flex space-x-2 items-baseline">
+      <InfoRow title="Block / Position">
+        <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
+          <div className="flex space-x-1 items-baseline mr-3">
+            <span className="text-orange-500">
+              <FontAwesomeIcon icon={faCube} />
+            </span>
+            <BlockLink blockTag={txData.blockNumber} />
+            <BlockConfirmations confirmations={txData.confirmations} />
+          </div>
+          <div className="flex space-x-2 items-baseline pl-3">
             <RelativePosition
               pos={txData.transactionIndex}
               total={txData.blockTransactionCount - 1}
@@ -77,19 +84,12 @@ const Details: React.FC<DetailsProps> = ({
               }
             />
           </div>
-          <div className="flex space-x-1 items-baseline">
-            <span className="text-orange-500">
-              <FontAwesomeIcon icon={faCube} />
-            </span>
-            <BlockLink blockTag={txData.blockNumber} />
-            <BlockConfirmations confirmations={txData.confirmations} />
-          </div>
         </div>
       </InfoRow>
       <InfoRow title="Timestamp">
         <Timestamp value={txData.timestamp} />
       </InfoRow>
-      <InfoRow title="From (nonce)">
+      <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
           <div className="flex items-baseline space-x-2 -ml-1 mr-3">
             <AddressHighlighter address={txData.from}>
@@ -214,7 +214,7 @@ const Details: React.FC<DetailsProps> = ({
           )}
         </div>
       </InfoRow>
-      <InfoRow title="Gas Used/Limit">
+      <InfoRow title="Gas Used / Limit">
         <div className="flex space-x-3 items-baseline">
           <div>
             <RelativePosition
