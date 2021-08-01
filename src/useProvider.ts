@@ -33,7 +33,12 @@ export const useProvider = (
     setConnStatus(ConnectionStatus.CONNECTING);
 
     const tryToConnect = async () => {
-      const provider = new ethers.providers.JsonRpcProvider(erigonURL);
+      let provider: ethers.providers.JsonRpcProvider;
+      if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
+        provider = new ethers.providers.WebSocketProvider(erigonURL);
+      } else {
+        provider = new ethers.providers.JsonRpcProvider(erigonURL);
+      }
 
       // Check if it is at least a regular ETH node
       let blockNumber: number = 0;
