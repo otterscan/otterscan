@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
+  faCube,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import ContentFrame from "../ContentFrame";
@@ -62,10 +63,26 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         )}
       </InfoRow>
-      <InfoRow title="Block">
-        <div className="flex items-baseline space-x-2">
-          <BlockLink blockTag={txData.blockNumber} />
-          <BlockConfirmations confirmations={txData.confirmations} />
+      <InfoRow title="Position in Block">
+        <div className="flex items-baseline space-x-5">
+          <div className="flex space-x-2 items-baseline">
+            <RelativePosition
+              pos={txData.transactionIndex}
+              total={txData.blockTransactionCount - 1}
+            />
+            <PercentagePosition
+              perc={
+                txData.transactionIndex / (txData.blockTransactionCount - 1)
+              }
+            />
+          </div>
+          <div className="flex space-x-1 items-baseline">
+            <span className="text-orange-500">
+              <FontAwesomeIcon icon={faCube} />
+            </span>
+            <BlockLink blockTag={txData.blockNumber} />
+            <BlockConfirmations confirmations={txData.confirmations} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title="Timestamp">
@@ -231,17 +248,6 @@ const Details: React.FC<DetailsProps> = ({
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
       <InfoRow title="Nonce">{txData.nonce}</InfoRow>
-      <InfoRow title="Index in Block">
-        <div className="flex space-x-3 items-baseline">
-          <RelativePosition
-            pos={txData.transactionIndex}
-            total={txData.blockTransactionCount - 1}
-          />
-          <PercentagePosition
-            perc={txData.transactionIndex / (txData.blockTransactionCount - 1)}
-          />
-        </div>
-      </InfoRow>
       <InfoRow title="Input Data">
         <textarea
           className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
