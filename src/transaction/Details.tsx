@@ -23,6 +23,7 @@ import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
+import RelativePosition from "../components/RelativePosition";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -192,8 +193,10 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Gas Used/Limit">
         <div className="flex space-x-3 items-baseline">
           <div>
-            <GasValue value={txData.gasUsed} /> /{" "}
-            <GasValue value={txData.gasLimit} />
+            <RelativePosition
+              pos={<GasValue value={txData.gasUsed} />}
+              total={<GasValue value={txData.gasLimit} />}
+            />
           </div>
           <PercentageBar
             perc={
@@ -227,10 +230,11 @@ const Details: React.FC<DetailsProps> = ({
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
       <InfoRow title="Nonce">{txData.nonce}</InfoRow>
-      <InfoRow title="Position in Block">
-        <span className="rounded px-2 py-1 bg-gray-100 text-gray-500 text-xs">
-          {txData.transactionIndex} / {txData.blockTransactionCount - 1}
-        </span>
+      <InfoRow title="Index in Block">
+        <RelativePosition
+          pos={txData.transactionIndex}
+          total={txData.blockTransactionCount - 1}
+        />
       </InfoRow>
       <InfoRow title="Input Data">
         <textarea
