@@ -229,7 +229,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Nonce">{txData.nonce}</InfoRow>
       <InfoRow title="Position in Block">
         <span className="rounded px-2 py-1 bg-gray-100 text-gray-500 text-xs">
-          {txData.transactionIndex}
+          {txData.transactionIndex} / {txData.blockTransactionCount - 1}
         </span>
       </InfoRow>
       <InfoRow title="Input Data">

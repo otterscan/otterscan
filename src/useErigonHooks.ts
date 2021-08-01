@@ -149,6 +149,7 @@ export const useTxData = (
         status: _receipt.status === 1,
         blockNumber: _receipt.blockNumber,
         transactionIndex: _receipt.transactionIndex,
+        blockTransactionCount: _block.transactions.length,
         confirmations: _receipt.confirmations,
         timestamp: _block.timestamp,
         miner: _block.miner,
