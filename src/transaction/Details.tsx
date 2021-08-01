@@ -13,6 +13,7 @@ import BlockConfirmations from "../components/BlockConfirmations";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
+import Nonce from "../components/Nonce";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
@@ -88,16 +89,21 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Timestamp">
         <Timestamp value={txData.timestamp} />
       </InfoRow>
-      <InfoRow title="From">
-        <div className="flex items-baseline space-x-2 -ml-1">
-          <AddressHighlighter address={txData.from}>
-            <DecoratedAddressLink
-              address={txData.from}
-              miner={txData.from === txData.miner}
-              txFrom
-            />
-          </AddressHighlighter>
-          <Copy value={txData.from} />
+      <InfoRow title="From (nonce)">
+        <div className="flex divide-x-2 divide-dotted divide-gray-300">
+          <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+            <AddressHighlighter address={txData.from}>
+              <DecoratedAddressLink
+                address={txData.from}
+                miner={txData.from === txData.miner}
+                txFrom
+              />
+            </AddressHighlighter>
+            <Copy value={txData.from} />
+          </div>
+          <div className="flex items-baseline pl-3">
+            <Nonce value={txData.nonce} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
@@ -247,7 +253,6 @@ const Details: React.FC<DetailsProps> = ({
         </div>
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
-      <InfoRow title="Nonce">{txData.nonce}</InfoRow>
       <InfoRow title="Input Data">
         <textarea
           className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
