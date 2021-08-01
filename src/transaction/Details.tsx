@@ -24,6 +24,7 @@ import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
+import PercentagePosition from "../components/PercentagePosition";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -231,10 +232,15 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Ether Price">N/A</InfoRow>
       <InfoRow title="Nonce">{txData.nonce}</InfoRow>
       <InfoRow title="Index in Block">
-        <RelativePosition
-          pos={txData.transactionIndex}
-          total={txData.blockTransactionCount - 1}
-        />
+        <div className="flex space-x-3 items-baseline">
+          <RelativePosition
+            pos={txData.transactionIndex}
+            total={txData.blockTransactionCount - 1}
+          />
+          <PercentagePosition
+            perc={txData.transactionIndex / (txData.blockTransactionCount - 1)}
+          />
+        </div>
       </InfoRow>
       <InfoRow title="Input Data">
         <textarea
