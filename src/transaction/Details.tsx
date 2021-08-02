@@ -130,7 +130,7 @@ const Details: React.FC<DetailsProps> = ({
             <Copy value={txData.createdContractAddress!} />
           </div>
         )}
-        {internalOps && (
+        {internalOps && internalOps.length > 0 && (
           <div className="mt-2 space-y-1">
             {internalOps.map((op, i) => (
               <InternalTransactionOperation
