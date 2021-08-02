@@ -22,6 +22,7 @@ export interface ExtendedBlock extends ethers.providers.Block {
   sha3Uncles: string;
   stateRoot: string;
   totalDifficulty: BigNumber;
+  transactionCount: number;
 }
 
 export const readBlock = async (
@@ -30,38 +31,33 @@ export const readBlock = async (
 ) => {
   let blockPromise: Promise<any>;
   if (ethers.utils.isHexString(blockNumberOrHash, 32)) {
+    // TODO: fix
     blockPromise = provider.send("eth_getBlockByHash", [
       blockNumberOrHash,
       false,
     ]);
   } else {
-    blockPromise = provider.send("eth_getBlockByNumber", [
-      blockNumberOrHash,
-      false,
-    ]);
+    blockPromise = provider.send("ots_getBlockDetails", [blockNumberOrHash]);
   }
-  const [_rawBlock, _rawIssuance, _rawReceipts] = await Promise.all([
-    blockPromise,
-    provider.send("erigon_issuance", [blockNumberOrHash]),
-    provider.send("eth_getBlockReceipts", [blockNumberOrHash]),
-  ]);
-  const receipts = (_rawReceipts as any[]).map((r) =>
-    provider.formatter.receipt(r)
-  );
-  const fees = receipts.reduce(
-    (acc, r) => acc.add(r.effectiveGasPrice.mul(r.gasUsed)),
-    BigNumber.from(0)
-  );
 
-  const _block = provider.formatter.block(_rawBlock);
+  const _rawBlock = await blockPromise;
+  const _block = provider.formatter.block(_rawBlock.block);
+  const _rawIssuance = _rawBlock.issuance;
+  const fees = provider.formatter.bigNumber(_rawBlock.totalFees);
+
   const extBlock: ExtendedBlock = {
     blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
     unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
     feeReward: fees,
-    size: provider.formatter.number(_rawBlock.size),
-    sha3Uncles: _rawBlock.sha3Uncles,
-    stateRoot: _rawBlock.stateRoot,
-    totalDifficulty: provider.formatter.bigNumber(_rawBlock.totalDifficulty),
+    size: provider.formatter.number(_rawBlock.block.size),
+    sha3Uncles: _rawBlock.block.sha3Uncles,
+    stateRoot: _rawBlock.block.stateRoot,
+    totalDifficulty: provider.formatter.bigNumber(
+      _rawBlock.block.totalDifficulty
+    ),
+    transactionCount: provider.formatter.number(
+      _rawBlock.block.transactionCount
+    ),
     ..._block,
   };
   return extBlock;
