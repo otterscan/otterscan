@@ -5,13 +5,10 @@ import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
-import {
-  InternalOperation,
-  OperationType,
-  ProcessedTransaction,
-} from "./types";
+import { OperationType, ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { RuntimeContext } from "./useRuntime";
+import { getInternalOperations } from "./nodeFunctions";
 
 type BlockParams = {
   blockNumber: string;
@@ -82,29 +79,21 @@ const BlockTransactions: React.FC = () => {
         .reverse();
       setTxs(responses);
 
-      const internalChecks = await Promise.all(
+      const checkTouchMinerAddr = await Promise.all(
         responses.map(async (res) => {
-          const r: InternalOperation[] = await provider.send(
-            "ots_getInternalOperations",
-            [res.hash]
+          const ops = await getInternalOperations(provider, res.hash);
+          return (
+            ops.findIndex(
+              (op) =>
+                op.type === OperationType.TRANSFER &&
+                res.miner !== undefined &&
+                res.miner === ethers.utils.getAddress(op.to)
+            ) !== -1
           );
-          for (const op of r) {
-            if (op.type !== OperationType.TRANSFER) {
-              continue;
-            }
-            if (
-              res.miner &&
-              (res.miner === ethers.utils.getAddress(op.from) ||
-                res.miner === ethers.utils.getAddress(op.to))
-            ) {
-              return true;
-            }
-          }
-          return false;
         })
       );
       const processedResponses = responses.map((r, i): ProcessedTransaction => {
-        return { ...r, internalMinerInteraction: internalChecks[i] };
+        return { ...r, internalMinerInteraction: checkTouchMinerAddr[i] };
       });
       setTxs(processedResponses);
     };
