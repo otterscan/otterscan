@@ -190,7 +190,10 @@ export const useInternalOperations = (
         return;
       }
 
-      const _transfers = await getInternalOperations(provider, txData);
+      const _transfers = await getInternalOperations(
+        provider,
+        txData.transactionHash
+      );
       for (const t of _transfers) {
         t.from = provider.formatter.address(t.from);
         t.to = provider.formatter.address(t.to);
