@@ -46,11 +46,10 @@ const BlockTransactions: React.FC = () => {
         provider.getBlockWithTransactions(blockNumber.toNumber()),
         provider.send("eth_getBlockReceipts", [blockNumber.toNumber()]),
       ]);
-      document.title = `Block #${_block.number} Transactions | Otterscan`;
 
       const responses = _block.transactions
-        .map((t, i): ProcessedTransaction => {
-          return {
+        .map(
+          (t, i): ProcessedTransaction => ({
             blockNumber: blockNumber.toNumber(),
             timestamp: _block.timestamp,
             miner: _block.miner,
@@ -74,8 +73,8 @@ const BlockTransactions: React.FC = () => {
                 : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
             data: t.data,
             status: provider.formatter.number(_receipts[i].status),
-          };
-        })
+          })
+        )
         .reverse();
       setTxs(responses);
 
@@ -92,9 +91,12 @@ const BlockTransactions: React.FC = () => {
           );
         })
       );
-      const processedResponses = responses.map((r, i): ProcessedTransaction => {
-        return { ...r, internalMinerInteraction: checkTouchMinerAddr[i] };
-      });
+      const processedResponses = responses.map(
+        (r, i): ProcessedTransaction => ({
+          ...r,
+          internalMinerInteraction: checkTouchMinerAddr[i],
+        })
+      );
       setTxs(processedResponses);
     };
     readBlock();
