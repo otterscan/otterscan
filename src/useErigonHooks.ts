@@ -6,6 +6,8 @@ import {
   TokenTransfer,
   TransactionData,
   InternalOperation,
+  ProcessedTransaction,
+  OperationType,
 } from "./types";
 import erc20 from "./erc20.json";
 
@@ -63,6 +65,81 @@ export const readBlock = async (
     ..._block,
   };
   return extBlock;
+};
+
+export const useBlockTransactions = (
+  provider: ethers.providers.JsonRpcProvider | undefined,
+  blockNumber: number
+) => {
+  const [txs, setTxs] = useState<ProcessedTransaction[]>();
+
+  useEffect(() => {
+    if (!provider) {
+      return;
+    }
+
+    const readBlock = async () => {
+      const [_block, _receipts] = await Promise.all([
+        provider.getBlockWithTransactions(blockNumber),
+        provider.send("eth_getBlockReceipts", [blockNumber]),
+      ]);
+
+      const responses = _block.transactions
+        .map(
+          (t, i): ProcessedTransaction => ({
+            blockNumber: blockNumber,
+            timestamp: _block.timestamp,
+            miner: _block.miner,
+            idx: i,
+            hash: t.hash,
+            from: t.from,
+            to: t.to,
+            createdContractAddress: _receipts[i].contractAddress,
+            value: t.value,
+            fee:
+              t.type !== 2
+                ? provider.formatter
+                    .bigNumber(_receipts[i].gasUsed)
+                    .mul(t.gasPrice!)
+                : provider.formatter
+                    .bigNumber(_receipts[i].gasUsed)
+                    .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
+            gasPrice:
+              t.type !== 2
+                ? t.gasPrice!
+                : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
+            data: t.data,
+            status: provider.formatter.number(_receipts[i].status),
+          })
+        )
+        .reverse();
+      setTxs(responses);
+
+      const checkTouchMinerAddr = await Promise.all(
+        responses.map(async (res) => {
+          const ops = await getInternalOperations(provider, res.hash);
+          return (
+            ops.findIndex(
+              (op) =>
+                op.type === OperationType.TRANSFER &&
+                res.miner !== undefined &&
+                res.miner === ethers.utils.getAddress(op.to)
+            ) !== -1
+          );
+        })
+      );
+      const processedResponses = responses.map(
+        (r, i): ProcessedTransaction => ({
+          ...r,
+          internalMinerInteraction: checkTouchMinerAddr[i],
+        })
+      );
+      setTxs(processedResponses);
+    };
+    readBlock();
+  }, [provider, blockNumber]);
+
+  return txs;
 };
 
 export const useBlockData = (

@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useMemo, useContext } from "react";
+import React, { useMemo, useContext } from "react";
 import { useParams, useLocation } from "react-router";
 import { ethers } from "ethers";
 import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
-import { OperationType, ProcessedTransaction } from "./types";
 import { PAGE_SIZE } from "./params";
 import { RuntimeContext } from "./useRuntime";
-import { getInternalOperations } from "./nodeFunctions";
+import { useBlockTransactions } from "./useErigonHooks";
 
 type BlockParams = {
   blockNumber: string;
@@ -35,72 +34,7 @@ const BlockTransactions: React.FC = () => {
     [params.blockNumber]
   );
 
-  const [txs, setTxs] = useState<ProcessedTransaction[]>();
-  useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
-    const readBlock = async () => {
-      const [_block, _receipts] = await Promise.all([
-        provider.getBlockWithTransactions(blockNumber.toNumber()),
-        provider.send("eth_getBlockReceipts", [blockNumber.toNumber()]),
-      ]);
-
-      const responses = _block.transactions
-        .map(
-          (t, i): ProcessedTransaction => ({
-            blockNumber: blockNumber.toNumber(),
-            timestamp: _block.timestamp,
-            miner: _block.miner,
-            idx: i,
-            hash: t.hash,
-            from: t.from,
-            to: t.to,
-            createdContractAddress: _receipts[i].contractAddress,
-            value: t.value,
-            fee:
-              t.type !== 2
-                ? provider.formatter
-                    .bigNumber(_receipts[i].gasUsed)
-                    .mul(t.gasPrice!)
-                : provider.formatter
-                    .bigNumber(_receipts[i].gasUsed)
-                    .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
-            gasPrice:
-              t.type !== 2
-                ? t.gasPrice!
-                : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
-            data: t.data,
-            status: provider.formatter.number(_receipts[i].status),
-          })
-        )
-        .reverse();
-      setTxs(responses);
-
-      const checkTouchMinerAddr = await Promise.all(
-        responses.map(async (res) => {
-          const ops = await getInternalOperations(provider, res.hash);
-          return (
-            ops.findIndex(
-              (op) =>
-                op.type === OperationType.TRANSFER &&
-                res.miner !== undefined &&
-                res.miner === ethers.utils.getAddress(op.to)
-            ) !== -1
-          );
-        })
-      );
-      const processedResponses = responses.map(
-        (r, i): ProcessedTransaction => ({
-          ...r,
-          internalMinerInteraction: checkTouchMinerAddr[i],
-        })
-      );
-      setTxs(processedResponses);
-    };
-    readBlock();
-  }, [provider, blockNumber]);
+  const txs = useBlockTransactions(provider, blockNumber.toNumber());
 
   const page = useMemo(() => {
     if (!txs) {
