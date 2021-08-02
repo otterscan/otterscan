@@ -61,7 +61,7 @@ type BlocksProps = {
 
 const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
-  const [blocks, setBlock] = useState<ExtendedBlock[]>([]);
+  const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
 
   const addBlock = useCallback(
@@ -77,7 +77,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
       const extBlock = await readBlock(provider, blockNumber.toString());
       setNow(Date.now());
-      setBlock((_blocks) => {
+      setBlocks((_blocks) => {
         if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
           return _blocks;
         }
