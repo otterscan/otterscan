@@ -169,12 +169,12 @@ export const useTxData = (
       return;
     }
 
-    const readBlock = async () => {
+    const readTxData = async () => {
       const [_response, _receipt] = await Promise.all([
         provider.getTransaction(txhash),
         provider.getTransactionReceipt(txhash),
       ]);
-      const _block = await provider.getBlock(_receipt.blockNumber);
+      const _block = await readBlock(provider, _receipt.blockNumber.toString());
       document.title = `Transaction ${_response.hash} | Otterscan`;
 
       // Extract token transfers
@@ -222,7 +222,7 @@ export const useTxData = (
         status: _receipt.status === 1,
         blockNumber: _receipt.blockNumber,
         transactionIndex: _receipt.transactionIndex,
-        blockTransactionCount: _block.transactions.length,
+        blockTransactionCount: _block.transactionCount,
         confirmations: _receipt.confirmations,
         timestamp: _block.timestamp,
         miner: _block.miner,
@@ -245,7 +245,7 @@ export const useTxData = (
         logs: _receipt.logs,
       });
     };
-    readBlock();
+    readTxData();
   }, [provider, txhash]);
 
   return txData;
