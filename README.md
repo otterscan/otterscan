@@ -86,6 +86,7 @@ We intend to release a compatible rebased version containing our changes every w
 
 ```
 git fetch --all
+git fetch otterscan --tags
 git checkout <version-tag-otterscan>
 ```
 
