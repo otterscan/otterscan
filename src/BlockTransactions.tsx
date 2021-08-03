@@ -36,17 +36,10 @@ const BlockTransactions: React.FC = () => {
 
   const [totalTxs, txs] = useBlockTransactions(
     provider,
-    blockNumber.toNumber()
+    blockNumber.toNumber(),
+    pageNumber - 1,
+    PAGE_SIZE
   );
-
-  const page = useMemo(() => {
-    if (!txs) {
-      return undefined;
-    }
-    const pageStart = (pageNumber - 1) * PAGE_SIZE;
-    return txs.slice(pageStart, pageStart + PAGE_SIZE);
-  }, [txs, pageNumber]);
-  const total = totalTxs;
 
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
@@ -54,8 +47,8 @@ const BlockTransactions: React.FC = () => {
     <StandardFrame>
       <BlockTransactionHeader blockTag={blockNumber.toNumber()} />
       <BlockTransactionResults
-        page={page}
-        total={total ?? 0}
+        page={txs}
+        total={totalTxs ?? 0}
         pageNumber={pageNumber}
       />
     </StandardFrame>

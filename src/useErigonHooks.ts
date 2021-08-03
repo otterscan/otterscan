@@ -66,7 +66,9 @@ export const readBlock = async (
 
 export const useBlockTransactions = (
   provider: ethers.providers.JsonRpcProvider | undefined,
-  blockNumber: number
+  blockNumber: number,
+  pageNumber: number,
+  pageSize: number
 ): [number | undefined, ProcessedTransaction[] | undefined] => {
   const [totalTxs, setTotalTxs] = useState<number>();
   const [txs, setTxs] = useState<ProcessedTransaction[]>();
@@ -79,6 +81,8 @@ export const useBlockTransactions = (
     const readBlock = async () => {
       const result = await provider.send("ots_getBlockTransactions", [
         blockNumber,
+        pageNumber,
+        pageSize,
       ]);
       const _block = provider.formatter.blockWithTransactions(
         result.fullblock
@@ -139,7 +143,7 @@ export const useBlockTransactions = (
       setTxs(processedTxs);
     };
     readBlock();
-  }, [provider, blockNumber]);
+  }, [provider, blockNumber, pageNumber, pageSize]);
 
   return [totalTxs, txs];
 };
