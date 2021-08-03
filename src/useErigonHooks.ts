@@ -67,7 +67,8 @@ export const readBlock = async (
 export const useBlockTransactions = (
   provider: ethers.providers.JsonRpcProvider | undefined,
   blockNumber: number
-) => {
+): [number | undefined, ProcessedTransaction[] | undefined] => {
+  const [totalTxs, setTotalTxs] = useState<number>();
   const [txs, setTxs] = useState<ProcessedTransaction[]>();
 
   useEffect(() => {
@@ -114,6 +115,7 @@ export const useBlockTransactions = (
         )
         .reverse();
       setTxs(rawTxs);
+      setTotalTxs(result.fullblock.transactionCount);
 
       const checkTouchMinerAddr = await Promise.all(
         rawTxs.map(async (res) => {
@@ -139,7 +141,7 @@ export const useBlockTransactions = (
     readBlock();
   }, [provider, blockNumber]);
 
-  return txs;
+  return [totalTxs, txs];
 };
 
 export const useBlockData = (
