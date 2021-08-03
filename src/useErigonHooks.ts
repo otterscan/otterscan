@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ethers, BigNumber } from "ethers";
+import { BlockWithTransactions } from "@ethersproject/abstract-provider";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -75,12 +76,15 @@ export const useBlockTransactions = (
     }
 
     const readBlock = async () => {
-      const [_block, _receipts] = await Promise.all([
-        provider.getBlockWithTransactions(blockNumber),
-        provider.send("eth_getBlockReceipts", [blockNumber]),
+      const result = await provider.send("ots_getBlockTransactions", [
+        blockNumber,
       ]);
+      const _block = provider.formatter.blockWithTransactions(
+        result.fullblock
+      ) as unknown as BlockWithTransactions;
+      const _receipts = result.receipts;
 
-      const responses = _block.transactions
+      const rawTxs = _block.transactions
         .map(
           (t, i): ProcessedTransaction => ({
             blockNumber: blockNumber,
@@ -109,10 +113,10 @@ export const useBlockTransactions = (
           })
         )
         .reverse();
-      setTxs(responses);
+      setTxs(rawTxs);
 
       const checkTouchMinerAddr = await Promise.all(
-        responses.map(async (res) => {
+        rawTxs.map(async (res) => {
           const ops = await getInternalOperations(provider, res.hash);
           return (
             ops.findIndex(
@@ -124,13 +128,13 @@ export const useBlockTransactions = (
           );
         })
       );
-      const processedResponses = responses.map(
+      const processedTxs = rawTxs.map(
         (r, i): ProcessedTransaction => ({
           ...r,
           internalMinerInteraction: checkTouchMinerAddr[i],
         })
       );
-      setTxs(processedResponses);
+      setTxs(processedTxs);
     };
     readBlock();
   }, [provider, blockNumber]);
