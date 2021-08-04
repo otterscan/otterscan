@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { ethers } from "ethers";
 import { Line } from "react-chartjs-2";
-import { ChartData, ChartOptions } from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,39 +19,11 @@ import {
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import { options, toChartData } from "./chart";
 
 const MAX_BLOCK_HISTORY = 20;
 
 const PREV_BLOCK_COUNT = 15;
-
-const options: ChartOptions = {
-  animation: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        callback: function (v) {
-          // @ts-ignore
-          return ethers.utils.commify(this.getLabelForValue(v));
-        },
-      },
-    },
-    y: {
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: "Burnt fees",
-      },
-      ticks: {
-        callback: (v) => `${v} Gwei`,
-      },
-    },
-  },
-};
 
 type BlocksProps = {
   latestBlock: ethers.providers.Block;
@@ -100,23 +71,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
     addBlock(latestBlock.number);
   }, [addBlock, latestBlock]);
 
-  const data: ChartData = useMemo(() => {
-    return {
-      labels: blocks.map((b) => b.number.toString()).reverse(),
-      datasets: [
-        {
-          label: "Burnt fees (Gwei)",
-          data: blocks
-            .map((b) => b.gasUsed.mul(b.baseFeePerGas!).toNumber() / 1e9)
-            .reverse(),
-          fill: true,
-          backgroundColor: "#FDBA74",
-          borderColor: "#F97316",
-          tension: 0.2,
-        },
-      ],
-    };
-  }, [blocks]);
+  const data = useMemo(() => toChartData(blocks), [blocks]);
 
   // On page reload, pre-populate the last N blocks
   useEffect(
