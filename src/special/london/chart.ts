@@ -51,15 +51,15 @@ export const toChartData = (blocks: ExtendedBlock[]): ChartData => ({
         .map((b) => b.gasUsed.mul(b.baseFeePerGas!).toNumber() / 1e9)
         .reverse(),
       fill: true,
-      backgroundColor: "#FDBA74",
-      borderColor: "#F97316",
+      backgroundColor: "#FDBA7470",
+      borderColor: "#FB923C",
       tension: 0.2,
     },
     {
       label: "Base fee (Gwei)",
       data: blocks.map(b => b.baseFeePerGas!.toNumber()).reverse(),
       yAxisID: "yBaseFee",
-      borderColor: "#FCA5A5",
+      borderColor: "#38BDF8",
       tension: 0.2
     }
   ],
