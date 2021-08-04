@@ -106,7 +106,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         <div>
           <Line data={data} height={100} options={options} />
         </div>
-        <div className="mt-5 grid grid-cols-8 px-3 py-2">
+        <div className="mt-5 grid grid-cols-8 gap-x-2 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
@@ -140,7 +140,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             <span>Age</span>
           </div>
         </div>
-        {blocks.map((b, i) => (
+        {blocks.map((b, i, all) => (
           <Transition
             key={b.hash}
             show={i < MAX_BLOCK_HISTORY}
@@ -152,7 +152,15 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >
-            <BlockRow now={now} block={b} />
+            <BlockRow
+              now={now}
+              block={b}
+              baseFeeDelta={
+                i < all.length - 1
+                  ? b.baseFeePerGas!.sub(all[i + 1].baseFeePerGas!).toNumber()
+                  : 0
+              }
+            />
           </Transition>
         ))}
       </div>
