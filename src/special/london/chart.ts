@@ -148,7 +148,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData => ({
     {
       label: "Gas limit",
       data: blocks.map((b) => b.gasLimit.toNumber()).reverse(),
-      borderColor: "#B91C1C",
+      borderColor: "#B91C1CF0",
       tension: 0.2,
       pointStyle: "crossRot",
       radius: 5,
