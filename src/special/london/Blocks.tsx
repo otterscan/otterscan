@@ -19,7 +19,12 @@ import {
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
-import { options, toChartData } from "./chart";
+import {
+  burntFeesChartOptions,
+  burntFeesChartData,
+  gasChartOptions,
+  gasChartData,
+} from "./chart";
 
 const MAX_BLOCK_HISTORY = 20;
 
@@ -34,6 +39,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
+  const [toggleChart, setToggleChart] = useState<boolean>(false);
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
@@ -71,7 +77,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
     addBlock(latestBlock.number);
   }, [addBlock, latestBlock]);
 
-  const data = useMemo(() => toChartData(blocks), [blocks]);
+  const data = useMemo(
+    () => (toggleChart ? gasChartData(blocks) : burntFeesChartData(blocks)),
+    [toggleChart, blocks]
+  );
+  const chartOptions = toggleChart ? gasChartOptions : burntFeesChartOptions;
 
   // On page reload, pre-populate the last N blocks
   useEffect(
@@ -85,6 +95,8 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           await addBlock(i);
         }
       };
+
+      setBlocks([]);
       addPreviousBlocks();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +116,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           </span>
         </div>
         <div>
-          <Line data={data} height={100} options={options} />
+          <Line data={data} height={100} options={chartOptions} />
         </div>
         <div className="mt-5 grid grid-cols-8 gap-x-2 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
