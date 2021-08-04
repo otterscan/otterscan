@@ -162,6 +162,12 @@ Erigon itself is alpha, so I consider this software is also in alpha state, howe
 
 Also there is room for many improvements that are not possible in the current centralized, closed source block explorer offerings and the author of this software would like to have.
 
+## Licensing
+
+This software itself is MIT licensed and redistributes MIT-compatible dependencies.
+
+The Otterscan patches for Erigon are LGPL-3 as required by Geth (since Erigon is a Geth derivative) and kept in a separate repository.
+
 ## Getting in touch
 
 ### Erigon Discord server
