@@ -86,6 +86,7 @@ We intend to release a compatible rebased version containing our changes every w
 
 ```
 git fetch --all
+git fetch otterscan --tags
 git checkout <version-tag-otterscan>
 ```
 
@@ -160,6 +161,12 @@ This project intends to keep following their progress and mantaining compatibili
 Erigon itself is alpha, so I consider this software is also in alpha state, however it is pretty usable.
 
 Also there is room for many improvements that are not possible in the current centralized, closed source block explorer offerings and the author of this software would like to have.
+
+## Licensing
+
+This software itself is MIT licensed and redistributes MIT-compatible dependencies.
+
+The Otterscan patches for Erigon are LGPL-3 as required by Geth (since Erigon is a Geth derivative) and kept in a separate repository.
 
 ## Getting in touch
 

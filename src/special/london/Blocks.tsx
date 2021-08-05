@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { ethers } from "ethers";
 import { Line } from "react-chartjs-2";
-import { ChartData, ChartOptions } from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,39 +19,16 @@ import {
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import {
+  burntFeesChartOptions,
+  burntFeesChartData,
+  gasChartOptions,
+  gasChartData,
+} from "./chart";
 
 const MAX_BLOCK_HISTORY = 20;
 
 const PREV_BLOCK_COUNT = 15;
-
-const options: ChartOptions = {
-  animation: false,
-  plugins: {
-    legend: {
-      display: false,
-    },
-  },
-  scales: {
-    x: {
-      ticks: {
-        callback: function (v) {
-          // @ts-ignore
-          return ethers.utils.commify(this.getLabelForValue(v));
-        },
-      },
-    },
-    y: {
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: "Burnt fees",
-      },
-      ticks: {
-        callback: (v) => `${v} Gwei`,
-      },
-    },
-  },
-};
 
 type BlocksProps = {
   latestBlock: ethers.providers.Block;
@@ -61,8 +37,9 @@ type BlocksProps = {
 
 const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
-  const [blocks, setBlock] = useState<ExtendedBlock[]>([]);
+  const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
+  const [toggleChart, setToggleChart] = useState<boolean>(true);
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
@@ -77,7 +54,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
       const extBlock = await readBlock(provider, blockNumber.toString());
       setNow(Date.now());
-      setBlock((_blocks) => {
+      setBlocks((_blocks) => {
         if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
           return _blocks;
         }
@@ -100,23 +77,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
     addBlock(latestBlock.number);
   }, [addBlock, latestBlock]);
 
-  const data: ChartData = useMemo(() => {
-    return {
-      labels: blocks.map((b) => b.number.toString()).reverse(),
-      datasets: [
-        {
-          label: "Burnt fees (Gwei)",
-          data: blocks
-            .map((b) => b.gasUsed.mul(b.baseFeePerGas!).toNumber() / 1e9)
-            .reverse(),
-          fill: true,
-          backgroundColor: "#FDBA74",
-          borderColor: "#F97316",
-          tension: 0.2,
-        },
-      ],
-    };
-  }, [blocks]);
+  const data = useMemo(
+    () => (toggleChart ? gasChartData(blocks) : burntFeesChartData(blocks)),
+    [toggleChart, blocks]
+  );
+  const chartOptions = toggleChart ? gasChartOptions : burntFeesChartOptions;
 
   // On page reload, pre-populate the last N blocks
   useEffect(
@@ -130,6 +95,8 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           await addBlock(i);
         }
       };
+
+      setBlocks([]);
       addPreviousBlocks();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,19 +106,26 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   return (
     <div className="w-full mb-auto">
       <div className="px-9 pt-3 pb-12 divide-y-2">
-        <div className="flex justify-center items-baseline space-x-2 px-3 pb-2 text-lg text-orange-500 ">
-          <span>
-            <FontAwesomeIcon icon={faBurn} />
-          </span>
-          <span>EIP-1559 is activated. Watch the fees burn.</span>
-          <span>
-            <FontAwesomeIcon icon={faBurn} />
-          </span>
+        <div className="relative">
+          <div className="flex justify-center items-baseline space-x-2 px-3 pb-2 text-lg text-orange-500 ">
+            <span>
+              <FontAwesomeIcon icon={faBurn} />
+            </span>
+            <span>EIP-1559 is activated. Watch the fees burn.</span>
+            <span>
+              <FontAwesomeIcon icon={faBurn} />
+            </span>
+          </div>
+          <div className="absolute right-0 top-0 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
+            <button onClick={() => setToggleChart(!toggleChart)}>
+              {toggleChart ? "Gas usage" : "Burnt fees"}
+            </button>
+          </div>
         </div>
         <div>
-          <Line data={data} height={100} options={options} />
+          <Line data={data} height={100} options={chartOptions} />
         </div>
-        <div className="mt-5 grid grid-cols-8 px-3 py-2">
+        <div className="mt-5 grid grid-cols-8 gap-x-2 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
@@ -185,7 +159,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             <span>Age</span>
           </div>
         </div>
-        {blocks.map((b, i) => (
+        {blocks.map((b, i, all) => (
           <Transition
             key={b.hash}
             show={i < MAX_BLOCK_HISTORY}
@@ -197,7 +171,15 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >
-            <BlockRow now={now} block={b} />
+            <BlockRow
+              now={now}
+              block={b}
+              baseFeeDelta={
+                i < all.length - 1
+                  ? b.baseFeePerGas!.sub(all[i + 1].baseFeePerGas!).toNumber()
+                  : 0
+              }
+            />
           </Transition>
         ))}
       </div>

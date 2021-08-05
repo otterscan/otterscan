@@ -40,6 +40,7 @@ export type TransactionData = {
   status: boolean;
   blockNumber: number;
   transactionIndex: number;
+  blockTransactionCount: number;
   confirmations: number;
   timestamp: number;
   miner?: string;

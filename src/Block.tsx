@@ -83,7 +83,7 @@ const Block: React.FC = () => {
               className="bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white rounded-lg px-2 py-1 text-xs"
               to={blockTxsURL(block.number)}
             >
-              {block.transactions.length} transactions
+              {block.transactionCount} transactions
             </NavLink>{" "}
             in this block
           </InfoRow>

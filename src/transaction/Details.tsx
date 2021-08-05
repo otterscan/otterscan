@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
+  faCube,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import ContentFrame from "../ContentFrame";
@@ -12,6 +13,7 @@ import BlockConfirmations from "../components/BlockConfirmations";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
+import Nonce from "../components/Nonce";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
@@ -23,6 +25,8 @@ import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
+import RelativePosition from "../components/RelativePosition";
+import PercentagePosition from "../components/PercentagePosition";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -60,25 +64,46 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         )}
       </InfoRow>
-      <InfoRow title="Block">
-        <div className="flex items-baseline space-x-2">
-          <BlockLink blockTag={txData.blockNumber} />
-          <BlockConfirmations confirmations={txData.confirmations} />
+      <InfoRow title="Block / Position">
+        <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
+          <div className="flex space-x-1 items-baseline mr-3">
+            <span className="text-orange-500">
+              <FontAwesomeIcon icon={faCube} />
+            </span>
+            <BlockLink blockTag={txData.blockNumber} />
+            <BlockConfirmations confirmations={txData.confirmations} />
+          </div>
+          <div className="flex space-x-2 items-baseline pl-3">
+            <RelativePosition
+              pos={txData.transactionIndex}
+              total={txData.blockTransactionCount - 1}
+            />
+            <PercentagePosition
+              perc={
+                txData.transactionIndex / (txData.blockTransactionCount - 1)
+              }
+            />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title="Timestamp">
         <Timestamp value={txData.timestamp} />
       </InfoRow>
-      <InfoRow title="From">
-        <div className="flex items-baseline space-x-2 -ml-1">
-          <AddressHighlighter address={txData.from}>
-            <DecoratedAddressLink
-              address={txData.from}
-              miner={txData.from === txData.miner}
-              txFrom
-            />
-          </AddressHighlighter>
-          <Copy value={txData.from} />
+      <InfoRow title="From / Nonce">
+        <div className="flex divide-x-2 divide-dotted divide-gray-300">
+          <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+            <AddressHighlighter address={txData.from}>
+              <DecoratedAddressLink
+                address={txData.from}
+                miner={txData.from === txData.miner}
+                txFrom
+              />
+            </AddressHighlighter>
+            <Copy value={txData.from} />
+          </div>
+          <div className="flex items-baseline pl-3">
+            <Nonce value={txData.nonce} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
@@ -105,7 +130,7 @@ const Details: React.FC<DetailsProps> = ({
             <Copy value={txData.createdContractAddress!} />
           </div>
         )}
-        {internalOps && (
+        {internalOps && internalOps.length > 0 && (
           <div className="mt-2 space-y-1">
             {internalOps.map((op, i) => (
               <InternalTransactionOperation
@@ -189,11 +214,13 @@ const Details: React.FC<DetailsProps> = ({
           )}
         </div>
       </InfoRow>
-      <InfoRow title="Gas Used/Limit">
+      <InfoRow title="Gas Used / Limit">
         <div className="flex space-x-3 items-baseline">
           <div>
-            <GasValue value={txData.gasUsed} /> /{" "}
-            <GasValue value={txData.gasLimit} />
+            <RelativePosition
+              pos={<GasValue value={txData.gasUsed} />}
+              total={<GasValue value={txData.gasLimit} />}
+            />
           </div>
           <PercentageBar
             perc={
@@ -226,12 +253,6 @@ const Details: React.FC<DetailsProps> = ({
         </div>
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
-      <InfoRow title="Nonce">{txData.nonce}</InfoRow>
-      <InfoRow title="Position in Block">
-        <span className="rounded px-2 py-1 bg-gray-100 text-gray-500 text-xs">
-          {txData.transactionIndex}
-        </span>
-      </InfoRow>
       <InfoRow title="Input Data">
         <textarea
           className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
