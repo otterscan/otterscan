@@ -52,7 +52,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         {ethers.utils.commify(
           ethers.utils.formatEther(block.gasUsed.mul(block.baseFeePerGas!))
         )}{" "}
-        ETH
+        Ether
       </div>
       <div className="text-right text-gray-400">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
