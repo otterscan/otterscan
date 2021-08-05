@@ -23,7 +23,7 @@ const Blip: React.FC<BlipProps> = ({ value }) => {
             value > 0 ? "text-green-500" : "text-red-500"
           } text-3xl`}
         >
-          {value > 0 ? `+${value}` : `-${value}`}
+          {value > 0 ? `+${value}` : `${value}`}
         </div>
       )}
     </Transition>
