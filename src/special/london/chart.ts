@@ -94,9 +94,6 @@ export const gasChartOptions: ChartOptions = {
         display: true,
         text: "Gas",
       },
-      ticks: {
-        callback: (v) => `${v} Gwei`,
-      },
     },
     yBaseFee: {
       position: "right",
