@@ -25,7 +25,7 @@ export const burntFeesChartOptions: ChartOptions = {
         text: "Burnt fees",
       },
       ticks: {
-        callback: (v) => `${v} Gwei`,
+        callback: (v) => `${(v as number) / 1e9} ETH`,
       },
     },
     yBaseFee: {
@@ -36,7 +36,7 @@ export const burntFeesChartOptions: ChartOptions = {
         text: "Base fee",
       },
       ticks: {
-        callback: (v) => `${v} wei`,
+        callback: (v) => `${(v as number) / 1e9} Gwei`,
       },
       grid: {
         drawOnChartArea: false,
@@ -51,7 +51,7 @@ export const burntFeesChartData = (blocks: ExtendedBlock[]): ChartData => ({
     {
       label: "Burnt fees (Gwei)",
       data: blocks
-        .map((b) => b.gasUsed.mul(b.baseFeePerGas!).toNumber() / 1e9)
+        .map((b) => b.gasUsed.mul(b.baseFeePerGas!).div(1e9).toNumber())
         .reverse(),
       fill: true,
       backgroundColor: "#FDBA7470",
@@ -103,7 +103,7 @@ export const gasChartOptions: ChartOptions = {
         text: "Base fee",
       },
       ticks: {
-        callback: (v) => `${v} wei`,
+        callback: (v) => `${(v as number) / 1e9} Gwei`,
       },
       grid: {
         drawOnChartArea: false,
