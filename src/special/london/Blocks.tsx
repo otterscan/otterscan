@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { ethers } from "ethers";
+import { ethers, FixedNumber } from "ethers";
 import { Line } from "react-chartjs-2";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -176,10 +176,15 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               block={b}
               baseFeeDelta={
                 i < all.length - 1
-                  ? b
-                      .baseFeePerGas!.sub(all[i + 1].baseFeePerGas!)
-                      .div(1e9)
-                      .toNumber()
+                  ? FixedNumber.from(b.baseFeePerGas!)
+                      .divUnsafe(FixedNumber.from(1e9))
+                      .round(0)
+                      .subUnsafe(
+                        FixedNumber.from(all[i + 1].baseFeePerGas!)
+                          .divUnsafe(FixedNumber.from(1e9))
+                          .round(0)
+                      )
+                      .toUnsafeFloat()
                   : 0
               }
             />

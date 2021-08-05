@@ -1,5 +1,5 @@
 import React from "react";
-import { ethers } from "ethers";
+import { ethers, FixedNumber } from "ethers";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
 import { ExtendedBlock } from "../../useErigonHooks";
@@ -41,7 +41,13 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       </div>
       <div className="text-right">
         <div className="relative">
-          <span>{block.baseFeePerGas?.div(1e9).toString()} Gwei</span>
+          <span>
+            {FixedNumber.from(block.baseFeePerGas)
+              .divUnsafe(FixedNumber.from(1e9))
+              .round(0)
+              .toUnsafeFloat()}{" "}
+            Gwei
+          </span>
           <Blip value={baseFeeDelta} />
         </div>
       </div>
