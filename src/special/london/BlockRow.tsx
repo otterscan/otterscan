@@ -21,7 +21,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const totalReward = block.blockReward.add(netFeeReward ?? 0);
 
   return (
-    <div className="grid grid-cols-8 gap-x-2 px-3 py-2 hover:bg-gray-100">
+    <div className="grid grid-cols-9 gap-x-2 px-3 py-2 hover:bg-gray-100">
       <div>
         <BlockLink blockTag={block.number} />
       </div>
@@ -41,21 +41,18 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       </div>
       <div className="text-right">
         <div className="relative">
-          <span>{block.baseFeePerGas?.toString()} wei</span>
+          <span>{block.baseFeePerGas?.div(1e9).toString()} Gwei</span>
           <Blip value={baseFeeDelta} />
         </div>
       </div>
       <div className="text-right col-span-2">
         {ethers.utils.commify(ethers.utils.formatEther(totalReward))} Ether
       </div>
-      <div className="text-right line-through text-orange-500">
+      <div className="text-right col-span-2 line-through text-orange-500">
         {ethers.utils.commify(
-          ethers.utils.formatUnits(
-            block.gasUsed.mul(block.baseFeePerGas!).toString(),
-            9
-          )
+          ethers.utils.formatEther(block.gasUsed.mul(block.baseFeePerGas!))
         )}{" "}
-        Gwei
+        ETH
       </div>
       <div className="text-right text-gray-400">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />

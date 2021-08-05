@@ -125,7 +125,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         <div>
           <Line data={data} height={100} options={chartOptions} />
         </div>
-        <div className="mt-5 grid grid-cols-8 gap-x-2 px-3 py-2">
+        <div className="mt-5 grid grid-cols-9 gap-x-2 px-3 py-2">
           <div className="flex space-x-1 items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
@@ -146,7 +146,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             </span>
             <span>Rewards</span>
           </div>
-          <div className="text-right flex space-x-1 justify-end items-baseline">
+          <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
             <span className="text-orange-500">
               <FontAwesomeIcon icon={faBurn} />
             </span>
@@ -176,7 +176,10 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               block={b}
               baseFeeDelta={
                 i < all.length - 1
-                  ? b.baseFeePerGas!.sub(all[i + 1].baseFeePerGas!).toNumber()
+                  ? b
+                      .baseFeePerGas!.sub(all[i + 1].baseFeePerGas!)
+                      .div(1e9)
+                      .toNumber()
                   : 0
               }
             />
