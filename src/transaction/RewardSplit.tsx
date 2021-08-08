@@ -21,9 +21,9 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
       <div className="grid grid-cols-2 gap-x-2 gap-y-1 items-center text-sm">
         <PercentageGauge
           perc={burntPerc}
-          bgFull="bg-orange-100"
-          bgPerc="bg-orange-500"
-          textPerc="text-orange-800"
+          bgColor="bg-orange-100"
+          bgColorPerc="bg-orange-500"
+          textColor="text-orange-800"
         />
         <div className="flex items-baseline space-x-1">
           <span className="flex space-x-1 text-orange-500">
@@ -40,9 +40,9 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
         </div>
         <PercentageGauge
           perc={100 - burntPerc}
-          bgFull="bg-yellow-100"
-          bgPerc="bg-yellow-300"
-          textPerc="text-yellow-700"
+          bgColor="bg-yellow-100"
+          bgColorPerc="bg-yellow-300"
+          textColor="text-yellow-700"
         />
         <div className="flex items-baseline space-x-1">
           <span className="flex space-x-1">
