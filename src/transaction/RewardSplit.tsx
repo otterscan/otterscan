@@ -10,11 +10,13 @@ type RewardSplitProps = {
 };
 
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
+  const paidFees = txData.gasPrice.mul(txData.gasUsed);
   const burntFees = txData.blockBaseFeePerGas!.mul(txData.gasUsed);
-  const minerReward = txData.gasPrice.mul(txData.gasUsed).sub(burntFees);
+
+  const minerReward = paidFees.sub(burntFees);
   const burntPerc =
-    burntFees.mul(10000).div(txData.gasPrice.mul(txData.gasUsed)).toNumber() /
-    100;
+    Math.round(burntFees.mul(10000).div(paidFees).toNumber()) / 100;
+  const minerPerc = Math.round((100 - burntPerc) * 100) / 100;
 
   return (
     <div className="inline-block">
@@ -39,7 +41,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
           </span>
         </div>
         <PercentageGauge
-          perc={100 - burntPerc}
+          perc={minerPerc}
           bgColor="bg-yellow-100"
           bgColorPerc="bg-yellow-300"
           textColor="text-yellow-700"
