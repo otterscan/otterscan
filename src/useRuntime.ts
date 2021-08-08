@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { ethers } from "ethers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
 import { ConnectionStatus } from "./types";
@@ -7,7 +7,7 @@ import { ConnectionStatus } from "./types";
 export type OtterscanRuntime = {
   config?: OtterscanConfig;
   connStatus: ConnectionStatus;
-  provider?: ethers.providers.JsonRpcProvider;
+  provider?: JsonRpcProvider;
 };
 
 export const useRuntime = (): OtterscanRuntime => {

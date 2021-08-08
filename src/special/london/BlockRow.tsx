@@ -1,5 +1,6 @@
 import React from "react";
-import { ethers, FixedNumber } from "ethers";
+import { FixedNumber } from "@ethersproject/bignumber";
+import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
 import { ExtendedBlock } from "../../useErigonHooks";
@@ -34,10 +35,10 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
             : ""
         }`}
       >
-        {ethers.utils.commify(block.gasUsed.toString())}
+        {commify(block.gasUsed.toString())}
       </div>
       <div className="text-right text-gray-400">
-        {ethers.utils.commify(gasTarget.toString())}
+        {commify(gasTarget.toString())}
       </div>
       <div className="text-right">
         <div className="relative">
@@ -52,13 +53,10 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         </div>
       </div>
       <div className="text-right col-span-2">
-        {ethers.utils.commify(ethers.utils.formatEther(totalReward))} Ether
+        {commify(formatEther(totalReward))} Ether
       </div>
       <div className="text-right col-span-2 line-through text-orange-500">
-        {ethers.utils.commify(
-          ethers.utils.formatEther(block.gasUsed.mul(block.baseFeePerGas!))
-        )}{" "}
-        Ether
+        {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} Ether
       </div>
       <div className="text-right text-gray-400">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />

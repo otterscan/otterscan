@@ -1,5 +1,5 @@
 import React from "react";
-import { ethers } from "ethers";
+import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -159,7 +159,7 @@ const Details: React.FC<DetailsProps> = ({
       )}
       <InfoRow title="Value">
         <span className="rounded bg-gray-100 px-2 py-1 text-xs">
-          {ethers.utils.formatEther(txData.value)} Ether
+          {formatEther(txData.value)} Ether
         </span>
       </InfoRow>
       <InfoRow

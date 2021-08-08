@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
-import { ethers, BigNumber } from "ethers";
-import { BlockWithTransactions } from "@ethersproject/abstract-provider";
+import { Block, BlockWithTransactions } from "@ethersproject/abstract-provider";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { getAddress } from "@ethersproject/address";
+import { Contract } from "@ethersproject/contracts";
+import { BigNumber } from "@ethersproject/bignumber";
+import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -15,7 +19,7 @@ import erc20 from "./erc20.json";
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
-export interface ExtendedBlock extends ethers.providers.Block {
+export interface ExtendedBlock extends Block {
   blockReward: BigNumber;
   unclesReward: BigNumber;
   feeReward: BigNumber;
@@ -27,11 +31,11 @@ export interface ExtendedBlock extends ethers.providers.Block {
 }
 
 export const readBlock = async (
-  provider: ethers.providers.JsonRpcProvider,
+  provider: JsonRpcProvider,
   blockNumberOrHash: string
 ) => {
   let blockPromise: Promise<any>;
-  if (ethers.utils.isHexString(blockNumberOrHash, 32)) {
+  if (isHexString(blockNumberOrHash, 32)) {
     // TODO: fix
     blockPromise = provider.send("eth_getBlockByHash", [
       blockNumberOrHash,
@@ -65,7 +69,7 @@ export const readBlock = async (
 };
 
 export const useBlockTransactions = (
-  provider: ethers.providers.JsonRpcProvider | undefined,
+  provider: JsonRpcProvider | undefined,
   blockNumber: number,
   pageNumber: number,
   pageSize: number
@@ -129,7 +133,7 @@ export const useBlockTransactions = (
               (op) =>
                 op.type === OperationType.TRANSFER &&
                 res.miner !== undefined &&
-                res.miner === ethers.utils.getAddress(op.to)
+                res.miner === getAddress(op.to)
             ) !== -1
           );
         })
@@ -149,7 +153,7 @@ export const useBlockTransactions = (
 };
 
 export const useBlockData = (
-  provider: ethers.providers.JsonRpcProvider | undefined,
+  provider: JsonRpcProvider | undefined,
   blockNumberOrHash: string
 ) => {
   const [block, setBlock] = useState<ExtendedBlock>();
@@ -169,7 +173,7 @@ export const useBlockData = (
 };
 
 export const useTxData = (
-  provider: ethers.providers.JsonRpcProvider | undefined,
+  provider: JsonRpcProvider | undefined,
   txhash: string
 ): TransactionData | undefined => {
   const [txData, setTxData] = useState<TransactionData>();
@@ -198,12 +202,8 @@ export const useTxData = (
         }
         tokenTransfers.push({
           token: l.address,
-          from: ethers.utils.getAddress(
-            ethers.utils.hexDataSlice(ethers.utils.arrayify(l.topics[1]), 12)
-          ),
-          to: ethers.utils.getAddress(
-            ethers.utils.hexDataSlice(ethers.utils.arrayify(l.topics[2]), 12)
-          ),
+          from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+          to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
           value: BigNumber.from(l.data),
         });
       }
@@ -214,7 +214,7 @@ export const useTxData = (
         if (tokenMetas[t.token]) {
           continue;
         }
-        const erc20Contract = new ethers.Contract(t.token, erc20, provider);
+        const erc20Contract = new Contract(t.token, erc20, provider);
         const [name, symbol, decimals] = await Promise.all([
           erc20Contract.name(),
           erc20Contract.symbol(),
@@ -262,7 +262,7 @@ export const useTxData = (
 };
 
 export const useInternalOperations = (
-  provider: ethers.providers.JsonRpcProvider | undefined,
+  provider: JsonRpcProvider | undefined,
   txData: TransactionData | undefined
 ): InternalOperation[] | undefined => {
   const [intTransfers, setIntTransfers] = useState<InternalOperation[]>();

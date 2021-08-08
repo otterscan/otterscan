@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { commify } from "@ethersproject/units";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 
@@ -14,7 +14,7 @@ export const burntFeesChartOptions: ChartOptions = {
       ticks: {
         callback: function (v) {
           // @ts-ignore
-          return ethers.utils.commify(this.getLabelForValue(v));
+          return commify(this.getLabelForValue(v));
         },
       },
     },
@@ -84,7 +84,7 @@ export const gasChartOptions: ChartOptions = {
       ticks: {
         callback: function (v) {
           // @ts-ignore
-          return ethers.utils.commify(this.getLabelForValue(v));
+          return commify(this.getLabelForValue(v));
         },
       },
     },

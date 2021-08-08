@@ -5,7 +5,8 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { ethers, FixedNumber } from "ethers";
+import { Block } from "@ethersproject/abstract-provider";
+import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,7 +30,7 @@ const MAX_BLOCK_HISTORY = 20;
 const PREV_BLOCK_COUNT = 15;
 
 type BlocksProps = {
-  latestBlock: ethers.providers.Block;
+  latestBlock: Block;
   targetBlockNumber: number;
 };
 

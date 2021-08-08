@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BlockTag } from "@ethersproject/abstract-provider";
 
 export const fourBytesURL = (
   assetsURLPrefix: string,
@@ -10,8 +10,6 @@ export const tokenLogoURL = (
   address: string
 ): string => `${assetsURLPrefix}/assets/${address}/logo.png`;
 
-export const blockURL = (blockNum: ethers.providers.BlockTag) =>
-  `/block/${blockNum}`;
+export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
-export const blockTxsURL = (blockNum: ethers.providers.BlockTag) =>
-  `/block/${blockNum}/txs`;
+export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;

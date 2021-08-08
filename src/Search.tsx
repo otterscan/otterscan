@@ -1,5 +1,6 @@
 import { useLocation, useHistory } from "react-router-dom";
-import { ethers } from "ethers";
+import { isAddress } from "@ethersproject/address";
+import { isHexString } from "@ethersproject/bytes";
 import queryString from "query-string";
 
 type SearchParams = {
@@ -12,11 +13,11 @@ const Search: React.FC = () => {
 
   const qs = queryString.parse(location.search);
   const q = (qs.q ?? "").toString();
-  if (ethers.utils.isAddress(q)) {
+  if (isAddress(q)) {
     history.replace(`/address/${q}`);
     return <></>;
   }
-  if (ethers.utils.isHexString(q, 32)) {
+  if (isHexString(q, 32)) {
     history.replace(`/tx/${q}`);
     return <></>;
   }

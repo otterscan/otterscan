@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ethers } from "ethers";
+import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
@@ -48,7 +48,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
           <span className="text-gray-500">
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
           </span>
-          <span>{ethers.utils.formatEther(internalOp.value)} Ether</span>
+          <span>{formatEther(internalOp.value)} Ether</span>
           <div className="flex items-baseline">
             <span className="text-gray-500">To</span>
             <AddressHighlighter address={internalOp.to}>

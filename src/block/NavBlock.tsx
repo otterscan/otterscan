@@ -1,5 +1,5 @@
 import React from "react";
-import { ethers } from "ethers";
+import { BlockTag } from "@ethersproject/abstract-provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons/faChevronLeft";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight";
@@ -8,7 +8,7 @@ import NavButton from "./NavButton";
 type NavBlockProps = {
   blockNumber: number;
   latestBlockNumber: number | undefined;
-  urlBuilder?: (blockNumber: ethers.providers.BlockTag) => string;
+  urlBuilder?: (blockNumber: BlockTag) => string;
 };
 
 const NavBlock: React.FC<NavBlockProps> = ({

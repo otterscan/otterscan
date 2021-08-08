@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { ENSReverseCache, ProcessedTransaction } from "./types";
 
 export const useENSCache = (
-  provider?: ethers.providers.JsonRpcProvider,
+  provider?: JsonRpcProvider,
   page?: ProcessedTransaction[]
 ) => {
   const [reverseCache, setReverseCache] = useState<ENSReverseCache>();

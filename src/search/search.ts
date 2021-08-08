@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { JsonRpcProvider, TransactionResponse } from "@ethersproject/providers";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 
@@ -26,12 +26,9 @@ export class SearchController {
     }
   }
 
-  private static rawToProcessed = (
-    provider: ethers.providers.JsonRpcProvider,
-    _rawRes: any
-  ) => {
-    const _res: ethers.providers.TransactionResponse[] = _rawRes.txs.map(
-      (t: any) => provider.formatter.transactionResponse(t)
+  private static rawToProcessed = (provider: JsonRpcProvider, _rawRes: any) => {
+    const _res: TransactionResponse[] = _rawRes.txs.map((t: any) =>
+      provider.formatter.transactionResponse(t)
     );
 
     return {
@@ -59,7 +56,7 @@ export class SearchController {
   };
 
   private static async readBackPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -72,7 +69,7 @@ export class SearchController {
   }
 
   private static async readForwardPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -85,7 +82,7 @@ export class SearchController {
   }
 
   static async firstPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     address: string
   ): Promise<SearchController> {
     const newTxs = await SearchController.readBackPage(provider, address, 0);
@@ -99,7 +96,7 @@ export class SearchController {
   }
 
   static async middlePage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     address: string,
     hash: string,
     next: boolean
@@ -122,7 +119,7 @@ export class SearchController {
   }
 
   static async lastPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     address: string
   ): Promise<SearchController> {
     const newTxs = await SearchController.readForwardPage(provider, address, 0);
@@ -140,7 +137,7 @@ export class SearchController {
   }
 
   async prevPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     hash: string
   ): Promise<SearchController> {
     // Already on this page
@@ -169,7 +166,7 @@ export class SearchController {
   }
 
   async nextPage(
-    provider: ethers.providers.JsonRpcProvider,
+    provider: JsonRpcProvider,
     hash: string
   ): Promise<SearchController> {
     // Already on this page

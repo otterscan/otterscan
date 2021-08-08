@@ -1,8 +1,9 @@
-import { ethers } from "ethers";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { getAddress } from "@ethersproject/address";
 import { InternalOperation } from "./types";
 
 export const getInternalOperations = async (
-  provider: ethers.providers.JsonRpcProvider,
+  provider: JsonRpcProvider,
   txHash: string
 ) => {
   const rawTransfers = await provider.send("ots_getInternalOperations", [
@@ -13,8 +14,8 @@ export const getInternalOperations = async (
   for (const t of rawTransfers) {
     _transfers.push({
       type: t.type,
-      from: ethers.utils.getAddress(t.from),
-      to: ethers.utils.getAddress(t.to),
+      from: getAddress(t.from),
+      to: getAddress(t.to),
       value: t.value,
     });
   }

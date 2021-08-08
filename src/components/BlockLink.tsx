@@ -1,17 +1,18 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { ethers } from "ethers";
+import { BlockTag } from "@ethersproject/abstract-provider";
+import { commify } from "@ethersproject/units";
 import { blockURL } from "../url";
 
 type BlockLinkProps = {
-  blockTag: ethers.providers.BlockTag;
+  blockTag: BlockTag;
 };
 
 const BlockLink: React.FC<BlockLinkProps> = ({ blockTag }) => {
   const isNum = typeof blockTag === "number";
   let text = blockTag;
   if (isNum) {
-    text = ethers.utils.commify(blockTag);
+    text = commify(blockTag);
   }
 
   return (
