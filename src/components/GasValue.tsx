@@ -1,12 +1,13 @@
 import React from "react";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
+import { commify, formatUnits } from "@ethersproject/units";
 
 type GasValueProps = {
   value: BigNumber;
 };
 
 const GasValue: React.FC<GasValueProps> = ({ value }) => {
-  return <>{ethers.utils.commify(ethers.utils.formatUnits(value, 0))}</>;
+  return <>{commify(formatUnits(value, 0))}</>;
 };
 
 export default React.memo(GasValue);

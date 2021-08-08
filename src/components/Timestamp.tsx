@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-regular-svg-icons";
+import { faClock } from "@fortawesome/free-regular-svg-icons/faClock";
 import TimestampAge from "./TimestampAge";
 
 type TimestampProps = {

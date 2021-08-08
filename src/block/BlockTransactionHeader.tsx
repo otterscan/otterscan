@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ethers } from "ethers";
+import { BlockTag } from "@ethersproject/abstract-provider";
 import StandardSubtitle from "../StandardSubtitle";
 import BlockLink from "../components/BlockLink";
 import NavBlock from "./NavBlock";
@@ -8,7 +8,7 @@ import { useLatestBlockNumber } from "../useLatestBlock";
 import { blockTxsURL } from "../url";
 
 type BlockTransactionHeaderProps = {
-  blockTag: ethers.providers.BlockTag;
+  blockTag: BlockTag;
 };
 
 const BlockTransactionHeader: React.FC<BlockTransactionHeaderProps> = ({

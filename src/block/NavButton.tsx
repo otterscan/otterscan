@@ -1,11 +1,11 @@
-import { ethers } from "ethers";
 import { NavLink } from "react-router-dom";
+import { BlockTag } from "@ethersproject/abstract-provider";
 import { blockURL } from "../url";
 
 type NavButtonProps = {
   blockNum: number;
   disabled?: boolean;
-  urlBuilder?: (blockNumber: ethers.providers.BlockTag) => string;
+  urlBuilder?: (blockNumber: BlockTag) => string;
 };
 
 const NavButton: React.FC<NavButtonProps> = ({

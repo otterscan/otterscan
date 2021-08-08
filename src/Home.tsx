@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import { ethers } from "ethers";
+import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
@@ -74,7 +74,7 @@ const Home: React.FC = () => {
             className="mx-auto flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
             to={blockURL(latestBlock.number)}
           >
-            <div>Latest block: {ethers.utils.commify(latestBlock.number)}</div>
+            <div>Latest block: {commify(latestBlock.number)}</div>
             <Timestamp value={latestBlock.timestamp} />
           </NavLink>
         )}

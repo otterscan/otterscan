@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
+import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import FormattedBalance from "../components/FormattedBalance";
 import { TransactionData } from "../types";
 import PercentageGauge from "../components/PercentageGauge";

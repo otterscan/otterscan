@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { Block } from "@ethersproject/abstract-provider";
+import { JsonRpcProvider } from "@ethersproject/providers";
 
-export const useLatestBlock = (provider?: ethers.providers.JsonRpcProvider) => {
-  const [latestBlock, setLatestBlock] = useState<ethers.providers.Block>();
+export const useLatestBlock = (provider?: JsonRpcProvider) => {
+  const [latestBlock, setLatestBlock] = useState<Block>();
 
   useEffect(() => {
     if (!provider) {
@@ -34,9 +35,7 @@ export const useLatestBlock = (provider?: ethers.providers.JsonRpcProvider) => {
   return latestBlock;
 };
 
-export const useLatestBlockNumber = (
-  provider?: ethers.providers.JsonRpcProvider
-) => {
+export const useLatestBlockNumber = (provider?: JsonRpcProvider) => {
   const [latestBlock, setLatestBlock] = useState<number>();
 
   useEffect(() => {

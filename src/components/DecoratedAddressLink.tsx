@@ -1,12 +1,10 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faStar,
-  faBomb,
-  faMoneyBillAlt,
-  faBurn,
-  faCoins,
-} from "@fortawesome/free-solid-svg-icons";
+import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
+import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
+import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons/faMoneyBillAlt";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
+import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import TokenLogo from "./TokenLogo";
 import AddressOrENSName from "./AddressOrENSName";
 import { AddressContext, TokenMeta, ZERO_ADDRESS } from "../types";

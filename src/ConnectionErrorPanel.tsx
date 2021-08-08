@@ -1,10 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClock,
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 import { ConnectionStatus } from "./types";
 import { OtterscanConfig } from "./useConfig";
 

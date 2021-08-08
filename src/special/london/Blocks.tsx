@@ -5,17 +5,16 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { ethers, FixedNumber } from "ethers";
+import { Block } from "@ethersproject/abstract-provider";
+import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBurn,
-  faCoins,
-  faCube,
-  faGasPump,
-  faHistory,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
+import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
+import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
+import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
+import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
@@ -31,7 +30,7 @@ const MAX_BLOCK_HISTORY = 20;
 const PREV_BLOCK_COUNT = 15;
 
 type BlocksProps = {
-  latestBlock: ethers.providers.Block;
+  latestBlock: Block;
   targetBlockNumber: number;
 };
 
