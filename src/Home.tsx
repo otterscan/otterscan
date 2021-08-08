@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";

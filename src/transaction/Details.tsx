@@ -1,11 +1,9 @@
 import React from "react";
 import { ethers } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCheckCircle,
-  faCube,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
+import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";

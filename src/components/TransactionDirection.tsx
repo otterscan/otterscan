@@ -1,9 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCoins,
-  faLongArrowAltRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
+import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons/faLongArrowAltRight";
 
 export enum Direction {
   IN,
@@ -41,7 +39,7 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
     msg = "SELF";
   } else if (direction === Direction.INTERNAL) {
     msg = "INT";
-    bgColor = "bg-green-100"
+    bgColor = "bg-green-100";
   }
 
   if (flags === Flags.MINER) {
