@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { formatEther } from "@ethersproject/units";
+import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -40,6 +41,17 @@ const Details: React.FC<DetailsProps> = ({
   const hasEIP1559 =
     txData.blockBaseFeePerGas !== undefined &&
     txData.blockBaseFeePerGas !== null;
+  const [inputMode, setInputMode] = useState<number>(0);
+
+  const utfInput = useMemo(() => {
+    try {
+      return txData && toUtf8String(txData.data);
+    } catch (err) {
+      console.error("Error while converting input data to string");
+      console.error(err);
+      return "<can't decode>";
+    }
+  }, [txData]);
 
   return (
     <ContentFrame tabs>
@@ -252,11 +264,31 @@ const Details: React.FC<DetailsProps> = ({
       </InfoRow>
       <InfoRow title="Ether Price">N/A</InfoRow>
       <InfoRow title="Input Data">
-        <textarea
-          className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-          value={txData.data}
-          readOnly
-        />
+        <div className="space-y-1">
+          <div className="flex space-x-1">
+            <button
+              className={`border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
+                inputMode === 0 ? "border-blue-300" : ""
+              }`}
+              onClick={() => setInputMode(0)}
+            >
+              Raw
+            </button>
+            <button
+              className={`border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
+                inputMode === 1 ? "border-blue-300" : ""
+              }`}
+              onClick={() => setInputMode(1)}
+            >
+              UTF-8
+            </button>
+          </div>
+          <textarea
+            className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+            value={inputMode === 0 ? txData.data : utfInput}
+            readOnly
+          />
+        </div>
       </InfoRow>
     </ContentFrame>
   );
