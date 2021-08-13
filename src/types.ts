@@ -1,4 +1,5 @@
-import { ethers, BigNumber } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
+import { Log } from "@ethersproject/providers";
 
 export enum ConnectionStatus {
   CONNECTING,
@@ -60,7 +61,7 @@ export type TransactionData = {
   gasLimit: BigNumber;
   nonce: number;
   data: string;
-  logs: ethers.providers.Log[];
+  logs: Log[];
 };
 
 // The VOID...

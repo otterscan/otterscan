@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { JsonRpcProvider, Block } from "@ethersproject/providers";
+import { commify } from "@ethersproject/units";
 
 type CountdownProps = {
-  provider: ethers.providers.JsonRpcProvider;
-  currentBlock: ethers.providers.Block;
+  provider: JsonRpcProvider;
+  currentBlock: Block;
   targetBlock: number;
 };
 
@@ -31,12 +32,12 @@ const Countdown: React.FC<CountdownProps> = ({
       <div className="m-auto text-center">
         <h1 className="text-6xl mb-10">London Network Upgrade</h1>
         <h2 className="text-5xl">
-          {ethers.utils.commify(targetBlock - currentBlock.number)}
+          {commify(targetBlock - currentBlock.number)}
         </h2>
         <h6 className="text-sm mb-10">Blocks remaining</h6>
         <h2 className="inline-flex space-x-10 text-base mb-10">
-          <div>Current block: {ethers.utils.commify(currentBlock.number)}</div>
-          <div>Target block: {ethers.utils.commify(targetBlock)}</div>
+          <div>Current block: {commify(currentBlock.number)}</div>
+          <div>Target block: {commify(targetBlock)}</div>
         </h2>
         {targetTimestamp && (
           <div className="text-lg">

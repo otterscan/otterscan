@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
 import { ConnectionStatus } from "./types";
 import { MIN_API_LEVEL } from "./params";
 
@@ -7,7 +7,7 @@ export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
 export const useProvider = (
   erigonURL?: string
-): [ConnectionStatus, ethers.providers.JsonRpcProvider | undefined] => {
+): [ConnectionStatus, JsonRpcProvider | undefined] => {
   const [connStatus, setConnStatus] = useState<ConnectionStatus>(
     ConnectionStatus.CONNECTING
   );
@@ -21,9 +21,7 @@ export const useProvider = (
     }
   }
 
-  const [provider, setProvider] = useState<
-    ethers.providers.JsonRpcProvider | undefined
-  >();
+  const [provider, setProvider] = useState<JsonRpcProvider | undefined>();
   useEffect(() => {
     if (erigonURL === undefined) {
       setConnStatus(ConnectionStatus.NOT_ETH_NODE);
@@ -33,11 +31,11 @@ export const useProvider = (
     setConnStatus(ConnectionStatus.CONNECTING);
 
     const tryToConnect = async () => {
-      let provider: ethers.providers.JsonRpcProvider;
+      let provider: JsonRpcProvider;
       if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
-        provider = new ethers.providers.WebSocketProvider(erigonURL);
+        provider = new WebSocketProvider(erigonURL);
       } else {
-        provider = new ethers.providers.JsonRpcProvider(erigonURL);
+        provider = new JsonRpcProvider(erigonURL);
       }
 
       // Check if it is at least a regular ETH node

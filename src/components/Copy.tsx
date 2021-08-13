@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCopy, faCheckCircle } from "@fortawesome/free-regular-svg-icons";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCopy } from "@fortawesome/free-regular-svg-icons/faCopy";
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons/faCheckCircle";
+import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 
 type CopyProps = {
   value: string;

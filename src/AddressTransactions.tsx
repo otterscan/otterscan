@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
-import { ethers } from "ethers";
+import { getAddress, isAddress } from "@ethersproject/address";
 import queryString from "query-string";
 import Blockies from "react-blockies";
 import StandardFrame from "./StandardFrame";
@@ -43,12 +43,12 @@ const AddressTransactions: React.FC = () => {
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
-    if (ethers.utils.isAddress(params.addressOrName)) {
+    if (isAddress(params.addressOrName)) {
       setENS(false);
       setError(false);
 
       // Normalize to checksummed address
-      const _checksummedAddress = ethers.utils.getAddress(params.addressOrName);
+      const _checksummedAddress = getAddress(params.addressOrName);
       if (_checksummedAddress !== params.addressOrName) {
         // Request came with a non-checksummed address; fix the URL
         history.replace(

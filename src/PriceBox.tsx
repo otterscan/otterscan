@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import { ethers } from "ethers";
+import { Contract } from "@ethersproject/contracts";
+import { commify, formatUnits } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGasPump } from "@fortawesome/free-solid-svg-icons";
+import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
@@ -19,17 +20,13 @@ const PriceBox: React.FC = () => {
   const ethFeed = useMemo(
     () =>
       provider &&
-      new ethers.Contract("eth-usd.data.eth", AggregatorV3Interface, provider),
+      new Contract("eth-usd.data.eth", AggregatorV3Interface, provider),
     [provider]
   );
   const gasFeed = useMemo(
     () =>
       provider &&
-      new ethers.Contract(
-        "fast-gas-gwei.data.eth",
-        AggregatorV3Interface,
-        provider
-      ),
+      new Contract("fast-gas-gwei.data.eth", AggregatorV3Interface, provider),
     [provider]
   );
 
@@ -57,9 +54,7 @@ const PriceBox: React.FC = () => {
     }
 
     const price = latestPriceData.answer.div(10 ** (ETH_FEED_DECIMALS - 2));
-    const formattedPrice = ethers.utils.commify(
-      ethers.utils.formatUnits(price, 2)
-    );
+    const formattedPrice = commify(formatUnits(price, 2));
 
     const timestamp = new Date(latestPriceData.updatedAt * 1000);
     return [formattedPrice, timestamp];

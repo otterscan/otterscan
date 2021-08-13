@@ -1,6 +1,6 @@
 import React, { useMemo, useContext } from "react";
 import { useParams, useLocation } from "react-router";
-import { ethers } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
 import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
@@ -30,7 +30,7 @@ const BlockTransactions: React.FC = () => {
   }
 
   const blockNumber = useMemo(
-    () => ethers.BigNumber.from(params.blockNumber),
+    () => BigNumber.from(params.blockNumber),
     [params.blockNumber]
   );
 

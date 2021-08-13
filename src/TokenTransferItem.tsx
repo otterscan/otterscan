@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import AddressHighlighter from "./components/AddressHighlighter";
 import ValueHighlighter from "./components/ValueHighlighter";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";

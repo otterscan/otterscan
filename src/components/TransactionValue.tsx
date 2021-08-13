@@ -1,5 +1,5 @@
 import React from "react";
-import { BigNumber } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
 import { formatValue } from "./formatter";
 
 type TransactionValueProps = {

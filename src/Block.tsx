@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
+import { commify } from "@ethersproject/units";
+import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
@@ -38,7 +40,7 @@ const Block: React.FC = () => {
 
   const extraStr = useMemo(() => {
     try {
-      return block && ethers.utils.toUtf8String(block.extraData);
+      return block && toUtf8String(block.extraData);
     } catch (err) {
       console.error("Error while converting block extra data to string");
       console.error(err);
@@ -71,9 +73,7 @@ const Block: React.FC = () => {
       {block && (
         <ContentFrame>
           <InfoRow title="Block Height">
-            <span className="font-bold">
-              {ethers.utils.commify(block.number)}
-            </span>
+            <span className="font-bold">{commify(block.number)}</span>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />
@@ -109,9 +109,7 @@ const Block: React.FC = () => {
           <InfoRow title="Uncles Reward">
             <TransactionValue value={block.unclesReward} />
           </InfoRow>
-          <InfoRow title="Size">
-            {ethers.utils.commify(block.size)} bytes
-          </InfoRow>
+          <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
           {block.baseFeePerGas && (
             <InfoRow title="Base Fee">
               <span>
@@ -156,11 +154,9 @@ const Block: React.FC = () => {
             <span className="font-data">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
-          <InfoRow title="Difficult">
-            {ethers.utils.commify(block.difficulty)}
-          </InfoRow>
+          <InfoRow title="Difficult">{commify(block.difficulty)}</InfoRow>
           <InfoRow title="Total Difficult">
-            {ethers.utils.commify(block.totalDifficulty.toString())}
+            {commify(block.totalDifficulty.toString())}
           </InfoRow>
           <InfoRow title="Hash">
             <HexValue value={block.hash} />
