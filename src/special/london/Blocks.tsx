@@ -16,13 +16,14 @@ import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
-import { ExtendedBlock, readBlock } from "../../useErigonHooks";
+import { readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import {
   burntFeesChartOptions,
   burntFeesChartData,
   gasChartOptions,
   gasChartData,
+  ChartBlock,
 } from "./chart";
 
 const MAX_BLOCK_HISTORY = 20;
@@ -36,7 +37,7 @@ type BlocksProps = {
 
 const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
-  const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
+  const [blocks, setBlocks] = useState<ChartBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
   const [toggleChart, setToggleChart] = useState<boolean>(true);
 

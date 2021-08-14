@@ -3,14 +3,14 @@ import { FixedNumber } from "@ethersproject/bignumber";
 import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
-import { ExtendedBlock } from "../../useErigonHooks";
+import { ChartBlock } from "./chart";
 import Blip from "./Blip";
 
 const ELASTICITY_MULTIPLIER = 2;
 
 type BlockRowProps = {
   now: number;
-  block: ExtendedBlock;
+  block: ChartBlock;
   baseFeeDelta: number;
 };
 

@@ -2,6 +2,20 @@ import { commify } from "@ethersproject/units";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 
+export type GasChartBlock = Pick<
+  ExtendedBlock,
+  "number" | "gasUsed" | "gasLimit" | "baseFeePerGas"
+>;
+
+export type BurntFeesChartBlock = Pick<
+  ExtendedBlock,
+  "number" | "gasUsed" | "baseFeePerGas"
+>;
+
+export type ChartBlock = GasChartBlock &
+  BurntFeesChartBlock &
+  Pick<ExtendedBlock, "timestamp" | "hash" | "blockReward" | "feeReward">;
+
 export const burntFeesChartOptions: ChartOptions = {
   animation: false,
   plugins: {
@@ -45,13 +59,20 @@ export const burntFeesChartOptions: ChartOptions = {
   },
 };
 
-export const burntFeesChartData = (blocks: ExtendedBlock[]): ChartData => ({
+export const burntFeesChartData = (
+  blocks: BurntFeesChartBlock[]
+): ChartData => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [
     {
       label: "Burnt fees (Gwei)",
       data: blocks
-        .map((b) => b.gasUsed.mul(b.baseFeePerGas!).div(1e9).toNumber())
+        .map((b) =>
+          b.gasUsed
+            .mul(b.baseFeePerGas ?? 0)
+            .div(1e9)
+            .toNumber()
+        )
         .reverse(),
       fill: true,
       backgroundColor: "#FDBA7470",
@@ -60,7 +81,7 @@ export const burntFeesChartData = (blocks: ExtendedBlock[]): ChartData => ({
     },
     {
       label: "Base fee (wei)",
-      data: blocks.map((b) => b.baseFeePerGas!.toNumber()).reverse(),
+      data: blocks.map((b) => b.baseFeePerGas?.toNumber() ?? 0).reverse(),
       yAxisID: "yBaseFee",
       borderColor: "#38BDF8",
       tension: 0.2,
@@ -112,7 +133,7 @@ export const gasChartOptions: ChartOptions = {
   },
 };
 
-export const gasChartData = (blocks: ExtendedBlock[]): ChartData => ({
+export const gasChartData = (blocks: GasChartBlock[]): ChartData => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [
     {
@@ -152,7 +173,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData => ({
     },
     {
       label: "Base fee (wei)",
-      data: blocks.map((b) => b.baseFeePerGas!.toNumber()).reverse(),
+      data: blocks.map((b) => b.baseFeePerGas?.toNumber() ?? 0).reverse(),
       yAxisID: "yBaseFee",
       borderColor: "#38BDF8",
       tension: 0.2,
