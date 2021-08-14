@@ -18,6 +18,7 @@ import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
 import { readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import { MAX_BLOCK_HISTORY, PREV_BLOCK_COUNT } from "./params";
 import {
   burntFeesChartOptions,
   burntFeesChartData,
@@ -25,10 +26,6 @@ import {
   gasChartData,
   ChartBlock,
 } from "./chart";
-
-const MAX_BLOCK_HISTORY = 20;
-
-const PREV_BLOCK_COUNT = 15;
 
 type BlocksProps = {
   latestBlock: Block;
