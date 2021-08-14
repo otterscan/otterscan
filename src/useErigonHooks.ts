@@ -33,7 +33,7 @@ export interface ExtendedBlock extends Block {
 export const readBlock = async (
   provider: JsonRpcProvider,
   blockNumberOrHash: string
-) => {
+): Promise<ExtendedBlock> => {
   let blockPromise: Promise<any>;
   if (isHexString(blockNumberOrHash, 32)) {
     // TODO: fix

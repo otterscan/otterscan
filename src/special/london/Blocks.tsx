@@ -16,7 +16,7 @@ import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
-import { readBlock } from "../../useErigonHooks";
+import { readBlockForDashboard } from "./hooks";
 import { RuntimeContext } from "../../useRuntime";
 import { MAX_BLOCK_HISTORY, PREV_BLOCK_COUNT } from "./params";
 import {
@@ -49,7 +49,10 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return;
       }
 
-      const extBlock = await readBlock(provider, blockNumber.toString());
+      const extBlock = await readBlockForDashboard(
+        provider,
+        blockNumber.toString()
+      );
       setNow(Date.now());
       setBlocks((_blocks) => {
         if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
