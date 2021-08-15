@@ -5,6 +5,8 @@ export const londonBlockNumber: { [chainId: string]: number } = {
   "5": 5062605,
 };
 
+export const ELASTICITY_MULTIPLIER = 2;
+
 // How many blocks keep in history list/chart
 export const MAX_BLOCK_HISTORY = 50;
 

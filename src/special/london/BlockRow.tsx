@@ -3,10 +3,9 @@ import { FixedNumber } from "@ethersproject/bignumber";
 import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
-import { ChartBlock } from "./chart";
 import Blip from "./Blip";
-
-const ELASTICITY_MULTIPLIER = 2;
+import { ChartBlock } from "./chart";
+import { ELASTICITY_MULTIPLIER } from "./params";
 
 type BlockRowProps = {
   now: number;
