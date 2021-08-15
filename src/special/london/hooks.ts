@@ -22,11 +22,12 @@ export const readBlockForDashboard = async (
   const _rawBlock = await blockPromise;
   const _block = provider.formatter.block(_rawBlock.block);
   const _rawIssuance = _rawBlock.issuance;
-  const fees = provider.formatter.bigNumber(_rawBlock.totalFees);
 
   const extBlock: ChartBlock = {
     blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
-    feeReward: fees,
+    feeReward: provider.formatter.bigNumber(_rawBlock.totalFees),
+    totalIssued: provider.formatter.bigNumber(_rawBlock.totalIssued),
+    totalBurnt: provider.formatter.bigNumber(_rawBlock.totalBurnt),
     ..._block,
   };
   return extBlock;

@@ -25,6 +25,9 @@ import {
   gasChartOptions,
   gasChartData,
   ChartBlock,
+  ChartMode,
+  cummulativeIssuanceChartData,
+  cummulativeIssuanceChartOptions,
 } from "./chart";
 
 type BlocksProps = {
@@ -36,7 +39,9 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ChartBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
-  const [toggleChart, setToggleChart] = useState<boolean>(true);
+  const [chartMode, setChartMode] = useState<ChartMode>(
+    ChartMode.CUMMULATIVE_ISSUANCE
+  );
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
@@ -78,10 +83,20 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   }, [addBlock, latestBlock]);
 
   const data = useMemo(
-    () => (toggleChart ? gasChartData(blocks) : burntFeesChartData(blocks)),
-    [toggleChart, blocks]
+    () =>
+      chartMode === ChartMode.CUMMULATIVE_ISSUANCE
+        ? cummulativeIssuanceChartData(blocks)
+        : chartMode === ChartMode.GAS_USAGE
+        ? gasChartData(blocks)
+        : burntFeesChartData(blocks),
+    [chartMode, blocks]
   );
-  const chartOptions = toggleChart ? gasChartOptions : burntFeesChartOptions;
+  const chartOptions =
+    chartMode === ChartMode.CUMMULATIVE_ISSUANCE
+      ? cummulativeIssuanceChartOptions
+      : chartMode === ChartMode.GAS_USAGE
+      ? gasChartOptions
+      : burntFeesChartOptions;
 
   // On page reload, pre-populate the last N blocks
   useEffect(
@@ -117,8 +132,20 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             </span>
           </div>
           <div className="absolute right-0 top-0 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
-            <button onClick={() => setToggleChart(!toggleChart)}>
-              {toggleChart ? "Gas usage" : "Burnt fees"}
+            <button
+              onClick={() =>
+                setChartMode(
+                  chartMode === ChartMode.BURNT_FEES
+                    ? ChartMode.CUMMULATIVE_ISSUANCE
+                    : chartMode + 1
+                )
+              }
+            >
+              {chartMode === ChartMode.CUMMULATIVE_ISSUANCE
+                ? "Total issuance"
+                : chartMode === ChartMode.GAS_USAGE
+                ? "Gas usage"
+                : "Burnt fees"}
             </button>
           </div>
         </div>

@@ -1,6 +1,18 @@
+import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
+
+export enum ChartMode {
+  CUMMULATIVE_ISSUANCE,
+  GAS_USAGE,
+  BURNT_FEES,
+}
+
+export type CummulativeIssuanceChartBlock = {
+  totalIssued: BigNumber;
+  totalBurnt: BigNumber;
+} & Pick<ExtendedBlock, "number">;
 
 export type GasChartBlock = Pick<
   ExtendedBlock,
@@ -12,9 +24,81 @@ export type BurntFeesChartBlock = Pick<
   "number" | "gasUsed" | "baseFeePerGas"
 >;
 
-export type ChartBlock = GasChartBlock &
+export type ChartBlock = CummulativeIssuanceChartBlock &
+  GasChartBlock &
   BurntFeesChartBlock &
   Pick<ExtendedBlock, "timestamp" | "hash" | "blockReward" | "feeReward">;
+
+export const cummulativeIssuanceChartOptions: ChartOptions = {
+  animation: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        callback: function (v) {
+          // @ts-ignore
+          return commify(this.getLabelForValue(v));
+        },
+      },
+    },
+    y: {
+      // beginAtZero: true,
+      title: {
+        display: true,
+        text: "ETH in circulation",
+      },
+      ticks: {
+        callback: (v) => `${commify((v as number) / 1e2)} ETH`,
+      },
+    },
+    yBurntTotal: {
+      position: "right",
+      // beginAtZero: true,
+      title: {
+        display: true,
+        text: "Cummulative burnt ETH",
+      },
+      ticks: {
+        callback: (v) => `${commify((v as number) / 1e2)} ETH`,
+      },
+      grid: {
+        drawOnChartArea: false,
+      },
+    },
+  },
+};
+
+export const cummulativeIssuanceChartData = (
+  blocks: CummulativeIssuanceChartBlock[]
+): ChartData => ({
+  labels: blocks.map((b) => b.number.toString()).reverse(),
+  datasets: [
+    {
+      label: "ETH in circulation",
+      data: blocks
+        // .map((b) => b.totalIssued.sub(b.totalBurnt).div(1e18).toNumber())
+        .map((b) => b.totalIssued.sub(b.totalBurnt).div((1e16).toString()).toNumber())
+        .reverse(),
+      fill: true,
+      backgroundColor: "#FDBA7470",
+      borderColor: "#FB923C",
+      tension: 0.2,
+    },
+    {
+      label: "Burnt ETH",
+      data: blocks
+        .map((b) => b.totalBurnt.div((1e16).toString()).toNumber())
+        .reverse(),
+      yAxisID: "yBurntTotal",
+      borderColor: "#38BDF8",
+      tension: 0.2,
+    },
+  ],
+});
 
 export const burntFeesChartOptions: ChartOptions = {
   animation: false,
