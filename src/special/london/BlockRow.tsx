@@ -47,7 +47,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
               .divUnsafe(FixedNumber.from(1e9))
               .round(0)
               .toUnsafeFloat()}{" "}
-            Gwei
+            <span className="text-xs text-gray-500">Gwei</span>
           </span>
           <Blip value={baseFeeDelta} />
         </div>
