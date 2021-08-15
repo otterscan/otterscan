@@ -48,7 +48,7 @@ const Block: React.FC = () => {
   }, [block]);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
-  const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
+  const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
@@ -91,18 +91,12 @@ const Block: React.FC = () => {
             <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue
-              value={block.blockReward.add(netFeeReward ?? 0)}
-            />
-            {!block.feeReward.isZero() && (
+            <TransactionValue value={block.blockReward.add(netFeeReward)} />
+            {!netFeeReward.isZero() && (
               <>
                 {" "}
                 (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-                <TransactionValue
-                  value={netFeeReward ?? BigNumber.from(0)}
-                  hideUnit
-                />
-                )
+                <TransactionValue value={netFeeReward} hideUnit />)
               </>
             )}
           </InfoRow>

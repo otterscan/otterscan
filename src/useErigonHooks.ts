@@ -48,12 +48,11 @@ export const readBlock = async (
   const _rawBlock = await blockPromise;
   const _block = provider.formatter.block(_rawBlock.block);
   const _rawIssuance = _rawBlock.issuance;
-  const fees = provider.formatter.bigNumber(_rawBlock.totalFees);
 
   const extBlock: ExtendedBlock = {
     blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
     unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
-    feeReward: fees,
+    feeReward: provider.formatter.bigNumber(_rawBlock.totalFees),
     size: provider.formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,
     stateRoot: _rawBlock.block.stateRoot,
