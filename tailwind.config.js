@@ -19,6 +19,9 @@ module.exports = {
         balance: ["Fira Code"],
         blocknum: ["Roboto"],
       },
+      gridTemplateColumns: {
+        18: "repeat(18, minmax(0, 1fr))",
+      },
     },
   },
   variants: {

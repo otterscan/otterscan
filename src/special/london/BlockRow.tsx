@@ -2,6 +2,7 @@ import React from "react";
 import { FixedNumber } from "@ethersproject/bignumber";
 import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
+import PercentageBar from "../../components/PercentageBar";
 import TimestampAge from "../../components/TimestampAge";
 import Blip from "./Blip";
 import { ChartBlock } from "./chart";
@@ -19,25 +20,33 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
   const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
   const totalReward = block.blockReward.add(netFeeReward ?? 0);
+  const gasUsedPerc =
+    block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   return (
-    <div className="grid grid-cols-9 gap-x-2 px-3 py-2 hover:bg-gray-100">
-      <div>
+    <div className="grid grid-cols-18 gap-x-2 px-3 py-2 hover:bg-gray-100 items-baseline">
+      <div className="col-span-2">
         <BlockLink blockTag={block.number} />
       </div>
-      <div
-        className={`text-right ${
-          block.gasUsed.gt(gasTarget)
-            ? "text-green-500"
-            : block.gasUsed.lt(gasTarget)
-            ? "text-red-500"
-            : ""
-        }`}
-      >
-        {commify(block.gasUsed.toString())}
+      <div className="col-span-3 flex space-x-1 justify-end items-baseline">
+        <div
+          className={`text-right ${
+            block.gasUsed.gt(gasTarget)
+              ? "text-green-500"
+              : block.gasUsed.lt(gasTarget)
+              ? "text-red-500"
+              : ""
+          }`}
+        >
+          {commify(block.gasUsed.toString())}
+        </div>
+        <div className="text-right text-gray-400 text-xs truncate">
+          {" / "}
+          {commify(block.gasLimit.toString())}
+        </div>
       </div>
-      <div className="text-right text-gray-400">
-        {commify(gasTarget.toString())}
+      <div className="col-span-2 text-xs self-center">
+        <PercentageBar perc={gasUsedPerc} />
       </div>
       <div className="text-right">
         <div className="relative">
@@ -51,13 +60,13 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
           <Blip value={baseFeeDelta} />
         </div>
       </div>
-      <div className="text-right col-span-2">
+      <div className="col-span-4 text-right col-span-2">
         {commify(formatEther(totalReward))} Ether
       </div>
-      <div className="text-right col-span-2 line-through text-orange-500">
+      <div className="col-span-4 text-right col-span-2 line-through text-orange-500">
         {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} Ether
       </div>
-      <div className="text-right text-gray-400">
+      <div className="col-span-2 text-right text-gray-400 text-sm">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
       </div>
     </div>

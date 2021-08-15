@@ -232,13 +232,16 @@ const Details: React.FC<DetailsProps> = ({
               total={<GasValue value={txData.gasLimit} />}
             />
           </div>
-          <PercentageBar
-            perc={
-              Math.round(
-                (txData.gasUsed.toNumber() / txData.gasLimit.toNumber()) * 10000
-              ) / 100
-            }
-          />
+          <div className="w-40 self-center">
+            <PercentageBar
+              perc={
+                Math.round(
+                  (txData.gasUsed.toNumber() / txData.gasLimit.toNumber()) *
+                    10000
+                ) / 100
+              }
+            />
+          </div>
         </div>
       </InfoRow>
       {hasEIP1559 && (

@@ -140,7 +140,9 @@ const Block: React.FC = () => {
                 <GasValue value={block.gasUsed} /> /{" "}
                 <GasValue value={block.gasLimit} />
               </div>
-              <PercentageBar perc={gasUsedPerc!} />
+              <div className="w-40 self-center">
+                <PercentageBar perc={gasUsedPerc!} />
+              </div>
             </div>
           </InfoRow>
           <InfoRow title="Extra Data">
