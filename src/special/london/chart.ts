@@ -46,7 +46,6 @@ export const cumulativeIssuanceChartOptions: ChartOptions = {
       },
     },
     y: {
-      // beginAtZero: true,
       title: {
         display: true,
         text: "ETH in circulation",
@@ -57,7 +56,6 @@ export const cumulativeIssuanceChartOptions: ChartOptions = {
     },
     yBurntTotal: {
       position: "right",
-      // beginAtZero: true,
       title: {
         display: true,
         text: "Cumulative burnt ETH",
