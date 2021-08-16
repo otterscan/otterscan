@@ -84,8 +84,8 @@ export const cumulativeIssuanceChartData = (
         )
         .reverse(),
       fill: true,
-      backgroundColor: "#FDBA7470",
-      borderColor: "#FB923C",
+      backgroundColor: "#D9F99D70",
+      borderColor: "#84CC16",
       tension: 0.2,
     },
     {
@@ -94,8 +94,10 @@ export const cumulativeIssuanceChartData = (
         .map((b) => b.totalBurnt.div((1e16).toString()).toNumber())
         .reverse(),
       yAxisID: "yBurntTotal",
-      borderColor: "#38BDF8",
+      borderColor: "#FB923C",
       tension: 0.2,
+      pointStyle: "crossRot",
+      radius: 7,
     },
   ],
 });
@@ -162,6 +164,8 @@ export const burntFeesChartData = (
       backgroundColor: "#FDBA7470",
       borderColor: "#FB923C",
       tension: 0.2,
+      pointStyle: "crossRot",
+      radius: 7,
     },
     {
       label: "Base fee (wei)",
