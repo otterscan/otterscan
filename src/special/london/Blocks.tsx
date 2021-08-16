@@ -165,7 +165,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         <div>
           <Line data={data} height={100} options={chartOptions} />
         </div>
-        <div className="mt-5 grid grid-cols-18 gap-x-2 px-3 py-2">
+        <div className="mt-5 grid grid-cols-21 gap-x-2 px-3 py-2">
           <div className="col-span-2 flex space-x-1 items-baseline">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
@@ -179,18 +179,24 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             <span>Gas used / limit</span>
           </div>
           <div className="col-span-2 text-right flex space-x-1 justify-end items-baseline"></div>
-          <div className="text-right">Base fee</div>
-          <div className="col-span-4 text-right col-span-2 flex space-x-1 justify-end items-baseline">
+          <div className="col-span-2 text-right">Base fee</div>
+          <div className="col-span-2 text-right col-span-2 flex space-x-1 justify-end items-baseline">
             <span className="text-yellow-400">
               <FontAwesomeIcon icon={faCoins} />
             </span>
-            <span>Rewards</span>
+            <span>Issuance</span>
           </div>
           <div className="col-span-4 text-right col-span-2 flex space-x-1 justify-end items-baseline">
             <span className="text-orange-500">
               <FontAwesomeIcon icon={faBurn} />
             </span>
             <span>Burnt fees</span>
+          </div>
+          <div className="col-span-4 text-right col-span-2 flex space-x-1 justify-end items-baseline">
+            <span className="text-gray-400">
+              <FontAwesomeIcon icon={faCoins} />
+            </span>
+            <span>Miner fees</span>
           </div>
           <div className="col-span-2 text-right flex space-x-1 justify-end items-baseline">
             <span className="text-gray-500">

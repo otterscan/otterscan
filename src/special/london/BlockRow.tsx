@@ -18,12 +18,11 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
   const burntFees = block.gasUsed.mul(block.baseFeePerGas!);
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
-  const totalReward = block.blockReward.add(netFeeReward ?? 0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   return (
-    <div className="grid grid-cols-18 gap-x-2 px-3 py-2 hover:bg-gray-100 items-baseline">
+    <div className="grid grid-cols-21 gap-x-2 px-3 py-2 hover:bg-gray-100 items-baseline">
       <div className="col-span-2">
         <BlockLink blockTag={block.number} />
       </div>
@@ -47,7 +46,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       <div className="col-span-2 text-xs self-center">
         <PercentageBar perc={gasUsedPerc} />
       </div>
-      <div className="text-right">
+      <div className="col-span-2 text-right">
         <div className="relative">
           <span>
             {FixedNumber.from(block.baseFeePerGas)
@@ -59,11 +58,14 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
           <Blip value={baseFeeDelta} />
         </div>
       </div>
-      <div className="col-span-4 text-right col-span-2">
-        {commify(formatEther(totalReward))} Ether
+      <div className="col-span-2 text-right col-span-2">
+        {commify(formatEther(block.blockReward))} Ether
       </div>
       <div className="col-span-4 text-right col-span-2 line-through text-orange-500">
         {commify(formatEther(burntFees))} Ether
+      </div>
+      <div className="col-span-4 text-right col-span-2">
+        {commify(formatEther(netFeeReward))} Ether
       </div>
       <div className="col-span-2 text-right text-gray-400 text-sm">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
