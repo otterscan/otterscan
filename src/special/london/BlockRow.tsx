@@ -1,5 +1,5 @@
 import React from "react";
-import { FixedNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import PercentageBar from "../../components/PercentageBar";
@@ -16,9 +16,8 @@ type BlockRowProps = {
 
 const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
-  const burntFees =
-    block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
-  const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
+  const burntFees = block.gasUsed.mul(block.baseFeePerGas!);
+  const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const totalReward = block.blockReward.add(netFeeReward ?? 0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
@@ -64,7 +63,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         {commify(formatEther(totalReward))} Ether
       </div>
       <div className="col-span-4 text-right col-span-2 line-through text-orange-500">
-        {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} Ether
+        {commify(formatEther(burntFees))} Ether
       </div>
       <div className="col-span-2 text-right text-gray-400 text-sm">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
