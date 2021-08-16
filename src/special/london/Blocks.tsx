@@ -26,8 +26,8 @@ import {
   gasChartData,
   ChartBlock,
   ChartMode,
-  cummulativeIssuanceChartData,
-  cummulativeIssuanceChartOptions,
+  cumulativeIssuanceChartData,
+  cumulativeIssuanceChartOptions,
 } from "./chart";
 
 type BlocksProps = {
@@ -36,7 +36,7 @@ type BlocksProps = {
 };
 
 const charts = [
-  { id: 0, mode: ChartMode.CUMMULATIVE_ISSUANCE, desc: "Total issuance" },
+  { id: 0, mode: ChartMode.CUMULATIVE_ISSUANCE, desc: "Total issuance" },
   { id: 1, mode: ChartMode.GAS_USAGE, desc: "Gas usage" },
   { id: 2, mode: ChartMode.BURNT_FEES, desc: "Burnt fees" },
 ];
@@ -88,16 +88,16 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   const data = useMemo(
     () =>
-      selectedChart.mode === ChartMode.CUMMULATIVE_ISSUANCE
-        ? cummulativeIssuanceChartData(blocks)
+      selectedChart.mode === ChartMode.CUMULATIVE_ISSUANCE
+        ? cumulativeIssuanceChartData(blocks)
         : selectedChart.mode === ChartMode.GAS_USAGE
         ? gasChartData(blocks)
         : burntFeesChartData(blocks),
     [selectedChart, blocks]
   );
   const chartOptions =
-    selectedChart.mode === ChartMode.CUMMULATIVE_ISSUANCE
-      ? cummulativeIssuanceChartOptions
+    selectedChart.mode === ChartMode.CUMULATIVE_ISSUANCE
+      ? cumulativeIssuanceChartOptions
       : selectedChart.mode === ChartMode.GAS_USAGE
       ? gasChartOptions
       : burntFeesChartOptions;

@@ -4,12 +4,12 @@ import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 
 export enum ChartMode {
-  CUMMULATIVE_ISSUANCE,
+  CUMULATIVE_ISSUANCE,
   GAS_USAGE,
   BURNT_FEES,
 }
 
-export type CummulativeIssuanceChartBlock = {
+export type CumulativeIssuanceChartBlock = {
   totalIssued: BigNumber;
   totalBurnt: BigNumber;
 } & Pick<ExtendedBlock, "number">;
@@ -24,12 +24,12 @@ export type BurntFeesChartBlock = Pick<
   "number" | "gasUsed" | "baseFeePerGas"
 >;
 
-export type ChartBlock = CummulativeIssuanceChartBlock &
+export type ChartBlock = CumulativeIssuanceChartBlock &
   GasChartBlock &
   BurntFeesChartBlock &
   Pick<ExtendedBlock, "timestamp" | "hash" | "blockReward" | "feeReward">;
 
-export const cummulativeIssuanceChartOptions: ChartOptions = {
+export const cumulativeIssuanceChartOptions: ChartOptions = {
   animation: false,
   plugins: {
     legend: {
@@ -60,7 +60,7 @@ export const cummulativeIssuanceChartOptions: ChartOptions = {
       // beginAtZero: true,
       title: {
         display: true,
-        text: "Cummulative burnt ETH",
+        text: "Cumulative burnt ETH",
       },
       ticks: {
         callback: (v) => `${commify((v as number) / 1e2)} ETH`,
@@ -72,8 +72,8 @@ export const cummulativeIssuanceChartOptions: ChartOptions = {
   },
 };
 
-export const cummulativeIssuanceChartData = (
-  blocks: CummulativeIssuanceChartBlock[]
+export const cumulativeIssuanceChartData = (
+  blocks: CumulativeIssuanceChartBlock[]
 ): ChartData => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [
@@ -81,7 +81,9 @@ export const cummulativeIssuanceChartData = (
       label: "ETH in circulation",
       data: blocks
         // .map((b) => b.totalIssued.sub(b.totalBurnt).div(1e18).toNumber())
-        .map((b) => b.totalIssued.sub(b.totalBurnt).div((1e16).toString()).toNumber())
+        .map((b) =>
+          b.totalIssued.sub(b.totalBurnt).div((1e16).toString()).toNumber()
+        )
         .reverse(),
       fill: true,
       backgroundColor: "#FDBA7470",
