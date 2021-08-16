@@ -17,6 +17,8 @@ import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
+import Label from "./Label";
+import Value from "./Value";
 import { readBlockForDashboard } from "./hooks";
 import { RuntimeContext } from "../../useRuntime";
 import { MAX_BLOCK_HISTORY, PREV_BLOCK_COUNT } from "./params";
@@ -136,33 +138,51 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               <FontAwesomeIcon icon={faBurn} />
             </span>
           </div>
-          <div className="absolute top-0 left-0 rounded">
-            <Listbox value={selectedChart} onChange={setSelectedChart}>
-              <Listbox.Button className="flex justify-between items-baseline space-x-2 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
-                <span>{selectedChart.desc}</span>
-                <span>
-                  <FontAwesomeIcon icon={faAngleDown} />
-                </span>
-              </Listbox.Button>
-              <Listbox.Options className="border rounded py-1 mt-1 shadow-md bg-white text-sm text-gray-500">
-                {charts.map((c) => (
-                  <Listbox.Option key={c.id} value={c}>
-                    {({ active, selected }) => (
-                      <li
-                        className={`px-2 py-1 cursor-pointer ${
-                          active ? "bg-gray-100" : "bg-white"
-                        } ${selected ? "text-link-blue bg-gray-100" : ""}`}
-                      >
-                        {c.desc}
-                      </li>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Listbox>
+          <div className="w-full mb-2">
+            {blocks?.[0] && (
+              <div className="flex justify-between items-baseline relative">
+                <div className="rounded">
+                  <Listbox value={selectedChart} onChange={setSelectedChart}>
+                    <Listbox.Button className="w-32 flex justify-between items-baseline space-x-2 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
+                      <span>{selectedChart.desc}</span>
+                      <span>
+                        <FontAwesomeIcon icon={faAngleDown} />
+                      </span>
+                    </Listbox.Button>
+                    <Listbox.Options className="absolute border rounded py-1 mt-1 shadow-md bg-white text-sm text-gray-500">
+                      {charts.map((c) => (
+                        <Listbox.Option key={c.id} value={c}>
+                          {({ active, selected }) => (
+                            <li
+                              className={`px-2 py-1 cursor-pointer ${
+                                active ? "bg-gray-100" : "bg-white"
+                              } ${
+                                selected ? "text-link-blue bg-gray-100" : ""
+                              }`}
+                            >
+                              {c.desc}
+                            </li>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Listbox>
+                </div>
+                <div className="flex justify-between items-baseline space-x-2">
+                  <Label>Total in circulation</Label>
+                  <Value
+                    value={blocks[0].totalIssued.sub(blocks[0].totalBurnt)}
+                  />
+                </div>
+                <div className="flex justify-between items-baseline space-x-2">
+                  <Label>Total burnt</Label>
+                  <Value value={blocks[0].totalBurnt} />
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        <div>
+        <div className="w-full">
           <Line data={data} height={100} options={chartOptions} />
         </div>
         <div className="mt-5 grid grid-cols-21 gap-x-2 px-3 py-2">
