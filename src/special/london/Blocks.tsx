@@ -10,6 +10,7 @@ import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
 import { Listbox, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons/faAngleDown";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -137,8 +138,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           </div>
           <div className="absolute top-0 left-0 rounded">
             <Listbox value={selectedChart} onChange={setSelectedChart}>
-              <Listbox.Button className="border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
-                {selectedChart.desc}
+              <Listbox.Button className="flex justify-between items-baseline space-x-2 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
+                <span>{selectedChart.desc}</span>
+                <span>
+                  <FontAwesomeIcon icon={faAngleDown} />
+                </span>
               </Listbox.Button>
               <Listbox.Options className="border rounded py-1 mt-1 shadow-md bg-white text-sm text-gray-500">
                 {charts.map((c) => (
@@ -147,7 +151,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
                       <li
                         className={`px-2 py-1 cursor-pointer ${
                           active ? "bg-gray-100" : "bg-white"
-                        } ${selected ? "font-bold text-link-blue" : ""}`}
+                        } ${selected ? "text-link-blue bg-gray-100" : ""}`}
                       >
                         {c.desc}
                       </li>
