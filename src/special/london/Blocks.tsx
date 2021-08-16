@@ -8,7 +8,7 @@ import React, {
 import { Block } from "@ethersproject/abstract-provider";
 import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
-import { Transition } from "@headlessui/react";
+import { Listbox, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
@@ -35,13 +35,17 @@ type BlocksProps = {
   targetBlockNumber: number;
 };
 
+const charts = [
+  { id: 0, mode: ChartMode.CUMMULATIVE_ISSUANCE, desc: "Total issuance" },
+  { id: 1, mode: ChartMode.GAS_USAGE, desc: "Gas usage" },
+  { id: 2, mode: ChartMode.BURNT_FEES, desc: "Burnt fees" },
+];
+
 const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ChartBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
-  const [chartMode, setChartMode] = useState<ChartMode>(
-    ChartMode.CUMMULATIVE_ISSUANCE
-  );
+  const [selectedChart, setSelectedChart] = useState(charts[0]);
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
@@ -84,17 +88,17 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   const data = useMemo(
     () =>
-      chartMode === ChartMode.CUMMULATIVE_ISSUANCE
+      selectedChart.mode === ChartMode.CUMMULATIVE_ISSUANCE
         ? cummulativeIssuanceChartData(blocks)
-        : chartMode === ChartMode.GAS_USAGE
+        : selectedChart.mode === ChartMode.GAS_USAGE
         ? gasChartData(blocks)
         : burntFeesChartData(blocks),
-    [chartMode, blocks]
+    [selectedChart, blocks]
   );
   const chartOptions =
-    chartMode === ChartMode.CUMMULATIVE_ISSUANCE
+    selectedChart.mode === ChartMode.CUMMULATIVE_ISSUANCE
       ? cummulativeIssuanceChartOptions
-      : chartMode === ChartMode.GAS_USAGE
+      : selectedChart.mode === ChartMode.GAS_USAGE
       ? gasChartOptions
       : burntFeesChartOptions;
 
@@ -131,22 +135,27 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               <FontAwesomeIcon icon={faBurn} />
             </span>
           </div>
-          <div className="absolute right-0 top-0 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
-            <button
-              onClick={() =>
-                setChartMode(
-                  chartMode === ChartMode.BURNT_FEES
-                    ? ChartMode.CUMMULATIVE_ISSUANCE
-                    : chartMode + 1
-                )
-              }
-            >
-              {chartMode === ChartMode.CUMMULATIVE_ISSUANCE
-                ? "Total issuance"
-                : chartMode === ChartMode.GAS_USAGE
-                ? "Gas usage"
-                : "Burnt fees"}
-            </button>
+          <div className="absolute top-0 left-0 rounded">
+            <Listbox value={selectedChart} onChange={setSelectedChart}>
+              <Listbox.Button className="border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
+                {selectedChart.desc}
+              </Listbox.Button>
+              <Listbox.Options className="border rounded py-1 mt-1 shadow-md bg-white text-sm text-gray-500">
+                {charts.map((c) => (
+                  <Listbox.Option key={c.id} value={c}>
+                    {({ active, selected }) => (
+                      <li
+                        className={`px-2 py-1 cursor-pointer ${
+                          active ? "bg-gray-100" : "bg-white"
+                        } ${selected ? "font-bold text-link-blue" : ""}`}
+                      >
+                        {c.desc}
+                      </li>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Listbox>
           </div>
         </div>
         <div>
