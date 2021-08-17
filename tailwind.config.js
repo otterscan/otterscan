@@ -9,6 +9,7 @@ module.exports = {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
         orange: colors.orange,
+        coolGray: colors.coolGray,
       },
       fontFamily: {
         sans: ["Roboto"],

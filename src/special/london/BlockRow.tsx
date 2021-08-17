@@ -20,11 +20,26 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
+  const ultraSound = block.blockReward.lt(burntFees);
 
   return (
-    <div className="grid grid-cols-21 gap-x-2 px-3 py-2 hover:bg-gray-100 items-baseline">
-      <div className="col-span-2">
+    <div
+      className={`grid grid-cols-21 gap-x-2 px-3 py-2 items-baseline ${
+        ultraSound
+          ? "bg-coolGray-200 hover:bg-coolGray-300 ring ring-inset ring-coolGray-400 rounded-lg"
+          : "hover:bg-gray-100"
+      }`}
+    >
+      <div className="col-span-2 flex space-x-1">
         <BlockLink blockTag={block.number} />
+        {ultraSound && (
+          <span
+            className="whitespace-nowrap cursor-default"
+            title="Ultrasound block"
+          >
+            🦇🔊
+          </span>
+        )}
       </div>
       <div className="col-span-3 flex space-x-1 justify-end items-baseline">
         <div

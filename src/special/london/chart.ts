@@ -85,8 +85,12 @@ export const cumulativeIssuanceChartData = (
         )
         .reverse(),
       fill: true,
-      backgroundColor: "#D9F99D70",
-      borderColor: "#84CC16",
+      segment: {
+        backgroundColor: (ctx, x) =>
+          ctx.p1.parsed.y > ctx.p0.parsed.y ? "#D9F99D70" : "#9CA3AF70",
+        borderColor: (ctx) =>
+          ctx.p1.parsed.y > ctx.p0.parsed.y ? "#84CC16" : "#4B5563",
+      },
       tension: 0.2,
     },
     {
