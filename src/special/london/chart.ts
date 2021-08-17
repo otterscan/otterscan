@@ -31,6 +31,10 @@ export type ChartBlock = CumulativeIssuanceChartBlock &
 
 export const cumulativeIssuanceChartOptions: ChartOptions = {
   animation: false,
+  interaction: {
+    mode: "index",
+    intersect: false,
+  },
   plugins: {
     legend: {
       display: false,
@@ -111,6 +115,10 @@ export const cumulativeIssuanceChartData = (
 
 export const burntFeesChartOptions: ChartOptions = {
   animation: false,
+  interaction: {
+    mode: "index",
+    intersect: false,
+  },
   plugins: {
     legend: {
       display: false,
