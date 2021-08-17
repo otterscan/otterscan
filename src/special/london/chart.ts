@@ -1,4 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
@@ -41,7 +41,7 @@ export const cumulativeIssuanceChartOptions: ChartOptions = {
       ticks: {
         callback: function (v) {
           // @ts-ignore
-          return commify(this.getLabelForValue(v));
+          return this.getLabelForValue(v);
         },
       },
     },
@@ -51,17 +51,17 @@ export const cumulativeIssuanceChartOptions: ChartOptions = {
         text: "ETH in circulation",
       },
       ticks: {
-        callback: (v) => `${commify((v as number) / 1e2)} ETH`,
+        callback: (v) => `${commify(v)} ETH`,
       },
     },
     yBurntTotal: {
       position: "right",
       title: {
         display: true,
-        text: "Cumulative burnt ETH",
+        text: "Total burnt ETH",
       },
       ticks: {
-        callback: (v) => `${commify((v as number) / 1e2)} ETH`,
+        callback: (v) => `${commify(v)} ETH`,
       },
       grid: {
         drawOnChartArea: false,
@@ -73,14 +73,15 @@ export const cumulativeIssuanceChartOptions: ChartOptions = {
 export const cumulativeIssuanceChartData = (
   blocks: CumulativeIssuanceChartBlock[]
 ): ChartData => ({
-  labels: blocks.map((b) => b.number.toString()).reverse(),
+  labels: blocks.map((b) => commify(b.number)).reverse(),
   datasets: [
     {
       label: "ETH in circulation",
       data: blocks
-        // .map((b) => b.totalIssued.sub(b.totalBurnt).div(1e18).toNumber())
         .map((b) =>
-          b.totalIssued.sub(b.totalBurnt).div((1e16).toString()).toNumber()
+          FixedNumber.fromValue(b.totalIssued.sub(b.totalBurnt), 18)
+            .round(2)
+            .toUnsafeFloat()
         )
         .reverse(),
       fill: true,
@@ -89,9 +90,11 @@ export const cumulativeIssuanceChartData = (
       tension: 0.2,
     },
     {
-      label: "Burnt ETH",
+      label: "Total burnt ETH",
       data: blocks
-        .map((b) => b.totalBurnt.div((1e16).toString()).toNumber())
+        .map((b) =>
+          FixedNumber.fromValue(b.totalBurnt, 18).round(2).toUnsafeFloat()
+        )
         .reverse(),
       yAxisID: "yBurntTotal",
       borderColor: "#FB923C",
@@ -114,7 +117,7 @@ export const burntFeesChartOptions: ChartOptions = {
       ticks: {
         callback: function (v) {
           // @ts-ignore
-          return commify(this.getLabelForValue(v));
+          return this.getLabelForValue(v);
         },
       },
     },
@@ -148,7 +151,7 @@ export const burntFeesChartOptions: ChartOptions = {
 export const burntFeesChartData = (
   blocks: BurntFeesChartBlock[]
 ): ChartData => ({
-  labels: blocks.map((b) => b.number.toString()).reverse(),
+  labels: blocks.map((b) => commify(b.number)).reverse(),
   datasets: [
     {
       label: "Burnt fees (Gwei)",
@@ -193,7 +196,7 @@ export const gasChartOptions: ChartOptions = {
       ticks: {
         callback: function (v) {
           // @ts-ignore
-          return commify(this.getLabelForValue(v));
+          return this.getLabelForValue(v);
         },
       },
     },
@@ -222,7 +225,7 @@ export const gasChartOptions: ChartOptions = {
 };
 
 export const gasChartData = (blocks: GasChartBlock[]): ChartData => ({
-  labels: blocks.map((b) => b.number.toString()).reverse(),
+  labels: blocks.map((b) => commify(b.number)).reverse(),
   datasets: [
     {
       label: "Gas used",
