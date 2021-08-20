@@ -27,7 +27,10 @@ export type BurntFeesChartBlock = Pick<
 export type ChartBlock = CumulativeIssuanceChartBlock &
   GasChartBlock &
   BurntFeesChartBlock &
-  Pick<ExtendedBlock, "timestamp" | "hash" | "blockReward" | "feeReward">;
+  Pick<
+    ExtendedBlock,
+    "timestamp" | "hash" | "blockReward" | "uncleReward" | "feeReward"
+  >;
 
 export const cumulativeIssuanceChartOptions: ChartOptions = {
   animation: false,

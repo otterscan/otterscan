@@ -25,6 +25,7 @@ export const readBlockForDashboard = async (
 
   const extBlock: ChartBlock = {
     blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
+    uncleReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
     feeReward: provider.formatter.bigNumber(_rawBlock.totalFees),
     totalIssued: provider.formatter.bigNumber(_rawBlock.totalIssued),
     totalBurnt: provider.formatter.bigNumber(_rawBlock.totalBurnt),

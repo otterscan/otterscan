@@ -20,7 +20,8 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
-  const ultraSound = block.blockReward.lt(burntFees);
+  const issued = block.blockReward.add(block.uncleReward);
+  const ultraSound = issued.lt(burntFees);
 
   return (
     <div
@@ -74,7 +75,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         </div>
       </div>
       <div className="col-span-2 text-right col-span-2">
-        {commify(formatEther(block.blockReward))}{" "}
+        {commify(formatEther(issued))}{" "}
         <span className="text-xs text-gray-500">ETH</span>
       </div>
       <div className="col-span-4 text-right col-span-2 line-through text-orange-500">

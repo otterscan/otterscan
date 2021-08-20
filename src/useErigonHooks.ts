@@ -21,7 +21,7 @@ const TRANSFER_TOPIC =
 
 export interface ExtendedBlock extends Block {
   blockReward: BigNumber;
-  unclesReward: BigNumber;
+  uncleReward: BigNumber;
   feeReward: BigNumber;
   size: number;
   sha3Uncles: string;
@@ -51,7 +51,7 @@ export const readBlock = async (
 
   const extBlock: ExtendedBlock = {
     blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
-    unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
+    uncleReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
     feeReward: provider.formatter.bigNumber(_rawBlock.totalFees),
     size: provider.formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,

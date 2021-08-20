@@ -25,7 +25,7 @@ const London: React.FC = () => {
     );
   }
 
-  return <Blocks latestBlock={block} targetBlockNumber={targetBlockNumber} />;
+  return <Blocks latestBlock={block} londonBlockNumber={targetBlockNumber} />;
 };
 
 export default React.memo(London);

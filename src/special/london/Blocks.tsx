@@ -5,6 +5,8 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import { useLocation } from "react-router-dom";
+import queryString from "query-string";
 import { Block } from "@ethersproject/abstract-provider";
 import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
@@ -35,7 +37,11 @@ import {
 
 type BlocksProps = {
   latestBlock: Block;
-  targetBlockNumber: number;
+  londonBlockNumber: number;
+};
+
+type PageParams = {
+  b?: number;
 };
 
 const charts = [
@@ -44,11 +50,20 @@ const charts = [
   { id: 2, mode: ChartMode.BURNT_FEES, desc: "Burnt fees" },
 ];
 
-const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
+const Blocks: React.FC<BlocksProps> = ({ latestBlock, londonBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ChartBlock[]>([]);
   const [now, setNow] = useState<number>(Date.now());
   const [selectedChart, setSelectedChart] = useState(charts[0]);
+
+  const location = useLocation<PageParams>();
+  const qs = queryString.parse(location.search);
+  let endBlock = latestBlock.number;
+  if (qs.b) {
+    try {
+      endBlock = parseInt(qs.b as string);
+    } catch (err) {}
+  }
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
@@ -57,7 +72,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
       }
 
       // Skip blocks before the hard fork during the transition
-      if (blockNumber < targetBlockNumber) {
+      if (blockNumber < londonBlockNumber) {
         return;
       }
 
@@ -82,12 +97,12 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return newBlocks;
       });
     },
-    [provider, targetBlockNumber]
+    [provider, londonBlockNumber]
   );
 
   useEffect(() => {
-    addBlock(latestBlock.number);
-  }, [addBlock, latestBlock]);
+    addBlock(endBlock);
+  }, [addBlock, endBlock]);
 
   const data = useMemo(
     () =>
@@ -109,11 +124,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   useEffect(
     () => {
       const addPreviousBlocks = async () => {
-        for (
-          let i = latestBlock.number - PREV_BLOCK_COUNT;
-          i < latestBlock.number;
-          i++
-        ) {
+        for (let i = endBlock - PREV_BLOCK_COUNT; i < endBlock; i++) {
           await addBlock(i);
         }
       };

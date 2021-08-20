@@ -101,7 +101,7 @@ const Block: React.FC = () => {
             )}
           </InfoRow>
           <InfoRow title="Uncles Reward">
-            <TransactionValue value={block.unclesReward} />
+            <TransactionValue value={block.uncleReward} />
           </InfoRow>
           <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
           {block.baseFeePerGas && (
