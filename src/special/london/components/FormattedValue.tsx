@@ -30,4 +30,4 @@ const FormattedValue: React.FC<FormattedValueProps> = ({
   );
 };
 
-export default FormattedValue;
+export default React.memo(FormattedValue);
