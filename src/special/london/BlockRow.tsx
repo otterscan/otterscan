@@ -63,28 +63,31 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       <div className="col-span-2 text-xs self-center">
         <PercentageBar perc={gasUsedPerc} />
       </div>
-      <div className="col-span-2 text-right">
+      <div className="col-span-2 flex justify-end">
         <div className="relative">
-          <span>
-            {FixedNumber.from(block.baseFeePerGas)
+          <FormattedValue
+            value={FixedNumber.from(block.baseFeePerGas)
               .divUnsafe(FixedNumber.from(1e9))
               .round(0)
-              .toUnsafeFloat()}{" "}
-            <span className="text-xs text-gray-500">Gwei</span>
-          </span>
+              .toUnsafeFloat()
+              .toString()}
+            unit="Gwei"
+          />
           <Blip value={baseFeeDelta} />
         </div>
       </div>
       <div className="col-span-2 flex justify-end">
         <FormattedValue value={formatEther(issued)} unit="ETH" />
       </div>
-      <div className="col-span-4 text-right col-span-2 line-through text-orange-500">
-        {commify(formatEther(burntFees))}{" "}
-        <span className="text-xs text-orange-500">ETH</span>
+      <div className="col-span-4 flex justify-end line-through text-orange-500">
+        <FormattedValue
+          value={formatEther(burntFees)}
+          unit="ETH"
+          lightColor="text-orange-400"
+        />
       </div>
-      <div className="col-span-4 text-right col-span-2">
-        {commify(formatEther(netFeeReward))}{" "}
-        <span className="text-xs text-gray-500">ETH</span>
+      <div className="col-span-4 flex justify-end">
+        <FormattedValue value={formatEther(netFeeReward)} unit="ETH" />
       </div>
       <div className="col-span-2 text-right text-gray-400 text-sm">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
