@@ -104,17 +104,22 @@ const Block: React.FC = () => {
           <InfoRow title="Uncles Reward">
             <UnitValue value={block.uncleReward} />
           </InfoRow>
-          <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
           {block.baseFeePerGas && (
             <InfoRow title="Base Fee">
               <span>
-                <FormattedBalance value={block.baseFeePerGas} decimals={9} />{" "}
-                Gwei (
-                <FormattedBalance
+                <UnitValue
+                  value={block.baseFeePerGas}
+                  decimals={9}
+                  unit="Gwei"
+                  significantDecDigits={2}
+                />{" "}
+                (
+                <UnitValue
                   value={block.baseFeePerGas}
                   decimals={0}
-                />{" "}
-                wei)
+                  unit="wei"
+                />
+                )
               </span>
             </InfoRow>
           )}
@@ -151,6 +156,13 @@ const Block: React.FC = () => {
             <span className="font-data">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">N/A</InfoRow>
+          <InfoRow title="Size">
+            <UnitValue
+              value={BigNumber.from(block.size)}
+              decimals={0}
+              unit="bytes"
+            />
+          </InfoRow>
           <InfoRow title="Difficult">{commify(block.difficulty)}</InfoRow>
           <InfoRow title="Total Difficult">
             {commify(block.totalDifficulty.toString())}

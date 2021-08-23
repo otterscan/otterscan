@@ -7,6 +7,7 @@ type UnitValueProps = {
   decimals?: number;
   hideUnit?: boolean;
   unit?: string;
+  significantDecDigits?: number;
 };
 
 const UnitValue: React.FC<UnitValueProps> = ({
@@ -14,6 +15,7 @@ const UnitValue: React.FC<UnitValueProps> = ({
   decimals = 18,
   hideUnit,
   unit = "Ether",
+  significantDecDigits = 4,
 }) => {
   const formattedValue = formatValue(value, decimals);
   const parts = formattedValue.split(".");
@@ -28,9 +30,11 @@ const UnitValue: React.FC<UnitValueProps> = ({
         {parts[0]}
         {decPart && (
           <span className="text-xs">
-            .{decPart.substr(0, 4)}
-            {decPart?.length > 4 && (
-              <span className="text-gray-400">{decPart.substr(4)}</span>
+            .{decPart.substr(0, significantDecDigits)}
+            {decPart?.length > significantDecDigits && (
+              <span className="text-gray-400">
+                {decPart.substr(significantDecDigits)}
+              </span>
             )}
           </span>
         )}
