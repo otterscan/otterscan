@@ -15,6 +15,7 @@ import GasValue from "./components/GasValue";
 import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
+import UnitValue from "./components/UnitValue";
 import TransactionValue from "./components/TransactionValue";
 import FormattedBalance from "./components/FormattedBalance";
 import HexValue from "./components/HexValue";
@@ -91,17 +92,17 @@ const Block: React.FC = () => {
             <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue value={block.blockReward.add(netFeeReward)} />
+            <UnitValue value={block.blockReward.add(netFeeReward)} />
             {!netFeeReward.isZero() && (
               <>
                 {" "}
-                (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-                <TransactionValue value={netFeeReward} hideUnit />)
+                (<UnitValue value={block.blockReward} hideUnit /> +{" "}
+                <UnitValue value={netFeeReward} hideUnit />)
               </>
             )}
           </InfoRow>
           <InfoRow title="Uncles Reward">
-            <TransactionValue value={block.uncleReward} />
+            <UnitValue value={block.uncleReward} />
           </InfoRow>
           <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
           {block.baseFeePerGas && (
