@@ -187,6 +187,18 @@ const Details: React.FC<DetailsProps> = ({
       >
         <TransactionType type={txData.type} />
       </InfoRow>
+      {hasEIP1559 && (
+        <InfoRow title="Block Base Fee">
+          <UnitValue
+            value={txData.blockBaseFeePerGas!}
+            decimals={9}
+            unit="Gwei"
+            significantDecDigits={2}
+          />{" "}
+          (
+          <UnitValue value={txData.blockBaseFeePerGas!} />)
+        </InfoRow>
+      )}
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee (Tip) Per Gas">
@@ -247,18 +259,6 @@ const Details: React.FC<DetailsProps> = ({
           </div>
         </div>
       </InfoRow>
-      {hasEIP1559 && (
-        <InfoRow title="Block Base Fee">
-          <UnitValue
-            value={txData.blockBaseFeePerGas!}
-            decimals={9}
-            unit="Gwei"
-            significantDecDigits={2}
-          />{" "}
-          (
-          <UnitValue value={txData.blockBaseFeePerGas!} />)
-        </InfoRow>
-      )}
       <InfoRow title="Transaction Fee">
         <div className="space-y-3">
           <div>
