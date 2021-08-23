@@ -17,6 +17,11 @@ type BlockRowProps = {
 
 const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
+  const baseFee = FixedNumber.from(block.baseFeePerGas)
+    .divUnsafe(FixedNumber.from(1e9))
+    .round(2)
+    .toUnsafeFloat()
+    .toString();
   const burntFees = block.gasUsed.mul(block.baseFeePerGas!);
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const gasUsedPerc =
@@ -65,14 +70,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       </div>
       <div className="col-span-2 flex justify-end">
         <div className="relative">
-          <FormattedValue
-            value={FixedNumber.from(block.baseFeePerGas)
-              .divUnsafe(FixedNumber.from(1e9))
-              .round(0)
-              .toUnsafeFloat()
-              .toString()}
-            unit="Gwei"
-          />
+          <FormattedValue value={baseFee} unit="Gwei" />
           <Blip value={baseFeeDelta} />
         </div>
       </div>
