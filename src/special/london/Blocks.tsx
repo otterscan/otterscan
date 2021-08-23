@@ -266,11 +266,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, londonBlockNumber }) => {
                 i < all.length - 1
                   ? FixedNumber.from(b.baseFeePerGas!)
                       .divUnsafe(FixedNumber.from(1e9))
-                      .round(0)
+                      .round(2)
                       .subUnsafe(
                         FixedNumber.from(all[i + 1].baseFeePerGas!)
                           .divUnsafe(FixedNumber.from(1e9))
-                          .round(0)
+                          .round(2)
                       )
                       .toUnsafeFloat()
                   : 0
