@@ -3,6 +3,7 @@ import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { commify, formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import PercentageBar from "../../components/PercentageBar";
+import FormattedValue from "./components/FormattedValue";
 import TimestampAge from "../../components/TimestampAge";
 import Blip from "./Blip";
 import { ChartBlock } from "./chart";
@@ -74,9 +75,8 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
           <Blip value={baseFeeDelta} />
         </div>
       </div>
-      <div className="col-span-2 text-right col-span-2">
-        {commify(formatEther(issued))}{" "}
-        <span className="text-xs text-gray-500">ETH</span>
+      <div className="col-span-2 flex justify-end">
+        <FormattedValue value={formatEther(issued)} unit="ETH" />
       </div>
       <div className="col-span-4 text-right col-span-2 line-through text-orange-500">
         {commify(formatEther(burntFees))}{" "}
