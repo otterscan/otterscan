@@ -20,7 +20,7 @@ import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
 import BlockRow from "./BlockRow";
 import Label from "./Label";
-import Value from "./Value";
+import FormattedValue from "./components/FormattedValue";
 import { readBlockForDashboard } from "./hooks";
 import { RuntimeContext } from "../../useRuntime";
 import { MAX_BLOCK_HISTORY, PREV_BLOCK_COUNT } from "./params";
@@ -181,13 +181,24 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, londonBlockNumber }) => {
                 </div>
                 <div className="flex justify-between items-baseline space-x-2">
                   <Label>Total in circulation</Label>
-                  <Value
-                    value={blocks[0].totalIssued.sub(blocks[0].totalBurnt)}
+                  <FormattedValue
+                    value={FixedNumber.fromValue(
+                      blocks[0].totalIssued.sub(blocks[0].totalBurnt),
+                      18
+                    )
+                      .round(2)
+                      .toString()}
+                    unit="ETH"
                   />
                 </div>
                 <div className="flex justify-between items-baseline space-x-2">
                   <Label>Total burnt</Label>
-                  <Value value={blocks[0].totalBurnt} />
+                  <FormattedValue
+                    value={FixedNumber.fromValue(blocks[0].totalBurnt, 18)
+                      .round(2)
+                      .toString()}
+                    unit="ETH"
+                  />
                 </div>
               </div>
             )}
