@@ -19,7 +19,7 @@ import MethodName from "../components/MethodName";
 import TransactionType from "../components/TransactionType";
 import RewardSplit from "./RewardSplit";
 import GasValue from "../components/GasValue";
-import FormattedBalance from "../components/FormattedBalance";
+import UnitValue from "../components/UnitValue";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
@@ -187,36 +187,51 @@ const Details: React.FC<DetailsProps> = ({
       >
         <TransactionType type={txData.type} />
       </InfoRow>
+      {hasEIP1559 && (
+        <InfoRow title="Block Base Fee">
+          <UnitValue
+            value={txData.blockBaseFeePerGas!}
+            decimals={9}
+            unit="Gwei"
+            significantDecDigits={2}
+          />{" "}
+          (
+          <UnitValue value={txData.blockBaseFeePerGas!} />)
+        </InfoRow>
+      )}
       {txData.type === 2 && (
         <>
-          <InfoRow title="Max Priority Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxPriorityFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+          <InfoRow title="Max Priority Fee (Tip) Per Gas">
+            <UnitValue
+              value={txData.maxPriorityFeePerGas!}
+              decimals={9}
+              unit="Gwei"
+              significantDecDigits={2}
+            />{" "}
+            (
+            <UnitValue value={txData.maxPriorityFeePerGas!} />)
           </InfoRow>
           <InfoRow title="Max Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+            <UnitValue
+              value={txData.maxFeePerGas!}
+              decimals={9}
+              unit="Gwei"
+              significantDecDigits={2}
+            />{" "}
+            (
+            <UnitValue value={txData.maxFeePerGas!} />)
           </InfoRow>
         </>
       )}
       <InfoRow title="Gas Price">
-        <div className="flex items-baseline space-x-1">
-          <span>
-            <FormattedBalance value={txData.gasPrice} /> Ether (
-            <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
-          </span>
+        <div className="">
+          <UnitValue
+            value={txData.gasPrice!}
+            decimals={9}
+            unit="Gwei"
+            significantDecDigits={2}
+          />{" "}
+          (<UnitValue value={txData.gasPrice!} />)
           {sendsEthToMiner && (
             <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
               Flashbots
@@ -244,23 +259,10 @@ const Details: React.FC<DetailsProps> = ({
           </div>
         </div>
       </InfoRow>
-      {hasEIP1559 && (
-        <InfoRow title="Block Base Fee">
-          <span>
-            <FormattedBalance value={txData.blockBaseFeePerGas!} decimals={9} />{" "}
-            Gwei (
-            <FormattedBalance
-              value={txData.blockBaseFeePerGas!}
-              decimals={0}
-            />{" "}
-            wei)
-          </span>
-        </InfoRow>
-      )}
       <InfoRow title="Transaction Fee">
         <div className="space-y-3">
           <div>
-            <FormattedBalance value={txData.fee} /> Ether
+            <UnitValue value={txData.fee} />
           </div>
           {hasEIP1559 && <RewardSplit txData={txData} />}
         </div>
