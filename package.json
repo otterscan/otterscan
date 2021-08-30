@@ -37,7 +37,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "serve": "^12.0.0",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.2",
     "use-keyboard-shortcut": "^1.0.6",
     "web-vitals": "^1.0.1"
   },
