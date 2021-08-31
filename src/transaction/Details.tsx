@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { formatEther } from "@ethersproject/units";
+import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -19,7 +19,9 @@ import MethodName from "../components/MethodName";
 import TransactionType from "../components/TransactionType";
 import RewardSplit from "./RewardSplit";
 import GasValue from "../components/GasValue";
+import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
+import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
@@ -31,12 +33,14 @@ type DetailsProps = {
   txData: TransactionData;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
+  ethUSDPrice: BigNumber | undefined;
 };
 
 const Details: React.FC<DetailsProps> = ({
   txData,
   internalOps,
   sendsEthToMiner,
+  ethUSDPrice,
 }) => {
   const hasEIP1559 =
     txData.blockBaseFeePerGas !== undefined &&
@@ -170,9 +174,12 @@ const Details: React.FC<DetailsProps> = ({
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <span className="rounded bg-gray-100 px-2 py-1 text-xs">
-          {formatEther(txData.value)} Ether
-        </span>
+        <FormattedBalance value={txData.value} /> Ether{" "}
+        {!txData.value.isZero() && ethUSDPrice && (
+          <span className="px-2 border-red-100 border rounded-lg bg-red-50 text-red-600">
+            <ETH2USDValue ethAmount={txData.value} eth2USDValue={ethUSDPrice} />
+          </span>
+        )}
       </InfoRow>
       <InfoRow
         title={
@@ -257,12 +264,22 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Transaction Fee">
         <div className="space-y-3">
           <div>
-            <FormattedBalance value={txData.fee} /> Ether
+            <FormattedBalance value={txData.fee} /> Ether{" "}
+            {ethUSDPrice && (
+              <span className="px-2 border-red-100 border rounded-lg bg-red-50 text-red-600">
+                <ETH2USDValue
+                  ethAmount={txData.fee}
+                  eth2USDValue={ethUSDPrice}
+                />
+              </span>
+            )}
           </div>
           {hasEIP1559 && <RewardSplit txData={txData} />}
         </div>
       </InfoRow>
-      <InfoRow title="Ether Price">N/A</InfoRow>
+      <InfoRow title="Ether Price">
+        <USDValue value={ethUSDPrice} />
+      </InfoRow>
       <InfoRow title="Input Data">
         <div className="space-y-1">
           <div className="flex space-x-1">

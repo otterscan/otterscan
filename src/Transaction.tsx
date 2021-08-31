@@ -8,6 +8,7 @@ import Logs from "./transaction/Logs";
 import { RuntimeContext } from "./useRuntime";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
+import { useETHUSDOracle } from "./usePriceOracle";
 
 type TransactionParams = {
   txhash: string;
@@ -36,6 +37,8 @@ const Transaction: React.FC = () => {
 
   const selectionCtx = useSelection();
 
+  const blockETHUSDPrice = useETHUSDOracle(provider, txData?.blockNumber);
+
   return (
     <StandardFrame>
       <StandardSubtitle>Transaction Details</StandardSubtitle>
@@ -53,6 +56,7 @@ const Transaction: React.FC = () => {
                 txData={txData}
                 internalOps={internalOps}
                 sendsEthToMiner={sendsEthToMiner}
+                ethUSDPrice={blockETHUSDPrice}
               />
             </Route>
             <Route path="/tx/:txhash/logs/" exact>

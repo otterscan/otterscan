@@ -17,11 +17,14 @@ import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
 import FormattedBalance from "./components/FormattedBalance";
+import ETH2USDValue from "./components/ETH2USDValue";
+import USDValue from "./components/USDValue";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
+import { useETHUSDOracle } from "./usePriceOracle";
 
 type BlockParams = {
   blockNumberOrHash: string;
@@ -53,6 +56,7 @@ const Block: React.FC = () => {
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
+  const blockETHUSDPrice = useETHUSDOracle(provider, block?.number);
 
   return (
     <StandardFrame>
@@ -97,6 +101,17 @@ const Block: React.FC = () => {
                 {" "}
                 (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
                 <TransactionValue value={netFeeReward} hideUnit />)
+              </>
+            )}
+            {blockETHUSDPrice && (
+              <>
+                {" "}
+                <span className="px-2 border-yellow-200 border rounded-lg bg-yellow-100 text-yellow-600">
+                  <ETH2USDValue
+                    ethAmount={block.blockReward.add(netFeeReward)}
+                    eth2USDValue={blockETHUSDPrice}
+                  />
+                </span>
               </>
             )}
           </InfoRow>
@@ -147,7 +162,9 @@ const Block: React.FC = () => {
             {extraStr} (Hex:{" "}
             <span className="font-data">{block.extraData}</span>)
           </InfoRow>
-          <InfoRow title="Ether Price">N/A</InfoRow>
+          <InfoRow title="Ether Price">
+            <USDValue value={blockETHUSDPrice} />
+          </InfoRow>
           <InfoRow title="Difficult">{commify(block.difficulty)}</InfoRow>
           <InfoRow title="Total Difficult">
             {commify(block.totalDifficulty.toString())}
