@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { BlockTag } from "@ethersproject/abstract-provider";
 import ContentFrame from "../ContentFrame";
 import PageControl from "../search/PageControl";
 import ResultHeader from "../search/ResultHeader";
@@ -10,14 +11,17 @@ import { SelectionContext, useSelection } from "../useSelection";
 import { useENSCache } from "../useReverseCache";
 import { ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
+import { useMultipleETHUSDOracle } from "../usePriceOracle";
 
 type BlockTransactionResultsProps = {
+  blockTag: BlockTag;
   page?: ProcessedTransaction[];
   total: number;
   pageNumber: number;
 };
 
 const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
+  blockTag,
   page,
   total,
   pageNumber,
@@ -26,6 +30,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
   const { provider } = useContext(RuntimeContext);
   const reverseCache = useENSCache(provider, page);
+  const priceMap = useMultipleETHUSDOracle(provider, [blockTag]);
 
   return (
     <ContentFrame>
@@ -55,6 +60,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
               tx={tx}
               ensCache={reverseCache}
               feeDisplay={feeDisplay}
+              priceMap={priceMap}
             />
           ))}
           <div className="flex justify-between items-baseline py-3">
