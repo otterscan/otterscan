@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-from-border: 254, 226, 226;
+    --color-from-text: 220, 38, 38;
+    --color-from-fill: 254, 242, 242;
+    --color-to-fill: 236, 253, 245;
+  }
+}

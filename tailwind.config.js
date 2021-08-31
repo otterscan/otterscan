@@ -1,5 +1,14 @@
 const colors = require("tailwindcss/colors");
 
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `rgba(var(${variableName}), ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 module.exports = {
   purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   darkMode: false, // or 'media' or 'class'
@@ -18,6 +27,22 @@ module.exports = {
         data: ["Roboto Mono"],
         balance: ["Fira Code"],
         blocknum: ["Roboto"],
+      },
+      borderColor: {
+        skin: {
+          from: withOpacity("--color-from-border"),
+        },
+      },
+      textColor: {
+        skin: {
+          from: withOpacity("--color-from-text"),
+        },
+      },
+      backgroundColor: {
+        skin: {
+          from: withOpacity("--color-from-fill"),
+          to: withOpacity("--color-to-fill"),
+        },
       },
     },
   },
