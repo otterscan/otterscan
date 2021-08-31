@@ -42,6 +42,7 @@ module.exports = {
         skin: {
           from: withOpacity("--color-from-fill"),
           to: withOpacity("--color-to-fill"),
+          "table-hover": withOpacity("--color-table-row-hover"),
         },
       },
     },

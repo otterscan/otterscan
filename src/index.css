@@ -8,5 +8,7 @@
     --color-from-text: 220, 38, 38;
     --color-from-fill: 254, 242, 242;
     --color-to-fill: 236, 253, 245;
+
+    --color-table-row-hover: 243, 244, 246;
   }
 }
