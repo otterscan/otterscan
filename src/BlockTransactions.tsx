@@ -47,6 +47,7 @@ const BlockTransactions: React.FC = () => {
     <StandardFrame>
       <BlockTransactionHeader blockTag={blockNumber.toNumber()} />
       <BlockTransactionResults
+        blockTag={blockNumber.toNumber()}
         page={txs}
         total={totalTxs ?? 0}
         pageNumber={pageNumber}

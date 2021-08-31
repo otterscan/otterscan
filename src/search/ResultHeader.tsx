@@ -23,7 +23,9 @@ const ResultHeader: React.FC<ResultHeaderProps> = ({
         className="text-link-blue hover:text-link-blue-hover"
         onClick={feeDisplayToggler}
       >
-        {feeDisplay === FeeDisplay.TX_FEE ? "Txn Fee" : "Gas Price"}
+        {feeDisplay === FeeDisplay.TX_FEE && "Txn Fee"}
+        {feeDisplay === FeeDisplay.TX_FEE_USD && "Txn Fee (USD)"}
+        {feeDisplay === FeeDisplay.GAS_PRICE && "Gas Price"}
       </button>
     </div>
   </div>

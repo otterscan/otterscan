@@ -8,6 +8,18 @@ export const useETHUSDOracle = (
   provider: JsonRpcProvider | undefined,
   blockTag: BlockTag | undefined
 ) => {
+  const priceMap = useMultipleETHUSDOracle(provider, [blockTag]);
+
+  if (blockTag === undefined) {
+    return undefined;
+  }
+  return priceMap[blockTag];
+};
+
+export const useMultipleETHUSDOracle = (
+  provider: JsonRpcProvider | undefined,
+  blockTags: (BlockTag | undefined)[]
+) => {
   const ethFeed = useMemo(() => {
     if (!provider || provider.network.chainId !== 1) {
       return undefined;
@@ -21,22 +33,45 @@ export const useETHUSDOracle = (
     }
   }, [provider]);
 
-  const [latestPriceData, setLatestPriceData] = useState<BigNumber>();
+  const [latestPriceData, setLatestPriceData] = useState<
+    Record<BlockTag, BigNumber>
+  >({});
   useEffect(() => {
-    if (!ethFeed || !blockTag) {
+    if (!ethFeed) {
       return;
     }
 
+    const priceReaders: Promise<BigNumber | undefined>[] = [];
+    for (const blockTag of blockTags) {
+      priceReaders.push(
+        (async () => {
+          try {
+            const priceData = await ethFeed.latestRoundData({ blockTag });
+            return BigNumber.from(priceData.answer);
+          } catch (err) {
+            console.error(err);
+            return undefined;
+          }
+        })()
+      );
+    }
     const readData = async () => {
-      try {
-        const priceData = await ethFeed.latestRoundData({ blockTag });
-        setLatestPriceData(BigNumber.from(priceData.answer));
-      } catch (err) {
-        console.error(err);
+      const results = await Promise.all(priceReaders);
+      const priceMap: Record<BlockTag, BigNumber> = {};
+      for (let i = 0; i < blockTags.length; i++) {
+        const blockTag = blockTags[i];
+        const result = results[i];
+        if (blockTag === undefined || result === undefined) {
+          continue;
+        }
+
+        priceMap[blockTag] = result;
       }
+
+      setLatestPriceData(priceMap);
     };
     readData();
-  }, [ethFeed, blockTag]);
+  }, [ethFeed, blockTags]);
 
   return latestPriceData;
 };
