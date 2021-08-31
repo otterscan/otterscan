@@ -22,7 +22,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
   const totalReward = block.blockReward.add(netFeeReward ?? 0);
 
   return (
-    <div className="grid grid-cols-9 gap-x-2 px-3 py-2 hover:bg-gray-100">
+    <div className="grid grid-cols-9 gap-x-2 px-3 py-2 hover:bg-skin-table-hover">
       <div>
         <BlockLink blockTag={block.number} />
       </div>

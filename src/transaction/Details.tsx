@@ -176,7 +176,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Value">
         <FormattedBalance value={txData.value} /> Ether{" "}
         {!txData.value.isZero() && ethUSDPrice && (
-          <span className="px-2 border-red-100 border rounded-lg bg-red-50 text-red-600">
+          <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
             <ETH2USDValue ethAmount={txData.value} eth2USDValue={ethUSDPrice} />
           </span>
         )}
@@ -266,7 +266,7 @@ const Details: React.FC<DetailsProps> = ({
           <div>
             <FormattedBalance value={txData.fee} /> Ether{" "}
             {ethUSDPrice && (
-              <span className="px-2 border-red-100 border rounded-lg bg-red-50 text-red-600">
+              <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
                 <ETH2USDValue
                   ethAmount={txData.fee}
                   eth2USDValue={ethUSDPrice}
