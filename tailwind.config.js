@@ -35,11 +35,16 @@ module.exports = {
       },
       textColor: {
         skin: {
+          button: withOpacity("--color-button-text"),
+
           from: withOpacity("--color-from-text"),
         },
       },
       backgroundColor: {
         skin: {
+          "button-fill": withOpacity("--color-button-fill"),
+          "button-hover-fill": withOpacity("--color-button-hover-fill"),
+
           from: withOpacity("--color-from-fill"),
           to: withOpacity("--color-to-fill"),
           "table-hover": withOpacity("--color-table-row-hover"),

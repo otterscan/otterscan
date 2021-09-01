@@ -3,7 +3,9 @@ import { NavLink, useHistory } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import Logo from "./Logo";
+import CameraScanner from "./search/CameraScanner";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
@@ -30,11 +32,13 @@ const Home: React.FC = () => {
   };
 
   const latestBlock = useLatestBlock(provider);
+  const [isScanning, setScanning] = useState<boolean>(false);
 
   document.title = "Home | Otterscan";
 
   return (
     <div className="m-auto">
+      {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
       <Logo />
       <form
         className="flex flex-col"
@@ -42,16 +46,26 @@ const Home: React.FC = () => {
         autoComplete="off"
         spellCheck={false}
       >
-        <input
-          className="w-full border rounded focus:outline-none px-2 py-1 mb-10"
-          type="text"
-          size={50}
-          placeholder="Search by address / txn hash / block number / ENS name"
-          onChange={handleChange}
-          autoFocus
-        ></input>
+        <div className="flex mb-10">
+          <input
+            className="w-full border-l border-t border-b rounded-l focus:outline-none px-2 py-1"
+            type="text"
+            size={50}
+            placeholder="Search by address / txn hash / block number / ENS name"
+            onChange={handleChange}
+            autoFocus
+          />
+          <button
+            className="border rounded-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-base text-skin-button flex justify-center items-center"
+            type="button"
+            onClick={() => setScanning(true)}
+            title="Scan an ETH address using your camera"
+          >
+            <FontAwesomeIcon icon={faQrcode} />
+          </button>
+        </div>
         <button
-          className="mx-auto px-3 py-1 mb-10 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none"
+          className="mx-auto px-3 py-1 mb-10 rounded bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none"
           type="submit"
         >
           Search
