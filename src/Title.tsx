@@ -1,5 +1,11 @@
 import React, { useState, useRef, useContext } from "react";
+import { isAddress } from "@ethersproject/address";
 import { Link, useHistory } from "react-router-dom";
+import { QrReader } from "@blackbox-vision/react-qr-reader";
+import { OnResultFunction } from "@blackbox-vision/react-qr-reader/dist-types/types";
+import { BarcodeFormat } from "@zxing/library";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
 import { RuntimeContext } from "./useRuntime";
@@ -28,6 +34,28 @@ const Title: React.FC = () => {
   useKeyboardShortcut(["/"], () => {
     searchRef.current?.focus();
   });
+
+  const [isScanning, setScanning] = useState<boolean>();
+  const onScan = () => {
+    setScanning(!isScanning);
+  };
+  const evaluateScan: OnResultFunction = (result, error, codeReader) => {
+    console.log("scan");
+    if (!error && result?.getBarcodeFormat() === BarcodeFormat.QR_CODE) {
+      const text = result.getText();
+      console.log(`Scanned: ${text}`);
+      if (!isAddress(text)) {
+        console.log("Not an ETH address");
+        return;
+      }
+
+      if (searchRef.current) {
+        searchRef.current.value = text;
+        searchRef.current.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+      setScanning(false);
+    }
+  };
 
   return (
     <div className="px-9 py-2 flex justify-between items-baseline">
@@ -60,6 +88,20 @@ const Title: React.FC = () => {
             onChange={handleChange}
             ref={searchRef}
           />
+          <button
+            className="border bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
+            type="button"
+            onClick={onScan}
+          >
+            <FontAwesomeIcon icon={faQrcode} />
+          </button>
+          {isScanning && (
+            <QrReader
+              className="w-screen h-screen"
+              constraints={{}}
+              onResult={evaluateScan}
+            />
+          )}
           <button
             className="rounded-r border-t border-b border-r bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
             type="submit"

@@ -4,6 +4,7 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
+    "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@chainlink/contracts": "^0.2.1",
     "@craco/craco": "^6.2.0",
     "@fontsource/fira-code": "^4.5.1",
