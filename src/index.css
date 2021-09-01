@@ -11,4 +11,12 @@
 
     --color-table-row-hover: 243, 244, 246;
   }
+  .test-theme {
+    --color-from-border: 251, 146, 60;
+    --color-from-text: 249, 115, 22;
+    --color-from-fill: 254, 215, 170;
+    --color-to-fill: 125, 211, 252;
+
+    --color-table-row-hover: 2, 132, 199;
+  }
 }
