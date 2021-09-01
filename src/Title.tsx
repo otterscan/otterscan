@@ -68,7 +68,7 @@ const Title: React.FC = () => {
               ref={searchRef}
             />
             <button
-              className="border bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
+              className="border bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-sm text-skin-button"
               type="button"
               onClick={() => setScanning(true)}
               title="Scan an ETH address using your camera"
@@ -76,7 +76,7 @@ const Title: React.FC = () => {
               <FontAwesomeIcon icon={faQrcode} />
             </button>
             <button
-              className="rounded-r border-t border-b border-r bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
+              className="rounded-r border-t border-b border-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-sm text-skin-button"
               type="submit"
             >
               Search

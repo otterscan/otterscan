@@ -4,6 +4,10 @@
 
 @layer base {
   :root {
+    --color-button-fill: 244, 244, 245; /* gray-100 */
+    --color-button-hover-fill: 228, 228, 231; /* gray-200 */
+    --color-button-text: 113, 113, 122; /* gray-500 */
+
     --color-from-border: 254, 226, 226;
     --color-from-text: 220, 38, 38;
     --color-from-fill: 254, 242, 242;
@@ -12,6 +16,10 @@
     --color-table-row-hover: 243, 244, 246;
   }
   .test-theme {
+    --color-button-fill: 14, 165, 233; /* sky-500 */
+    --color-button-hover-fill: 56, 189, 248; /* sky-400 */
+    --color-button-text: 186, 230, 253; /* sky-200 */
+
     --color-from-border: 251, 146, 60;
     --color-from-text: 249, 115, 22;
     --color-from-fill: 254, 215, 170;

@@ -56,7 +56,7 @@ const Home: React.FC = () => {
             autoFocus
           />
           <button
-            className="border rounded-r bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-base text-gray-500 flex justify-center items-center"
+            className="border rounded-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-base text-skin-button flex justify-center items-center"
             type="button"
             onClick={() => setScanning(true)}
             title="Scan an ETH address using your camera"
@@ -65,7 +65,7 @@ const Home: React.FC = () => {
           </button>
         </div>
         <button
-          className="mx-auto px-3 py-1 mb-10 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none"
+          className="mx-auto px-3 py-1 mb-10 rounded bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none"
           type="submit"
         >
           Search
