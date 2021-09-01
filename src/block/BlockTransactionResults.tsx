@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import ContentFrame from "../ContentFrame";
 import PageControl from "../search/PageControl";
@@ -30,7 +30,8 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
   const { provider } = useContext(RuntimeContext);
   const reverseCache = useENSCache(provider, page);
-  const priceMap = useMultipleETHUSDOracle(provider, [blockTag]);
+  const blockTags = useMemo(() => [blockTag], [blockTag]);
+  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
   return (
     <ContentFrame>
