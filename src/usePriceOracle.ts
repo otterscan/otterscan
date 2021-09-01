@@ -8,7 +8,8 @@ export const useETHUSDOracle = (
   provider: JsonRpcProvider | undefined,
   blockTag: BlockTag | undefined
 ) => {
-  const priceMap = useMultipleETHUSDOracle(provider, [blockTag]);
+  const blockTags = useMemo(() => [blockTag], [blockTag]);
+  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
   if (blockTag === undefined) {
     return undefined;
