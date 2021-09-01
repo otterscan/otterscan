@@ -1,14 +1,10 @@
 import React, { useState, useRef, useContext } from "react";
-import { isAddress } from "@ethersproject/address";
 import { Link, useHistory } from "react-router-dom";
-import { QrReader } from "@blackbox-vision/react-qr-reader";
-import { OnResultFunction } from "@blackbox-vision/react-qr-reader/dist-types/types";
-import { BarcodeFormat } from "@zxing/library";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
-import { Dialog } from "@headlessui/react";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
+import CameraScanner from "./search/CameraScanner";
 import { RuntimeContext } from "./useRuntime";
 
 const Title: React.FC = () => {
@@ -37,45 +33,10 @@ const Title: React.FC = () => {
   });
 
   const [isScanning, setScanning] = useState<boolean>(false);
-  const onScan = () => {
-    setScanning(true);
-  };
-  const evaluateScan: OnResultFunction = (result, error, codeReader) => {
-    console.log("scan");
-    if (!error && result?.getBarcodeFormat() === BarcodeFormat.QR_CODE) {
-      const text = result.getText();
-      console.log(`Scanned: ${text}`);
-      if (!isAddress(text)) {
-        console.log("Not an ETH address");
-        return;
-      }
-
-      history.push(`/search?q=${text}`);
-      setScanning(false);
-    }
-  };
 
   return (
     <>
-      <Dialog
-        className="fixed z-10 inset-0 overflow-y-auto"
-        open={isScanning}
-        onClose={() => setScanning(false)}
-      >
-        <div className="flex items-center justify-center min-h-screen">
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-          <Dialog.Title className="absolute top-0 w-full text-center bg-white text-lg">
-            Point an ETH address QR code to camera
-          </Dialog.Title>
-          <div className="absolute inset-0 bg-transparent rounded min-w-max max-w-3xl w-full h-screen max-h-screen m-auto">
-            <QrReader
-              className="m-auto"
-              constraints={{}}
-              onResult={evaluateScan}
-            />
-          </div>
-        </div>
-      </Dialog>
+      {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
       <div className="px-9 py-2 flex justify-between items-baseline">
         <Link className="self-center" to="/">
           <div className="text-2xl text-link-blue font-title font-bold flex items-center space-x-2">
@@ -109,7 +70,8 @@ const Title: React.FC = () => {
             <button
               className="border bg-gray-100 hover:bg-gray-200 focus:outline-none px-2 py-1 text-sm text-gray-500"
               type="button"
-              onClick={onScan}
+              onClick={() => setScanning(true)}
+              title="Scan an ETH address using your camera"
             >
               <FontAwesomeIcon icon={faQrcode} />
             </button>
