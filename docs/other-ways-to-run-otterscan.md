@@ -13,7 +13,7 @@ The entire build process will take place inside the docker multi-stage build.
 Clone Otterscan repo and its submodules. Checkout the tag corresponding to your Erigon + Otterscan patches. It uses the same version tag from Erigon + Otterscan repo, i.e., if you built the `v2021.07.01-otterscan`, you should build the `v2021.07.01-otterscan` of Otterscan.
 
 ```
-git clone --recurse-submodules git@github.com:wmitsuda/otterscan.git
+git clone --recurse-submodules https://github.com/wmitsuda/otterscan.git
 cd otterscan
 git checkout <version-tag-otterscan>
 DOCKER_BUILDKIT=1 docker build -t otterscan -f Dockerfile .
