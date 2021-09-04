@@ -174,8 +174,8 @@ export const useBlockData = (
 export const useTxData = (
   provider: JsonRpcProvider | undefined,
   txhash: string
-): TransactionData | undefined => {
-  const [txData, setTxData] = useState<TransactionData>();
+): TransactionData | undefined | null => {
+  const [txData, setTxData] = useState<TransactionData | undefined | null>();
 
   useEffect(() => {
     if (!provider) {
@@ -187,24 +187,35 @@ export const useTxData = (
         provider.getTransaction(txhash),
         provider.getTransactionReceipt(txhash),
       ]);
-      const _block = await readBlock(provider, _receipt.blockNumber.toString());
+      if (_response === null) {
+        setTxData(null);
+        return;
+      }
+
+      let _block: ExtendedBlock | undefined;
+      if (_response.blockNumber) {
+        _block = await readBlock(provider, _response.blockNumber.toString());
+      }
+
       document.title = `Transaction ${_response.hash} | Otterscan`;
 
       // Extract token transfers
       const tokenTransfers: TokenTransfer[] = [];
-      for (const l of _receipt.logs) {
-        if (l.topics.length !== 3) {
-          continue;
+      if (_receipt) {
+        for (const l of _receipt.logs) {
+          if (l.topics.length !== 3) {
+            continue;
+          }
+          if (l.topics[0] !== TRANSFER_TOPIC) {
+            continue;
+          }
+          tokenTransfers.push({
+            token: l.address,
+            from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+            to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+            value: BigNumber.from(l.data),
+          });
         }
-        if (l.topics[0] !== TRANSFER_TOPIC) {
-          continue;
-        }
-        tokenTransfers.push({
-          token: l.address,
-          from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-          to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-          value: BigNumber.from(l.data),
-        });
       }
 
       // Extract token meta
@@ -227,31 +238,36 @@ export const useTxData = (
       }
 
       setTxData({
-        transactionHash: _receipt.transactionHash,
-        status: _receipt.status === 1,
-        blockNumber: _receipt.blockNumber,
-        transactionIndex: _receipt.transactionIndex,
-        blockTransactionCount: _block.transactionCount,
-        confirmations: _receipt.confirmations,
-        timestamp: _block.timestamp,
-        miner: _block.miner,
-        from: _receipt.from,
-        to: _receipt.to,
-        createdContractAddress: _receipt.contractAddress,
+        transactionHash: _response.hash,
+        from: _response.from,
+        to: _response.to,
         value: _response.value,
         tokenTransfers,
         tokenMetas,
         type: _response.type ?? 0,
-        fee: _response.gasPrice!.mul(_receipt.gasUsed),
-        blockBaseFeePerGas: _block.baseFeePerGas,
         maxFeePerGas: _response.maxFeePerGas,
         maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
         gasPrice: _response.gasPrice!,
-        gasUsed: _receipt.gasUsed,
         gasLimit: _response.gasLimit,
         nonce: _response.nonce,
         data: _response.data,
-        logs: _receipt.logs,
+        confirmedData:
+          _receipt === null
+            ? undefined
+            : {
+                status: _receipt.status === 1,
+                blockNumber: _receipt.blockNumber,
+                transactionIndex: _receipt.transactionIndex,
+                blockBaseFeePerGas: _block!.baseFeePerGas,
+                blockTransactionCount: _block!.transactionCount,
+                confirmations: _receipt.confirmations,
+                timestamp: _block!.timestamp,
+                miner: _block!.miner,
+                createdContractAddress: _receipt.contractAddress,
+                fee: _response.gasPrice!.mul(_receipt.gasUsed),
+                gasUsed: _receipt.gasUsed,
+                logs: _receipt.logs,
+              },
       });
     };
     readTxData();
@@ -262,13 +278,13 @@ export const useTxData = (
 
 export const useInternalOperations = (
   provider: JsonRpcProvider | undefined,
-  txData: TransactionData | undefined
+  txData: TransactionData | undefined | null
 ): InternalOperation[] | undefined => {
   const [intTransfers, setIntTransfers] = useState<InternalOperation[]>();
 
   useEffect(() => {
     const traceTransfers = async () => {
-      if (!provider || !txData) {
+      if (!provider || !txData || !txData.confirmedData) {
         return;
       }
 

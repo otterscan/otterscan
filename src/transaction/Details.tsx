@@ -43,8 +43,8 @@ const Details: React.FC<DetailsProps> = ({
   ethUSDPrice,
 }) => {
   const hasEIP1559 =
-    txData.blockBaseFeePerGas !== undefined &&
-    txData.blockBaseFeePerGas !== null;
+    txData.confirmedData?.blockBaseFeePerGas !== undefined &&
+    txData.confirmedData?.blockBaseFeePerGas !== null;
   const [inputMode, setInputMode] = useState<number>(0);
 
   const utfInput = useMemo(() => {
@@ -66,7 +66,9 @@ const Details: React.FC<DetailsProps> = ({
         </div>
       </InfoRow>
       <InfoRow title="Status">
-        {txData.status ? (
+        {txData.confirmedData === undefined ? (
+          <span className="italic text-gray-400">Pending</span>
+        ) : txData.confirmedData.status ? (
           <span className="flex items-center w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
             <FontAwesomeIcon icon={faCheckCircle} size="1x" />
             <span>Success</span>
@@ -78,38 +80,45 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         )}
       </InfoRow>
-      <InfoRow title="Block / Position">
-        <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
-          <div className="flex space-x-1 items-baseline mr-3">
-            <span className="text-orange-500">
-              <FontAwesomeIcon icon={faCube} />
-            </span>
-            <BlockLink blockTag={txData.blockNumber} />
-            <BlockConfirmations confirmations={txData.confirmations} />
-          </div>
-          <div className="flex space-x-2 items-baseline pl-3">
-            <RelativePosition
-              pos={txData.transactionIndex}
-              total={txData.blockTransactionCount - 1}
-            />
-            <PercentagePosition
-              perc={
-                txData.transactionIndex / (txData.blockTransactionCount - 1)
-              }
-            />
-          </div>
-        </div>
-      </InfoRow>
-      <InfoRow title="Timestamp">
-        <Timestamp value={txData.timestamp} />
-      </InfoRow>
+      {txData.confirmedData && (
+        <>
+          <InfoRow title="Block / Position">
+            <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex space-x-1 items-baseline mr-3">
+                <span className="text-orange-500">
+                  <FontAwesomeIcon icon={faCube} />
+                </span>
+                <BlockLink blockTag={txData.confirmedData.blockNumber} />
+                <BlockConfirmations
+                  confirmations={txData.confirmedData.confirmations}
+                />
+              </div>
+              <div className="flex space-x-2 items-baseline pl-3">
+                <RelativePosition
+                  pos={txData.confirmedData.transactionIndex}
+                  total={txData.confirmedData.blockTransactionCount - 1}
+                />
+                <PercentagePosition
+                  perc={
+                    txData.confirmedData.transactionIndex /
+                    (txData.confirmedData.blockTransactionCount - 1)
+                  }
+                />
+              </div>
+            </div>
+          </InfoRow>
+          <InfoRow title="Timestamp">
+            <Timestamp value={txData.confirmedData.timestamp} />
+          </InfoRow>
+        </>
+      )}
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
           <div className="flex items-baseline space-x-2 -ml-1 mr-3">
             <AddressHighlighter address={txData.from}>
               <DecoratedAddressLink
                 address={txData.from}
-                miner={txData.from === txData.miner}
+                miner={txData.from === txData.confirmedData?.miner}
                 txFrom
               />
             </AddressHighlighter>
@@ -126,22 +135,28 @@ const Details: React.FC<DetailsProps> = ({
             <AddressHighlighter address={txData.to}>
               <DecoratedAddressLink
                 address={txData.to}
-                miner={txData.to === txData.miner}
+                miner={txData.to === txData.confirmedData?.miner}
                 txTo
               />
             </AddressHighlighter>
             <Copy value={txData.to} />
           </div>
+        ) : txData.confirmedData === undefined ? (
+          <span className="italic text-gray-400">
+            Pending contract creation
+          </span>
         ) : (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <AddressHighlighter address={txData.createdContractAddress!}>
+            <AddressHighlighter
+              address={txData.confirmedData?.createdContractAddress!}
+            >
               <DecoratedAddressLink
-                address={txData.createdContractAddress!}
+                address={txData.confirmedData.createdContractAddress!}
                 creation
                 txTo
               />
             </AddressHighlighter>
-            <Copy value={txData.createdContractAddress!} />
+            <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
         )}
         {internalOps && internalOps.length > 0 && (
@@ -218,68 +233,81 @@ const Details: React.FC<DetailsProps> = ({
           </InfoRow>
         </>
       )}
-      <InfoRow title="Gas Price">
-        <div className="flex items-baseline space-x-1">
-          <span>
-            <FormattedBalance value={txData.gasPrice} /> Ether (
-            <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
-          </span>
-          {sendsEthToMiner && (
-            <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
-              Flashbots
+      {txData.gasPrice && (
+        <InfoRow title="Gas Price">
+          <div className="flex items-baseline space-x-1">
+            <span>
+              <FormattedBalance value={txData.gasPrice} /> Ether (
+              <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
             </span>
-          )}
-        </div>
-      </InfoRow>
-      <InfoRow title="Gas Used / Limit">
-        <div className="flex space-x-3 items-baseline">
-          <div>
-            <RelativePosition
-              pos={<GasValue value={txData.gasUsed} />}
-              total={<GasValue value={txData.gasLimit} />}
+            {sendsEthToMiner && (
+              <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
+                Flashbots
+              </span>
+            )}
+          </div>
+        </InfoRow>
+      )}
+      {txData.confirmedData && (
+        <InfoRow title="Gas Used / Limit">
+          <div className="flex space-x-3 items-baseline">
+            <div>
+              <RelativePosition
+                pos={<GasValue value={txData.confirmedData.gasUsed} />}
+                total={<GasValue value={txData.gasLimit} />}
+              />
+            </div>
+            <PercentageBar
+              perc={
+                Math.round(
+                  (txData.confirmedData.gasUsed.toNumber() /
+                    txData.gasLimit.toNumber()) *
+                    10000
+                ) / 100
+              }
             />
           </div>
-          <PercentageBar
-            perc={
-              Math.round(
-                (txData.gasUsed.toNumber() / txData.gasLimit.toNumber()) * 10000
-              ) / 100
-            }
-          />
-        </div>
-      </InfoRow>
-      {hasEIP1559 && (
+        </InfoRow>
+      )}
+      {txData.confirmedData && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
           <span>
-            <FormattedBalance value={txData.blockBaseFeePerGas!} decimals={9} />{" "}
+            <FormattedBalance
+              value={txData.confirmedData.blockBaseFeePerGas!}
+              decimals={9}
+            />{" "}
             Gwei (
             <FormattedBalance
-              value={txData.blockBaseFeePerGas!}
+              value={txData.confirmedData.blockBaseFeePerGas!}
               decimals={0}
             />{" "}
             wei)
           </span>
         </InfoRow>
       )}
-      <InfoRow title="Transaction Fee">
-        <div className="space-y-3">
-          <div>
-            <FormattedBalance value={txData.fee} /> Ether{" "}
-            {ethUSDPrice && (
-              <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-                <ETH2USDValue
-                  ethAmount={txData.fee}
-                  eth2USDValue={ethUSDPrice}
-                />
-              </span>
-            )}
-          </div>
-          {hasEIP1559 && <RewardSplit txData={txData} />}
-        </div>
-      </InfoRow>
-      <InfoRow title="Ether Price">
-        <USDValue value={ethUSDPrice} />
-      </InfoRow>
+      {txData.confirmedData && (
+        <>
+          <InfoRow title="Transaction Fee">
+            <div className="space-y-3">
+              <div>
+                <FormattedBalance value={txData.confirmedData.fee} /> Ether{" "}
+                {ethUSDPrice && (
+                  <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
+                    <ETH2USDValue
+                      ethAmount={txData.confirmedData.fee}
+                      eth2USDValue={ethUSDPrice}
+                    />
+                  </span>
+                )}
+              </div>
+              {hasEIP1559 && <RewardSplit txData={txData} />}
+            </div>
+          </InfoRow>
+          <InfoRow title="Ether Price">
+            <USDValue value={ethUSDPrice} />
+          </InfoRow>
+        </>
+      )}
       <InfoRow title="Input Data">
         <div className="space-y-1">
           <div className="flex space-x-1">

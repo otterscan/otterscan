@@ -16,8 +16,11 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   internalOp,
 }) => {
   const fromMiner =
-    txData.miner !== undefined && internalOp.from === txData.miner;
-  const toMiner = txData.miner !== undefined && internalOp.to === txData.miner;
+    txData.confirmedData?.miner !== undefined &&
+    internalOp.from === txData.confirmedData.miner;
+  const toMiner =
+    txData.confirmedData?.miner !== undefined &&
+    internalOp.to === txData.confirmedData.miner;
 
   return (
     <div className="flex items-baseline space-x-1 text-xs">

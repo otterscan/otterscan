@@ -38,29 +38,33 @@ export type ENSReverseCache = {
 
 export type TransactionData = {
   transactionHash: string;
-  status: boolean;
-  blockNumber: number;
-  transactionIndex: number;
-  blockTransactionCount: number;
-  confirmations: number;
-  timestamp: number;
-  miner?: string;
   from: string;
-  to: string;
-  createdContractAddress?: string;
+  to?: string;
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
   tokenMetas: TokenMetas;
   type: number;
   maxFeePerGas?: BigNumber | undefined;
   maxPriorityFeePerGas?: BigNumber | undefined;
-  fee: BigNumber;
-  blockBaseFeePerGas?: BigNumber | undefined | null;
   gasPrice: BigNumber;
-  gasUsed: BigNumber;
   gasLimit: BigNumber;
   nonce: number;
   data: string;
+  confirmedData?: ConfirmedTransactionData | undefined;
+};
+
+export type ConfirmedTransactionData = {
+  status: boolean;
+  blockNumber: number;
+  transactionIndex: number;
+  blockBaseFeePerGas?: BigNumber | undefined | null;
+  blockTransactionCount: number;
+  confirmations: number;
+  timestamp: number;
+  miner: string;
+  createdContractAddress?: string;
+  fee: BigNumber;
+  gasUsed: BigNumber;
   logs: Log[];
 };
 
