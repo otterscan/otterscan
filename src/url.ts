@@ -14,7 +14,6 @@ export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
-// const ipfsGatewayPrefix = "http://localhost:7000/sourcify";
 const sourcifyRootHash =
   "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
 const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyRootHash}`;
