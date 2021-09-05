@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+  Fragment,
+} from "react";
 import {
   useParams,
   useLocation,
@@ -8,14 +14,14 @@ import {
 } from "react-router-dom";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import { getAddress, isAddress } from "@ethersproject/address";
+import { Tab } from "@headlessui/react";
 import queryString from "query-string";
 import Blockies from "react-blockies";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
 import ContentFrame from "./ContentFrame";
-import TabGroup from "./components/TabGroup";
-import Tab from "./components/Tab";
+import CustomTab from "./components/Tab";
 import Contracts from "./address/Contracts";
 import UndefinedPageControl from "./search/UndefinedPageControl";
 import ResultHeader from "./search/ResultHeader";
@@ -203,48 +209,23 @@ const AddressTransactions: React.FC = () => {
                 )}
               </div>
             </StandardSubtitle>
-            <TabGroup>
-              <Tab href={`/address/${checksummedAddress}`}>Overview</Tab>
-              <Tab href={`/address/${checksummedAddress}/contract`}>
-                Contract
-              </Tab>
-            </TabGroup>
-            <Switch>
-              <Route path="/address/:addressOrName" exact>
-                <ContentFrame tabs>
-                  <div className="flex justify-between items-baseline py-3">
-                    <div className="text-sm text-gray-500">
-                      {page === undefined ? (
-                        <>Waiting for search results...</>
-                      ) : (
-                        <>{page.length} transactions on this page</>
-                      )}
-                    </div>
-                    <UndefinedPageControl
-                      address={params.addressOrName}
-                      isFirst={controller?.isFirst}
-                      isLast={controller?.isLast}
-                      prevHash={page ? page[0].hash : ""}
-                      nextHash={page ? page[page.length - 1].hash : ""}
-                      disabled={controller === undefined}
-                    />
-                  </div>
-                  <ResultHeader
-                    feeDisplay={feeDisplay}
-                    feeDisplayToggler={feeDisplayToggler}
-                  />
-                  {controller ? (
-                    <SelectionContext.Provider value={selectionCtx}>
-                      {controller.getPage().map((tx) => (
-                        <TransactionItem
-                          key={tx.hash}
-                          tx={tx}
-                          ensCache={reverseCache}
-                          selectedAddress={checksummedAddress}
-                          feeDisplay={feeDisplay}
-                          priceMap={priceMap}
-                        />
-                      ))}
+            <Tab.Group>
+              <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+                <Tab as={Fragment}>
+                  <CustomTab href={`/address/${checksummedAddress}`}>
+                    Overview
+                  </CustomTab>
+                </Tab>
+                <Tab as={Fragment}>
+                  <CustomTab href={`/address/${checksummedAddress}/contract`}>
+                    Contract
+                  </CustomTab>
+                </Tab>
+              </Tab.List>
+              <Tab.Panels>
+                <Switch>
+                  <Route path="/address/:addressOrName" exact>
+                    <ContentFrame tabs>
                       <div className="flex justify-between items-baseline py-3">
                         <div className="text-sm text-gray-500">
                           {page === undefined ? (
@@ -266,16 +247,51 @@ const AddressTransactions: React.FC = () => {
                         feeDisplay={feeDisplay}
                         feeDisplayToggler={feeDisplayToggler}
                       />
-                    </SelectionContext.Provider>
-                  ) : (
-                    <PendingResults />
-                  )}
-                </ContentFrame>
-              </Route>
-              <Route path="/address/:addressOrName/contract" exact>
-                <Contracts checksummedAddress={checksummedAddress} />
-              </Route>
-            </Switch>
+                      {controller ? (
+                        <SelectionContext.Provider value={selectionCtx}>
+                          {controller.getPage().map((tx) => (
+                            <TransactionItem
+                              key={tx.hash}
+                              tx={tx}
+                              ensCache={reverseCache}
+                              selectedAddress={checksummedAddress}
+                              feeDisplay={feeDisplay}
+                              priceMap={priceMap}
+                            />
+                          ))}
+                          <div className="flex justify-between items-baseline py-3">
+                            <div className="text-sm text-gray-500">
+                              {page === undefined ? (
+                                <>Waiting for search results...</>
+                              ) : (
+                                <>{page.length} transactions on this page</>
+                              )}
+                            </div>
+                            <UndefinedPageControl
+                              address={params.addressOrName}
+                              isFirst={controller?.isFirst}
+                              isLast={controller?.isLast}
+                              prevHash={page ? page[0].hash : ""}
+                              nextHash={page ? page[page.length - 1].hash : ""}
+                              disabled={controller === undefined}
+                            />
+                          </div>
+                          <ResultHeader
+                            feeDisplay={feeDisplay}
+                            feeDisplayToggler={feeDisplayToggler}
+                          />
+                        </SelectionContext.Provider>
+                      ) : (
+                        <PendingResults />
+                      )}
+                    </ContentFrame>
+                  </Route>
+                  <Route path="/address/:addressOrName/contract" exact>
+                    <Contracts checksummedAddress={checksummedAddress} />
+                  </Route>
+                </Switch>
+              </Tab.Panels>
+            </Tab.Group>
           </>
         )
       )}
