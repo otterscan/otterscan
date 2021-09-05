@@ -14,15 +14,20 @@ export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
+// const ipfsGatewayPrefix = "http://localhost:7000/sourcify";
+const sourcifyRootHash =
+  "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
+const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyRootHash}`;
+
 export const sourcifyMetadata = (
   checksummedAddress: string,
   networkId: number
 ) =>
-  `http://localhost:7000/sourcify/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
+  `${ipfsGatewayPrefix}/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
 
 export const sourcifySourceFile = (
   checksummedAddress: string,
   networkId: number,
   filepath: string
 ) =>
-  `http://localhost:7000/sourcify/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
+  `${ipfsGatewayPrefix}/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
