@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import { useParams, useLocation, useHistory } from "react-router-dom";
+import { BlockTag } from "@ethersproject/abstract-provider";
 import { getAddress, isAddress } from "@ethersproject/address";
 import queryString from "query-string";
 import Blockies from "react-blockies";
@@ -16,6 +17,7 @@ import { RuntimeContext } from "./useRuntime";
 import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
+import { useMultipleETHUSDOracle } from "./usePriceOracle";
 
 type BlockParams = {
   addressOrName: string;
@@ -150,6 +152,14 @@ const AddressTransactions: React.FC = () => {
   const page = useMemo(() => controller?.getPage(), [controller]);
   const reverseCache = useENSCache(provider, page);
 
+  const blockTags: BlockTag[] = useMemo(() => {
+    if (!page) {
+      return [];
+    }
+    return page.map((p) => p.blockNumber);
+  }, [page]);
+  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
+
   document.title = `Address ${params.addressOrName} | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
@@ -215,6 +225,7 @@ const AddressTransactions: React.FC = () => {
                       ensCache={reverseCache}
                       selectedAddress={checksummedAddress}
                       feeDisplay={feeDisplay}
+                      priceMap={priceMap}
                     />
                   ))}
                   <div className="flex justify-between items-baseline py-3">

@@ -41,11 +41,13 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
 
   return (
     <div
-      className={`flex items-baseline space-x-1 ${txFrom ? "bg-red-50" : ""} ${
-        txTo ? "bg-green-50" : ""
-      } ${mint ? "italic text-green-500 hover:text-green-700" : ""} ${
-        burn ? "line-through text-orange-500 hover:text-orange-700" : ""
-      } ${selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""}`}
+      className={`flex items-baseline space-x-1 ${
+        txFrom ? "bg-skin-from" : ""
+      } ${txTo ? "bg-skin-to" : ""} ${
+        mint ? "italic text-green-500 hover:text-green-700" : ""
+      } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""} ${
+        selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
+      }`}
     >
       {creation && (
         <span className="text-yellow-300" title="Contract creation">

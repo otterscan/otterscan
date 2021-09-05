@@ -10,8 +10,8 @@ type LogsProps = {
 const Logs: React.FC<LogsProps> = ({ txData }) => (
   <ContentFrame tabs>
     <div className="text-sm py-4">Transaction Receipt Event Logs</div>
-    {txData &&
-      txData.logs.map((l, i) => (
+    {txData.confirmedData &&
+      txData.confirmedData.logs.map((l, i) => (
         <div className="flex space-x-10 py-5" key={i}>
           <div>
             <span className="rounded-full w-12 h-12 flex items-center justify-center bg-green-50 text-green-500">
@@ -24,7 +24,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
               <div className="col-span-11 mr-auto">
                 <DecoratedAddressLink
                   address={l.address}
-                  miner={l.address === txData.miner}
+                  miner={l.address === txData.confirmedData?.miner}
                   txFrom={l.address === txData.from}
                   txTo={l.address === txData.to}
                 />

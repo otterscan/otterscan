@@ -22,7 +22,9 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   const { provider } = useContext(RuntimeContext);
   const network = provider?.network;
 
-  const toMiner = txData.miner !== undefined && internalOp.to === txData.miner;
+  const toMiner =
+    txData.confirmedData?.miner !== undefined &&
+    internalOp.to === txData.confirmedData.miner;
 
   return (
     <>

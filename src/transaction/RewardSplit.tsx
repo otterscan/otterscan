@@ -11,8 +11,10 @@ type RewardSplitProps = {
 };
 
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
-  const paidFees = txData.gasPrice.mul(txData.gasUsed);
-  const burntFees = txData.blockBaseFeePerGas!.mul(txData.gasUsed);
+  const paidFees = txData.gasPrice.mul(txData.confirmedData!.gasUsed);
+  const burntFees = txData.confirmedData!.blockBaseFeePerGas!.mul(
+    txData.confirmedData!.gasUsed
+  );
 
   const minerReward = paidFees.sub(burntFees);
   const burntPerc =

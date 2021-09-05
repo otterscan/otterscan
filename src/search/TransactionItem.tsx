@@ -1,4 +1,6 @@
 import React from "react";
+import { BlockTag } from "@ethersproject/abstract-provider";
+import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import MethodName from "../components/MethodName";
@@ -15,12 +17,14 @@ import TransactionValue from "../components/TransactionValue";
 import { ENSReverseCache, ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
+import ETH2USDValue from "../components/ETH2USDValue";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
   ensCache?: ENSReverseCache;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
+  priceMap: Record<BlockTag, BigNumber>;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
@@ -28,6 +32,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   ensCache,
   selectedAddress,
   feeDisplay,
+  priceMap,
 }) => {
   let direction: Direction | undefined;
   if (selectedAddress) {
@@ -56,7 +61,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   return (
     <div
       className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
-        flash ? "bg-yellow-100 hover:bg-yellow-200" : "hover:bg-gray-100"
+        flash
+          ? "bg-yellow-100 hover:bg-yellow-200"
+          : "hover:bg-skin-table-hover"
       } px-2 py-3`}
     >
       <div className="col-span-2 flex space-x-1 items-baseline">
@@ -121,9 +128,17 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <TransactionValue value={tx.value} />
       </span>
       <span className="font-balance text-xs text-gray-500 truncate">
-        {feeDisplay === FeeDisplay.TX_FEE
-          ? formatValue(tx.fee, 18)
-          : formatValue(tx.gasPrice, 9)}
+        {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
+        {feeDisplay === FeeDisplay.TX_FEE_USD &&
+          (priceMap[tx.blockNumber] ? (
+            <ETH2USDValue
+              ethAmount={tx.fee}
+              eth2USDValue={priceMap[tx.blockNumber]}
+            />
+          ) : (
+            "N/A"
+          ))}
+        {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(tx.gasPrice, 9)}
       </span>
     </div>
   );
