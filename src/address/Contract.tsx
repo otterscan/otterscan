@@ -12,6 +12,7 @@ type ContractProps = {
   networkId: number;
   filename: string;
   source: any;
+  useIPFS: boolean;
 };
 
 const Contract: React.FC<ContractProps> = ({
@@ -19,8 +20,15 @@ const Contract: React.FC<ContractProps> = ({
   networkId,
   filename,
   source,
+  useIPFS,
 }) => {
-  const content = useContract(checksummedAddress, networkId, filename, source);
+  const content = useContract(
+    checksummedAddress,
+    networkId,
+    filename,
+    source,
+    useIPFS
+  );
 
   return (
     <SyntaxHighlighter

@@ -38,7 +38,8 @@ export type Metadata = {
 
 export const useSourcify = (
   checksummedAddress: string | undefined,
-  chainId: number | undefined
+  chainId: number | undefined,
+  useIPFS: boolean
 ) => {
   const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
 
@@ -51,7 +52,8 @@ export const useSourcify = (
       try {
         const contractMetadataURL = sourcifyMetadata(
           checksummedAddress,
-          chainId
+          chainId,
+          useIPFS
         );
         const result = await fetch(contractMetadataURL);
         if (result.ok) {
@@ -66,7 +68,7 @@ export const useSourcify = (
       }
     };
     fetchMetadata();
-  }, [checksummedAddress, chainId]);
+  }, [checksummedAddress, chainId, useIPFS]);
 
   return rawMetadata;
 };
@@ -75,7 +77,8 @@ export const useContract = (
   checksummedAddress: string,
   networkId: number,
   filename: string,
-  source: any
+  source: any,
+  useIPFS: boolean = true
 ) => {
   const [content, setContent] = useState<string>(source.content);
 
@@ -89,7 +92,8 @@ export const useContract = (
       const url = sourcifySourceFile(
         checksummedAddress,
         networkId,
-        normalizedFilename
+        normalizedFilename,
+        useIPFS
       );
       const res = await fetch(url);
       if (res.ok) {
@@ -98,7 +102,7 @@ export const useContract = (
       }
     };
     readContent();
-  }, [checksummedAddress, networkId, filename, source.content]);
+  }, [checksummedAddress, networkId, filename, source.content, useIPFS]);
 
   return content;
 };

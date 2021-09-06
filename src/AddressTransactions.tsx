@@ -181,9 +181,11 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
+  const [useIPFS, setUseIPFS] = useState<boolean>(true);
   const rawMetadata = useSourcify(
     checksummedAddress,
-    provider?.network.chainId
+    provider?.network.chainId,
+    useIPFS
   );
 
   return (
@@ -291,6 +293,8 @@ const AddressTransactions: React.FC = () => {
                     <Contracts
                       checksummedAddress={checksummedAddress}
                       rawMetadata={rawMetadata}
+                      useIPFS={useIPFS}
+                      setUseIPFS={setUseIPFS}
                     />
                   </Route>
                 </Switch>

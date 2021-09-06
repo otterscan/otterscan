@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { commify } from "@ethersproject/units";
-import { Tab } from "@headlessui/react";
+import { Switch, Tab } from "@headlessui/react";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
@@ -12,11 +12,15 @@ import { openInRemixURL } from "../url";
 type ContractsProps = {
   checksummedAddress: string;
   rawMetadata: Metadata | null | undefined;
+  useIPFS: boolean;
+  setUseIPFS: (useIPFS: boolean) => void;
 };
 
 const Contracts: React.FC<ContractsProps> = ({
   checksummedAddress,
   rawMetadata,
+  useIPFS,
+  setUseIPFS,
 }) => {
   const { provider } = useContext(RuntimeContext);
 
@@ -30,6 +34,21 @@ const Contracts: React.FC<ContractsProps> = ({
 
   return (
     <ContentFrame tabs>
+      <InfoRow title="Use IPFS">
+        <Switch
+          className={`flex items-center h-7 w-12 px-1 rounded-full transition duration-200 ${
+            useIPFS ? "bg-blue-500" : "bg-blue-900"
+          }`}
+          checked={useIPFS}
+          onChange={setUseIPFS}
+        >
+          <span
+            className={`inline-block border rounded-full w-5 h-5 bg-white transform duration-200 ${
+              useIPFS ? "" : "translate-x-5"
+            }`}
+          ></span>
+        </Switch>
+      </InfoRow>
       {rawMetadata && (
         <>
           <InfoRow title="Language">
@@ -95,6 +114,7 @@ const Contracts: React.FC<ContractsProps> = ({
                 networkId={provider!.network.chainId}
                 filename={selected}
                 source={rawMetadata.sources[selected]}
+                useIPFS={useIPFS}
               />
             )}
           </div>
