@@ -33,6 +33,7 @@ import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
+import { useSourcify } from "./useSourcify";
 
 type BlockParams = {
   addressOrName: string;
@@ -180,6 +181,10 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
+  const rawMetadata = useSourcify(
+    checksummedAddress,
+    provider?.network.chainId
+  );
 
   return (
     <StandardFrame>
@@ -287,7 +292,10 @@ const AddressTransactions: React.FC = () => {
                     </ContentFrame>
                   </Route>
                   <Route path="/address/:addressOrName/contract" exact>
-                    <Contracts checksummedAddress={checksummedAddress} />
+                    <Contracts
+                      checksummedAddress={checksummedAddress}
+                      rawMetadata={rawMetadata}
+                    />
                   </Route>
                 </Switch>
               </Tab.Panels>

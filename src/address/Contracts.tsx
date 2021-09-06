@@ -4,18 +4,18 @@ import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
-import { useSourcify } from "../useSourcify";
+import { Metadata } from "../useSourcify";
 
 type ContractsProps = {
   checksummedAddress: string;
+  rawMetadata: Metadata | null | undefined;
 };
 
-const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
+const Contracts: React.FC<ContractsProps> = ({
+  checksummedAddress,
+  rawMetadata,
+}) => {
   const { provider } = useContext(RuntimeContext);
-  const rawMetadata = useSourcify(
-    checksummedAddress,
-    provider?.network.chainId
-  );
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
