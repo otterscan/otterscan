@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { sourcifyMetadata } from "./url";
+import { sourcifyMetadata, sourcifySourceFile } from "./url";
 
 export type Metadata = {
   version: string;
@@ -69,4 +69,36 @@ export const useSourcify = (
   }, [checksummedAddress, chainId]);
 
   return rawMetadata;
+};
+
+export const useContract = (
+  checksummedAddress: string,
+  networkId: number,
+  filename: string,
+  source: any
+) => {
+  const [content, setContent] = useState<string>(source.content);
+
+  useEffect(() => {
+    if (source.content) {
+      return;
+    }
+
+    const readContent = async () => {
+      const normalizedFilename = filename.replaceAll("@", "_");
+      const url = sourcifySourceFile(
+        checksummedAddress,
+        networkId,
+        normalizedFilename
+      );
+      const res = await fetch(url);
+      if (res.ok) {
+        const _content = await res.text();
+        setContent(_content);
+      }
+    };
+    readContent();
+  }, [checksummedAddress, networkId, filename, source.content]);
+
+  return content;
 };
