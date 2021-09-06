@@ -21,7 +21,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
 import ContentFrame from "./ContentFrame";
-import CustomTab from "./components/Tab";
+import NavTab from "./components/NavTab";
 import Contracts from "./address/Contracts";
 import UndefinedPageControl from "./search/UndefinedPageControl";
 import ResultHeader from "./search/ResultHeader";
@@ -217,14 +217,14 @@ const AddressTransactions: React.FC = () => {
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                 <Tab as={Fragment}>
-                  <CustomTab href={`/address/${checksummedAddress}`}>
+                  <NavTab href={`/address/${checksummedAddress}`}>
                     Overview
-                  </CustomTab>
+                  </NavTab>
                 </Tab>
                 <Tab as={Fragment}>
-                  <CustomTab href={`/address/${checksummedAddress}/contract`}>
+                  <NavTab href={`/address/${checksummedAddress}/contract`}>
                     Contract
-                  </CustomTab>
+                  </NavTab>
                 </Tab>
               </Tab.List>
               <Tab.Panels>

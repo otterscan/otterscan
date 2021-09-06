@@ -4,7 +4,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
 import TabGroup from "./components/TabGroup";
-import Tab from "./components/Tab";
+import NavTab from "./components/NavTab";
 import Details from "./transaction/Details";
 import Logs from "./transaction/Logs";
 import { RuntimeContext } from "./useRuntime";
@@ -57,11 +57,11 @@ const Transaction: React.FC = () => {
       {txData && (
         <SelectionContext.Provider value={selectionCtx}>
           <TabGroup>
-            <Tab href={`/tx/${txhash}`}>Overview</Tab>
+            <NavTab href={`/tx/${txhash}`}>Overview</NavTab>
             {txData.confirmedData?.blockNumber !== undefined && (
-              <Tab href={`/tx/${txhash}/logs`}>
+              <NavTab href={`/tx/${txhash}/logs`}>
                 Logs{txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
-              </Tab>
+              </NavTab>
             )}
           </TabGroup>
           <Switch>
