@@ -3,43 +3,8 @@ import { ethers } from "ethers";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
-import { sourcifyMetadata } from "../url";
 import { RuntimeContext } from "../useRuntime";
-
-type Metadata = {
-  version: string;
-  language: string;
-  compiler: {
-    version: string;
-    keccak256?: string | undefined;
-  };
-  sources: {
-    [filename: string]: {
-      keccak256: string;
-      content?: string | undefined;
-      urls?: string[];
-      license?: string;
-    };
-  };
-  settings: {
-    remappings: string[];
-    optimizer?: {
-      enabled: boolean;
-      runs: number;
-    };
-    compilationTarget: {
-      [filename: string]: string;
-    };
-    libraries: {
-      [filename: string]: string;
-    };
-  };
-  output: {
-    abi: any[];
-    userdocs: any[];
-    devdoc: any[];
-  };
-};
+import { useSourcify } from "../useSourcify";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -47,34 +12,17 @@ type ContractsProps = {
 
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress }) => {
   const { provider } = useContext(RuntimeContext);
-  const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
-  useEffect(() => {
-    if (!checksummedAddress) {
-      return;
-    }
-
-    const fetchMetadata = async () => {
-      try {
-        const result = await fetch(
-          sourcifyMetadata(checksummedAddress, provider!.network.chainId)
-        );
-        if (result.ok) {
-          const _metadata = await result.json();
-          setRawMetadata(_metadata);
-          setSelected(Object.keys(_metadata.sources)[0]);
-        } else {
-          setRawMetadata(null);
-        }
-      } catch (err) {
-        console.error(err);
-        setRawMetadata(null);
-      }
-    };
-    fetchMetadata();
-  }, [provider, checksummedAddress]);
+  const rawMetadata = useSourcify(
+    checksummedAddress,
+    provider?.network.chainId
+  );
 
   const [selected, setSelected] = useState<string>();
-
+  useEffect(() => {
+    if (rawMetadata) {
+      setSelected(Object.keys(rawMetadata.sources)[0]);
+    }
+  }, [rawMetadata]);
   const optimizer = rawMetadata?.settings?.optimizer;
 
   return (
