@@ -6,6 +6,8 @@ import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../useSourcify";
+import ExternalLink from "../components/ExternalLink";
+import { openInRemixURL } from "../url";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -57,6 +59,18 @@ const Contracts: React.FC<ContractsProps> = ({
         )}
         {rawMetadata !== undefined && rawMetadata !== null && (
           <div>
+            {provider && (
+              <div className="text-sm mb-3">
+                <ExternalLink
+                  href={openInRemixURL(
+                    checksummedAddress,
+                    provider.network.chainId
+                  )}
+                >
+                  Open in Remix
+                </ExternalLink>
+              </div>
+            )}
             <Tab.Group>
               <Tab.List className="flex truncate">
                 {Object.entries(rawMetadata.sources).map(([k]) => (

@@ -17,6 +17,7 @@ export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 const sourcifyRootHash =
   "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
 const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyRootHash}`;
+// const ipfsGatewayPrefix = `https://repo.sourcify.dev`;
 
 export const sourcifyMetadata = (
   checksummedAddress: string,
@@ -30,3 +31,6 @@ export const sourcifySourceFile = (
   filepath: string
 ) =>
   `${ipfsGatewayPrefix}/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
+
+export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
+  `https://remix.ethereum.org/#call=source-verification//fetchAndSave//${checksummedAddress}//${networkId}`;
