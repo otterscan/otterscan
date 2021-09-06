@@ -216,16 +216,12 @@ const AddressTransactions: React.FC = () => {
             </StandardSubtitle>
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-                <Tab as={Fragment}>
-                  <NavTab href={`/address/${checksummedAddress}`}>
-                    Overview
-                  </NavTab>
-                </Tab>
-                <Tab as={Fragment}>
-                  <NavTab href={`/address/${checksummedAddress}/contract`}>
-                    Contract
-                  </NavTab>
-                </Tab>
+                <NavTab href={`/address/${checksummedAddress}`}>
+                  Overview
+                </NavTab>
+                <NavTab href={`/address/${checksummedAddress}/contract`}>
+                  Contract
+                </NavTab>
               </Tab.List>
               <Tab.Panels>
                 <Switch>
