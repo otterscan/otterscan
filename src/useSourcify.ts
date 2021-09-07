@@ -88,7 +88,7 @@ export const useContract = (
     }
 
     const readContent = async () => {
-      const normalizedFilename = filename.replaceAll("@", "_");
+      const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
       const url = sourcifySourceFile(
         checksummedAddress,
         networkId,
