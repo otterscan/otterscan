@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { commify } from "@ethersproject/units";
-import { Switch, Tab } from "@headlessui/react";
+import { Menu, Switch } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
@@ -78,36 +80,46 @@ const Contracts: React.FC<ContractsProps> = ({
         )}
         {rawMetadata !== undefined && rawMetadata !== null && (
           <div>
-            {provider && (
-              <div className="text-sm mb-3">
-                <ExternalLink
-                  href={openInRemixURL(
-                    checksummedAddress,
-                    provider.network.chainId
-                  )}
-                >
-                  Open in Remix
-                </ExternalLink>
-              </div>
-            )}
-            <Tab.Group>
-              <Tab.List className="flex truncate">
-                {Object.entries(rawMetadata.sources).map(([k]) => (
-                  <Tab key={k} as={Fragment}>
-                    <button
-                      className={`border-b-2 border-transparent rounded-t text-sm px-2 py-1 ${
-                        selected === k
-                          ? "border-orange-300 font-bold bg-gray-200 text-gray-500"
-                          : "hover:border-orange-200 bg-gray-100 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75 transform origin-bottom scale-95 hover:scale-100"
-                      }`}
-                      onClick={() => setSelected(k)}
+            <Menu>
+              <div className="flex space-x-2 justify-between items-baseline">
+                <Menu.Button className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
+                  <span>{selected}</span>
+                  <span className="self-center">
+                    <FontAwesomeIcon icon={faChevronDown} size="xs" />
+                  </span>
+                </Menu.Button>
+                {provider && (
+                  <div className="text-sm">
+                    <ExternalLink
+                      href={openInRemixURL(
+                        checksummedAddress,
+                        provider.network.chainId
+                      )}
                     >
-                      {k}
-                    </button>
-                  </Tab>
-                ))}
-              </Tab.List>
-            </Tab.Group>
+                      Open in Remix
+                    </ExternalLink>
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <Menu.Items className="absolute border p-1 rounded-b bg-white flex flex-col">
+                  {Object.entries(rawMetadata.sources).map(([k]) => (
+                    <Menu.Item key={k}>
+                      <button
+                        className={`flex text-sm px-2 py-1 ${
+                          selected === k
+                            ? "font-bold bg-gray-200 text-gray-500"
+                            : "hover:border-orange-200 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75"
+                        }`}
+                        onClick={() => setSelected(k)}
+                      >
+                        {k}
+                      </button>
+                    </Menu.Item>
+                  ))}
+                </Menu.Items>
+              </div>
+            </Menu>
             {selected && (
               <Contract
                 checksummedAddress={checksummedAddress}
