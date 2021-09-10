@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useContext,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import {
   useParams,
   useLocation,
@@ -17,6 +11,10 @@ import { getAddress, isAddress } from "@ethersproject/address";
 import { Tab } from "@headlessui/react";
 import queryString from "query-string";
 import Blockies from "react-blockies";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons/faCheckCircle";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
@@ -222,7 +220,26 @@ const AddressTransactions: React.FC = () => {
                   Overview
                 </NavTab>
                 <NavTab href={`/address/${checksummedAddress}/contract`}>
-                  Contract
+                  <span
+                    className={`${
+                      rawMetadata === undefined ? "italic opacity-50" : ""
+                    }`}
+                  >
+                    Contract{" "}
+                    {rawMetadata === undefined ? (
+                      <span className="animate-spin">
+                        <FontAwesomeIcon icon={faCircleNotch} />
+                      </span>
+                    ) : rawMetadata === null ? (
+                      <span className="animate-spin text-red-500">
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                      </span>
+                    ) : (
+                      <span className="animate-spin text-green-500">
+                        <FontAwesomeIcon icon={faCheckCircle} />
+                      </span>
+                    )}
+                  </span>
                 </NavTab>
               </Tab.List>
               <Tab.Panels>

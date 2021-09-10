@@ -76,7 +76,10 @@ const Contracts: React.FC<ContractsProps> = ({
       )}
       <div className="py-5">
         {rawMetadata === null && (
-          <span>Couldn't find contract metadata in Sourcify repository.</span>
+          <span>
+            Address is not a contract or couldn't find contract metadata in
+            Sourcify repository.
+          </span>
         )}
         {rawMetadata !== undefined && rawMetadata !== null && (
           <div>
