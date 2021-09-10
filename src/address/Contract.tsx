@@ -2,9 +2,9 @@ import React from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import hljs from "highlight.js";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/docco";
+import { useContract } from "../useSourcify";
 
 import hljsDefineSolidity from "highlightjs-solidity";
-import { useContract } from "../useSourcify";
 hljsDefineSolidity(hljs);
 
 type ContractProps = {

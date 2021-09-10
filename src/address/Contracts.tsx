@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
+import ABI from "./ABI";
 import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../useSourcify";
@@ -82,57 +83,67 @@ const Contracts: React.FC<ContractsProps> = ({
           </span>
         )}
         {rawMetadata !== undefined && rawMetadata !== null && (
-          <div>
-            <Menu>
-              <div className="flex space-x-2 justify-between items-baseline">
-                <Menu.Button className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
-                  <span>{selected}</span>
-                  <span className="self-center">
-                    <FontAwesomeIcon icon={faChevronDown} size="xs" />
-                  </span>
-                </Menu.Button>
-                {provider && (
-                  <div className="text-sm">
-                    <ExternalLink
-                      href={openInRemixURL(
-                        checksummedAddress,
-                        provider.network.chainId
-                      )}
-                    >
-                      Open in Remix
-                    </ExternalLink>
-                  </div>
-                )}
+          <>
+            {rawMetadata.output.abi && (
+              <div className="mb-3">
+                <div className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
+                  ABI
+                </div>
+                <ABI abi={rawMetadata.output.abi} />
               </div>
-              <div className="relative">
-                <Menu.Items className="absolute border p-1 rounded-b bg-white flex flex-col">
-                  {Object.entries(rawMetadata.sources).map(([k]) => (
-                    <Menu.Item key={k}>
-                      <button
-                        className={`flex text-sm px-2 py-1 ${
-                          selected === k
-                            ? "font-bold bg-gray-200 text-gray-500"
-                            : "hover:border-orange-200 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75"
-                        }`}
-                        onClick={() => setSelected(k)}
-                      >
-                        {k}
-                      </button>
-                    </Menu.Item>
-                  ))}
-                </Menu.Items>
-              </div>
-            </Menu>
-            {selected && (
-              <Contract
-                checksummedAddress={checksummedAddress}
-                networkId={provider!.network.chainId}
-                filename={selected}
-                source={rawMetadata.sources[selected]}
-                useIPFS={useIPFS}
-              />
             )}
-          </div>
+            <div>
+              <Menu>
+                <div className="flex space-x-2 justify-between items-baseline">
+                  <Menu.Button className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
+                    <span>{selected}</span>
+                    <span className="self-center">
+                      <FontAwesomeIcon icon={faChevronDown} size="xs" />
+                    </span>
+                  </Menu.Button>
+                  {provider && (
+                    <div className="text-sm">
+                      <ExternalLink
+                        href={openInRemixURL(
+                          checksummedAddress,
+                          provider.network.chainId
+                        )}
+                      >
+                        Open in Remix
+                      </ExternalLink>
+                    </div>
+                  )}
+                </div>
+                <div className="relative">
+                  <Menu.Items className="absolute border p-1 rounded-b bg-white flex flex-col">
+                    {Object.entries(rawMetadata.sources).map(([k]) => (
+                      <Menu.Item key={k}>
+                        <button
+                          className={`flex text-sm px-2 py-1 ${
+                            selected === k
+                              ? "font-bold bg-gray-200 text-gray-500"
+                              : "hover:border-orange-200 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75"
+                          }`}
+                          onClick={() => setSelected(k)}
+                        >
+                          {k}
+                        </button>
+                      </Menu.Item>
+                    ))}
+                  </Menu.Items>
+                </div>
+              </Menu>
+              {selected && (
+                <Contract
+                  checksummedAddress={checksummedAddress}
+                  networkId={provider!.network.chainId}
+                  filename={selected}
+                  source={rawMetadata.sources[selected]}
+                  useIPFS={useIPFS}
+                />
+              )}
+            </div>
+          </>
         )}
       </div>
     </ContentFrame>
