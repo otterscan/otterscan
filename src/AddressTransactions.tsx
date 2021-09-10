@@ -221,21 +221,24 @@ const AddressTransactions: React.FC = () => {
                 </NavTab>
                 <NavTab href={`/address/${checksummedAddress}/contract`}>
                   <span
-                    className={`${
+                    className={`flex items-baseline space-x-2 ${
                       rawMetadata === undefined ? "italic opacity-50" : ""
                     }`}
                   >
-                    Contract{" "}
+                    <span>Contract</span>
                     {rawMetadata === undefined ? (
-                      <span className="animate-spin">
-                        <FontAwesomeIcon icon={faCircleNotch} />
+                      <span className="self-center">
+                        <FontAwesomeIcon
+                          className="animate-spin"
+                          icon={faCircleNotch}
+                        />
                       </span>
                     ) : rawMetadata === null ? (
-                      <span className="animate-spin text-red-500">
+                      <span className="self-center text-red-500">
                         <FontAwesomeIcon icon={faQuestionCircle} />
                       </span>
                     ) : (
-                      <span className="animate-spin text-green-500">
+                      <span className="self-center text-green-500">
                         <FontAwesomeIcon icon={faCheckCircle} />
                       </span>
                     )}
