@@ -1,9 +1,10 @@
 import React, { useMemo, useContext } from "react";
 import { Route, Switch, useParams } from "react-router-dom";
+import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
-import Tab from "./components/Tab";
+import NavTab from "./components/NavTab";
 import Details from "./transaction/Details";
 import Logs from "./transaction/Logs";
 import { RuntimeContext } from "./useRuntime";
@@ -55,14 +56,17 @@ const Transaction: React.FC = () => {
       )}
       {txData && (
         <SelectionContext.Provider value={selectionCtx}>
-          <div className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-            <Tab href={`/tx/${txhash}`}>Overview</Tab>
-            {txData.confirmedData?.blockNumber !== undefined && (
-              <Tab href={`/tx/${txhash}/logs`}>
-                Logs{txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
-              </Tab>
-            )}
-          </div>
+          <Tab.Group>
+            <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+              <NavTab href={`/tx/${txhash}`}>Overview</NavTab>
+              {txData.confirmedData?.blockNumber !== undefined && (
+                <NavTab href={`/tx/${txhash}/logs`}>
+                  Logs
+                  {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
+                </NavTab>
+              )}
+            </Tab.List>
+          </Tab.Group>
           <Switch>
             <Route path="/tx/:txhash/" exact>
               <Details

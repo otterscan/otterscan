@@ -138,7 +138,15 @@ This is the preferred way to run Otterscan. You can read about other ways [here]
 
 You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.
 
-## Kudos
+## Source verification
+
+We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info.
+
+More info [here](docs/sourcify.md).
+
+## Kudos (in no particular order)
+
+We make use of many open-source software and integrate many public datasources, mainly:
 
 To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
@@ -149,6 +157,8 @@ To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fa
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make available their icons under a permissive license.
 
 To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
+
+To [Sourcify](https://sourcify.dev/), a public decentralized source code and metadata verification service.
 
 To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library we used to interact with the ETH node. It is high level enough to hide most jsonrpc particularities, but flexible enough to allow easy interaction with custom jsonrpc methods.
 
@@ -180,4 +190,4 @@ Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmits
 
 ### Donation address
 
-If you like this project, feel free to send donations to `otterscan.eth`
+If you like this project, feel free to send donations to `otterscan.eth` or use our gitcoin grant page: https://gitcoin.co/grants/3224/otterscan
