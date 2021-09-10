@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { commify } from "@ethersproject/units";
-import { Menu, Switch } from "@headlessui/react";
+import { Menu, RadioGroup } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
@@ -10,20 +10,21 @@ import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../useSourcify";
 import ExternalLink from "../components/ExternalLink";
-import { openInRemixURL } from "../url";
+import { openInRemixURL, SourcifySource } from "../url";
+import RadioButton from "./RadioButton";
 
 type ContractsProps = {
   checksummedAddress: string;
   rawMetadata: Metadata | null | undefined;
-  useIPFS: boolean;
-  setUseIPFS: (useIPFS: boolean) => void;
+  sourcifySource: SourcifySource;
+  setSourcifySource: (sourcifySource: SourcifySource) => void;
 };
 
 const Contracts: React.FC<ContractsProps> = ({
   checksummedAddress,
   rawMetadata,
-  useIPFS,
-  setUseIPFS,
+  sourcifySource,
+  setSourcifySource,
 }) => {
   const { provider } = useContext(RuntimeContext);
 
@@ -37,20 +38,20 @@ const Contracts: React.FC<ContractsProps> = ({
 
   return (
     <ContentFrame tabs>
-      <InfoRow title="Use IPFS">
-        <Switch
-          className={`flex items-center h-7 w-12 px-1 rounded-full transition duration-200 ${
-            useIPFS ? "bg-blue-500" : "bg-blue-900"
-          }`}
-          checked={useIPFS}
-          onChange={setUseIPFS}
-        >
-          <span
-            className={`inline-block border rounded-full w-5 h-5 bg-white transform duration-200 ${
-              useIPFS ? "" : "translate-x-5"
-            }`}
-          ></span>
-        </Switch>
+      <InfoRow title="Sourcify integration">
+        <RadioGroup value={sourcifySource} onChange={setSourcifySource}>
+          <div className="flex space-x-2">
+            <RadioButton value={SourcifySource.IPFS_IPNS}>
+              Resolve IPNS
+            </RadioButton>
+            <RadioButton value={SourcifySource.CENTRAL_SERVER}>
+              Sourcify Servers
+            </RadioButton>
+            <RadioButton value={SourcifySource.CUSTOM_SNAPSHOT_SERVER}>
+              Local Snapshot
+            </RadioButton>
+          </div>
+        </RadioGroup>
       </InfoRow>
       {rawMetadata && (
         <>
@@ -76,6 +77,9 @@ const Contracts: React.FC<ContractsProps> = ({
         </>
       )}
       <div className="py-5">
+        {rawMetadata === undefined && (
+          <span>Getting data from Sourcify repository...</span>
+        )}
         {rawMetadata === null && (
           <span>
             Address is not a contract or couldn't find contract metadata in
@@ -139,7 +143,7 @@ const Contracts: React.FC<ContractsProps> = ({
                   networkId={provider!.network.chainId}
                   filename={selected}
                   source={rawMetadata.sources[selected]}
-                  useIPFS={useIPFS}
+                  sourcifySource={sourcifySource}
                 />
               )}
             </div>

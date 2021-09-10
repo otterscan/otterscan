@@ -32,6 +32,7 @@ import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useSourcify } from "./useSourcify";
+import { SourcifySource } from "./url";
 
 type BlockParams = {
   addressOrName: string;
@@ -179,11 +180,13 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
-  const [useIPFS, setUseIPFS] = useState<boolean>(true);
+  const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
+    SourcifySource.IPFS_IPNS
+  );
   const rawMetadata = useSourcify(
     checksummedAddress,
     provider?.network.chainId,
-    useIPFS
+    sourcifySource
   );
 
   return (
@@ -313,8 +316,8 @@ const AddressTransactions: React.FC = () => {
                     <Contracts
                       checksummedAddress={checksummedAddress}
                       rawMetadata={rawMetadata}
-                      useIPFS={useIPFS}
-                      setUseIPFS={setUseIPFS}
+                      sourcifySource={sourcifySource}
+                      setSourcifySource={setSourcifySource}
                     />
                   </Route>
                 </Switch>

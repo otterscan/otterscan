@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { sourcifyMetadata, sourcifySourceFile } from "./url";
+import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
 
 export type Metadata = {
   version: string;
@@ -39,7 +39,7 @@ export type Metadata = {
 export const useSourcify = (
   checksummedAddress: string | undefined,
   chainId: number | undefined,
-  useIPFS: boolean
+  source: SourcifySource
 ) => {
   const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
 
@@ -48,12 +48,13 @@ export const useSourcify = (
       return;
     }
 
+    setRawMetadata(undefined);
     const fetchMetadata = async () => {
       try {
         const contractMetadataURL = sourcifyMetadata(
           checksummedAddress,
           chainId,
-          useIPFS
+          source
         );
         const result = await fetch(contractMetadataURL);
         if (result.ok) {
@@ -68,7 +69,7 @@ export const useSourcify = (
       }
     };
     fetchMetadata();
-  }, [checksummedAddress, chainId, useIPFS]);
+  }, [checksummedAddress, chainId, source]);
 
   return rawMetadata;
 };
@@ -78,7 +79,7 @@ export const useContract = (
   networkId: number,
   filename: string,
   source: any,
-  useIPFS: boolean = true
+  sourcifySource: SourcifySource
 ) => {
   const [content, setContent] = useState<string>(source.content);
 
@@ -93,7 +94,7 @@ export const useContract = (
         checksummedAddress,
         networkId,
         normalizedFilename,
-        useIPFS
+        sourcifySource
       );
       const res = await fetch(url);
       if (res.ok) {
@@ -102,7 +103,7 @@ export const useContract = (
       }
     };
     readContent();
-  }, [checksummedAddress, networkId, filename, source.content, useIPFS]);
+  }, [checksummedAddress, networkId, filename, source.content, sourcifySource]);
 
   return content;
 };

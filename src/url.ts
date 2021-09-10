@@ -14,29 +14,52 @@ export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
-const sourcifyRootHash =
+export enum SourcifySource {
+  // Resolve trusted IPNS for root IPFS
+  IPFS_IPNS,
+
+  // Centralized Sourcify servers
+  CENTRAL_SERVER,
+
+  // Snapshot server
+  CUSTOM_SNAPSHOT_SERVER,
+}
+
+const sourcifyIPNS =
   "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
-const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyRootHash}`;
+const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
+// const ipfsGatewayPrefix = "http://localhost:8080/ipfs/QmWQoGfrLcizHueg3YkgDCh1S7SkfSP9A7H8YeZmUDfbnn"
 const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
+const snapshotPrefix = "http://localhost:3006";
+
+const resolveSourcifySource = (source: SourcifySource) => {
+  if (source === SourcifySource.IPFS_IPNS) {
+    return ipfsGatewayPrefix;
+  }
+  if (source === SourcifySource.CENTRAL_SERVER) {
+    return sourcifyHttpRepoPrefix;
+  }
+  return snapshotPrefix;
+};
 
 export const sourcifyMetadata = (
   checksummedAddress: string,
   networkId: number,
-  useIPFS: boolean
+  source: SourcifySource
 ) =>
-  `${
-    useIPFS ? ipfsGatewayPrefix : sourcifyHttpRepoPrefix
-  }/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
+  `${resolveSourcifySource(
+    source
+  )}/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
 
 export const sourcifySourceFile = (
   checksummedAddress: string,
   networkId: number,
   filepath: string,
-  useIPFS: boolean
+  source: SourcifySource
 ) =>
-  `${
-    useIPFS ? ipfsGatewayPrefix : sourcifyHttpRepoPrefix
-  }/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
+  `${resolveSourcifySource(
+    source
+  )}/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
   `https://remix.ethereum.org/#call=source-verification//fetchAndSave//${checksummedAddress}//${networkId}`;
