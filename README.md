@@ -180,4 +180,4 @@ Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmits
 
 ### Donation address
 
-If you like this project, feel free to send donations to `otterscan.eth`
+If you like this project, feel free to send donations to `otterscan.eth` or use our gitcoin grant page: https://gitcoin.co/grants/3224/otterscan
