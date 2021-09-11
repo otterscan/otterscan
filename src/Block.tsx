@@ -165,7 +165,9 @@ const Block: React.FC = () => {
           <InfoRow title="Ether Price">
             <USDValue value={blockETHUSDPrice} />
           </InfoRow>
-          <InfoRow title="Difficult">{commify(block.difficulty)}</InfoRow>
+          <InfoRow title="Difficult">
+            {block.difficulty ? commify(block.difficulty) : "?"}
+          </InfoRow>
           <InfoRow title="Total Difficult">
             {commify(block.totalDifficulty.toString())}
           </InfoRow>
