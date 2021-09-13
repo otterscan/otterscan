@@ -27,8 +27,7 @@ export enum SourcifySource {
 
 const sourcifyIPNS =
   "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
-const ipfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
-// const ipfsGatewayPrefix = "http://localhost:8080/ipfs/QmWQoGfrLcizHueg3YkgDCh1S7SkfSP9A7H8YeZmUDfbnn"
+const ipfsGatewayPrefix = `http://localhost:8080/ipns/${sourcifyIPNS}`;
 const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
 const snapshotPrefix = "http://localhost:3006";
 

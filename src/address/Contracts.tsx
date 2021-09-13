@@ -43,13 +43,13 @@ const Contracts: React.FC<ContractsProps> = ({
         <RadioGroup value={sourcifySource} onChange={setSourcifySource}>
           <div className="flex space-x-2">
             <RadioButton value={SourcifySource.IPFS_IPNS}>
-              Resolve IPNS
+              Resolve IPNS @localhost:8080 gateway
             </RadioButton>
             <RadioButton value={SourcifySource.CENTRAL_SERVER}>
               Sourcify Servers
             </RadioButton>
             <RadioButton value={SourcifySource.CUSTOM_SNAPSHOT_SERVER}>
-              Local Snapshot
+              Local Snapshot @localhost:3006
             </RadioButton>
           </div>
         </RadioGroup>
