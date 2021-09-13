@@ -6,7 +6,7 @@
   "dependencies": {
     "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@chainlink/contracts": "^0.2.1",
-    "@craco/craco": "^6.2.0",
+    "@craco/craco": "^6.3.0",
     "@fontsource/fira-code": "^4.5.1",
     "@fontsource/roboto": "^4.5.0",
     "@fontsource/roboto-mono": "^4.5.0",
@@ -42,7 +42,7 @@
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "^15.4.4",
     "serve": "^12.0.0",
-    "typescript": "^4.4.2",
+    "typescript": "^4.4.3",
     "use-keyboard-shortcut": "^1.0.6",
     "web-vitals": "^1.0.1"
   },
