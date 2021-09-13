@@ -1,13 +1,26 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import {
+  useParams,
+  useLocation,
+  useHistory,
+  Switch,
+  Route,
+} from "react-router-dom";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import { getAddress, isAddress } from "@ethersproject/address";
+import { Tab } from "@headlessui/react";
 import queryString from "query-string";
 import Blockies from "react-blockies";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import { faCheckCircle } from "@fortawesome/free-regular-svg-icons/faCheckCircle";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
 import ContentFrame from "./ContentFrame";
+import NavTab from "./components/NavTab";
+import Contracts from "./address/Contracts";
 import UndefinedPageControl from "./search/UndefinedPageControl";
 import ResultHeader from "./search/ResultHeader";
 import PendingResults from "./search/PendingResults";
@@ -18,6 +31,8 @@ import { useENSCache } from "./useReverseCache";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
+import { useSourcify } from "./useSourcify";
+import { SourcifySource } from "./url";
 
 type BlockParams = {
   addressOrName: string;
@@ -165,6 +180,14 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
+  const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
+    SourcifySource.IPFS_IPNS
+  );
+  const rawMetadata = useSourcify(
+    checksummedAddress,
+    provider?.network.chainId,
+    sourcifySource
+  );
 
   return (
     <StandardFrame>
@@ -194,59 +217,112 @@ const AddressTransactions: React.FC = () => {
                 )}
               </div>
             </StandardSubtitle>
-            <ContentFrame>
-              <div className="flex justify-between items-baseline py-3">
-                <div className="text-sm text-gray-500">
-                  {page === undefined ? (
-                    <>Waiting for search results...</>
-                  ) : (
-                    <>{page.length} transactions on this page</>
-                  )}
-                </div>
-                <UndefinedPageControl
-                  address={params.addressOrName}
-                  isFirst={controller?.isFirst}
-                  isLast={controller?.isLast}
-                  prevHash={page ? page[0].hash : ""}
-                  nextHash={page ? page[page.length - 1].hash : ""}
-                  disabled={controller === undefined}
-                />
-              </div>
-              <ResultHeader
-                feeDisplay={feeDisplay}
-                feeDisplayToggler={feeDisplayToggler}
-              />
-              {controller ? (
-                <SelectionContext.Provider value={selectionCtx}>
-                  {controller.getPage().map((tx) => (
-                    <TransactionItem
-                      key={tx.hash}
-                      tx={tx}
-                      ensCache={reverseCache}
-                      selectedAddress={checksummedAddress}
-                      feeDisplay={feeDisplay}
-                      priceMap={priceMap}
-                    />
-                  ))}
-                  <div className="flex justify-between items-baseline py-3">
-                    <div className="text-sm text-gray-500">
-                      {page !== undefined && (
-                        <>{page.length} transactions on this page</>
+            <Tab.Group>
+              <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+                <NavTab href={`/address/${checksummedAddress}`}>
+                  Overview
+                </NavTab>
+                <NavTab href={`/address/${checksummedAddress}/contract`}>
+                  <span
+                    className={`flex items-baseline space-x-2 ${
+                      rawMetadata === undefined ? "italic opacity-50" : ""
+                    }`}
+                  >
+                    <span>Contract</span>
+                    {rawMetadata === undefined ? (
+                      <span className="self-center">
+                        <FontAwesomeIcon
+                          className="animate-spin"
+                          icon={faCircleNotch}
+                        />
+                      </span>
+                    ) : rawMetadata === null ? (
+                      <span className="self-center text-red-500">
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                      </span>
+                    ) : (
+                      <span className="self-center text-green-500">
+                        <FontAwesomeIcon icon={faCheckCircle} />
+                      </span>
+                    )}
+                  </span>
+                </NavTab>
+              </Tab.List>
+              <Tab.Panels>
+                <Switch>
+                  <Route path="/address/:addressOrName" exact>
+                    <ContentFrame tabs>
+                      <div className="flex justify-between items-baseline py-3">
+                        <div className="text-sm text-gray-500">
+                          {page === undefined ? (
+                            <>Waiting for search results...</>
+                          ) : (
+                            <>{page.length} transactions on this page</>
+                          )}
+                        </div>
+                        <UndefinedPageControl
+                          address={params.addressOrName}
+                          isFirst={controller?.isFirst}
+                          isLast={controller?.isLast}
+                          prevHash={page ? page[0].hash : ""}
+                          nextHash={page ? page[page.length - 1].hash : ""}
+                          disabled={controller === undefined}
+                        />
+                      </div>
+                      <ResultHeader
+                        feeDisplay={feeDisplay}
+                        feeDisplayToggler={feeDisplayToggler}
+                      />
+                      {controller ? (
+                        <SelectionContext.Provider value={selectionCtx}>
+                          {controller.getPage().map((tx) => (
+                            <TransactionItem
+                              key={tx.hash}
+                              tx={tx}
+                              ensCache={reverseCache}
+                              selectedAddress={checksummedAddress}
+                              feeDisplay={feeDisplay}
+                              priceMap={priceMap}
+                            />
+                          ))}
+                          <div className="flex justify-between items-baseline py-3">
+                            <div className="text-sm text-gray-500">
+                              {page === undefined ? (
+                                <>Waiting for search results...</>
+                              ) : (
+                                <>{page.length} transactions on this page</>
+                              )}
+                            </div>
+                            <UndefinedPageControl
+                              address={params.addressOrName}
+                              isFirst={controller?.isFirst}
+                              isLast={controller?.isLast}
+                              prevHash={page ? page[0].hash : ""}
+                              nextHash={page ? page[page.length - 1].hash : ""}
+                              disabled={controller === undefined}
+                            />
+                          </div>
+                          <ResultHeader
+                            feeDisplay={feeDisplay}
+                            feeDisplayToggler={feeDisplayToggler}
+                          />
+                        </SelectionContext.Provider>
+                      ) : (
+                        <PendingResults />
                       )}
-                    </div>
-                    <UndefinedPageControl
-                      address={params.addressOrName}
-                      isFirst={controller.isFirst}
-                      isLast={controller.isLast}
-                      prevHash={page ? page[0].hash : ""}
-                      nextHash={page ? page[page.length - 1].hash : ""}
+                    </ContentFrame>
+                  </Route>
+                  <Route path="/address/:addressOrName/contract" exact>
+                    <Contracts
+                      checksummedAddress={checksummedAddress}
+                      rawMetadata={rawMetadata}
+                      sourcifySource={sourcifySource}
+                      setSourcifySource={setSourcifySource}
                     />
-                  </div>
-                </SelectionContext.Provider>
-              ) : (
-                <PendingResults />
-              )}
-            </ContentFrame>
+                  </Route>
+                </Switch>
+              </Tab.Panels>
+            </Tab.Group>
           </>
         )
       )}
