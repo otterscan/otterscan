@@ -47,8 +47,9 @@ export const useSourcify = (
     if (!checksummedAddress || chainId === undefined) {
       return;
     }
-
     setRawMetadata(undefined);
+
+    const abortController = new AbortController();
     const fetchMetadata = async () => {
       try {
         const contractMetadataURL = sourcifyMetadata(
@@ -56,7 +57,9 @@ export const useSourcify = (
           chainId,
           source
         );
-        const result = await fetch(contractMetadataURL);
+        const result = await fetch(contractMetadataURL, {
+          signal: abortController.signal,
+        });
         if (result.ok) {
           const _metadata = await result.json();
           setRawMetadata(_metadata);
@@ -69,6 +72,10 @@ export const useSourcify = (
       }
     };
     fetchMetadata();
+
+    return () => {
+      abortController.abort();
+    };
   }, [checksummedAddress, chainId, source]);
 
   return rawMetadata;
@@ -88,6 +95,7 @@ export const useContract = (
       return;
     }
 
+    const abortController = new AbortController();
     const readContent = async () => {
       const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
       const url = sourcifySourceFile(
@@ -96,13 +104,17 @@ export const useContract = (
         normalizedFilename,
         sourcifySource
       );
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: abortController.signal });
       if (res.ok) {
         const _content = await res.text();
         setContent(_content);
       }
     };
     readContent();
+
+    return () => {
+      abortController.abort();
+    };
   }, [checksummedAddress, networkId, filename, source.content, sourcifySource]);
 
   return content;
