@@ -140,11 +140,5 @@ export const useTransactionDescription = (
     });
   }, [metadata, txData]);
 
-  console.log(metadata);
-  console.log(txDesc);
-  if (txDesc?.functionFragment) {
-    console.log(txDesc.functionFragment.inputs);
-    console.log(txDesc.args.toString());
-  }
   return txDesc;
 };
