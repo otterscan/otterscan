@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { Interface } from "@ethersproject/abi";
+import { TransactionData } from "./types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
 
 export type Metadata = {
@@ -118,4 +120,31 @@ export const useContract = (
   }, [checksummedAddress, networkId, filename, source.content, sourcifySource]);
 
   return content;
+};
+
+export const useTransactionDescription = (
+  metadata: Metadata | null | undefined,
+  txData: TransactionData | null | undefined
+) => {
+  const txDesc = useMemo(() => {
+    if (!metadata || !txData) {
+      return undefined;
+    }
+
+    const abi = metadata.output.abi;
+    const intf = new Interface(abi as any);
+    console.log(intf);
+    return intf.parseTransaction({
+      data: txData.data,
+      value: txData.value,
+    });
+  }, [metadata, txData]);
+
+  console.log(metadata);
+  console.log(txDesc);
+  if (txDesc?.functionFragment) {
+    console.log(txDesc.functionFragment.inputs);
+    console.log(txDesc.args.toString());
+  }
+  return txDesc;
 };

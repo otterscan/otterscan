@@ -11,6 +11,8 @@ import { RuntimeContext } from "./useRuntime";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
+import { useSourcify, useTransactionDescription } from "./useSourcify";
+import { SourcifySource } from "./url";
 
 type TransactionParams = {
   txhash: string;
@@ -44,6 +46,13 @@ const Transaction: React.FC = () => {
     txData?.confirmedData?.blockNumber
   );
 
+  const metadata = useSourcify(
+    txData?.to,
+    provider?.network.chainId,
+    SourcifySource.CUSTOM_SNAPSHOT_SERVER // TODO: use dynamic selector
+  );
+  const txDesc = useTransactionDescription(metadata, txData);
+
   return (
     <StandardFrame>
       <StandardSubtitle>Transaction Details</StandardSubtitle>
@@ -71,6 +80,7 @@ const Transaction: React.FC = () => {
             <Route path="/tx/:txhash/" exact>
               <Details
                 txData={txData}
+                txDesc={txDesc}
                 internalOps={internalOps}
                 sendsEthToMiner={sendsEthToMiner}
                 ethUSDPrice={blockETHUSDPrice}

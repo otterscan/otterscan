@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -31,6 +32,7 @@ import PercentagePosition from "../components/PercentagePosition";
 
 type DetailsProps = {
   txData: TransactionData;
+  txDesc: TransactionDescription | null | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
@@ -38,6 +40,7 @@ type DetailsProps = {
 
 const Details: React.FC<DetailsProps> = ({
   txData,
+  txDesc,
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
@@ -333,6 +336,26 @@ const Details: React.FC<DetailsProps> = ({
             value={inputMode === 0 ? txData.data : utfInput}
             readOnly
           />
+          {txDesc && (
+            <table>
+              <thead>
+                <th>#</th>
+                <th>name</th>
+                <th>type</th>
+                <th>value</th>
+              </thead>
+              <tbody>
+                {txDesc.args.map((r, i) => (
+                  <tr key={i}>
+                    <td>{i}</td>
+                    <td>{txDesc.functionFragment.inputs[i].name}</td>
+                    <td>{txDesc.functionFragment.inputs[i].type}</td>
+                    <td>{r}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </InfoRow>
     </ContentFrame>
