@@ -30,6 +30,7 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
+import DecodedInput from "./DecodedInput";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -343,28 +344,7 @@ const Details: React.FC<DetailsProps> = ({
             </Tab>
           </Tab.List>
           <Tab.Panels>
-            <Tab.Panel>
-              {txDesc && (
-                <table>
-                  <thead>
-                    <th>#</th>
-                    <th>name</th>
-                    <th>type</th>
-                    <th>value</th>
-                  </thead>
-                  <tbody>
-                    {txDesc.args.map((r, i) => (
-                      <tr key={i}>
-                        <td>{i}</td>
-                        <td>{txDesc.functionFragment.inputs[i].name}</td>
-                        <td>{txDesc.functionFragment.inputs[i].type}</td>
-                        <td>{r}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </Tab.Panel>
+            <Tab.Panel>{txDesc && <DecodedInput txDesc={txDesc} />}</Tab.Panel>
             <Tab.Panel>
               <textarea
                 className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
