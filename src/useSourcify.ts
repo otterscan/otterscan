@@ -133,7 +133,6 @@ export const useTransactionDescription = (
 
     const abi = metadata.output.abi;
     const intf = new Interface(abi as any);
-    console.log(intf);
     return intf.parseTransaction({
       data: txData.data,
       value: txData.value,

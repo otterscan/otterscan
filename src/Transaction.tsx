@@ -87,7 +87,7 @@ const Transaction: React.FC = () => {
               />
             </Route>
             <Route path="/tx/:txhash/logs/" exact>
-              <Logs txData={txData} />
+              <Logs txData={txData} metadata={metadata} />
             </Route>
           </Switch>
         </SelectionContext.Provider>

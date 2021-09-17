@@ -1,11 +1,11 @@
 import React from "react";
-import { TransactionDescription } from "@ethersproject/abi";
+import { LogDescription } from "@ethersproject/abi";
 
-type DecodedInputProps = {
-  txDesc: TransactionDescription;
+type DecodedLogProps = {
+  logDesc: LogDescription;
 };
 
-const DecodedInput: React.FC<DecodedInputProps> = ({ txDesc }) => (
+const DecodedLog: React.FC<DecodedLogProps> = ({ logDesc }) => (
   <table className="border rounded">
     <thead>
       <tr className="grid grid-cols-12 text-left gap-x-1 py-2 bg-gray-100">
@@ -17,15 +17,13 @@ const DecodedInput: React.FC<DecodedInputProps> = ({ txDesc }) => (
       </tr>
     </thead>
     <tbody className="divide-y">
-      {txDesc.args.map((r, i) => (
+      {logDesc.args.map((r, i) => (
         <tr key={i} className="grid grid-cols-12 gap-x-1 py-2">
           <td className="col-span-3 pl-1">
-            {txDesc.functionFragment.inputs[i].name}{" "}
+            {logDesc.eventFragment.inputs[i].name}{" "}
             <span className="text-gray-400 text-xs">({i})</span>
           </td>
-          <td className="col-span-1">
-            {txDesc.functionFragment.inputs[i].type}
-          </td>
+          <td className="col-span-1">{logDesc.eventFragment.inputs[i].type}</td>
           <td className="col-span-8 pr-1 font-code break-all">{r}</td>
         </tr>
       ))}
@@ -33,4 +31,4 @@ const DecodedInput: React.FC<DecodedInputProps> = ({ txDesc }) => (
   </table>
 );
 
-export default React.memo(DecodedInput);
+export default React.memo(DecodedLog);
