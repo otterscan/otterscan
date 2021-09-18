@@ -1,5 +1,5 @@
 import React from "react";
-import { LogDescription, ParamType, Result } from "@ethersproject/abi";
+import { ParamType, Result } from "@ethersproject/abi";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
@@ -50,6 +50,14 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
             ) : paramTypes[i].type === "bool" ? (
               <span className={`${r ? "text-green-700" : "text-red-700"}`}>
                 {r.toString()}
+              </span>
+            ) : paramTypes[i].type === "bytes" ? (
+              <span>
+                {r.toString()}{" "}
+                <span className="font-sans text-xs text-gray-400">
+                  {r.toString().length / 2 - 1}{" "}
+                  {r.toString().length / 2 - 1 === 1 ? "byte" : "bytes"}
+                </span>
               </span>
             ) : (
               r.toString()
