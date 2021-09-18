@@ -2,7 +2,9 @@ import React, { Fragment } from "react";
 import { Log } from "@ethersproject/abstract-provider";
 import { LogDescription } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
+import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import Copy from "../components/Copy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./DecodedParamsTable";
 import DecodedLogSignature from "./DecodedLogSignature";
@@ -25,12 +27,17 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
       <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
         <div className="font-bold text-right">Address</div>
         <div className="col-span-11 mr-auto">
-          <DecoratedAddressLink
-            address={log.address}
-            miner={log.address === txData.confirmedData?.miner}
-            txFrom={log.address === txData.from}
-            txTo={log.address === txData.to}
-          />
+          <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+            <AddressHighlighter address={log.address}>
+              <DecoratedAddressLink
+                address={log.address}
+                miner={log.address === txData.confirmedData?.miner}
+                txFrom={log.address === txData.from}
+                txTo={log.address === txData.to}
+              />
+            </AddressHighlighter>
+            <Copy value={log.address} />
+          </div>
         </div>
       </div>
       <Tab.Group>
