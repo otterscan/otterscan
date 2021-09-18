@@ -53,7 +53,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
                   <div className="text-right">Name</div>
                   <div className="flex space-x-2 items-center col-span-11">
-                    <DecodedLog logDesc={logDesc} />
+                    <DecodedLog txData={txData} logDesc={logDesc} />
                   </div>
                 </div>
               </>

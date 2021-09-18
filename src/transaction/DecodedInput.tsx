@@ -1,12 +1,17 @@
 import React from "react";
 import { TransactionDescription } from "@ethersproject/abi";
+import AddressHighlighter from "../components/AddressHighlighter";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import Copy from "../components/Copy";
+import { TransactionData } from "../types";
 
 type DecodedInputProps = {
+  txData: TransactionData;
   txDesc: TransactionDescription;
 };
 
-const DecodedInput: React.FC<DecodedInputProps> = ({ txDesc }) => (
-  <table className="border rounded">
+const DecodedInput: React.FC<DecodedInputProps> = ({ txData, txDesc }) => (
+  <table className="border rounded w-full">
     <thead>
       <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-gray-100">
         <th className="col-span-3 pl-1">
@@ -27,7 +32,21 @@ const DecodedInput: React.FC<DecodedInputProps> = ({ txDesc }) => (
             {txDesc.functionFragment.inputs[i].type}
           </td>
           <td className="col-span-8 pr-1 font-code break-all">
-            {r.toString()}
+            {txDesc.functionFragment.inputs[i].type === "address" ? (
+              <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+                <AddressHighlighter address={r.toString()}>
+                  <DecoratedAddressLink
+                    address={r.toString()}
+                    miner={r.toString() === txData.confirmedData?.miner}
+                    txFrom={r.toString() === txData.from}
+                    txTo={r.toString() === txData.to}
+                  />
+                </AddressHighlighter>
+                <Copy value={r.toString()} />
+              </div>
+            ) : (
+              r.toString()
+            )}
           </td>
         </tr>
       ))}

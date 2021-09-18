@@ -327,7 +327,7 @@ const Details: React.FC<DetailsProps> = ({
               ) : txDesc === null ? (
                 <>No decoded data</>
               ) : (
-                <DecodedInput txDesc={txDesc} />
+                <DecodedInput txData={txData} txDesc={txDesc} />
               )}
             </Tab.Panel>
             <Tab.Panel>
