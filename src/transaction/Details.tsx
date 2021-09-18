@@ -30,6 +30,7 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
+import ModeTab from "../components/ModeTab";
 import DecodedInput from "./DecodedInput";
 
 type DetailsProps = {
@@ -315,33 +316,9 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="Input Data">
         <Tab.Group>
           <Tab.List className="flex space-x-1 mb-1">
-            <Tab
-              className={({ selected }) =>
-                `border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
-                  selected ? "border-blue-300" : ""
-                }`
-              }
-            >
-              Decoded
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
-                  selected ? "border-blue-300" : ""
-                }`
-              }
-            >
-              Raw
-            </Tab>
-            <Tab
-              className={({ selected }) =>
-                `border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
-                  selected ? "border-blue-300" : ""
-                }`
-              }
-            >
-              UTF-8
-            </Tab>
+            <ModeTab>Decoded</ModeTab>
+            <ModeTab>Raw</ModeTab>
+            <ModeTab>UTF-8</ModeTab>
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>{txDesc && <DecodedInput txDesc={txDesc} />}</Tab.Panel>
