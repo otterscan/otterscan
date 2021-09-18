@@ -4,7 +4,7 @@ import { LogDescription } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ModeTab from "../components/ModeTab";
-import DecodedLog from "./DecodedLog";
+import DecodedParamsTable from "./DecodedParamsTable";
 import DecodedLogSignature from "./DecodedLogSignature";
 import { TransactionData } from "../types";
 
@@ -53,7 +53,11 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
                   <div className="text-right">Name</div>
                   <div className="flex space-x-2 items-center col-span-11">
-                    <DecodedLog txData={txData} logDesc={logDesc} />
+                    <DecodedParamsTable
+                      args={logDesc.args}
+                      paramTypes={logDesc.eventFragment.inputs}
+                      txData={txData}
+                    />
                   </div>
                 </div>
               </>

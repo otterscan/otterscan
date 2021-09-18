@@ -31,7 +31,7 @@ import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
-import DecodedInput from "./DecodedInput";
+import DecodedParamsTable from "./DecodedParamsTable";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -327,7 +327,11 @@ const Details: React.FC<DetailsProps> = ({
               ) : txDesc === null ? (
                 <>No decoded data</>
               ) : (
-                <DecodedInput txData={txData} txDesc={txDesc} />
+                <DecodedParamsTable
+                  args={txDesc.args}
+                  paramTypes={txDesc.functionFragment.inputs}
+                  txData={txData}
+                />
               )}
             </Tab.Panel>
             <Tab.Panel>

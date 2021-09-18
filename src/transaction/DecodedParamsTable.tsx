@@ -1,16 +1,21 @@
 import React from "react";
-import { TransactionDescription } from "@ethersproject/abi";
+import { LogDescription, ParamType, Result } from "@ethersproject/abi";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
 import { TransactionData } from "../types";
 
-type DecodedInputProps = {
+type DecodedParamsTableProps = {
+  args: Result;
+  paramTypes: ParamType[];
   txData: TransactionData;
-  txDesc: TransactionDescription;
 };
 
-const DecodedInput: React.FC<DecodedInputProps> = ({ txData, txDesc }) => (
+const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
+  args,
+  paramTypes,
+  txData,
+}) => (
   <table className="border rounded w-full">
     <thead>
       <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-gray-100">
@@ -22,17 +27,15 @@ const DecodedInput: React.FC<DecodedInputProps> = ({ txData, txDesc }) => (
       </tr>
     </thead>
     <tbody className="divide-y">
-      {txDesc.args.map((r, i) => (
+      {args.map((r, i) => (
         <tr key={i} className="grid grid-cols-12 gap-x-2 py-2">
           <td className="col-span-3 pl-1">
-            {txDesc.functionFragment.inputs[i].name}{" "}
+            {paramTypes[i].name}{" "}
             <span className="text-gray-400 text-xs">({i})</span>
           </td>
-          <td className="col-span-1">
-            {txDesc.functionFragment.inputs[i].type}
-          </td>
+          <td className="col-span-1">{paramTypes[i].type}</td>
           <td className="col-span-8 pr-1 font-code break-all">
-            {txDesc.functionFragment.inputs[i].type === "address" ? (
+            {paramTypes[i].type === "address" ? (
               <div className="flex items-baseline space-x-2 -ml-1 mr-3">
                 <AddressHighlighter address={r.toString()}>
                   <DecoratedAddressLink
@@ -54,4 +57,4 @@ const DecodedInput: React.FC<DecodedInputProps> = ({ txData, txDesc }) => (
   </table>
 );
 
-export default React.memo(DecodedInput);
+export default React.memo(DecodedParamsTable);
