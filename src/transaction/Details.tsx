@@ -321,7 +321,15 @@ const Details: React.FC<DetailsProps> = ({
             <ModeTab>UTF-8</ModeTab>
           </Tab.List>
           <Tab.Panels>
-            <Tab.Panel>{txDesc && <DecodedInput txDesc={txDesc} />}</Tab.Panel>
+            <Tab.Panel>
+              {txDesc === undefined ? (
+                <>Waiting for data...</>
+              ) : txDesc === null ? (
+                <>No decoded data</>
+              ) : (
+                <DecodedInput txDesc={txDesc} />
+              )}
+            </Tab.Panel>
             <Tab.Panel>
               <textarea
                 className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"

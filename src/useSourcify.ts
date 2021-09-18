@@ -127,6 +127,9 @@ export const useTransactionDescription = (
   txData: TransactionData | null | undefined
 ) => {
   const txDesc = useMemo(() => {
+    if (metadata === null) {
+      return null;
+    }
     if (!metadata || !txData) {
       return undefined;
     }
