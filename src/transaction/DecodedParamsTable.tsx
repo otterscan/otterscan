@@ -20,7 +20,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
     <thead>
       <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-gray-100">
         <th className="col-span-3 pl-1">
-          param <span className="text-gray-400 text-xs">(index)</span>
+          name <span className="text-gray-400 text-xs">(index)</span>
         </th>
         <th className="col-span-1">type</th>
         <th className="col-span-8 pr-1">value</th>

@@ -42,7 +42,8 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
       </div>
       <Tab.Group>
         <Tab.List className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-          <div className="col-start-2 col-span-11 flex space-x-1 mb-1">
+          <div className="text-right">Parameters</div>
+          <div className="col-span-11 flex space-x-1 mb-1">
             <ModeTab>Decoded</ModeTab>
             <ModeTab>Raw</ModeTab>
           </div>
@@ -52,14 +53,12 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
             {logDesc && (
               <>
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="text-right">Signature</div>
-                  <div className="flex space-x-2 items-center col-span-11 font-mono">
+                  <div className="col-start-2 flex space-x-2 items-center col-span-11 font-mono">
                     <DecodedLogSignature event={logDesc.eventFragment} />
                   </div>
                 </div>
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="text-right">Name</div>
-                  <div className="flex space-x-2 items-center col-span-11">
+                  <div className="col-start-2 flex space-x-2 items-center col-span-11">
                     <DecodedParamsTable
                       args={logDesc.args}
                       paramTypes={logDesc.eventFragment.inputs}
