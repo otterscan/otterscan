@@ -31,12 +31,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
       <div className="text-sm py-4">Transaction Receipt Event Logs</div>
       {txData.confirmedData &&
         txData.confirmedData.logs.map((l, i) => (
-          <LogEntry
-            key={i}
-            txData={txData}
-            log={l}
-            logDesc={logDesc && logDesc[i]}
-          />
+          <LogEntry key={i} txData={txData} log={l} logDesc={logDesc?.[i]} />
         ))}
     </ContentFrame>
   );
