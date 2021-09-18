@@ -47,6 +47,10 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
                 </AddressHighlighter>
                 <Copy value={r.toString()} />
               </div>
+            ) : paramTypes[i].type === "bool" ? (
+              <span className={`${r ? "text-green-700" : "text-red-700"}`}>
+                {r.toString()}
+              </span>
             ) : (
               r.toString()
             )}
