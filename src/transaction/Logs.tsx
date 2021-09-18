@@ -19,10 +19,12 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     const abi = metadata.output.abi;
     const intf = new Interface(abi as any);
     return txData.confirmedData?.logs.map((l) =>
-      intf.parseLog({
-        topics: l.topics,
-        data: l.data,
-      })
+      l.address === txData.to
+        ? intf.parseLog({
+            topics: l.topics,
+            data: l.data,
+          })
+        : undefined
     );
   }, [metadata, txData]);
 
