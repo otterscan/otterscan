@@ -22,7 +22,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
 }) => {
   return (
     <>
-      <tr className="grid grid-cols-12 gap-x-2 py-2">
+      <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
         <td className="col-span-3 pl-1">
           {prefix && <span className="text-gray-300">{prefix}</span>}
           {paramType.name}{" "}
