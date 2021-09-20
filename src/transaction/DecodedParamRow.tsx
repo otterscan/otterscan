@@ -65,7 +65,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
       </tr>
       {paramType.baseType === "tuple" &&
         r.map((e: any, idx: number) => (
-          <DecodedParamRow
+          <DecodedParamRow key={idx}
             prefix={paramType.name + "."}
             r={e}
             paramType={paramType.components[idx]}
