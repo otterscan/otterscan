@@ -3,7 +3,8 @@ import { Interface } from "@ethersproject/abi";
 import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
-import { Metadata } from "../useSourcify";
+import { Metadata, useMultipleMetadata } from "../useSourcify";
+import { SourcifySource } from "../url";
 
 type LogsProps = {
   txData: TransactionData;
@@ -11,22 +12,45 @@ type LogsProps = {
 };
 
 const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
+  const baseMetadatas = useMemo((): Record<string, Metadata | null> => {
+    if (!txData.to || metadata === undefined) {
+      return {};
+    }
+
+    const md: Record<string, Metadata | null> = {};
+    md[txData.to] = metadata;
+    return md;
+  }, [txData.to, metadata]);
+
+  const logAddresses = useMemo(
+    () => txData.confirmedData?.logs.map((l) => l.address) ?? [],
+    [txData]
+  );
+  const metadatas = useMultipleMetadata(
+    baseMetadatas,
+    logAddresses,
+    1,
+    SourcifySource.CUSTOM_SNAPSHOT_SERVER
+  );
   const logDesc = useMemo(() => {
     if (!metadata || !txData) {
       return undefined;
     }
 
-    const abi = metadata.output.abi;
-    const intf = new Interface(abi as any);
-    return txData.confirmedData?.logs.map((l) =>
-      l.address === txData.to
-        ? intf.parseLog({
-            topics: l.topics,
-            data: l.data,
-          })
-        : undefined
-    );
-  }, [metadata, txData]);
+    return txData.confirmedData?.logs.map((l) => {
+      const mt = metadatas[l.address];
+      if (!mt) {
+        return undefined;
+      }
+
+      const abi = mt.output.abi;
+      const intf = new Interface(abi as any);
+      return intf.parseLog({
+        topics: l.topics,
+        data: l.data,
+      });
+    });
+  }, [metadatas, metadata, txData]);
 
   return (
     <ContentFrame tabs>
