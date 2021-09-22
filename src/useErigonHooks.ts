@@ -225,16 +225,20 @@ export const useTxData = (
           continue;
         }
         const erc20Contract = new Contract(t.token, erc20, provider);
-        const [name, symbol, decimals] = await Promise.all([
-          erc20Contract.name(),
-          erc20Contract.symbol(),
-          erc20Contract.decimals(),
-        ]);
-        tokenMetas[t.token] = {
-          name,
-          symbol,
-          decimals,
-        };
+        try {
+          const [name, symbol, decimals] = await Promise.all([
+            erc20Contract.name(),
+            erc20Contract.symbol(),
+            erc20Contract.decimals(),
+          ]);
+          tokenMetas[t.token] = {
+            name,
+            symbol,
+            decimals,
+          };
+        } catch (err) {
+          console.warn(`Couldn't get token ${t.token} metadata; ignoring`, err);
+        }
       }
 
       setTxData({

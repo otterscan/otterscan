@@ -18,6 +18,7 @@ type TokenTransferItemProps = {
   tokenMetas: TokenMetas;
 };
 
+// TODO: handle partial
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   txData,
