@@ -199,10 +199,15 @@ export const useTransactionDescription = (
 
     const abi = metadata.output.abi;
     const intf = new Interface(abi as any);
-    return intf.parseTransaction({
-      data: txData.data,
-      value: txData.value,
-    });
+    try {
+      return intf.parseTransaction({
+        data: txData.data,
+        value: txData.value,
+      });
+    } catch (err) {
+      console.warn("Couldn't find function signature", err);
+      return null;
+    }
   }, [metadata, txData]);
 
   return txDesc;
