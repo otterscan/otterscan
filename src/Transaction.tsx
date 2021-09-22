@@ -49,7 +49,7 @@ const Transaction: React.FC = () => {
   const metadata = useSourcify(
     txData?.to,
     provider?.network.chainId,
-    SourcifySource.CUSTOM_SNAPSHOT_SERVER // TODO: use dynamic selector
+    SourcifySource.CENTRAL_SERVER // TODO: use dynamic selector
   );
   const txDesc = useTransactionDescription(metadata, txData);
 

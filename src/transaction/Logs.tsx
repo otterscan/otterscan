@@ -30,10 +30,10 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     baseMetadatas,
     logAddresses,
     1,
-    SourcifySource.CUSTOM_SNAPSHOT_SERVER
+    SourcifySource.CENTRAL_SERVER // TODO: use dynamic selector
   );
   const logDesc = useMemo(() => {
-    if (!metadata || !txData) {
+    if (!txData) {
       return undefined;
     }
 
@@ -45,12 +45,17 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
 
       const abi = mt.output.abi;
       const intf = new Interface(abi as any);
-      return intf.parseLog({
-        topics: l.topics,
-        data: l.data,
-      });
+      try {
+        return intf.parseLog({
+          topics: l.topics,
+          data: l.data,
+        });
+      } catch (err) {
+        console.warn("Couldn't find function signature", err);
+        return null;
+      }
     });
-  }, [metadatas, metadata, txData]);
+  }, [metadatas, txData]);
 
   return (
     <ContentFrame tabs>
