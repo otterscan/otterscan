@@ -11,8 +11,8 @@ import { RuntimeContext } from "./useRuntime";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
+import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./useSourcify";
-import { SourcifySource } from "./url";
 
 type TransactionParams = {
   txhash: string;
@@ -46,10 +46,11 @@ const Transaction: React.FC = () => {
     txData?.confirmedData?.blockNumber
   );
 
+  const { sourcifySource } = useAppConfigContext();
   const metadata = useSourcify(
     txData?.to,
     provider?.network.chainId,
-    SourcifySource.CENTRAL_SERVER // TODO: use dynamic selector
+    sourcifySource
   );
   const txDesc = useTransactionDescription(metadata, txData);
 

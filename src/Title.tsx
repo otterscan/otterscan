@@ -5,6 +5,7 @@ import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
 import CameraScanner from "./search/CameraScanner";
+import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
 
 const Title: React.FC = () => {
@@ -82,6 +83,7 @@ const Title: React.FC = () => {
               Search
             </button>
           </form>
+          <SourcifyMenu />
         </div>
       </div>
     </>

@@ -3,8 +3,8 @@ import { Interface } from "@ethersproject/abi";
 import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
+import { useAppConfigContext } from "../useAppConfig";
 import { Metadata, useMultipleMetadata } from "../useSourcify";
-import { SourcifySource } from "../url";
 
 type LogsProps = {
   txData: TransactionData;
@@ -22,6 +22,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     return md;
   }, [txData.to, metadata]);
 
+  const { sourcifySource } = useAppConfigContext();
   const logAddresses = useMemo(
     () => txData.confirmedData?.logs.map((l) => l.address) ?? [],
     [txData]
@@ -30,7 +31,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     baseMetadatas,
     logAddresses,
     1,
-    SourcifySource.CENTRAL_SERVER // TODO: use dynamic selector
+    sourcifySource
   );
   const logDesc = useMemo(() => {
     if (!txData) {
