@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, Fragment } from "react";
 import { commify } from "@ethersproject/units";
-import { Menu, RadioGroup } from "@headlessui/react";
+import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
@@ -11,21 +11,16 @@ import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../useSourcify";
 import ExternalLink from "../components/ExternalLink";
-import { openInRemixURL, SourcifySource } from "../url";
-import RadioButton from "./RadioButton";
+import { openInRemixURL } from "../url";
 
 type ContractsProps = {
   checksummedAddress: string;
   rawMetadata: Metadata | null | undefined;
-  sourcifySource: SourcifySource;
-  setSourcifySource: (sourcifySource: SourcifySource) => void;
 };
 
 const Contracts: React.FC<ContractsProps> = ({
   checksummedAddress,
   rawMetadata,
-  sourcifySource,
-  setSourcifySource,
 }) => {
   const { provider } = useContext(RuntimeContext);
 
@@ -39,21 +34,6 @@ const Contracts: React.FC<ContractsProps> = ({
 
   return (
     <ContentFrame tabs>
-      <InfoRow title="Sourcify integration">
-        <RadioGroup value={sourcifySource} onChange={setSourcifySource}>
-          <div className="flex space-x-2">
-            <RadioButton value={SourcifySource.IPFS_IPNS}>
-              Resolve IPNS @localhost:8080 gateway
-            </RadioButton>
-            <RadioButton value={SourcifySource.CENTRAL_SERVER}>
-              Sourcify Servers
-            </RadioButton>
-            <RadioButton value={SourcifySource.CUSTOM_SNAPSHOT_SERVER}>
-              Local Snapshot @localhost:3006
-            </RadioButton>
-          </div>
-        </RadioGroup>
-      </InfoRow>
       {rawMetadata && (
         <>
           <InfoRow title="Language">
@@ -145,7 +125,6 @@ const Contracts: React.FC<ContractsProps> = ({
                   networkId={provider!.network.chainId}
                   filename={selected}
                   source={rawMetadata.sources[selected]}
-                  sourcifySource={sourcifySource}
                 />
               )}
             </div>

@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
+import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
+import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -28,9 +30,12 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
+import ModeTab from "../components/ModeTab";
+import DecodedParamsTable from "./DecodedParamsTable";
 
 type DetailsProps = {
   txData: TransactionData;
+  txDesc: TransactionDescription | null | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
@@ -38,6 +43,7 @@ type DetailsProps = {
 
 const Details: React.FC<DetailsProps> = ({
   txData,
+  txDesc,
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
@@ -45,7 +51,6 @@ const Details: React.FC<DetailsProps> = ({
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
-  const [inputMode, setInputMode] = useState<number>(0);
 
   const utfInput = useMemo(() => {
     try {
@@ -309,31 +314,42 @@ const Details: React.FC<DetailsProps> = ({
         </>
       )}
       <InfoRow title="Input Data">
-        <div className="space-y-1">
-          <div className="flex space-x-1">
-            <button
-              className={`border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
-                inputMode === 0 ? "border-blue-300" : ""
-              }`}
-              onClick={() => setInputMode(0)}
-            >
-              Raw
-            </button>
-            <button
-              className={`border rounded-lg px-2 py-1 bg-gray-100 hover:bg-gray-200 hover:shadow text-xs text-gray-500 hover:text-gray-600 ${
-                inputMode === 1 ? "border-blue-300" : ""
-              }`}
-              onClick={() => setInputMode(1)}
-            >
-              UTF-8
-            </button>
-          </div>
-          <textarea
-            className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-            value={inputMode === 0 ? txData.data : utfInput}
-            readOnly
-          />
-        </div>
+        <Tab.Group>
+          <Tab.List className="flex space-x-1 mb-1">
+            <ModeTab>Decoded</ModeTab>
+            <ModeTab>Raw</ModeTab>
+            <ModeTab>UTF-8</ModeTab>
+          </Tab.List>
+          <Tab.Panels>
+            <Tab.Panel>
+              {txDesc === undefined ? (
+                <>Waiting for data...</>
+              ) : txDesc === null ? (
+                <>No decoded data</>
+              ) : (
+                <DecodedParamsTable
+                  args={txDesc.args}
+                  paramTypes={txDesc.functionFragment.inputs}
+                  txData={txData}
+                />
+              )}
+            </Tab.Panel>
+            <Tab.Panel>
+              <textarea
+                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+                value={txData.data}
+                readOnly
+              />
+            </Tab.Panel>
+            <Tab.Panel>
+              <textarea
+                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+                value={utfInput}
+                readOnly
+              />
+            </Tab.Panel>
+          </Tab.Panels>
+        </Tab.Group>
       </InfoRow>
     </ContentFrame>
   );

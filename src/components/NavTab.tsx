@@ -6,6 +6,8 @@ type NavTabProps = {
   href: string;
 };
 
+// TODO: migrate activeClassName because of: https://github.com/remix-run/react-router/releases/tag/v5.3.0
+// TODO: @types/react-router-dom still doesn't support function in className
 const NavTab: React.FC<NavTabProps> = ({ href, children }) => (
   <Tab as={Fragment}>
     <NavLink

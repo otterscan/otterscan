@@ -3,9 +3,9 @@ import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import hljs from "highlight.js";
 import docco from "react-syntax-highlighter/dist/esm/styles/hljs/docco";
 import { useContract } from "../useSourcify";
-import { SourcifySource } from "../url";
 
 import hljsDefineSolidity from "highlightjs-solidity";
+import { useAppConfigContext } from "../useAppConfig";
 hljsDefineSolidity(hljs);
 
 type ContractProps = {
@@ -13,7 +13,6 @@ type ContractProps = {
   networkId: number;
   filename: string;
   source: any;
-  sourcifySource: SourcifySource;
 };
 
 const Contract: React.FC<ContractProps> = ({
@@ -21,8 +20,8 @@ const Contract: React.FC<ContractProps> = ({
   networkId,
   filename,
   source,
-  sourcifySource,
 }) => {
+  const { sourcifySource } = useAppConfigContext();
   const content = useContract(
     checksummedAddress,
     networkId,
