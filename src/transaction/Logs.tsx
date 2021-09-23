@@ -60,11 +60,24 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
 
   return (
     <ContentFrame tabs>
-      <div className="text-sm py-4">Transaction Receipt Event Logs</div>
-      {txData.confirmedData &&
-        txData.confirmedData.logs.map((l, i) => (
-          <LogEntry key={i} txData={txData} log={l} logDesc={logDesc?.[i]} />
-        ))}
+      {txData.confirmedData && (
+        <>
+          {txData.confirmedData.logs.length > 0 ? (
+            <>
+              {txData.confirmedData.logs.map((l, i) => (
+                <LogEntry
+                  key={i}
+                  txData={txData}
+                  log={l}
+                  logDesc={logDesc?.[i]}
+                />
+              ))}
+            </>
+          ) : (
+            <div className="text-sm py-4">Transaction didn't emit any logs</div>
+          )}
+        </>
+      )}
     </ContentFrame>
   );
 };
