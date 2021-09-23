@@ -33,7 +33,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     1,
     sourcifySource
   );
-  const logDesc = useMemo(() => {
+  const logDescs = useMemo(() => {
     if (!txData) {
       return undefined;
     }
@@ -41,7 +41,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
     return txData.confirmedData?.logs.map((l) => {
       const mt = metadatas[l.address];
       if (!mt) {
-        return undefined;
+        return mt;
       }
 
       const abi = mt.output.abi;
@@ -69,7 +69,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
                   key={i}
                   txData={txData}
                   log={l}
-                  logDesc={logDesc?.[i]}
+                  logDesc={logDescs?.[i]}
                 />
               ))}
             </>

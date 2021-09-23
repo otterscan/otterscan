@@ -50,7 +50,19 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => (
         </Tab.List>
         <Tab.Panels as={Fragment}>
           <Tab.Panel className="space-y-2">
-            {logDesc && (
+            {logDesc === undefined ? (
+              <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
+                <div className="col-start-2 flex space-x-2 items-center col-span-11">
+                  Waiting for data...
+                </div>
+              </div>
+            ) : logDesc === null ? (
+              <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
+                <div className="col-start-2 flex space-x-2 items-center col-span-11">
+                  No decoded data
+                </div>
+              </div>
+            ) : (
               <>
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
                   <div className="col-start-2 flex space-x-2 items-center col-span-11 font-mono">
