@@ -17,6 +17,7 @@ RUN find . -name logo.png | parallel magick convert {} -filter Lanczos -resize 3
 FROM nginx:1.21.1-alpine
 RUN apk add jq
 COPY 4bytes/signatures /usr/share/nginx/html/signatures/
+COPY 4bytes/with_parameter_names /usr/share/nginx/html/with_parameter_names/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /otterscan-build/build /usr/share/nginx/html/
