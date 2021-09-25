@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
@@ -6,11 +6,12 @@ import { ParamType } from "@ethersproject/abi";
 import { TransactionData } from "../types";
 
 type DecodedParamRowProps = {
-  prefix?: string;
+  prefix?: ReactNode;
   i?: number | undefined;
   r: any;
   paramType: ParamType;
   txData: TransactionData;
+  arrayElem?: number | undefined;
 };
 
 const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
@@ -19,15 +20,24 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
   r,
   paramType,
   txData,
+  arrayElem,
 }) => {
   return (
     <>
       <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
         <td className="col-span-3 pl-1">
           {prefix && <span className="text-gray-300">{prefix}</span>}
-          {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
-          {i !== undefined && (
-            <span className="text-gray-400 text-xs">({i})</span>
+          {arrayElem !== undefined ? (
+            <span className="text-gray-400">{" "}
+              [<span className="text-black">{arrayElem}</span>]
+            </span>
+          ) : (
+            <>
+              {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
+              {i !== undefined && (
+                <span className="text-gray-400 text-xs">({i})</span>
+              )}
+            </>
           )}
         </td>
         <td className="col-span-1 text-gray-500">{paramType.type}</td>
@@ -56,7 +66,8 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
                 {r.toString().length / 2 - 1 === 1 ? "byte" : "bytes"}
               </span>
             </span>
-          ) : paramType.baseType === "tuple" ? (
+          ) : paramType.baseType === "tuple" ||
+            paramType.baseType === "array" ? (
             <></>
           ) : (
             r.toString()
@@ -71,6 +82,17 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             r={e}
             paramType={paramType.components[idx]}
             txData={txData}
+          />
+        ))}
+      {paramType.baseType === "array" &&
+        r.map((e: any, idx: number) => (
+          <DecodedParamRow
+            key={idx}
+            prefix={paramType.name ?? <span className="italic">param_{i}</span>}
+            r={e}
+            paramType={paramType.arrayChildren}
+            txData={txData}
+            arrayElem={idx}
           />
         ))}
     </>
