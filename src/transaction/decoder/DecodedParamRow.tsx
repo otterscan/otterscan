@@ -62,7 +62,14 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
       r.map((e: any, idx: number) => (
         <DecodedParamRow
           key={idx}
-          prefix={paramType.name + "."}
+          prefix={
+            paramType.name ? (
+              paramType.name + "."
+            ) : (
+              <span className="italic">param_{i}.</span>
+            )
+          }
+          i={idx}
           r={e}
           paramType={paramType.components[idx]}
           txData={txData}
