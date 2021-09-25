@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
-import Copy from "../components/Copy";
 import { ParamType } from "@ethersproject/abi";
-import { TransactionData } from "../types";
+import AddressHighlighter from "../../components/AddressHighlighter";
+import DecoratedAddressLink from "../../components/DecoratedAddressLink";
+import Copy from "../../components/Copy";
+import { TransactionData } from "../../types";
 
 type DecodedParamRowProps = {
   prefix?: ReactNode;
@@ -28,7 +28,8 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
         <td className="col-span-3 pl-1">
           {prefix && <span className="text-gray-300">{prefix}</span>}
           {arrayElem !== undefined ? (
-            <span className="text-gray-400">{" "}
+            <span className="text-gray-400">
+              {" "}
               [<span className="text-black">{arrayElem}</span>]
             </span>
           ) : (

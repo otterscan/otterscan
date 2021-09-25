@@ -35,7 +35,7 @@ import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./DecodedParamsTable";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import { rawInputTo4Bytes, use4BytesFull } from "../use4Bytes";
 
 type DetailsProps = {

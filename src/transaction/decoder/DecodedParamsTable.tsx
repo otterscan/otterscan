@@ -1,7 +1,7 @@
 import React from "react";
 import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
-import { TransactionData } from "../types";
+import { TransactionData } from "../../types";
 
 type DecodedParamsTableProps = {
   args: Result;
@@ -27,7 +27,9 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
       </tr>
       {!hasParamNames && (
         <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-yellow-100 text-red-700">
-          <th className="col-span-12 px-1">Parameter names are not available.</th>
+          <th className="col-span-12 px-1">
+            Parameter names are not available.
+          </th>
         </tr>
       )}
     </thead>
