@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import { ParamType } from "@ethersproject/abi";
+import Uint256Decoder from "./Uint256Decoder";
 import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
@@ -42,7 +43,9 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
       </td>
       <td className="col-span-1 text-gray-500">{paramType.type}</td>
       <td className="col-span-8 pr-1 font-code break-all">
-        {paramType.baseType === "address" ? (
+        {paramType.baseType === "uint256" ? (
+          <Uint256Decoder r={r} />
+        ) : paramType.baseType === "address" ? (
           <AddressDecoder r={r} txData={txData} />
         ) : paramType.baseType === "bool" ? (
           <BooleanDecoder r={r} />
