@@ -25,7 +25,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
       <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
         <td className="col-span-3 pl-1">
           {prefix && <span className="text-gray-300">{prefix}</span>}
-          {paramType.name}{" "}
+          {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
           {i !== undefined && (
             <span className="text-gray-400 text-xs">({i})</span>
           )}
@@ -65,7 +65,8 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
       </tr>
       {paramType.baseType === "tuple" &&
         r.map((e: any, idx: number) => (
-          <DecodedParamRow key={idx}
+          <DecodedParamRow
+            key={idx}
             prefix={paramType.name + "."}
             r={e}
             paramType={paramType.components[idx]}

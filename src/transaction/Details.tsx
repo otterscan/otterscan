@@ -352,6 +352,7 @@ const Details: React.FC<DetailsProps> = ({
                   args={resolvedTxDesc.args}
                   paramTypes={resolvedTxDesc.functionFragment.inputs}
                   txData={txData}
+                  hasParamNames={resolvedTxDesc === txDesc}
                 />
               )}
             </Tab.Panel>
