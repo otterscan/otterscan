@@ -84,7 +84,7 @@ export const use4Bytes = (rawFourBytes: string) => {
   return name;
 };
 
-export const rawInputTo4Bytes = (rawInput: string) => rawInput.substr(0, 10);
+export const rawInputTo4Bytes = (rawInput: string) => rawInput.slice(0, 10);
 
 /**
  * Extract 4bytes DB info
