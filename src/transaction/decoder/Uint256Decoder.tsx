@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { hexlify } from "@ethersproject/bytes";
+import { BigNumber } from "@ethersproject/bignumber";
+import { hexlify, hexZeroPad } from "@ethersproject/bytes";
 import { commify, formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
@@ -10,19 +11,29 @@ type Uint256DecoderProps = {
 
 enum DisplayMode {
   RAW,
-  HEX,
   EIGHTEEN_DECIMALS,
+  HEX,
+  _LAST,
 }
+
+const VERY_BIG_NUMBER = BigNumber.from(10).pow(BigNumber.from(36));
+
+const initDisplayMode = (r: any): DisplayMode => {
+  const n = BigNumber.from(r);
+  if (n.gte(VERY_BIG_NUMBER)) {
+    return DisplayMode.HEX;
+  }
+  return DisplayMode.RAW;
+};
 
 const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>(
-    DisplayMode.EIGHTEEN_DECIMALS
+    initDisplayMode(r)
   );
 
   const toggleModes = () => {
-    setDisplayMode(
-      displayMode === DisplayMode.EIGHTEEN_DECIMALS ? 0 : displayMode + 1
-    );
+    const next = displayMode + 1;
+    setDisplayMode(next === DisplayMode._LAST ? 0 : next);
   };
 
   return (
@@ -36,17 +47,17 @@ const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
         </div>
         <span>
           {displayMode === DisplayMode.RAW
-            ? "Raw number"
+            ? "Raw"
             : displayMode === DisplayMode.HEX
-            ? "Hex number"
-            : "18 decimals"}
+            ? "Hex"
+            : "18 dec"}
         </span>
       </button>
       <span>
         {displayMode === DisplayMode.RAW ? (
           <>{commify(r.toString())}</>
         ) : displayMode === DisplayMode.HEX ? (
-          <>{hexlify(r)}</>
+          <>{hexZeroPad(hexlify(r), 32)}</>
         ) : (
           <>{commify(formatEther(r))}</>
         )}
