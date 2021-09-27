@@ -2,5 +2,6 @@
 node_modules
 4bytes
 !4bytes/signatures
+!4bytes/with_parameter_names
 trustwallet
 !trustwallet/blockchains/ethereum/assets

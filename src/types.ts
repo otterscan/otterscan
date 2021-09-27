@@ -108,6 +108,4 @@ export type TokenMeta = {
   decimals: number;
 };
 
-export type TokenMetas = {
-  [tokenAddress: string]: TokenMeta;
-};
+export type TokenMetas = Record<string, TokenMeta>;

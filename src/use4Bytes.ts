@@ -2,16 +2,48 @@ import { useState, useEffect, useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
 
-const cache = new Map<string, string | null>();
+export type FourBytesEntry = {
+  name: string;
+  signature: string | undefined;
+};
 
-export const use4Bytes = (rawFourBytes: string) => {
+const simpleTransfer: FourBytesEntry = {
+  name: "Transfer",
+  signature: undefined,
+};
+
+const fullCache = new Map<string, FourBytesEntry | null>();
+
+export const rawInputTo4Bytes = (rawInput: string) => rawInput.slice(0, 10);
+
+/**
+ * Extract 4bytes DB info
+ *
+ * @param rawFourBytes an hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
+ */
+export const use4Bytes = (
+  rawFourBytes: string
+): FourBytesEntry | null | undefined => {
+  if (rawFourBytes !== "0x") {
+    if (rawFourBytes.length !== 10 || !rawFourBytes.startsWith("0x")) {
+      throw new Error(
+        `rawFourBytes must contain a 4 bytes hex method signature starting with 0x; received value: "${rawFourBytes}"`
+      );
+    }
+  }
+
   const runtime = useContext(RuntimeContext);
   const assetsURLPrefix = runtime.config?.assetsURLPrefix;
 
-  const [name, setName] = useState<string>();
-  const [fourBytes, setFourBytes] = useState<string>();
+  const fourBytes = rawFourBytes.slice(2);
+  const [entry, setEntry] = useState<FourBytesEntry | null | undefined>(
+    fullCache.get(fourBytes)
+  );
   useEffect(() => {
-    if (assetsURLPrefix === undefined || fourBytes === undefined) {
+    if (assetsURLPrefix === undefined) {
+      return;
+    }
+    if (fourBytes === "") {
       return;
     }
 
@@ -20,51 +52,47 @@ export const use4Bytes = (rawFourBytes: string) => {
       .then(async (res) => {
         if (!res.ok) {
           console.error(`Signature does not exist in 4bytes DB: ${fourBytes}`);
-
-          // Use the default 4 bytes as name
-          setName(rawFourBytes);
-          cache.set(fourBytes, null);
+          fullCache.set(fourBytes, null);
+          setEntry(null);
           return;
         }
 
-        const sig = await res.text();
+        // Get only the first occurrence, for now ignore alternative param names
+        const sigs = await res.text();
+        const sig = sigs.split(";")[0];
         const cut = sig.indexOf("(");
         let method = sig.slice(0, cut);
         method = method.charAt(0).toUpperCase() + method.slice(1);
-        setName(method);
-        cache.set(fourBytes, method);
-        return;
+
+        const entry: FourBytesEntry = {
+          name: method,
+          signature: sig,
+        };
+        setEntry(entry);
+        fullCache.set(fourBytes, entry);
       })
       .catch((err) => {
         console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
-
-        // Use the default 4 bytes as name
-        setName(rawFourBytes);
+        setEntry(null);
+        fullCache.set(fourBytes, null);
       });
-  }, [rawFourBytes, assetsURLPrefix, fourBytes]);
+  }, [fourBytes, assetsURLPrefix]);
 
   if (rawFourBytes === "0x") {
-    return "Transfer";
+    return simpleTransfer;
   }
   if (assetsURLPrefix === undefined) {
-    return rawFourBytes;
+    return undefined;
   }
 
   // Try to resolve 4bytes name
-  const entry = cache.get(rawFourBytes.slice(2));
-  if (entry === null) {
-    return rawFourBytes;
-  }
-  if (entry !== undefined) {
-    // Simulates LRU
-    cache.delete(entry);
-    cache.set(rawFourBytes.slice(2), entry);
+  if (entry === null || entry === undefined) {
     return entry;
   }
-  if (name === undefined && fourBytes === undefined) {
-    setFourBytes(rawFourBytes.slice(2));
-    return "";
-  }
 
-  return name;
+  // Simulates LRU
+  // TODO: implement LRU purging
+  fullCache.delete(fourBytes);
+  fullCache.set(fourBytes, entry);
+  return entry;
 };

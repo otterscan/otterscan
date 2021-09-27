@@ -1,5 +1,9 @@
 import React, { useMemo } from "react";
-import { TransactionDescription } from "@ethersproject/abi";
+import {
+  TransactionDescription,
+  Fragment,
+  Interface,
+} from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
 import { Tab } from "@headlessui/react";
@@ -31,7 +35,8 @@ import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./DecodedParamsTable";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -61,6 +66,20 @@ const Details: React.FC<DetailsProps> = ({
       return "<can't decode>";
     }
   }, [txData]);
+
+  const fourBytes = rawInputTo4Bytes(txData.data);
+  const fourBytesEntry = use4Bytes(fourBytes);
+  const fourBytesTxDesc = useMemo(() => {
+    if (!txData || !fourBytesEntry?.signature) {
+      return undefined;
+    }
+    const sig = fourBytesEntry?.signature;
+    const functionFragment = Fragment.fromString(`function ${sig}`);
+    const intf = new Interface([functionFragment]);
+    return intf.parseTransaction({ data: txData.data, value: txData.value });
+  }, [txData, fourBytesEntry]);
+
+  const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
 
   return (
     <ContentFrame tabs>
@@ -187,7 +206,7 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 t={t}
                 txData={txData}
-                tokenMetas={txData.tokenMetas}
+                tokenMeta={txData.tokenMetas[t.token]}
               />
             ))}
           </div>
@@ -322,15 +341,18 @@ const Details: React.FC<DetailsProps> = ({
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
-              {txDesc === undefined ? (
+              {fourBytes === "0x" ? (
+                <>No parameters</>
+              ) : resolvedTxDesc === undefined ? (
                 <>Waiting for data...</>
-              ) : txDesc === null ? (
+              ) : resolvedTxDesc === null ? (
                 <>No decoded data</>
               ) : (
                 <DecodedParamsTable
-                  args={txDesc.args}
-                  paramTypes={txDesc.functionFragment.inputs}
+                  args={resolvedTxDesc.args}
+                  paramTypes={resolvedTxDesc.functionFragment.inputs}
                   txData={txData}
+                  hasParamNames={resolvedTxDesc === txDesc}
                 />
               )}
             </Tab.Panel>

@@ -7,7 +7,7 @@ import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import FormattedBalance from "./components/FormattedBalance";
 import {
   AddressContext,
-  TokenMetas,
+  TokenMeta,
   TokenTransfer,
   TransactionData,
 } from "./types";
@@ -15,14 +15,14 @@ import {
 type TokenTransferItemProps = {
   t: TokenTransfer;
   txData: TransactionData;
-  tokenMetas: TokenMetas;
+  tokenMeta?: TokenMeta | undefined;
 };
 
 // TODO: handle partial
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   txData,
-  tokenMetas,
+  tokenMeta,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
@@ -57,7 +57,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <ValueHighlighter value={t.value}>
             <FormattedBalance
               value={t.value}
-              decimals={tokenMetas[t.token].decimals}
+              decimals={tokenMeta?.decimals ?? 0}
             />
           </ValueHighlighter>
         </span>
@@ -65,11 +65,9 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <DecoratedAddressLink
             address={t.token}
             text={
-              tokenMetas[t.token]
-                ? `${tokenMetas[t.token].name} (${tokenMetas[t.token].symbol})`
-                : ""
+              tokenMeta ? `${tokenMeta.name} (${tokenMeta.symbol})` : undefined
             }
-            tokenMeta={tokenMetas[t.token]}
+            tokenMeta={tokenMeta}
           />
         </AddressHighlighter>
       </div>
