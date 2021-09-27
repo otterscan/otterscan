@@ -206,7 +206,7 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 t={t}
                 txData={txData}
-                tokenMetas={txData.tokenMetas}
+                tokenMeta={txData.tokenMetas[t.token]}
               />
             ))}
           </div>
