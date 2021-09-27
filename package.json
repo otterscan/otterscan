@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@blackbox-vision/react-qr-reader": "^5.0.0",
-    "@chainlink/contracts": "^0.2.1",
+    "@chainlink/contracts": "^0.2.2",
     "@craco/craco": "^6.3.0",
     "@fontsource/fira-code": "^4.5.1",
     "@fontsource/roboto": "^4.5.0",
@@ -78,7 +78,7 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.6",
+    "autoprefixer": "^9.8.7",
     "postcss": "^7.0.36",
     "source-map-explorer": "^2.5.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.6"
