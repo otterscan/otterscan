@@ -7,8 +7,9 @@ type MethodNameProps = {
 
 const MethodName: React.FC<MethodNameProps> = ({ data }) => {
   const rawFourBytes = rawInputTo4Bytes(data);
-  const methodName = use4Bytes(rawFourBytes);
-  const isSimpleTransfer = data === "0x";
+  const fourBytesEntry = use4Bytes(rawFourBytes);
+  const methodName = fourBytesEntry?.name ?? rawFourBytes;
+  const isSimpleTransfer = rawFourBytes === "0x";
   const methodTitle = isSimpleTransfer
     ? "ETH Transfer"
     : methodName === rawFourBytes

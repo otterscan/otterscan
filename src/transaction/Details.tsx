@@ -36,7 +36,7 @@ import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
-import { rawInputTo4Bytes, use4BytesFull } from "../use4Bytes";
+import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -68,7 +68,7 @@ const Details: React.FC<DetailsProps> = ({
   }, [txData]);
 
   const fourBytes = rawInputTo4Bytes(txData.data);
-  const fourBytesEntry = use4BytesFull(fourBytes);
+  const fourBytesEntry = use4Bytes(fourBytes);
   const fourBytesTxDesc = useMemo(() => {
     if (!txData || !fourBytesEntry?.signatureWithoutParamNames) {
       return undefined;
