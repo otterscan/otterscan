@@ -70,10 +70,10 @@ const Details: React.FC<DetailsProps> = ({
   const fourBytes = rawInputTo4Bytes(txData.data);
   const fourBytesEntry = use4Bytes(fourBytes);
   const fourBytesTxDesc = useMemo(() => {
-    if (!txData || !fourBytesEntry?.signatureWithoutParamNames) {
+    if (!txData || !fourBytesEntry?.signature) {
       return undefined;
     }
-    const sig = fourBytesEntry?.signatureWithoutParamNames;
+    const sig = fourBytesEntry?.signature;
     const functionFragment = Fragment.fromString(`function ${sig}`);
     const intf = new Interface([functionFragment]);
     return intf.parseTransaction({ data: txData.data, value: txData.value });

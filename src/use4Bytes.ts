@@ -4,14 +4,12 @@ import { fourBytesURL } from "./url";
 
 export type FourBytesEntry = {
   name: string;
-  signatureWithoutParamNames: string | undefined;
-  signatures: string[] | undefined;
+  signature: string | undefined;
 };
 
 const simpleTransfer: FourBytesEntry = {
   name: "Transfer",
-  signatureWithoutParamNames: undefined,
-  signatures: undefined,
+  signature: undefined,
 };
 
 const fullCache = new Map<string, FourBytesEntry | null>();
@@ -68,8 +66,7 @@ export const use4Bytes = (
 
         const entry: FourBytesEntry = {
           name: method,
-          signatureWithoutParamNames: sig,
-          signatures: undefined,
+          signature: sig,
         };
         setEntry(entry);
         fullCache.set(fourBytes, entry);
