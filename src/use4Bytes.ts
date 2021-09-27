@@ -59,7 +59,9 @@ export const use4Bytes = (
           return;
         }
 
-        const sig = await res.text();
+        // Get only the first occurrence, for now ignore alternative param names
+        const sigs = await res.text();
+        const sig = sigs.split(";")[0];
         const cut = sig.indexOf("(");
         let method = sig.slice(0, cut);
         method = method.charAt(0).toUpperCase() + method.slice(1);
