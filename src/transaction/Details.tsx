@@ -66,8 +66,8 @@ const Details: React.FC<DetailsProps> = ({
     try {
       return txData && toUtf8String(txData.data);
     } catch (err) {
-      console.error("Error while converting input data to string");
-      console.error(err);
+      console.warn("Error while converting input data to string");
+      console.warn(err);
       return "<can't decode>";
     }
   }, [txData]);
