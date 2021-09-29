@@ -2,12 +2,15 @@ import React from "react";
 import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
 import { TransactionData } from "../../types";
+import { DevMethod, UserMethod } from "../../useSourcify";
 
 type DecodedParamsTableProps = {
   args: Result;
   paramTypes: ParamType[];
   txData: TransactionData;
   hasParamNames?: boolean;
+  userMethod?: UserMethod | undefined;
+  devMethod?: DevMethod | undefined;
 };
 
 const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
@@ -15,6 +18,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
   paramTypes,
   txData,
   hasParamNames = true,
+  devMethod,
 }) => (
   <table className="border w-full">
     <thead>
@@ -43,6 +47,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
           r={r}
           paramType={paramTypes[i]}
           txData={txData}
+          help={devMethod?.params?.[paramTypes[i].name]}
         />
       ))}
     </tbody>
