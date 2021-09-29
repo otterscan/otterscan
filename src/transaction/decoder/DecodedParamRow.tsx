@@ -35,35 +35,34 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
     <>
       <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
         <td className="col-span-3 pl-1">
-          <div>
-            {prefix && <span className="text-gray-300">{prefix}</span>}
-            {arrayElem !== undefined ? (
-              <span className="text-gray-400">
-                {" "}
-                [<span className="text-black">{arrayElem}</span>]
-              </span>
-            ) : (
-              <>
-                {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
-                {i !== undefined && (
-                  <span className="text-gray-400 text-xs">({i})</span>
-                )}
-              </>
-            )}
+          <div className="flex space-x-2 items-baseline">
+            <span>
+              {prefix && <span className="text-gray-300">{prefix}</span>}
+              {arrayElem !== undefined ? (
+                <span className="text-gray-400">
+                  {" "}
+                  [<span className="text-black">{arrayElem}</span>]
+                </span>
+              ) : (
+                <>
+                  {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
+                  {i !== undefined && (
+                    <span className="text-gray-400 text-xs">({i})</span>
+                  )}
+                </>
+              )}
+            </span>
             {help && (
-              <>
-                {" "}
-                <Switch
-                  checked={showHelp}
-                  onChange={setShowHelp}
-                  className="text-gray-500"
-                >
-                  <FontAwesomeIcon
-                    icon={showHelp ? faQuestionCircleSolid : faQuestionCircle}
-                    size="1x"
-                  />
-                </Switch>
-              </>
+              <Switch
+                checked={showHelp}
+                onChange={setShowHelp}
+                className="text-gray-500 self-center"
+              >
+                <FontAwesomeIcon
+                  icon={showHelp ? faQuestionCircleSolid : faQuestionCircle}
+                  size="1x"
+                />
+              </Switch>
             )}
           </div>
           {help && showHelp && <div className="mt-2 text-gray-400">{help}</div>}
