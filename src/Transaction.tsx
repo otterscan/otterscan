@@ -82,6 +82,8 @@ const Transaction: React.FC = () => {
               <Details
                 txData={txData}
                 txDesc={txDesc}
+                userDoc={metadata?.output.userdoc}
+                devDoc={metadata?.output.devdoc}
                 internalOps={internalOps}
                 sendsEthToMiner={sendsEthToMiner}
                 ethUSDPrice={blockETHUSDPrice}

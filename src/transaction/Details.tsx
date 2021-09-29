@@ -37,10 +37,13 @@ import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import { DevDoc, UserDoc } from "../useSourcify";
 
 type DetailsProps = {
   txData: TransactionData;
   txDesc: TransactionDescription | null | undefined;
+  userDoc?: UserDoc | undefined;
+  devDoc?: DevDoc | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
@@ -49,6 +52,8 @@ type DetailsProps = {
 const Details: React.FC<DetailsProps> = ({
   txData,
   txDesc,
+  userDoc,
+  devDoc,
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
@@ -61,8 +66,8 @@ const Details: React.FC<DetailsProps> = ({
     try {
       return txData && toUtf8String(txData.data);
     } catch (err) {
-      console.error("Error while converting input data to string");
-      console.error(err);
+      console.warn("Error while converting input data to string");
+      console.warn(err);
       return "<can't decode>";
     }
   }, [txData]);
@@ -80,6 +85,8 @@ const Details: React.FC<DetailsProps> = ({
   }, [txData, fourBytesEntry]);
 
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
+  const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
+  const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
   return (
     <ContentFrame tabs>
@@ -353,6 +360,8 @@ const Details: React.FC<DetailsProps> = ({
                   paramTypes={resolvedTxDesc.functionFragment.inputs}
                   txData={txData}
                   hasParamNames={resolvedTxDesc === txDesc}
+                  userMethod={userMethod}
+                  devMethod={devMethod}
                 />
               )}
             </Tab.Panel>
