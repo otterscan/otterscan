@@ -6,8 +6,8 @@ import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import Copy from "../components/Copy";
 import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./DecodedParamsTable";
-import DecodedLogSignature from "./DecodedLogSignature";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { TransactionData } from "../types";
 
 type LogEntryProps = {

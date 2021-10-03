@@ -14,9 +14,14 @@ WORKDIR /assets
 COPY trustwallet/blockchains/ethereum/assets /assets/
 RUN find . -name logo.png | parallel magick convert {} -filter Lanczos -resize 32x32 {}
 
+FROM alpine:3.14.0 AS fourbytesbuilder
+WORKDIR /signatures
+COPY 4bytes/signatures /signatures/
+COPY 4bytes/with_parameter_names /signatures/
+
 FROM nginx:1.21.1-alpine
 RUN apk add jq
-COPY 4bytes/signatures /usr/share/nginx/html/signatures/
+COPY --from=fourbytesbuilder /signatures /usr/share/nginx/html/signatures/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /otterscan-build/build /usr/share/nginx/html/

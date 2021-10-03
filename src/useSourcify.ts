@@ -3,6 +3,33 @@ import { Interface } from "@ethersproject/abi";
 import { TransactionData } from "./types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
 
+export type UserMethod = {
+  notice?: string | undefined;
+};
+
+export type UserEvent = {
+  notice?: string | undefined;
+};
+
+export type UserDoc = {
+  kind: "user";
+  version?: number | undefined;
+  notice?: string | undefined;
+  methods: Record<string, UserMethod>;
+  events: Record<string, UserEvent>;
+};
+
+export type DevMethod = {
+  params?: Record<string, string>;
+  returns?: Record<string, string>;
+};
+
+export type DevDoc = {
+  kind: "dev";
+  version?: number | undefined;
+  methods: Record<string, DevMethod>;
+};
+
 export type Metadata = {
   version: string;
   language: string;
@@ -33,8 +60,8 @@ export type Metadata = {
   };
   output: {
     abi: any[];
-    userdocs: any[];
-    devdoc: any[];
+    userdoc?: UserDoc | undefined;
+    devdoc?: DevDoc | undefined;
   };
 };
 

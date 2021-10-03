@@ -1,5 +1,9 @@
 import React, { useMemo } from "react";
-import { TransactionDescription } from "@ethersproject/abi";
+import {
+  TransactionDescription,
+  Fragment,
+  Interface,
+} from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
 import { Tab } from "@headlessui/react";
@@ -31,11 +35,15 @@ import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./DecodedParamsTable";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import { DevDoc, UserDoc } from "../useSourcify";
 
 type DetailsProps = {
   txData: TransactionData;
   txDesc: TransactionDescription | null | undefined;
+  userDoc?: UserDoc | undefined;
+  devDoc?: DevDoc | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
@@ -44,6 +52,8 @@ type DetailsProps = {
 const Details: React.FC<DetailsProps> = ({
   txData,
   txDesc,
+  userDoc,
+  devDoc,
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
@@ -56,11 +66,27 @@ const Details: React.FC<DetailsProps> = ({
     try {
       return txData && toUtf8String(txData.data);
     } catch (err) {
-      console.error("Error while converting input data to string");
-      console.error(err);
+      console.warn("Error while converting input data to string");
+      console.warn(err);
       return "<can't decode>";
     }
   }, [txData]);
+
+  const fourBytes = rawInputTo4Bytes(txData.data);
+  const fourBytesEntry = use4Bytes(fourBytes);
+  const fourBytesTxDesc = useMemo(() => {
+    if (!txData || !fourBytesEntry?.signature) {
+      return undefined;
+    }
+    const sig = fourBytesEntry?.signature;
+    const functionFragment = Fragment.fromString(`function ${sig}`);
+    const intf = new Interface([functionFragment]);
+    return intf.parseTransaction({ data: txData.data, value: txData.value });
+  }, [txData, fourBytesEntry]);
+
+  const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
+  const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
+  const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
   return (
     <ContentFrame tabs>
@@ -187,7 +213,7 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 t={t}
                 txData={txData}
-                tokenMetas={txData.tokenMetas}
+                tokenMeta={txData.tokenMetas[t.token]}
               />
             ))}
           </div>
@@ -322,15 +348,20 @@ const Details: React.FC<DetailsProps> = ({
           </Tab.List>
           <Tab.Panels>
             <Tab.Panel>
-              {txDesc === undefined ? (
+              {fourBytes === "0x" ? (
+                <>No parameters</>
+              ) : resolvedTxDesc === undefined ? (
                 <>Waiting for data...</>
-              ) : txDesc === null ? (
+              ) : resolvedTxDesc === null ? (
                 <>No decoded data</>
               ) : (
                 <DecodedParamsTable
-                  args={txDesc.args}
-                  paramTypes={txDesc.functionFragment.inputs}
+                  args={resolvedTxDesc.args}
+                  paramTypes={resolvedTxDesc.functionFragment.inputs}
                   txData={txData}
+                  hasParamNames={resolvedTxDesc === txDesc}
+                  userMethod={userMethod}
+                  devMethod={devMethod}
                 />
               )}
             </Tab.Panel>
