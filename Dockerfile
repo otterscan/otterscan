@@ -19,8 +19,13 @@ WORKDIR /signatures
 COPY 4bytes/signatures /signatures/
 COPY 4bytes/with_parameter_names /signatures/
 
+FROM alpine:3.14.0 AS topic0builder
+WORKDIR /topic0
+COPY topic0/with_parameter_names /topic0/
+
 FROM nginx:1.21.1-alpine
 RUN apk add jq
+COPY --from=topic0builder /topic0 /usr/share/nginx/html/topic0/
 COPY --from=fourbytesbuilder /signatures /usr/share/nginx/html/signatures/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
