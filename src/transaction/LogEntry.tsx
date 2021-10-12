@@ -100,6 +100,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => {
                         args={resolvedLogDesc.args}
                         paramTypes={resolvedLogDesc.eventFragment.inputs}
                         txData={txData}
+                        hasParamNames={resolvedLogDesc === logDesc}
                       />
                     </div>
                   </div>
