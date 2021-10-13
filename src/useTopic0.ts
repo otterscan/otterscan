@@ -3,7 +3,7 @@ import { RuntimeContext } from "./useRuntime";
 import { topic0URL } from "./url";
 
 export type Topic0Entry = {
-  signature: string | undefined;
+  signatures: string[] | undefined;
 };
 
 const fullCache = new Map<string, Topic0Entry | null>();
@@ -46,8 +46,9 @@ export const useTopic0 = (
 
         // Get only the first occurrence, for now ignore alternative param names
         const sig = await res.text();
+        const sigs = sig.split(";");
         const entry: Topic0Entry = {
-          signature: sig,
+          signatures: sigs,
         };
         setEntry(entry);
         fullCache.set(topic0, entry);

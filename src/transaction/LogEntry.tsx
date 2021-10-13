@@ -22,19 +22,21 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => {
   const topic0 = useTopic0(rawTopic0);
 
   const topic0LogDesc = useMemo(() => {
-    if (!topic0?.signature) {
+    if (!topic0?.signatures) {
       return undefined;
     }
-    const sig = topic0.signature;
-    const logFragment = Fragment.fromString(`event ${sig}`);
-    const intf = new Interface([logFragment]);
-    try {
-      return intf.parseLog(log);
-    } catch (err) {
-      // TODO: try other indexed/non-indexed combinations?
-      console.error(err);
-      return undefined;
+
+    const sigs = topic0.signatures;
+    for (const sig of sigs) {
+      const logFragment = Fragment.fromString(`event ${sig}`);
+      const intf = new Interface([logFragment]);
+      try {
+        return intf.parseLog(log);
+      } catch (err) {
+        // Ignore on purpose; try to match other sigs
+      }
     }
+    return undefined;
   }, [topic0, log]);
 
   const resolvedLogDesc = logDesc ?? topic0LogDesc;
