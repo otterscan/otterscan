@@ -25,7 +25,7 @@
     "@types/react": "^17.0.30",
     "@types/react-blockies": "^1.4.1",
     "@types/react-dom": "^17.0.9",
-    "@types/react-highlight": "^0.12.4",
+    "@types/react-highlight": "^0.12.5",
     "@types/react-router-dom": "^5.3.1",
     "@types/react-syntax-highlighter": "^13.5.2",
     "chart.js": "^3.5.1",
