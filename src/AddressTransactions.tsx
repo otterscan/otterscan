@@ -13,7 +13,6 @@ import queryString from "query-string";
 import Blockies from "react-blockies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
-import { faCheckCircle } from "@fortawesome/free-regular-svg-icons/faCheckCircle";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
@@ -240,7 +239,13 @@ const AddressTransactions: React.FC = () => {
                       </span>
                     ) : (
                       <span className="self-center text-green-500">
-                        <FontAwesomeIcon icon={faCheckCircle} />
+                        <img
+                          src="/sourcify.svg"
+                          alt="Sourcify logo"
+                          title="Verified by Sourcify"
+                          width={16}
+                          height={16}
+                        />
                       </span>
                     )}
                   </span>
@@ -300,10 +305,6 @@ const AddressTransactions: React.FC = () => {
                               disabled={controller === undefined}
                             />
                           </div>
-                          <ResultHeader
-                            feeDisplay={feeDisplay}
-                            feeDisplayToggler={feeDisplayToggler}
-                          />
                         </SelectionContext.Provider>
                       ) : (
                         <PendingResults />

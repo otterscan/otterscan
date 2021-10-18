@@ -5,6 +5,9 @@ export const fourBytesURL = (
   fourBytes: string
 ): string => `${assetsURLPrefix}/signatures/${fourBytes}`;
 
+export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
+  `${assetsURLPrefix}/topic0/${topic0}`;
+
 export const tokenLogoURL = (
   assetsURLPrefix: string,
   address: string
