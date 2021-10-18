@@ -305,10 +305,6 @@ const AddressTransactions: React.FC = () => {
                               disabled={controller === undefined}
                             />
                           </div>
-                          <ResultHeader
-                            feeDisplay={feeDisplay}
-                            feeDisplayToggler={feeDisplayToggler}
-                          />
                         </SelectionContext.Provider>
                       ) : (
                         <PendingResults />
