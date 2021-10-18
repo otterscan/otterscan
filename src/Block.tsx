@@ -45,8 +45,8 @@ const Block: React.FC = () => {
     try {
       return block && toUtf8String(block.extraData);
     } catch (err) {
-      console.error("Error while converting block extra data to string");
-      console.error(err);
+      console.info("Error while converting block extra data to string");
+      console.info(err);
     }
   }, [block]);
   const burntFees =
