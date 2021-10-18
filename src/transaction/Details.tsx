@@ -72,7 +72,7 @@ const Details: React.FC<DetailsProps> = ({
     }
   }, [txData]);
 
-  const fourBytes = rawInputTo4Bytes(txData.data);
+  const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
   const fourBytesTxDesc = useMemo(() => {
     if (!txData || !fourBytesEntry?.signature) {
@@ -202,9 +202,11 @@ const Details: React.FC<DetailsProps> = ({
           </div>
         )}
       </InfoRow>
-      <InfoRow title="Transaction Action">
-        <MethodName data={txData.data} />
-      </InfoRow>
+      {txData.to && (
+        <InfoRow title="Transaction Action">
+          <MethodName data={txData.data} />
+        </InfoRow>
+      )}
       {txData.tokenTransfers.length > 0 && (
         <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
           <div>
