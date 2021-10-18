@@ -160,7 +160,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
-            <span className="font-data">{block.extraData}</span>)
+            <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">
             <USDValue value={blockETHUSDPrice} />
