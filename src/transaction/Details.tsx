@@ -75,7 +75,10 @@ const Details: React.FC<DetailsProps> = ({
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
   const fourBytesTxDesc = useMemo(() => {
-    if (!txData || !fourBytesEntry?.signature) {
+    if (!fourBytesEntry) {
+      return fourBytesEntry;
+    }
+    if (!txData || !fourBytesEntry.signature) {
       return undefined;
     }
     const sig = fourBytesEntry?.signature;
@@ -355,7 +358,7 @@ const Details: React.FC<DetailsProps> = ({
               ) : resolvedTxDesc === undefined ? (
                 <>Waiting for data...</>
               ) : resolvedTxDesc === null ? (
-                <>No decoded data</>
+                <>Can't decode data</>
               ) : (
                 <DecodedParamsTable
                   args={resolvedTxDesc.args}
