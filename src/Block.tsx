@@ -45,8 +45,8 @@ const Block: React.FC = () => {
     try {
       return block && toUtf8String(block.extraData);
     } catch (err) {
-      console.error("Error while converting block extra data to string");
-      console.error(err);
+      console.info("Error while converting block extra data to string");
+      console.info(err);
     }
   }, [block]);
   const burntFees =
@@ -160,7 +160,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
-            <span className="font-data">{block.extraData}</span>)
+            <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title="Ether Price">
             <USDValue value={blockETHUSDPrice} />

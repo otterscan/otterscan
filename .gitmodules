@@ -4,3 +4,6 @@
 [submodule "trustwallet"]
 	path = trustwallet
 	url = https://github.com/trustwallet/assets.git
+[submodule "topic0"]
+	path = topic0
+	url = https://github.com/wmitsuda/topic0.git
