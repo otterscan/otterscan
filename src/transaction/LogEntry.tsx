@@ -22,7 +22,10 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => {
   const topic0 = useTopic0(rawTopic0);
 
   const topic0LogDesc = useMemo(() => {
-    if (!topic0?.signatures) {
+    if (!topic0) {
+      return topic0;
+    }
+    if (!topic0.signatures) {
       return undefined;
     }
 
@@ -84,7 +87,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ txData, log, logDesc }) => {
               ) : resolvedLogDesc === null ? (
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
                   <div className="col-start-2 flex space-x-2 items-center col-span-11">
-                    No decoded data
+                    Can't decode data
                   </div>
                 </div>
               ) : (
