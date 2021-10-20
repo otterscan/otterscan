@@ -48,7 +48,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "craco build && compress-cra",
     "test": "craco test",
     "eject": "react-scripts eject",
     "source-map-explorer": "source-map-explorer build/static/js/*.js",
@@ -79,6 +79,7 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.8.8",
+    "compress-create-react-app": "^1.1.3",
     "postcss": "^7.0.39",
     "source-map-explorer": "^2.5.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.6"
