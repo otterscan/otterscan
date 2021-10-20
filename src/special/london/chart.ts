@@ -2,7 +2,7 @@ import { commify } from "@ethersproject/units";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 
-export const burntFeesChartOptions: ChartOptions = {
+export const burntFeesChartOptions: ChartOptions<"line"> = {
   animation: false,
   plugins: {
     legend: {
@@ -45,7 +45,9 @@ export const burntFeesChartOptions: ChartOptions = {
   },
 };
 
-export const burntFeesChartData = (blocks: ExtendedBlock[]): ChartData => ({
+export const burntFeesChartData = (
+  blocks: ExtendedBlock[]
+): ChartData<"line"> => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [
     {
@@ -68,7 +70,7 @@ export const burntFeesChartData = (blocks: ExtendedBlock[]): ChartData => ({
   ],
 });
 
-export const gasChartOptions: ChartOptions = {
+export const gasChartOptions: ChartOptions<"line"> = {
   animation: false,
   interaction: {
     mode: "index",
@@ -112,7 +114,7 @@ export const gasChartOptions: ChartOptions = {
   },
 };
 
-export const gasChartData = (blocks: ExtendedBlock[]): ChartData => ({
+export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [
     {
@@ -148,7 +150,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData => ({
       borderColor: "#B91C1CF0",
       tension: 0.2,
       pointStyle: "crossRot",
-      radius: 5,
+      pointRadius: 5,
     },
     {
       label: "Base fee (wei)",
