@@ -28,7 +28,7 @@ RUN apk add jq
 COPY --from=topic0builder /topic0 /usr/share/nginx/html/topic0/
 COPY --from=fourbytesbuilder /signatures /usr/share/nginx/html/signatures/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /otterscan-build/build /usr/share/nginx/html/
 COPY --from=builder /otterscan-build/run-nginx.sh /
 WORKDIR /
