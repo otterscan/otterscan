@@ -1,10 +1,5 @@
 import React from "react";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import hljs from "highlight.js";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/docco";
-
-import hljsDefineSolidity from "highlightjs-solidity";
-hljsDefineSolidity(hljs);
+import { SyntaxHighlighter, docco } from "../highlight-init";
 
 type ABIProps = {
   abi: any[];
