@@ -6,6 +6,7 @@ import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
+import Otter from "./otter.jpg";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
@@ -44,7 +45,7 @@ const Title: React.FC = () => {
           <div className="text-2xl text-link-blue font-title font-bold flex items-center space-x-2">
             <img
               className="rounded-full"
-              src="/otter.jpg"
+              src={Otter}
               width={32}
               height={32}
               alt="An otter scanning"

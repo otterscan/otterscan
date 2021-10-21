@@ -32,6 +32,7 @@ import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify } from "./useSourcify";
+import SourcifyLogo from "./sourcify.svg";
 
 type BlockParams = {
   addressOrName: string;
@@ -240,7 +241,7 @@ const AddressTransactions: React.FC = () => {
                     ) : (
                       <span className="self-center text-green-500">
                         <img
-                          src="/sourcify.svg"
+                          src={SourcifyLogo}
                           alt="Sourcify logo"
                           title="Verified by Sourcify"
                           width={16}
