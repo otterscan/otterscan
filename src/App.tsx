@@ -5,7 +5,6 @@ import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
-import London from "./special/london/London";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
@@ -16,6 +15,7 @@ const Block = React.lazy(() => import("./Block"));
 const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
 const AddressTransactions = React.lazy(() => import("./AddressTransactions"));
 const Transaction = React.lazy(() => import("./Transaction"));
+const London = React.lazy(() => import("./special/london/London"));
 
 const App = () => {
   const runtime = useRuntime();
