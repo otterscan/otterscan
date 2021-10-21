@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
-import CameraScanner from "./search/CameraScanner";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
+
+const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
 const Title: React.FC = () => {
   const { provider } = useContext(RuntimeContext);

@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import Logo from "./Logo";
-import CameraScanner from "./search/CameraScanner";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
 import { blockURL } from "./url";
+
+const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
 const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
