@@ -38,9 +38,11 @@ const Home: React.FC = () => {
   document.title = "Home | Otterscan";
 
   return (
-    <div className="m-auto">
+    <div className="mx-auto flex flex-col h-full">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <Logo />
+      <div className="m-5 mb-10 flex items-end flex-grow max-h-72">
+        <Logo />
+      </div>
       <form
         className="flex flex-col"
         onSubmit={handleSubmit}
@@ -71,7 +73,9 @@ const Home: React.FC = () => {
         >
           Search
         </button>
-        <div className="mx-auto mt-5 mb-5 text-lg text-link-blue hover:text-link-blue-hover font-bold">
+      </form>
+      <div className="mx-auto h-32">
+        <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
           <NavLink to="/special/london">
             <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
               <span>
@@ -86,14 +90,15 @@ const Home: React.FC = () => {
         </div>
         {latestBlock && (
           <NavLink
-            className="mx-auto flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+            className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
             to={blockURL(latestBlock.number)}
           >
             <div>Latest block: {commify(latestBlock.number)}</div>
             <Timestamp value={latestBlock.timestamp} />
           </NavLink>
         )}
-      </form>
+      </div>
+      <div className="flex-grow pb-5"></div>
     </div>
   );
 };
