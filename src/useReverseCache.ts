@@ -25,7 +25,7 @@ export const useENSCache = (
     const addresses = Array.from(addrSet);
 
     const reverseResolve = async () => {
-      const solvers: Promise<string>[] = [];
+      const solvers: Promise<string | null>[] = [];
       for (const a of addresses) {
         solvers.push(provider.lookupAddress(a));
       }
@@ -33,10 +33,11 @@ export const useENSCache = (
       const results = await Promise.all(solvers);
       const cache: ENSReverseCache = {};
       for (let i = 0; i < results.length; i++) {
-        if (results[i] === null) {
+        const r = results[i];
+        if (r === null) {
           continue;
         }
-        cache[addresses[i]] = results[i];
+        cache[addresses[i]] = r;
       }
       setReverseCache(cache);
     };
