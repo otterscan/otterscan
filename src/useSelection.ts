@@ -1,23 +1,29 @@
-import React, { useState, useContext } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useState,
+  useContext,
+} from "react";
 
 export type Selection = {
   type: "address" | "value";
   content: string;
 };
 
+type OptionalSelection = Selection | null;
+
 export const useSelection = (): [
-  Selection | null,
-  React.Dispatch<React.SetStateAction<Selection | null>>
+  OptionalSelection,
+  Dispatch<SetStateAction<OptionalSelection>>
 ] => {
-  const [selection, setSelection] = useState<Selection | null>(null);
-  return [selection, setSelection];
+  return useState<OptionalSelection>(null);
 };
 
-export const SelectionContext = React.createContext<
-  ReturnType<typeof useSelection>
->(null!);
+export const SelectionContext = createContext<ReturnType<typeof useSelection>>(
+  null!
+);
 
 export const useSelectionContext = () => {
-  const ctx = useContext(SelectionContext);
-  return ctx;
+  return useContext(SelectionContext);
 };

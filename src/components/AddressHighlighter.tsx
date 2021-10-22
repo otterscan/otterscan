@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelectionContext } from "../useSelection";
 
 type AddressHighlighterProps = React.PropsWithChildren<{
@@ -10,12 +10,15 @@ const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   children,
 }) => {
   const [selection, setSelection] = useSelectionContext();
-  const select = () => {
-    setSelection({ type: "address", content: address });
-  };
-  const deselect = () => {
-    setSelection(null);
-  };
+  const [select, deselect] = useMemo(() => {
+    const _select = () => {
+      setSelection({ type: "address", content: address });
+    };
+    const _deselect = () => {
+      setSelection(null);
+    };
+    return [_select, _deselect];
+  }, [setSelection, address]);
 
   return (
     <div
