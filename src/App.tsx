@@ -53,21 +53,19 @@ const App = () => {
                 </Route>
                 <Route>
                   <AppConfigContext.Provider value={appConfig}>
-                    <div className="mb-auto">
-                      <Title />
-                      <Route path="/block/:blockNumberOrHash" exact>
-                        <Block />
-                      </Route>
-                      <Route path="/block/:blockNumber/txs" exact>
-                        <BlockTransactions />
-                      </Route>
-                      <Route path="/tx/:txhash">
-                        <Transaction />
-                      </Route>
-                      <Route path="/address/:addressOrName/:direction?">
-                        <AddressTransactions />
-                      </Route>
-                    </div>
+                    <Title />
+                    <Route path="/block/:blockNumberOrHash" exact>
+                      <Block />
+                    </Route>
+                    <Route path="/block/:blockNumber/txs" exact>
+                      <BlockTransactions />
+                    </Route>
+                    <Route path="/tx/:txhash">
+                      <Transaction />
+                    </Route>
+                    <Route path="/address/:addressOrName/:direction?">
+                      <AddressTransactions />
+                    </Route>
                   </AppConfigContext.Provider>
                 </Route>
               </Switch>
