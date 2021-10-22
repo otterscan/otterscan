@@ -30,14 +30,6 @@ const SourcifyMenu: React.FC = () => {
           >
             Sourcify Servers
           </SourcifyMenuItem>
-          <SourcifyMenuItem
-            checked={sourcifySource === SourcifySource.CUSTOM_SNAPSHOT_SERVER}
-            onClick={() =>
-              setSourcifySource(SourcifySource.CUSTOM_SNAPSHOT_SERVER)
-            }
-          >
-            Local Snapshot
-          </SourcifyMenuItem>
         </Menu.Items>
       </div>
     </Menu>
