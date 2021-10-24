@@ -11,11 +11,31 @@ import { RuntimeContext, useRuntime } from "./useRuntime";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
 import { SourcifySource } from "./url";
 
-const Block = React.lazy(() => import("./Block"));
-const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
-const AddressTransactions = React.lazy(() => import("./AddressTransactions"));
-const Transaction = React.lazy(() => import("./Transaction"));
-const London = React.lazy(() => import("./special/london/London"));
+const Block = React.lazy(
+  () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
+);
+const BlockTransactions = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "blocktxs", webpackPrefetch: true */ "./BlockTransactions"
+    )
+);
+const AddressTransactions = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "address", webpackPrefetch: true */ "./AddressTransactions"
+    )
+);
+const Transaction = React.lazy(
+  () =>
+    import(/* webpackChunkName: "tx", webpackPrefetch: true */ "./Transaction")
+);
+const London = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "london", webpackPrefetch: true */ "./special/london/London"
+    )
+);
 
 const App = () => {
   const runtime = useRuntime();
@@ -30,7 +50,7 @@ const App = () => {
   }, [sourcifySource, setSourcifySource]);
 
   return (
-    <Suspense fallback={<>LOADING</>}>
+    <Suspense fallback={null}>
       {runtime.connStatus !== ConnectionStatus.CONNECTED ? (
         <ConnectionErrorPanel
           connStatus={runtime.connStatus}
