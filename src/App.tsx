@@ -30,7 +30,7 @@ const App = () => {
   }, [sourcifySource, setSourcifySource]);
 
   return (
-    <Suspense fallback={<>LOADING</>}>
+    <Suspense fallback={null}>
       {runtime.connStatus !== ConnectionStatus.CONNECTED ? (
         <ConnectionErrorPanel
           connStatus={runtime.connStatus}
