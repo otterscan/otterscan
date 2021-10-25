@@ -9,7 +9,7 @@ type DecodedABIProps = {
 const DecodedABI: React.FC<DecodedABIProps> = ({ abi }) => {
   const intf = new Interface(abi);
   return (
-    <div className="border">
+    <div className="border overflow-x-auto">
       {intf.fragments.map((f, i) => (
         <DecodedFragment key={i} intf={intf} fragment={f} />
       ))}
