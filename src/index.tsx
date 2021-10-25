@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Helmet } from "react-helmet";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import "@fontsource/space-grotesk/index.css";
 import "@fontsource/roboto/index.css";
 import "@fontsource/roboto-mono/index.css";
@@ -11,16 +11,18 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Helmet>
-      <link
-        rel="preload"
-        href={spaceGrotesk}
-        as="font"
-        type="font/woff2"
-        crossOrigin="true"
-      />
-    </Helmet>
-    <App />
+    <HelmetProvider>
+      <Helmet>
+        <link
+          rel="preload"
+          href={spaceGrotesk}
+          as="font"
+          type="font/woff2"
+          crossOrigin="true"
+        />
+      </Helmet>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
