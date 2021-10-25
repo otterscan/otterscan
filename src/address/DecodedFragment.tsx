@@ -6,6 +6,8 @@ import {
   FunctionFragment,
   Interface,
 } from "@ethersproject/abi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 
 type DecodedFragmentProps = {
   intf: Interface;
@@ -34,7 +36,10 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
   }
 
   return (
-    <div className="flex items-baseline space-x-1">
+    <div className="flex items-baseline space-x-2 px-2 py-1 hover:bg-gray-100">
+      <span className="text-gray-500">
+        <FontAwesomeIcon icon={faCaretRight} size="1x" />
+      </span>
       {letter && (
         <span
           className={`flex-shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}

@@ -12,7 +12,11 @@ type ContractABIProps = {
 const ContractABI: React.FC<ContractABIProps> = ({ abi }) => (
   <div className="mb-3">
     <Tab.Group>
-      <Tab.List className="flex space-x-1 mb-1">
+      <Tab.List className="flex items-baseline space-x-1 mb-1">
+        <div className="flex items-baseline space-x-2 text-sm pr-2 py-1">
+          <span>ABI</span>
+          <Copy value={JSON.stringify(abi)} />
+        </div>
         <ModeTab>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
       </Tab.List>
@@ -21,10 +25,6 @@ const ContractABI: React.FC<ContractABIProps> = ({ abi }) => (
           <DecodedABI abi={abi} />
         </Tab.Panel>
         <Tab.Panel>
-          <div className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
-            <span>ABI</span>
-            <Copy value={JSON.stringify(abi)} />
-          </div>
           <RawABI abi={abi} />
         </Tab.Panel>
       </Tab.Panels>

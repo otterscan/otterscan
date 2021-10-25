@@ -9,7 +9,7 @@ type DecodedABIProps = {
 const DecodedABI: React.FC<DecodedABIProps> = ({ abi }) => {
   const intf = new Interface(abi);
   return (
-    <div className="mt-3 space-y-2">
+    <div className="border">
       {intf.fragments.map((f, i) => (
         <DecodedFragment key={i} intf={intf} fragment={f} />
       ))}
