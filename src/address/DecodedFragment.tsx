@@ -18,19 +18,26 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
   intf,
   fragment,
 }) => {
+  let fragmentType: "constructor" | "event" | "function" | undefined;
   let sig: string | undefined;
   let letter: string | undefined;
   let letterBg: string | undefined;
+  let hashBg: string | undefined;
 
   if (FunctionFragment.isFunctionFragment(fragment)) {
+    fragmentType = "function";
     sig = intf.getSighash(fragment);
     letter = "F";
     letterBg = "bg-purple-500";
+    hashBg = "bg-purple-50";
   } else if (EventFragment.isEventFragment(fragment)) {
+    fragmentType = "event";
     sig = intf.getEventTopic(fragment);
     letter = "E";
     letterBg = "bg-green-300";
+    hashBg = "bg-green-50";
   } else if (ConstructorFragment.isConstructorFragment(fragment)) {
+    fragmentType = "constructor";
     letter = "C";
     letterBg = "bg-blue-500";
   }
@@ -51,7 +58,16 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
         {fragment.format("full")}
       </span>
       {sig && (
-        <span className="text-xs border rounded-xl px-2 pt-1 font-code">
+        <span
+          className={`text-xs border rounded-xl px-2 pt-1 font-code text-gray-600 ${hashBg}`}
+          title={
+            fragmentType === "function"
+              ? "Method Selector"
+              : fragmentType === "event"
+              ? "Topic Hash"
+              : ""
+          }
+        >
           {sig}
         </span>
       )}
