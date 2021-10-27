@@ -18,7 +18,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
   return (
     <ContentFrame tabs>
       <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start">
-        <div>
+        <div className="flex items-baseline border rounded px-1 py-px">
           <AddressHighlighter address={txData.from}>
             <DecoratedAddressLink
               address={txData.from}
@@ -28,9 +28,19 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
             />
           </AddressHighlighter>
         </div>
-        {traces?.map((t, i, a) => (
-          <TraceItem key={i} t={t} txData={txData} last={i === a.length - 1} />
-        ))}
+        <div className="flex">
+          <div className="w-5"></div>
+          <div className="space-y-3">
+            {traces?.map((t, i, a) => (
+              <TraceItem
+                key={i}
+                t={t}
+                txData={txData}
+                last={i === a.length - 1}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </ContentFrame>
   );
