@@ -42,7 +42,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
             className={`font-bold ${
               t.type === "STATICCALL"
                 ? "text-red-700"
-                : t.type === "DELEGATECALL"
+                : t.type === "DELEGATECALL" || t.type === "CALLCODE"
                 ? "text-gray-400"
                 : "text-blue-900"
             }`}
