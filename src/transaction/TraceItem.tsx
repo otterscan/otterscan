@@ -37,7 +37,11 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
             </AddressHighlighter>
           </span>
           <span>.</span>
-          <span className="font-bold text-blue-900">
+          <span
+            className={`font-bold ${
+              t.type === "STATICCALL" ? "text-red-700" : "text-blue-900"
+            }`}
+          >
             {fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
           </span>
           <span>(</span>
