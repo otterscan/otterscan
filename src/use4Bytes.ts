@@ -61,8 +61,7 @@ export const use4Bytes = (
         const sigs = await res.text();
         const sig = sigs.split(";")[0];
         const cut = sig.indexOf("(");
-        let method = sig.slice(0, cut);
-        method = method.charAt(0).toUpperCase() + method.slice(1);
+        const method = sig.slice(0, cut);
 
         const entry: FourBytesEntry = {
           name: method,

@@ -2,7 +2,7 @@ import React from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import { TransactionData } from "../types";
-import { rawInputTo4Bytes } from "../use4Bytes";
+import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
 
 type TraceItemProps = {
@@ -13,6 +13,8 @@ type TraceItemProps = {
 
 const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
   const raw4Bytes = rawInputTo4Bytes(t.input);
+  const fourBytesEntry = use4Bytes(raw4Bytes);
+
   return (
     <>
       <div className="flex">
@@ -36,7 +38,9 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
             </AddressHighlighter>
           </span>
           <span>.</span>
-          <span>{raw4Bytes}</span>
+          <span className="font-bold text-blue-900">
+            {fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
+          </span>
           <span>(</span>
           {t.input.length > 10 && (
             <span className="whitespace-nowrap">
