@@ -25,7 +25,6 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
           )}
         </div>
         <div className="flex items-baseline border rounded px-1 py-px">
-          <span className="mr-2">{t.depth}</span>
           <span className="text-xs text-gray-400 lowercase">{t.type}</span>
           <span>
             <AddressHighlighter address={t.to}>
