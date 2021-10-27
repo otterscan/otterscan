@@ -308,3 +308,89 @@ export const useInternalOperations = (
 
   return intTransfers;
 };
+
+export type TraceEntry = {
+  type: string;
+  depth: number;
+  from: string;
+  to: string;
+  value: BigNumber;
+  input: string;
+};
+
+export type TraceGroup = TraceEntry & {
+  children: TraceGroup[] | null;
+};
+
+export const useTraceTransaction = (
+  provider: JsonRpcProvider | undefined,
+  txHash: string
+): TraceGroup[] | undefined => {
+  const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
+
+  useEffect(() => {
+    if (!provider) {
+      setTraceGroups(undefined);
+      return;
+    }
+
+    const traceTx = async () => {
+      const results = await provider.send("ots_traceTransaction", [txHash]);
+
+      // Implement better formatter
+      for (let i = 0; i < results.length; i++) {
+        results[i].from = provider.formatter.address(results[i].from);
+        results[i].to = provider.formatter.address(results[i].to);
+      }
+
+      // Build trace tree
+      const buildTraceTree = (
+        flatList: TraceEntry[],
+        depth: number = 0
+      ): TraceGroup[] => {
+        const entries: TraceGroup[] = [];
+
+        let children: TraceEntry[] | null = null;
+        for (let i = 0; i < flatList.length; i++) {
+          if (flatList[i].depth === depth) {
+            if (children !== null) {
+              const childrenTree = buildTraceTree(children, depth + 1);
+              const prev = entries.pop();
+              if (prev) {
+                prev.children = childrenTree;
+                entries.push(prev);
+              }
+            }
+
+            entries.push({
+              ...flatList[i],
+              children: null,
+            });
+            children = null;
+          } else {
+            if (children === null) {
+              children = [];
+            }
+            children.push(flatList[i]);
+          }
+        }
+        if (children !== null) {
+          const childrenTree = buildTraceTree(children, depth + 1);
+          const prev = entries.pop();
+          if (prev) {
+            prev.children = childrenTree;
+            entries.push(prev);
+          }
+        }
+
+        return entries;
+      };
+
+      const traceTree = buildTraceTree(results);
+      setTraceGroups(traceTree);
+    };
+    traceTx();
+  }, [provider, txHash]);
+
+  return traceGroups;
+};

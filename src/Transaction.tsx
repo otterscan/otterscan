@@ -25,6 +25,12 @@ const Logs = React.lazy(
       /* webpackChunkName: "txlogs", webpackPrefetch: true */ "./transaction/Logs"
     )
 );
+const Trace = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "txtrace", webpackPrefetch: true */ "./transaction/Trace"
+    )
+);
 
 type TransactionParams = {
   txhash: string;
@@ -87,6 +93,7 @@ const Transaction: React.FC = () => {
                   {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
                 </NavTab>
               )}
+              <NavTab href={`/tx/${txhash}/trace`}>Trace</NavTab>
             </Tab.List>
           </Tab.Group>
           <React.Suspense fallback={null}>
@@ -104,6 +111,9 @@ const Transaction: React.FC = () => {
               </Route>
               <Route path="/tx/:txhash/logs/" exact>
                 <Logs txData={txData} metadata={metadata} />
+              </Route>
+              <Route path="/tx/:txhash/trace" exact>
+                <Trace txData={txData} />
               </Route>
             </Switch>
           </React.Suspense>
