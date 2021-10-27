@@ -39,7 +39,11 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
           <span>.</span>
           <span
             className={`font-bold ${
-              t.type === "STATICCALL" ? "text-red-700" : "text-blue-900"
+              t.type === "STATICCALL"
+                ? "text-red-700"
+                : t.type === "DELEGATECALL"
+                ? "text-gray-400"
+                : "text-blue-900"
             }`}
           >
             {fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
