@@ -21,20 +21,37 @@ const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   }, [setSelection, address]);
 
   return (
-    <div
-      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
+    <AddressHighlighterImpl
+      selected={
         selection !== null &&
         selection.type === "address" &&
         selection.content === address
-          ? "border-orange-400 bg-yellow-100"
-          : "border-transparent"
+      }
+      select={select}
+      deselect={deselect}
+    >
+      {children}
+    </AddressHighlighterImpl>
+  );
+};
+
+type _AddressHighlighterImplProps = {
+  selected: boolean;
+  select: () => void;
+  deselect: () => void;
+};
+
+const AddressHighlighterImpl: React.FC<_AddressHighlighterImplProps> =
+  React.memo(({ selected, select, deselect, children }) => (
+    <div
+      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
+        selected ? "border-orange-400 bg-yellow-100" : "border-transparent"
       }`}
       onMouseEnter={select}
       onMouseLeave={deselect}
     >
       {children}
     </div>
-  );
-};
+  ));
 
-export default React.memo(AddressHighlighter);
+export default AddressHighlighter;
