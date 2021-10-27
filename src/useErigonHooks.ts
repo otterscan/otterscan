@@ -341,6 +341,7 @@ export const useTraceTransaction = (
       for (let i = 0; i < results.length; i++) {
         results[i].from = provider.formatter.address(results[i].from);
         results[i].to = provider.formatter.address(results[i].to);
+        results[i].value = provider.formatter.bigNumber(results[i].value);
       }
 
       // Build trace tree

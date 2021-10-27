@@ -1,6 +1,7 @@
 import React from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import FormattedBalance from "../components/FormattedBalance";
 import { TransactionData } from "../types";
 import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
@@ -48,6 +49,11 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
           >
             {fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
           </span>
+          {t.value && !t.value.isZero() && (
+            <span className="text-red-700 whitespace-nowrap">
+              {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
+            </span>
+          )}
           <span>(</span>
           {t.input.length > 10 && (
             <span className="whitespace-nowrap">
