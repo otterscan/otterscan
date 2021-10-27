@@ -82,4 +82,4 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
   );
 };
 
-export default React.memo(TraceItem);
+export default TraceItem;
