@@ -17,7 +17,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
 
   return (
     <ContentFrame tabs>
-      <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start">
+      <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start overflow-x-auto">
         <div className="flex items-baseline border rounded px-1 py-px">
           <AddressHighlighter address={txData.from}>
             <DecoratedAddressLink
