@@ -47,7 +47,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
           <span>(</span>
           {t.input.length > 10 && (
             <span className="whitespace-nowrap">
-              input=[{t.input.slice(10)}]
+              input=[0x{t.input.slice(10)}]
             </span>
           )}
           <span>)</span>
