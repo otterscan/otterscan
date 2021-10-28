@@ -4,18 +4,24 @@ import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import { TransactionData } from "../types";
-import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import { FourBytesEntry, rawInputTo4Bytes } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
 
 type TraceItemProps = {
   t: TraceGroup;
   txData: TransactionData;
   last: boolean;
+  fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
 };
 
-const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
+const TraceItem: React.FC<TraceItemProps> = ({
+  t,
+  txData,
+  last,
+  fourBytesMap,
+}) => {
   const raw4Bytes = rawInputTo4Bytes(t.input);
-  const fourBytesEntry = use4Bytes(raw4Bytes);
+  const fourBytesEntry = fourBytesMap[raw4Bytes];
 
   return (
     <>
@@ -67,6 +73,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
                 t={tc}
                 txData={txData}
                 last={i === a.length - 1}
+                fourBytesMap={fourBytesMap}
               />
             ))}
           </div>
