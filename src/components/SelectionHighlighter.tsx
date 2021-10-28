@@ -18,6 +18,8 @@ export const genericSelector =
     selection.content === content;
 
 export const addressSelector: ContentSelector = genericSelector("address");
+export const functionSigSelector: ContentSelector =
+  genericSelector("functionSig");
 
 type SelectionHighlighterProps = React.PropsWithChildren<{
   myType: SelectionType;

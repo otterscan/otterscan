@@ -1,4 +1,7 @@
 import React from "react";
+import SelectionHighlighter, {
+  functionSigSelector,
+} from "../components/SelectionHighlighter";
 
 type FunctionSignatureProps = {
   callType: string;
@@ -9,17 +12,23 @@ const FunctionSignature: React.FC<FunctionSignatureProps> = ({
   callType,
   sig,
 }) => (
-  <span
-    className={`font-bold ${
-      callType === "STATICCALL"
-        ? "text-red-700"
-        : callType === "DELEGATECALL" || callType === "CALLCODE"
-        ? "text-gray-400"
-        : "text-blue-900"
-    }`}
+  <SelectionHighlighter
+    myType="functionSig"
+    myContent={sig}
+    selector={functionSigSelector}
   >
-    {sig}
-  </span>
+    <span
+      className={`font-bold ${
+        callType === "STATICCALL"
+          ? "text-red-700"
+          : callType === "DELEGATECALL" || callType === "CALLCODE"
+          ? "text-gray-400"
+          : "text-blue-900"
+      }`}
+    >
+      {sig}
+    </span>
+  </SelectionHighlighter>
 );
 
 export default FunctionSignature;
