@@ -4,7 +4,7 @@ import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import { TransactionData } from "../types";
-import { FourBytesEntry, rawInputTo4Bytes } from "../use4Bytes";
+import { extract4Bytes, FourBytesEntry } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
 
 type TraceItemProps = {
@@ -20,8 +20,11 @@ const TraceItem: React.FC<TraceItemProps> = ({
   last,
   fourBytesMap,
 }) => {
-  const raw4Bytes = rawInputTo4Bytes(t.input);
-  const fourBytesEntry = fourBytesMap[raw4Bytes];
+  const raw4Bytes = extract4Bytes(t.input);
+  const sigText =
+    raw4Bytes === null
+      ? "<fallback>"
+      : fourBytesMap[raw4Bytes]?.name ?? raw4Bytes;
 
   return (
     <>
@@ -45,10 +48,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
             </AddressHighlighter>
           </span>
           <span>.</span>
-          <FunctionSignature
-            callType={t.type}
-            sig={fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
-          />
+          <FunctionSignature callType={t.type} sig={sigText} />
           {t.value && !t.value.isZero() && (
             <span className="text-red-700 whitespace-nowrap">
               {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}

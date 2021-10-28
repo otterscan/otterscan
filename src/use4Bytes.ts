@@ -16,6 +16,13 @@ const simpleTransfer: FourBytesEntry = {
 
 const fullCache = new Map<string, FourBytesEntry | null>();
 
+export const extract4Bytes = (rawInput: string): string | null => {
+  if (rawInput.length < 10) {
+    return null;
+  }
+  return rawInput.slice(0, 10);
+};
+
 export const rawInputTo4Bytes = (rawInput: string) => rawInput.slice(0, 10);
 
 const fetch4Bytes = async (
