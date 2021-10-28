@@ -1,14 +1,10 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ContentFrame from "../ContentFrame";
 import { TransactionData } from "../types";
-import { rawInputTo4Bytes, useBatch4Bytes } from "../use4Bytes";
-import {
-  TraceGroup,
-  useTraceTransaction,
-  useUniqueSignatures,
-} from "../useErigonHooks";
+import { useBatch4Bytes } from "../use4Bytes";
+import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import TraceItem from "./TraceItem";
 
