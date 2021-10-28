@@ -5,7 +5,7 @@ import { getAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
-import { rawInputTo4Bytes } from "./use4Bytes";
+import { extract4Bytes } from "./use4Bytes";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -414,6 +414,7 @@ export const useUniqueSignatures = (traces: TraceGroup[] | undefined) => {
     while (nextTraces.length > 0) {
       const traces = nextTraces;
       nextTraces = [];
+
       for (const t of traces) {
         if (
           t.type === "CALL" ||
@@ -421,8 +422,12 @@ export const useUniqueSignatures = (traces: TraceGroup[] | undefined) => {
           t.type === "STATICCALL" ||
           t.type === "CALLCODE"
         ) {
-          sigs.add(rawInputTo4Bytes(t.input));
+          const fourBytes = extract4Bytes(t.input);
+          if (fourBytes) {
+            sigs.add(fourBytes);
+          }
         }
+
         if (t.children) {
           nextTraces.push(...t.children);
         }
