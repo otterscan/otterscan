@@ -5,6 +5,7 @@ type AddressHighlighterProps = React.PropsWithChildren<{
   address: string;
 }>;
 
+// TODO: replace all occurences with SelectionHighlighter and remove this component
 const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   address,
   children,

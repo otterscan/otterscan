@@ -6,6 +6,7 @@ type ValueHighlighterProps = React.PropsWithChildren<{
   value: BigNumber;
 }>;
 
+// TODO: replace all occurences with SelectionHighlighter and remove this component
 const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
   value,
   children,
