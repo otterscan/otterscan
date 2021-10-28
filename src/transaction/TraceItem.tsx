@@ -2,6 +2,7 @@ import React from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import FormattedBalance from "../components/FormattedBalance";
+import FunctionSignature from "./FunctionSignature";
 import { TransactionData } from "../types";
 import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
@@ -38,17 +39,10 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, txData, last }) => {
             </AddressHighlighter>
           </span>
           <span>.</span>
-          <span
-            className={`font-bold ${
-              t.type === "STATICCALL"
-                ? "text-red-700"
-                : t.type === "DELEGATECALL" || t.type === "CALLCODE"
-                ? "text-gray-400"
-                : "text-blue-900"
-            }`}
-          >
-            {fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
-          </span>
+          <FunctionSignature
+            callType={t.type}
+            sig={fourBytesEntry ? fourBytesEntry.name : raw4Bytes}
+          />
           {t.value && !t.value.isZero() && (
             <span className="text-red-700 whitespace-nowrap">
               {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
