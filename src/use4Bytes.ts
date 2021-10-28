@@ -110,34 +110,12 @@ export const use4Bytes = (
       return;
     }
 
-    const signatureURL = fourBytesURL(assetsURLPrefix, fourBytes);
-    fetch(signatureURL)
-      .then(async (res) => {
-        if (!res.ok) {
-          console.error(`Signature does not exist in 4bytes DB: ${fourBytes}`);
-          fullCache.set(fourBytes, null);
-          setEntry(null);
-          return;
-        }
-
-        // Get only the first occurrence, for now ignore alternative param names
-        const sigs = await res.text();
-        const sig = sigs.split(";")[0];
-        const cut = sig.indexOf("(");
-        const method = sig.slice(0, cut);
-
-        const entry: FourBytesEntry = {
-          name: method,
-          signature: sig,
-        };
-        setEntry(entry);
-        fullCache.set(fourBytes, entry);
-      })
-      .catch((err) => {
-        console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
-        setEntry(null);
-        fullCache.set(fourBytes, null);
-      });
+    const loadSig = async () => {
+      const entry = await fetch4Bytes(assetsURLPrefix, fourBytes);
+      fullCache.set(fourBytes, entry);
+      setEntry(entry);
+    };
+    loadSig();
   }, [fourBytes, assetsURLPrefix]);
 
   if (rawFourBytes === "0x") {
