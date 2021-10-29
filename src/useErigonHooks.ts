@@ -222,7 +222,7 @@ export const useTxData = (
       // Extract token meta
       const tokenMetas: TokenMetas = {};
       for (const t of tokenTransfers) {
-        if (tokenMetas[t.token]) {
+        if (tokenMetas[t.token] !== undefined) {
           continue;
         }
         const erc20Contract = new Contract(t.token, erc20, provider);
@@ -238,6 +238,7 @@ export const useTxData = (
             decimals,
           };
         } catch (err) {
+          tokenMetas[t.token] = null;
           console.warn(`Couldn't get token ${t.token} metadata; ignoring`, err);
         }
       }

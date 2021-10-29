@@ -20,7 +20,7 @@ type DecoratedAddressLinkProps = {
   selfDestruct?: boolean;
   txFrom?: boolean;
   txTo?: boolean;
-  tokenMeta?: TokenMeta;
+  tokenMeta?: TokenMeta | null | undefined;
 };
 
 const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({

@@ -15,7 +15,7 @@ import {
 type TokenTransferItemProps = {
   t: TokenTransfer;
   txData: TransactionData;
-  tokenMeta?: TokenMeta | undefined;
+  tokenMeta: TokenMeta | null | undefined;
 };
 
 // TODO: handle partial
