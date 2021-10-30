@@ -3,7 +3,8 @@ import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ContentFrame from "../ContentFrame";
 import { TransactionData } from "../types";
-import { useTraceTransaction } from "../useErigonHooks";
+import { useBatch4Bytes } from "../use4Bytes";
+import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import TraceItem from "./TraceItem";
 
@@ -14,6 +15,8 @@ type TraceProps = {
 const Trace: React.FC<TraceProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const traces = useTraceTransaction(provider, txData.transactionHash);
+  const uniqueSignatures = useUniqueSignatures(traces);
+  const sigMap = useBatch4Bytes(uniqueSignatures);
 
   return (
     <ContentFrame tabs>
@@ -37,6 +40,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
                 t={t}
                 txData={txData}
                 last={i === a.length - 1}
+                fourBytesMap={sigMap}
               />
             ))}
           </div>
