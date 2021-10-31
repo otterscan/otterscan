@@ -1,7 +1,9 @@
 import React from "react";
-import { ensResolver, ResolvedAddresses } from "../api/address-resolver";
+import {
+  ResolvedAddresses,
+  resolverRendererRegistry,
+} from "../api/address-resolver";
 import PlainAddress from "./PlainAddress";
-import ENSName from "./ENSName";
 
 type AddressOrENSNameProps = {
   address: string;
@@ -33,19 +35,19 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   }
 
   const [resolver, resolvedName] = resolvedAddress;
-  if (resolver === ensResolver) {
+  const renderer = resolverRendererRegistry.get(resolver);
+  if (renderer === undefined) {
     return (
-      <ENSName
+      <PlainAddress
         address={address}
         text={text}
         linkable={linkable}
-        name={resolvedName}
         dontOverrideColors={dontOverrideColors}
       />
     );
   }
 
-  return <></>;
+  return renderer(address, resolvedName, linkable, !!dontOverrideColors);
 };
 
 export default AddressOrENSName;

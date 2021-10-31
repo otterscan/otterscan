@@ -1,5 +1,6 @@
 import { BaseProvider } from "@ethersproject/providers";
-import { IAddressResolver } from "./address-resolver";
+import { ensRenderer } from "../../components/ENSName";
+import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
   CompositeAddressResolver,
   SelectedResolvedName,
@@ -16,6 +17,12 @@ _mainResolver.addResolver(ensResolver);
 
 export const mainResolver: IAddressResolver<SelectedResolvedName<string>> =
   _mainResolver;
+
+export const resolverRendererRegistry = new Map<
+  IAddressResolver<string>,
+  ResolvedAddressRenderer
+>();
+resolverRendererRegistry.set(ensResolver, ensRenderer);
 
 export const batchPopulate = async (
   provider: BaseProvider,

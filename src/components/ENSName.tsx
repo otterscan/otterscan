@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
 import ENSLogo from "./ensLogo.svg";
 
 type ENSNameProps = {
   name: string;
   address: string;
-  text: string | undefined;
   linkable: boolean;
   dontOverrideColors?: boolean;
 };
@@ -13,7 +13,6 @@ type ENSNameProps = {
 const ENSName: React.FC<ENSNameProps> = ({
   name,
   address,
-  text,
   linkable,
   dontOverrideColors,
 }) => {
@@ -57,6 +56,20 @@ const Content: React.FC<ContentProps> = ({ linkable, name }) => (
     />
     <span className="truncate">{name}</span>
   </>
+);
+
+export const ensRenderer: ResolvedAddressRenderer = (
+  address,
+  resolvedAddress,
+  linkable,
+  dontOverrideColors
+) => (
+  <ENSName
+    address={address}
+    name={resolvedAddress}
+    linkable={linkable}
+    dontOverrideColors={dontOverrideColors}
+  />
 );
 
 export default ENSName;
