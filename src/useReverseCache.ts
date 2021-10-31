@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ENSReverseCache, ProcessedTransaction } from "./types";
+import { batchPopulate } from "./api/address-resolver";
 
 export const useENSCache = (
   provider?: JsonRpcProvider,
@@ -25,20 +26,7 @@ export const useENSCache = (
     const addresses = Array.from(addrSet);
 
     const reverseResolve = async () => {
-      const solvers: Promise<string | null>[] = [];
-      for (const a of addresses) {
-        solvers.push(provider.lookupAddress(a));
-      }
-
-      const results = await Promise.all(solvers);
-      const cache: ENSReverseCache = {};
-      for (let i = 0; i < results.length; i++) {
-        const r = results[i];
-        if (r === null) {
-          continue;
-        }
-        cache[addresses[i]] = r;
-      }
+      const cache = await batchPopulate(provider, addresses);
       setReverseCache(cache);
     };
     reverseResolve();
