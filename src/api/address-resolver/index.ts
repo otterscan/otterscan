@@ -1,34 +1,39 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { ensRenderer } from "../../components/ENSName";
+import { tokenRenderer } from "../../components/TokenName";
 import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
   CompositeAddressResolver,
   SelectedResolvedName,
 } from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
+import { ERCTokenResolver } from "./ERCTokenResolver";
 
-export type ResolvedAddresses = Record<string, SelectedResolvedName<string>>;
+export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 
 // Create and configure the main resolver
 export const ensResolver = new ENSAddressResolver();
+export const ercTokenResolver = new ERCTokenResolver();
 
-const _mainResolver = new CompositeAddressResolver<string>();
+const _mainResolver = new CompositeAddressResolver();
 _mainResolver.addResolver(ensResolver);
+_mainResolver.addResolver(ercTokenResolver);
 
-export const mainResolver: IAddressResolver<SelectedResolvedName<string>> =
+export const mainResolver: IAddressResolver<SelectedResolvedName<any>> =
   _mainResolver;
 
 export const resolverRendererRegistry = new Map<
-  IAddressResolver<string>,
-  ResolvedAddressRenderer
+  IAddressResolver<any>,
+  ResolvedAddressRenderer<any>
 >();
 resolverRendererRegistry.set(ensResolver, ensRenderer);
+resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 
 export const batchPopulate = async (
   provider: BaseProvider,
   addresses: string[]
 ): Promise<ResolvedAddresses> => {
-  const solvers: Promise<SelectedResolvedName<string> | undefined>[] = [];
+  const solvers: Promise<SelectedResolvedName<any> | undefined>[] = [];
   for (const a of addresses) {
     solvers.push(mainResolver.resolveAddress(provider, a));
   }

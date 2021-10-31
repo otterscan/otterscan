@@ -8,9 +8,9 @@ export interface IAddressResolver<T> {
   ): Promise<T | undefined>;
 }
 
-export type ResolvedAddressRenderer = (
+export type ResolvedAddressRenderer<T> = (
   address: string,
-  resolvedAddress: string,
+  resolvedAddress: T,
   linkable: boolean,
   dontOverrideColors: boolean
 ) => React.ReactElement;

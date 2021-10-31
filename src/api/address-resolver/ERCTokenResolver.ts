@@ -2,12 +2,13 @@ import { BaseProvider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { IAddressResolver } from "./address-resolver";
 import erc20 from "../../erc20.json";
+import { TokenMeta } from "../../types";
 
-export class ERCTokenResolver implements IAddressResolver<string> {
+export class ERCTokenResolver implements IAddressResolver<TokenMeta> {
   async resolveAddress(
     provider: BaseProvider,
     address: string
-  ): Promise<string | undefined> {
+  ): Promise<TokenMeta | undefined> {
     const erc20Contract = new Contract(address, erc20, provider);
     try {
       const [name, symbol, decimals] = await Promise.all([
@@ -15,9 +16,14 @@ export class ERCTokenResolver implements IAddressResolver<string> {
         erc20Contract.symbol(),
         erc20Contract.decimals(),
       ]);
-      return name;
+      return {
+        name,
+        symbol,
+        decimals,
+      };
     } catch (err) {
-      console.warn(`Couldn't get token ${address} metadata; ignoring`, err);
+      // Ignore on purpose; this indicates the probe failed and the address
+      // is not a token
     }
     return undefined;
   }

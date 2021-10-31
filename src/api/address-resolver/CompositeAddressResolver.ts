@@ -3,7 +3,7 @@ import { IAddressResolver } from "./address-resolver";
 
 export type SelectedResolvedName<T> = [IAddressResolver<T>, T];
 
-export class CompositeAddressResolver<T>
+export class CompositeAddressResolver<T = any>
   implements IAddressResolver<SelectedResolvedName<T>>
 {
   private resolvers: IAddressResolver<T>[] = [];
@@ -17,9 +17,9 @@ export class CompositeAddressResolver<T>
     address: string
   ): Promise<SelectedResolvedName<T> | undefined> {
     for (const r of this.resolvers) {
-      const name = await r.resolveAddress(provider, address);
-      if (name !== undefined) {
-        return [r, name];
+      const resolvedAddress = await r.resolveAddress(provider, address);
+      if (resolvedAddress !== undefined) {
+        return [r, resolvedAddress];
       }
     }
 

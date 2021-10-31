@@ -1,16 +1,17 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import TokenLogo from "./TokenLogo";
 import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
-import ENSLogo from "./ensLogo.svg";
+import { TokenMeta } from "../types";
 
-type ENSNameProps = {
+type TokenNameProps = {
   name: string;
   address: string;
   linkable: boolean;
   dontOverrideColors?: boolean;
 };
 
-const ENSName: React.FC<ENSNameProps> = ({
+const TokenName: React.FC<TokenNameProps> = ({
   name,
   address,
   linkable,
@@ -25,7 +26,7 @@ const ENSName: React.FC<ENSNameProps> = ({
         to={`/address/${name}`}
         title={`${name}: ${address}`}
       >
-        <Content linkable={true} name={name} />
+        <Content address={address} linkable={true} name={name} />
       </NavLink>
     );
   }
@@ -35,41 +36,38 @@ const ENSName: React.FC<ENSNameProps> = ({
       className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
       title={`${name}: ${address}`}
     >
-      <Content linkable={false} name={name} />
+      <Content address={address} linkable={false} name={name} />
     </div>
   );
 };
 
 type ContentProps = {
+  address: string;
   linkable: boolean;
   name: string;
 };
 
-const Content: React.FC<ContentProps> = ({ linkable, name }) => (
+const Content: React.FC<ContentProps> = ({ address, linkable, name }) => (
   <>
-    <img
-      className={`self-center ${linkable ? "" : "filter grayscale"}`}
-      src={ENSLogo}
-      alt="ENS Logo"
-      width={12}
-      height={12}
-    />
+    <div className="self-center w-5 h-5">
+      <TokenLogo address={address} name={name} />
+    </div>
     <span className="truncate">{name}</span>
   </>
 );
 
-export const ensRenderer: ResolvedAddressRenderer<string> = (
+export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
   address,
   resolvedAddress,
   linkable,
   dontOverrideColors
 ) => (
-  <ENSName
+  <TokenName
     address={address}
-    name={resolvedAddress}
+    name={resolvedAddress.name}
     linkable={linkable}
     dontOverrideColors={dontOverrideColors}
   />
 );
 
-export default ENSName;
+export default TokenName;
