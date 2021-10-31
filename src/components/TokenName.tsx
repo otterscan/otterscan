@@ -23,7 +23,7 @@ const TokenName: React.FC<TokenNameProps> = ({
         className={`flex items-baseline space-x-1 font-sans ${
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } truncate`}
-        to={`/address/${name}`}
+        to={`/address/${address}`}
         title={`${name}: ${address}`}
       >
         <Content address={address} linkable={true} name={name} />
