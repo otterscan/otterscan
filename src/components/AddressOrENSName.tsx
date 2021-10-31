@@ -52,4 +52,4 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   );
 };
 
-export default React.memo(AddressOrENSName);
+export default AddressOrENSName;

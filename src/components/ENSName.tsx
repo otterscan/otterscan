@@ -22,4 +22,4 @@ const ENSName: React.FC<ENSNameProps> = ({ name, address }) => (
   </div>
 );
 
-export default React.memo(ENSName);
+export default ENSName;
