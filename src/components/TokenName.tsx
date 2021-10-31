@@ -6,6 +6,7 @@ import { TokenMeta } from "../types";
 
 type TokenNameProps = {
   name: string;
+  symbol: string;
   address: string;
   linkable: boolean;
   dontOverrideColors?: boolean;
@@ -13,6 +14,7 @@ type TokenNameProps = {
 
 const TokenName: React.FC<TokenNameProps> = ({
   name,
+  symbol,
   address,
   linkable,
   dontOverrideColors,
@@ -24,9 +26,14 @@ const TokenName: React.FC<TokenNameProps> = ({
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } truncate`}
         to={`/address/${address}`}
-        title={`${name}: ${address}`}
+        title={`${name} (${symbol}): ${address}`}
       >
-        <Content address={address} linkable={true} name={name} />
+        <Content
+          address={address}
+          linkable={true}
+          name={name}
+          symbol={symbol}
+        />
       </NavLink>
     );
   }
@@ -34,9 +41,9 @@ const TokenName: React.FC<TokenNameProps> = ({
   return (
     <div
       className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
-      title={`${name}: ${address}`}
+      title={`${name} (${symbol}): ${address}`}
     >
-      <Content address={address} linkable={false} name={name} />
+      <Content address={address} linkable={false} name={name} symbol={symbol} />
     </div>
   );
 };
@@ -45,14 +52,22 @@ type ContentProps = {
   address: string;
   linkable: boolean;
   name: string;
+  symbol: string;
 };
 
-const Content: React.FC<ContentProps> = ({ address, linkable, name }) => (
+const Content: React.FC<ContentProps> = ({
+  address,
+  linkable,
+  name,
+  symbol,
+}) => (
   <>
     <div className="self-center w-5 h-5">
       <TokenLogo address={address} name={name} />
     </div>
-    <span className="truncate">{name}</span>
+    <span className="truncate">
+      {name} ({symbol})
+    </span>
   </>
 );
 
@@ -65,6 +80,7 @@ export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
   <TokenName
     address={address}
     name={resolvedAddress.name}
+    symbol={resolvedAddress.symbol}
     linkable={linkable}
     dontOverrideColors={dontOverrideColors}
   />
