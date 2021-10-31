@@ -29,6 +29,7 @@ export const resolverRendererRegistry = new Map<
 resolverRendererRegistry.set(ensResolver, ensRenderer);
 resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 
+// TODO: implement progressive resolving
 export const batchPopulate = async (
   provider: BaseProvider,
   addresses: string[]
