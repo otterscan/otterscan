@@ -23,7 +23,7 @@ type DecoratedAddressLinkProps = {
   tokenMeta?: TokenMeta;
 };
 
-const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
+const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   address,
   ensName,
   selectedAddress,
@@ -90,4 +90,4 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
   );
 };
 
-export default React.memo(DecoratedAddresssLink);
+export default React.memo(DecoratedAddressLink);
