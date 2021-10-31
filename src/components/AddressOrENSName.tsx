@@ -3,49 +3,53 @@ import Address from "./Address";
 import AddressLink from "./AddressLink";
 import ENSName from "./ENSName";
 import ENSNameLink from "./ENSNameLink";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type AddressOrENSNameProps = {
   address: string;
-  ensName?: string;
   selectedAddress?: string;
   text?: string;
   dontOverrideColors?: boolean;
+  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
 const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   address,
-  ensName,
   selectedAddress,
   text,
   dontOverrideColors,
-}) => (
-  <>
-    {address === selectedAddress ? (
-      <>
-        {ensName ? (
-          <ENSName name={ensName} address={address} />
-        ) : (
-          <Address address={address} />
-        )}
-      </>
-    ) : (
-      <>
-        {ensName ? (
-          <ENSNameLink
-            name={ensName}
-            address={address}
-            dontOverrideColors={dontOverrideColors}
-          />
-        ) : (
-          <AddressLink
-            address={address}
-            text={text}
-            dontOverrideColors={dontOverrideColors}
-          />
-        )}
-      </>
-    )}
-  </>
-);
+  resolvedAddresses,
+}) => {
+  const name = resolvedAddresses?.[address];
+  return (
+    <>
+      {address === selectedAddress ? (
+        <>
+          {name ? (
+            <ENSName name={name} address={address} />
+          ) : (
+            <Address address={address} />
+          )}
+        </>
+      ) : (
+        <>
+          {name ? (
+            <ENSNameLink
+              name={name}
+              address={address}
+              dontOverrideColors={dontOverrideColors}
+            />
+          ) : (
+            <AddressLink
+              address={address}
+              text={text}
+              dontOverrideColors={dontOverrideColors}
+            />
+          )}
+        </>
+      )}
+    </>
+  );
+};
 
-export default React.memo(AddressOrENSName);
+export default AddressOrENSName;

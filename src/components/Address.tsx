@@ -6,8 +6,8 @@ type AddressProps = {
 
 const Address: React.FC<AddressProps> = ({ address }) => (
   <span className="font-address text-gray-400 truncate" title={address}>
-    <span className="truncate">{address}</span>
+    {address}
   </span>
 );
 
-export default React.memo(Address);
+export default Address;

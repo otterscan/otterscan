@@ -17,11 +17,10 @@ const AddressLink: React.FC<AddressLinkProps> = ({
       dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
     } font-address truncate`}
     to={`/address/${address}`}
+    title={text ?? address}
   >
-    <span className="truncate" title={text ?? address}>
-      {text ?? address}
-    </span>
+    {text ?? address}
   </NavLink>
 );
 
-export default React.memo(AddressLink);
+export default AddressLink;

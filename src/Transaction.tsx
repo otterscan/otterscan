@@ -11,6 +11,10 @@ import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./useSourcify";
+import {
+  transactionDataCollector,
+  useResolvedAddresses,
+} from "./useResolvedAddresses";
 
 const Details = React.lazy(
   () =>
@@ -36,6 +40,11 @@ const Transaction: React.FC = () => {
   const { txhash } = params;
 
   const txData = useTxData(provider, txhash);
+  const addrCollector = useMemo(
+    () => transactionDataCollector(txData),
+    [txData]
+  );
+  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
 
   const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
@@ -100,10 +109,15 @@ const Transaction: React.FC = () => {
                   internalOps={internalOps}
                   sendsEthToMiner={sendsEthToMiner}
                   ethUSDPrice={blockETHUSDPrice}
+                  resolvedAddresses={resolvedAddresses}
                 />
               </Route>
               <Route path="/tx/:txhash/logs/" exact>
-                <Logs txData={txData} metadata={metadata} />
+                <Logs
+                  txData={txData}
+                  metadata={metadata}
+                  resolvedAddresses={resolvedAddresses}
+                />
               </Route>
             </Switch>
           </React.Suspense>

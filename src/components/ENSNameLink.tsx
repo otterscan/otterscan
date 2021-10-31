@@ -31,4 +31,4 @@ const ENSNameLink: React.FC<ENSNameLinkProps> = ({
   </NavLink>
 );
 
-export default React.memo(ENSNameLink);
+export default ENSNameLink;
