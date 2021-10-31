@@ -24,4 +24,4 @@ const AddressLink: React.FC<AddressLinkProps> = ({
   </NavLink>
 );
 
-export default React.memo(AddressLink);
+export default AddressLink;

@@ -10,4 +10,4 @@ const Address: React.FC<AddressProps> = ({ address }) => (
   </span>
 );
 
-export default React.memo(Address);
+export default Address;
