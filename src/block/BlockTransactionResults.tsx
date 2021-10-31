@@ -29,7 +29,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
   const { provider } = useContext(RuntimeContext);
-  const reverseCache = useENSCache(provider, page);
+  const resolvedAddresses = useENSCache(provider, page);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
@@ -59,7 +59,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
             <TransactionItem
               key={tx.hash}
               tx={tx}
-              ensCache={reverseCache}
+              resolvedAddresses={resolvedAddresses}
               feeDisplay={feeDisplay}
               priceMap={priceMap}
             />

@@ -165,7 +165,7 @@ const AddressTransactions: React.FC = () => {
   }, [provider, checksummedAddress, params.direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
-  const reverseCache = useENSCache(provider, page);
+  const resolvedAddresses = useENSCache(provider, page);
 
   const blockTags: BlockTag[] = useMemo(() => {
     if (!page) {
@@ -283,7 +283,7 @@ const AddressTransactions: React.FC = () => {
                             <TransactionItem
                               key={tx.hash}
                               tx={tx}
-                              ensCache={reverseCache}
+                              resolvedAddresses={resolvedAddresses}
                               selectedAddress={checksummedAddress}
                               feeDisplay={feeDisplay}
                               priceMap={priceMap}

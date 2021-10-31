@@ -8,10 +8,10 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import TokenLogo from "./TokenLogo";
 import AddressOrENSName from "./AddressOrENSName";
 import { AddressContext, TokenMeta, ZERO_ADDRESS } from "../types";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type DecoratedAddressLinkProps = {
   address: string;
-  ensName?: string;
   selectedAddress?: string;
   text?: string;
   addressCtx?: AddressContext;
@@ -21,11 +21,11 @@ type DecoratedAddressLinkProps = {
   txFrom?: boolean;
   txTo?: boolean;
   tokenMeta?: TokenMeta;
+  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
 const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   address,
-  ensName,
   selectedAddress,
   text,
   addressCtx,
@@ -35,6 +35,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   txFrom,
   txTo,
   tokenMeta,
+  resolvedAddresses,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -81,10 +82,10 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       )}
       <AddressOrENSName
         address={address}
-        ensName={ensName}
         selectedAddress={selectedAddress}
         text={text}
         dontOverrideColors={mint || burn}
+        resolvedAddresses={resolvedAddresses}
       />
     </div>
   );

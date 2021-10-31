@@ -22,7 +22,7 @@ import { ResolvedAddresses } from "../api/address-resolver";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
-  ensCache?: ResolvedAddresses;
+  resolvedAddresses?: ResolvedAddresses;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
   priceMap: Record<BlockTag, BigNumber>;
@@ -30,7 +30,7 @@ type TransactionItemProps = {
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
-  ensCache,
+  resolvedAddresses,
   selectedAddress,
   feeDisplay,
   priceMap,
@@ -51,12 +51,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  const ensFrom = ensCache && tx.from && ensCache[tx.from];
-  const ensTo = ensCache && tx.to && ensCache[tx.to];
-  const ensCreated =
-    ensCache &&
-    tx.createdContractAddress &&
-    ensCache[tx.createdContractAddress];
   const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
 
   return (
@@ -88,9 +82,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             <AddressHighlighter address={tx.from}>
               <DecoratedAddressLink
                 address={tx.from}
-                ensName={ensFrom}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.from}
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
           )}
@@ -108,18 +102,18 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             <AddressHighlighter address={tx.to}>
               <DecoratedAddressLink
                 address={tx.to}
-                ensName={ensTo}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
           ) : (
             <AddressHighlighter address={tx.createdContractAddress!}>
               <DecoratedAddressLink
                 address={tx.createdContractAddress!}
-                ensName={ensCreated}
                 selectedAddress={selectedAddress}
                 creation
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
           )}
