@@ -18,11 +18,11 @@ import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
-import { ENSReverseCache } from "../api/address-resolver";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
-  ensCache?: ENSReverseCache;
+  ensCache?: ResolvedAddresses;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
   priceMap: Record<BlockTag, BigNumber>;

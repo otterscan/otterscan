@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ProcessedTransaction } from "./types";
-import { batchPopulate, ENSReverseCache } from "./api/address-resolver";
+import { batchPopulate, ResolvedAddresses } from "./api/address-resolver";
 
 export const useENSCache = (
   provider?: JsonRpcProvider,
   page?: ProcessedTransaction[]
 ) => {
-  const [reverseCache, setReverseCache] = useState<ENSReverseCache>();
+  const [reverseCache, setReverseCache] = useState<ResolvedAddresses>();
 
   useEffect(() => {
     if (!provider || !page) {
