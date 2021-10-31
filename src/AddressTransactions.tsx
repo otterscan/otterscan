@@ -278,9 +278,9 @@ const AddressTransactions: React.FC = () => {
                         feeDisplay={feeDisplay}
                         feeDisplayToggler={feeDisplayToggler}
                       />
-                      {controller ? (
+                      {page ? (
                         <SelectionContext.Provider value={selectionCtx}>
-                          {controller.getPage().map((tx) => (
+                          {page.map((tx) => (
                             <TransactionItem
                               key={tx.hash}
                               tx={tx}
