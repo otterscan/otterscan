@@ -8,7 +8,7 @@ import TransactionItem from "../search/TransactionItem";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { SelectionContext, useSelection } from "../useSelection";
-import { useENSCache } from "../useReverseCache";
+import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
 import { ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
@@ -29,7 +29,8 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
   const { provider } = useContext(RuntimeContext);
-  const resolvedAddresses = useENSCache(provider, page);
+  const addrCollector = useMemo(() => pageCollector(page), [page]);
+  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 

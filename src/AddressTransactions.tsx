@@ -26,7 +26,7 @@ import PendingResults from "./search/PendingResults";
 import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
 import { RuntimeContext } from "./useRuntime";
-import { useENSCache } from "./useReverseCache";
+import { pageCollector, useResolvedAddresses } from "./useResolvedAddresses";
 import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
@@ -165,7 +165,8 @@ const AddressTransactions: React.FC = () => {
   }, [provider, checksummedAddress, params.direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
-  const resolvedAddresses = useENSCache(provider, page);
+  const addrCollector = useMemo(() => pageCollector(page), [page]);
+  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
 
   const blockTags: BlockTag[] = useMemo(() => {
     if (!page) {
