@@ -139,4 +139,4 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   );
 };
 
-export default React.memo(TransactionItem);
+export default TransactionItem;
