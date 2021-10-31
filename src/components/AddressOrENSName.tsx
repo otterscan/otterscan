@@ -3,7 +3,7 @@ import Address from "./Address";
 import AddressLink from "./AddressLink";
 import ENSName from "./ENSName";
 import ENSNameLink from "./ENSNameLink";
-import { ResolvedAddresses } from "../api/address-resolver";
+import { ensResolver, ResolvedAddresses } from "../api/address-resolver";
 
 type AddressOrENSNameProps = {
   address: string;
@@ -25,17 +25,17 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     <>
       {address === selectedAddress ? (
         <>
-          {name ? (
-            <ENSName name={name} address={address} />
+          {name?.[0] === ensResolver ? (
+            <ENSName name={name[1]} address={address} />
           ) : (
             <Address address={address} />
           )}
         </>
       ) : (
         <>
-          {name ? (
+          {name?.[0] ? (
             <ENSNameLink
-              name={name}
+              name={name[1]}
               address={address}
               dontOverrideColors={dontOverrideColors}
             />

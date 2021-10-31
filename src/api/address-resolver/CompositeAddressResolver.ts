@@ -1,21 +1,25 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { IAddressResolver } from "./address-resolver";
 
-export class CompositeAddressResolver implements IAddressResolver {
-  private resolvers: IAddressResolver[] = [];
+export type SelectedResolvedName<T> = [IAddressResolver<T>, T];
 
-  addResolver(resolver: IAddressResolver) {
+export class CompositeAddressResolver<T>
+  implements IAddressResolver<SelectedResolvedName<T>>
+{
+  private resolvers: IAddressResolver<T>[] = [];
+
+  addResolver(resolver: IAddressResolver<T>) {
     this.resolvers.push(resolver);
   }
 
   async resolveAddress(
     provider: BaseProvider,
     address: string
-  ): Promise<string | undefined> {
+  ): Promise<SelectedResolvedName<T> | undefined> {
     for (const r of this.resolvers) {
-      const name = r.resolveAddress(provider, address);
+      const name = await r.resolveAddress(provider, address);
       if (name !== undefined) {
-        return name;
+        return [r, name];
       }
     }
 

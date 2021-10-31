@@ -1,8 +1,8 @@
 import { BaseProvider } from "@ethersproject/providers";
 
-export interface IAddressResolver {
+export interface IAddressResolver<T> {
   resolveAddress(
     provider: BaseProvider,
     address: string
-  ): Promise<string | undefined>;
+  ): Promise<T | undefined>;
 }

@@ -1,7 +1,7 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { IAddressResolver } from "./address-resolver";
 
-export class ENSAddressResolver implements IAddressResolver {
+export class ENSAddressResolver implements IAddressResolver<string> {
   async resolveAddress(
     provider: BaseProvider,
     address: string
