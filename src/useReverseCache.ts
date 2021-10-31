@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { ENSReverseCache, ProcessedTransaction } from "./types";
-import { batchPopulate } from "./api/address-resolver";
+import { ProcessedTransaction } from "./types";
+import { batchPopulate, ENSReverseCache } from "./api/address-resolver";
 
 export const useENSCache = (
   provider?: JsonRpcProvider,

@@ -1,8 +1,9 @@
 import { BaseProvider } from "@ethersproject/providers";
-import { ENSReverseCache } from "../../types";
 import { IAddressResolver } from "./address-resolver";
 import { CompositeAddressResolver } from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
+
+export type ENSReverseCache = Record<string, string>;
 
 // Create and configure the main resolver
 const _mainResolver = new CompositeAddressResolver();

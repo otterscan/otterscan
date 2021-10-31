@@ -32,8 +32,6 @@ export type TransactionChunk = {
   lastPage: boolean;
 };
 
-export type ENSReverseCache = Record<string, string>;
-
 export type TransactionData = {
   transactionHash: string;
   from: string;

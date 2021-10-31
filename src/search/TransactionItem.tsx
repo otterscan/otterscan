@@ -14,10 +14,11 @@ import TransactionDirection, {
   Flags,
 } from "../components/TransactionDirection";
 import TransactionValue from "../components/TransactionValue";
-import { ENSReverseCache, ProcessedTransaction } from "../types";
+import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
+import { ENSReverseCache } from "../api/address-resolver";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
