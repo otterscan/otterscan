@@ -206,6 +206,7 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 txData={txData}
                 internalOp={op}
+                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>

@@ -5,15 +5,18 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import { TransactionData, InternalOperation } from "../types";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type InternalTransferProps = {
   txData: TransactionData;
   internalOp: InternalOperation;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
+  resolvedAddresses,
 }) => {
   const fromMiner =
     txData.confirmedData?.miner !== undefined &&
