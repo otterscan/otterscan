@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ContentFrame from "../ContentFrame";
@@ -8,6 +8,7 @@ import { useBatch4Bytes } from "../use4Bytes";
 import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import { ResolvedAddresses } from "../api/address-resolver";
+import { tracesCollector, useResolvedAddresses } from "../useResolvedAddresses";
 
 type TraceProps = {
   txData: TransactionData;
@@ -20,6 +21,19 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
   const uniqueSignatures = useUniqueSignatures(traces);
   const sigMap = useBatch4Bytes(uniqueSignatures);
 
+  const addrCollector = useMemo(() => tracesCollector(traces), [traces]);
+  const traceResolvedAddresses = useResolvedAddresses(provider, addrCollector);
+  const mergedResolvedAddresses = useMemo(() => {
+    const merge = {};
+    if (resolvedAddresses) {
+      Object.assign(merge, resolvedAddresses);
+    }
+    if (traceResolvedAddresses) {
+      Object.assign(merge, traceResolvedAddresses);
+    }
+    return merge;
+  }, [resolvedAddresses, traceResolvedAddresses]);
+
   return (
     <ContentFrame tabs>
       <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start overflow-x-auto">
@@ -30,7 +44,7 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
               miner={txData.from === txData.confirmedData?.miner}
               txFrom
               txTo={txData.from === txData.to}
-              resolvedAddresses={resolvedAddresses}
+              resolvedAddresses={mergedResolvedAddresses}
             />
           </AddressHighlighter>
         </div>
@@ -44,7 +58,7 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
                 txData={txData}
                 last={i === a.length - 1}
                 fourBytesMap={sigMap}
-                resolvedAddresses={resolvedAddresses}
+                resolvedAddresses={mergedResolvedAddresses}
               />
             ))}
           </div>
