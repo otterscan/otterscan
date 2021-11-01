@@ -8,7 +8,6 @@ import PlainAddress from "./PlainAddress";
 type AddressOrENSNameProps = {
   address: string;
   selectedAddress?: string;
-  text?: string;
   dontOverrideColors?: boolean;
   resolvedAddresses?: ResolvedAddresses | undefined;
 };
@@ -16,7 +15,6 @@ type AddressOrENSNameProps = {
 const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   address,
   selectedAddress,
-  text,
   dontOverrideColors,
   resolvedAddresses,
 }) => {
@@ -27,7 +25,6 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     return (
       <PlainAddress
         address={address}
-        text={text}
         linkable={linkable}
         dontOverrideColors={dontOverrideColors}
       />
@@ -40,7 +37,6 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     return (
       <PlainAddress
         address={address}
-        text={text}
         linkable={linkable}
         dontOverrideColors={dontOverrideColors}
       />

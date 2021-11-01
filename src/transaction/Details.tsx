@@ -225,6 +225,7 @@ const Details: React.FC<DetailsProps> = ({
                 t={t}
                 txData={txData}
                 tokenMeta={txData.tokenMetas[t.token]}
+                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>

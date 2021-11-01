@@ -3,14 +3,12 @@ import { NavLink } from "react-router-dom";
 
 type PlainAddressProps = {
   address: string;
-  text: string | undefined;
   linkable: boolean;
   dontOverrideColors: boolean | undefined;
 };
 
 const PlainAddress: React.FC<PlainAddressProps> = ({
   address,
-  text,
   linkable,
   dontOverrideColors,
 }) => {
@@ -21,9 +19,9 @@ const PlainAddress: React.FC<PlainAddressProps> = ({
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } font-address truncate`}
         to={`/address/${address}`}
-        title={text ?? address}
+        title={address}
       >
-        <>{text ?? address}</>
+        {address}
       </NavLink>
     );
   }
