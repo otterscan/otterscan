@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { JsonRpcProvider, WebSocketProvider } from "@ethersproject/providers";
+import {
+  JsonRpcProvider,
+  JsonRpcBatchProvider,
+  WebSocketProvider,
+} from "@ethersproject/providers";
 import { ConnectionStatus } from "./types";
 import { MIN_API_LEVEL } from "./params";
 
@@ -35,7 +39,7 @@ export const useProvider = (
       if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
         provider = new WebSocketProvider(erigonURL);
       } else {
-        provider = new JsonRpcProvider(erigonURL);
+        provider = new JsonRpcBatchProvider(erigonURL);
       }
 
       // Check if it is at least a regular ETH node
