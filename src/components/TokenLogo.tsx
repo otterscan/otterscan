@@ -9,7 +9,7 @@ type TokenLogoProps = {
 };
 
 const TokenLogo: React.FC<TokenLogoProps> = (props) => (
-  <Suspense fallback={<></>}>
+  <Suspense fallback={null}>
     <InternalTokenLogo {...props} />
   </Suspense>
 );

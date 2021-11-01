@@ -11,11 +11,13 @@ import {
   TokenTransfer,
   TransactionData,
 } from "./types";
+import { ResolvedAddresses } from "./api/address-resolver";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
   txData: TransactionData;
-  tokenMeta: TokenMeta | null | undefined;
+  tokenMeta?: TokenMeta | null | undefined;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 // TODO: handle partial
@@ -23,6 +25,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   txData,
   tokenMeta,
+  resolvedAddresses,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
@@ -64,10 +67,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
         <AddressHighlighter address={t.token}>
           <DecoratedAddressLink
             address={t.token}
-            text={
-              tokenMeta ? `${tokenMeta.name} (${tokenMeta.symbol})` : undefined
-            }
-            tokenMeta={tokenMeta}
+            resolvedAddresses={resolvedAddresses}
           />
         </AddressHighlighter>
       </div>

@@ -38,6 +38,7 @@ import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 import { DevDoc, UserDoc } from "../useSourcify";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -47,6 +48,7 @@ type DetailsProps = {
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const Details: React.FC<DetailsProps> = ({
@@ -57,6 +59,7 @@ const Details: React.FC<DetailsProps> = ({
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
+  resolvedAddresses,
 }) => {
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
@@ -154,6 +157,7 @@ const Details: React.FC<DetailsProps> = ({
                 address={txData.from}
                 miner={txData.from === txData.confirmedData?.miner}
                 txFrom
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
             <Copy value={txData.from} />
@@ -171,6 +175,7 @@ const Details: React.FC<DetailsProps> = ({
                 address={txData.to}
                 miner={txData.to === txData.confirmedData?.miner}
                 txTo
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
             <Copy value={txData.to} />
@@ -188,6 +193,7 @@ const Details: React.FC<DetailsProps> = ({
                 address={txData.confirmedData.createdContractAddress!}
                 creation
                 txTo
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
             <Copy value={txData.confirmedData.createdContractAddress!} />
@@ -200,6 +206,7 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 txData={txData}
                 internalOp={op}
+                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>
@@ -219,6 +226,7 @@ const Details: React.FC<DetailsProps> = ({
                 t={t}
                 txData={txData}
                 tokenMeta={txData.tokenMetas[t.token]}
+                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>

@@ -5,36 +5,32 @@ import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
 import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons/faMoneyBillAlt";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
-import TokenLogo from "./TokenLogo";
 import AddressOrENSName from "./AddressOrENSName";
-import { AddressContext, TokenMeta, ZERO_ADDRESS } from "../types";
+import { AddressContext, ZERO_ADDRESS } from "../types";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type DecoratedAddressLinkProps = {
   address: string;
-  ensName?: string;
   selectedAddress?: string;
-  text?: string;
   addressCtx?: AddressContext;
   creation?: boolean;
   miner?: boolean;
   selfDestruct?: boolean;
   txFrom?: boolean;
   txTo?: boolean;
-  tokenMeta?: TokenMeta | null | undefined;
+  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
-const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
+const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   address,
-  ensName,
   selectedAddress,
-  text,
   addressCtx,
   creation,
   miner,
   selfDestruct,
   txFrom,
   txTo,
-  tokenMeta,
+  resolvedAddresses,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -74,20 +70,14 @@ const DecoratedAddresssLink: React.FC<DecoratedAddressLinkProps> = ({
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
       )}
-      {tokenMeta && (
-        <div className="self-center">
-          <TokenLogo address={address} name={tokenMeta.name} />
-        </div>
-      )}
       <AddressOrENSName
         address={address}
-        ensName={ensName}
         selectedAddress={selectedAddress}
-        text={text}
         dontOverrideColors={mint || burn}
+        resolvedAddresses={resolvedAddresses}
       />
     </div>
   );
 };
 
-export default React.memo(DecoratedAddresssLink);
+export default React.memo(DecoratedAddressLink);
