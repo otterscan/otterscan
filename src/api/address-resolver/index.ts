@@ -1,34 +1,57 @@
 import { BaseProvider } from "@ethersproject/providers";
-import { IAddressResolver } from "./address-resolver";
-import { CompositeAddressResolver } from "./CompositeAddressResolver";
+import { ensRenderer } from "../../components/ENSName";
+import { tokenRenderer } from "../../components/TokenName";
+import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
+import {
+  CompositeAddressResolver,
+  SelectedResolvedName,
+} from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
+import { ERCTokenResolver } from "./ERCTokenResolver";
 
-export type ResolvedAddresses = Record<string, string>;
+export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 
 // Create and configure the main resolver
+export const ensResolver = new ENSAddressResolver();
+export const ercTokenResolver = new ERCTokenResolver();
+
 const _mainResolver = new CompositeAddressResolver();
-_mainResolver.addResolver(new ENSAddressResolver());
+_mainResolver.addResolver(ensResolver);
+_mainResolver.addResolver(ercTokenResolver);
 
-export const mainResolver: IAddressResolver = _mainResolver;
+export const mainResolver: IAddressResolver<SelectedResolvedName<any>> =
+  _mainResolver;
 
+export const resolverRendererRegistry = new Map<
+  IAddressResolver<any>,
+  ResolvedAddressRenderer<any>
+>();
+resolverRendererRegistry.set(ensResolver, ensRenderer);
+resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
+
+// TODO: implement progressive resolving
 export const batchPopulate = async (
   provider: BaseProvider,
-  addresses: string[]
+  addresses: string[],
+  currentMap: ResolvedAddresses | undefined
 ): Promise<ResolvedAddresses> => {
-  const solvers: Promise<string | undefined>[] = [];
-  for (const a of addresses) {
+  const solvers: Promise<SelectedResolvedName<any> | undefined>[] = [];
+  const unresolvedAddresses = addresses.filter(
+    (a) => currentMap?.[a] === undefined
+  );
+  for (const a of unresolvedAddresses) {
     solvers.push(mainResolver.resolveAddress(provider, a));
   }
 
+  const resultMap: ResolvedAddresses = currentMap ? { ...currentMap } : {};
   const results = await Promise.all(solvers);
-  const cache: ResolvedAddresses = {};
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r === undefined) {
       continue;
     }
-    cache[addresses[i]] = r;
+    resultMap[unresolvedAddresses[i]] = r;
   }
 
-  return cache;
+  return resultMap;
 };

@@ -1,8 +1,16 @@
+import React from "react";
 import { BaseProvider } from "@ethersproject/providers";
 
-export interface IAddressResolver {
+export interface IAddressResolver<T> {
   resolveAddress(
     provider: BaseProvider,
     address: string
-  ): Promise<string | undefined>;
+  ): Promise<T | undefined>;
 }
+
+export type ResolvedAddressRenderer<T> = (
+  address: string,
+  resolvedAddress: T,
+  linkable: boolean,
+  dontOverrideColors: boolean
+) => React.ReactElement;
