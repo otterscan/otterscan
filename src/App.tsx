@@ -5,17 +5,37 @@ import Home from "./Home";
 import Search from "./Search";
 import Title from "./Title";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
-import London from "./special/london/London";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
 import { SourcifySource } from "./url";
 
-const Block = React.lazy(() => import("./Block"));
-const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
-const AddressTransactions = React.lazy(() => import("./AddressTransactions"));
-const Transaction = React.lazy(() => import("./Transaction"));
+const Block = React.lazy(
+  () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
+);
+const BlockTransactions = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "blocktxs", webpackPrefetch: true */ "./BlockTransactions"
+    )
+);
+const AddressTransactions = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "address", webpackPrefetch: true */ "./AddressTransactions"
+    )
+);
+const Transaction = React.lazy(
+  () =>
+    import(/* webpackChunkName: "tx", webpackPrefetch: true */ "./Transaction")
+);
+const London = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "london", webpackPrefetch: true */ "./special/london/London"
+    )
+);
 
 const App = () => {
   const runtime = useRuntime();
@@ -30,7 +50,7 @@ const App = () => {
   }, [sourcifySource, setSourcifySource]);
 
   return (
-    <Suspense fallback={<>LOADING</>}>
+    <Suspense fallback={null}>
       {runtime.connStatus !== ConnectionStatus.CONNECTED ? (
         <ConnectionErrorPanel
           connStatus={runtime.connStatus}
@@ -53,21 +73,19 @@ const App = () => {
                 </Route>
                 <Route>
                   <AppConfigContext.Provider value={appConfig}>
-                    <div className="mb-auto">
-                      <Title />
-                      <Route path="/block/:blockNumberOrHash" exact>
-                        <Block />
-                      </Route>
-                      <Route path="/block/:blockNumber/txs" exact>
-                        <BlockTransactions />
-                      </Route>
-                      <Route path="/tx/:txhash">
-                        <Transaction />
-                      </Route>
-                      <Route path="/address/:addressOrName/:direction?">
-                        <AddressTransactions />
-                      </Route>
-                    </div>
+                    <Title />
+                    <Route path="/block/:blockNumberOrHash" exact>
+                      <Block />
+                    </Route>
+                    <Route path="/block/:blockNumber/txs" exact>
+                      <BlockTransactions />
+                    </Route>
+                    <Route path="/tx/:txhash">
+                      <Transaction />
+                    </Route>
+                    <Route path="/address/:addressOrName/:direction?">
+                      <AddressTransactions />
+                    </Route>
                   </AppConfigContext.Provider>
                 </Route>
               </Switch>

@@ -5,13 +5,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
-import Copy from "../components/Copy";
-import ABI from "./ABI";
 import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../useSourcify";
 import ExternalLink from "../components/ExternalLink";
 import { openInRemixURL } from "../url";
+import ContractABI from "./ContractABI";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -70,13 +69,7 @@ const Contracts: React.FC<ContractsProps> = ({
         {rawMetadata !== undefined && rawMetadata !== null && (
           <>
             {rawMetadata.output.abi && (
-              <div className="mb-3">
-                <div className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
-                  <span>ABI</span>
-                  <Copy value={JSON.stringify(rawMetadata.output.abi)} />
-                </div>
-                <ABI abi={rawMetadata.output.abi} />
-              </div>
+              <ContractABI abi={rawMetadata.output.abi} />
             )}
             <div>
               <Menu>

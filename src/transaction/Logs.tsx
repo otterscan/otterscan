@@ -5,13 +5,15 @@ import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
 import { Metadata, useMultipleMetadata } from "../useSourcify";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type LogsProps = {
   txData: TransactionData;
   metadata: Metadata | null | undefined;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
+const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
   const baseMetadatas = useMemo((): Record<string, Metadata | null> => {
     if (!txData.to || metadata === undefined) {
       return {};
@@ -70,6 +72,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
                   txData={txData}
                   log={l}
                   logDesc={logDescs?.[i]}
+                  resolvedAddresses={resolvedAddresses}
                 />
               ))}
             </>

@@ -1,12 +1,7 @@
 import React from "react";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import hljs from "highlight.js";
-import docco from "react-syntax-highlighter/dist/esm/styles/hljs/docco";
+import { SyntaxHighlighter, docco } from "../highlight-init";
 import { useContract } from "../useSourcify";
-
-import hljsDefineSolidity from "highlightjs-solidity";
 import { useAppConfigContext } from "../useAppConfig";
-hljsDefineSolidity(hljs);
 
 type ContractProps = {
   checksummedAddress: string;

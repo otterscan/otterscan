@@ -5,14 +5,30 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
 import NavTab from "./components/NavTab";
-import Details from "./transaction/Details";
-import Logs from "./transaction/Logs";
 import { RuntimeContext } from "./useRuntime";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./useSourcify";
+import {
+  transactionDataCollector,
+  useResolvedAddresses,
+} from "./useResolvedAddresses";
+
+const Details = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "txdetails", webpackPrefetch: true */
+      "./transaction/Details"
+    )
+);
+const Logs = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "txlogs", webpackPrefetch: true */ "./transaction/Logs"
+    )
+);
 
 type TransactionParams = {
   txhash: string;
@@ -24,6 +40,11 @@ const Transaction: React.FC = () => {
   const { txhash } = params;
 
   const txData = useTxData(provider, txhash);
+  const addrCollector = useMemo(
+    () => transactionDataCollector(txData),
+    [txData]
+  );
+  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
 
   const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
@@ -77,22 +98,29 @@ const Transaction: React.FC = () => {
               )}
             </Tab.List>
           </Tab.Group>
-          <Switch>
-            <Route path="/tx/:txhash/" exact>
-              <Details
-                txData={txData}
-                txDesc={txDesc}
-                userDoc={metadata?.output.userdoc}
-                devDoc={metadata?.output.devdoc}
-                internalOps={internalOps}
-                sendsEthToMiner={sendsEthToMiner}
-                ethUSDPrice={blockETHUSDPrice}
-              />
-            </Route>
-            <Route path="/tx/:txhash/logs/" exact>
-              <Logs txData={txData} metadata={metadata} />
-            </Route>
-          </Switch>
+          <React.Suspense fallback={null}>
+            <Switch>
+              <Route path="/tx/:txhash/" exact>
+                <Details
+                  txData={txData}
+                  txDesc={txDesc}
+                  userDoc={metadata?.output.userdoc}
+                  devDoc={metadata?.output.devdoc}
+                  internalOps={internalOps}
+                  sendsEthToMiner={sendsEthToMiner}
+                  ethUSDPrice={blockETHUSDPrice}
+                  resolvedAddresses={resolvedAddresses}
+                />
+              </Route>
+              <Route path="/tx/:txhash/logs/" exact>
+                <Logs
+                  txData={txData}
+                  metadata={metadata}
+                  resolvedAddresses={resolvedAddresses}
+                />
+              </Route>
+            </Switch>
+          </React.Suspense>
         </SelectionContext.Provider>
       )}
     </StandardFrame>

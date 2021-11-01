@@ -1,15 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import "@fontsource/space-grotesk/index.css";
 import "@fontsource/roboto/index.css";
 import "@fontsource/roboto-mono/index.css";
+import spaceGrotesk from "@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <HelmetProvider>
+      <Helmet>
+        <link
+          rel="preload"
+          href={spaceGrotesk}
+          as="font"
+          type="font/woff2"
+          crossOrigin="true"
+        />
+      </Helmet>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
