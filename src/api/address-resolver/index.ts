@@ -32,21 +32,25 @@ resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 // TODO: implement progressive resolving
 export const batchPopulate = async (
   provider: BaseProvider,
-  addresses: string[]
+  addresses: string[],
+  currentMap: ResolvedAddresses | undefined
 ): Promise<ResolvedAddresses> => {
   const solvers: Promise<SelectedResolvedName<any> | undefined>[] = [];
-  for (const a of addresses) {
+  const unresolvedAddresses = addresses.filter(
+    (a) => currentMap?.[a] === undefined
+  );
+  for (const a of unresolvedAddresses) {
     solvers.push(mainResolver.resolveAddress(provider, a));
   }
 
+  const resultMap: ResolvedAddresses = currentMap ? { ...currentMap } : {};
   const results = await Promise.all(solvers);
-  const resultMap: ResolvedAddresses = {};
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r === undefined) {
       continue;
     }
-    resultMap[addresses[i]] = r;
+    resultMap[unresolvedAddresses[i]] = r;
   }
 
   return resultMap;

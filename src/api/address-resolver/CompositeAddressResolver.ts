@@ -1,7 +1,7 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { IAddressResolver } from "./address-resolver";
 
-export type SelectedResolvedName<T> = [IAddressResolver<T>, T];
+export type SelectedResolvedName<T> = [IAddressResolver<T>, T] | null;
 
 export class CompositeAddressResolver<T = any>
   implements IAddressResolver<SelectedResolvedName<T>>
@@ -23,8 +23,6 @@ export class CompositeAddressResolver<T = any>
       }
     }
 
-    return undefined;
-    // TODO: fallback to address itself
-    // return address;
+    return null;
   }
 }

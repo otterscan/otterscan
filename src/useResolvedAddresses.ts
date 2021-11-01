@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ProcessedTransaction, TransactionData } from "./types";
 import { batchPopulate, ResolvedAddresses } from "./api/address-resolver";
@@ -66,19 +66,27 @@ export const useResolvedAddresses = (
   addrCollector: AddressCollector
 ) => {
   const [names, setNames] = useState<ResolvedAddresses>();
-
+  const ref = useRef<ResolvedAddresses | undefined>();
   useEffect(() => {
-    if (!provider) {
-      return;
-    }
+    ref.current = names;
+  });
 
-    const populate = async () => {
-      const _addresses = addrCollector();
-      const _names = await batchPopulate(provider, _addresses);
-      setNames(_names);
-    };
-    populate();
-  }, [provider, addrCollector]);
+  useEffect(
+    () => {
+      if (!provider) {
+        return;
+      }
+
+      const populate = async () => {
+        const _addresses = addrCollector();
+        const _names = await batchPopulate(provider, _addresses, ref.current);
+        setNames(_names);
+      };
+      populate();
+    },
+    // DON'T put names variables in dependency array; this is intentional; useRef
+    [provider, addrCollector]
+  );
 
   return names;
 };

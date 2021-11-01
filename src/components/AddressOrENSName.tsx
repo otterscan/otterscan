@@ -23,7 +23,7 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   const resolvedAddress = resolvedAddresses?.[address];
   const linkable = address !== selectedAddress;
 
-  if (resolvedAddress === undefined) {
+  if (!resolvedAddress) {
     return (
       <PlainAddress
         address={address}
