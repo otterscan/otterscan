@@ -38,7 +38,7 @@ const resolveSourcifySource = (source: SourcifySource) => {
     return sourcifyHttpRepoPrefix;
   }
 
-  throw new Error(`Unknown Sourcify intergration source code: ${source}`);
+  throw new Error(`Unknown Sourcify integration source code: ${source}`);
 };
 
 export const sourcifyMetadata = (
