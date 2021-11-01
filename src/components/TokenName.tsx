@@ -5,17 +5,17 @@ import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolve
 import { TokenMeta } from "../types";
 
 type TokenNameProps = {
+  address: string;
   name: string;
   symbol: string;
-  address: string;
   linkable: boolean;
   dontOverrideColors?: boolean;
 };
 
 const TokenName: React.FC<TokenNameProps> = ({
+  address,
   name,
   symbol,
-  address,
   linkable,
   dontOverrideColors,
 }) => {
@@ -50,19 +50,21 @@ const TokenName: React.FC<TokenNameProps> = ({
 
 type ContentProps = {
   address: string;
-  linkable: boolean;
   name: string;
   symbol: string;
+  linkable: boolean;
 };
 
 const Content: React.FC<ContentProps> = ({
   address,
-  linkable,
   name,
   symbol,
+  linkable,
 }) => (
   <>
-    <div className="self-center w-5 h-5">
+    <div
+      className={`self-center w-5 h-5 ${linkable ? "" : "filter grayscale"}`}
+    >
       <TokenLogo address={address} name={name} />
     </div>
     <span className="truncate">
@@ -73,14 +75,14 @@ const Content: React.FC<ContentProps> = ({
 
 export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
   address,
-  resolvedAddress,
+  tokenMeta,
   linkable,
   dontOverrideColors
 ) => (
   <TokenName
     address={address}
-    name={resolvedAddress.name}
-    symbol={resolvedAddress.symbol}
+    name={tokenMeta.name}
+    symbol={tokenMeta.symbol}
     linkable={linkable}
     dontOverrideColors={dontOverrideColors}
   />
