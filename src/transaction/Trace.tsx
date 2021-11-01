@@ -2,17 +2,19 @@ import React, { useContext } from "react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ContentFrame from "../ContentFrame";
+import TraceItem from "./TraceItem";
 import { TransactionData } from "../types";
 import { useBatch4Bytes } from "../use4Bytes";
 import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
-import TraceItem from "./TraceItem";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type TraceProps = {
   txData: TransactionData;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const Trace: React.FC<TraceProps> = ({ txData }) => {
+const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
   const { provider } = useContext(RuntimeContext);
   const traces = useTraceTransaction(provider, txData.transactionHash);
   const uniqueSignatures = useUniqueSignatures(traces);
@@ -28,6 +30,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
               miner={txData.from === txData.confirmedData?.miner}
               txFrom
               txTo={txData.from === txData.to}
+              resolvedAddresses={resolvedAddresses}
             />
           </AddressHighlighter>
         </div>
@@ -41,6 +44,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
                 txData={txData}
                 last={i === a.length - 1}
                 fourBytesMap={sigMap}
+                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>

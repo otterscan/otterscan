@@ -6,12 +6,14 @@ import FunctionSignature from "./FunctionSignature";
 import { TransactionData } from "../types";
 import { extract4Bytes, FourBytesEntry } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
+import { ResolvedAddresses } from "../api/address-resolver";
 
 type TraceItemProps = {
   t: TraceGroup;
   txData: TransactionData;
   last: boolean;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const TraceItem: React.FC<TraceItemProps> = ({
@@ -19,6 +21,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
   txData,
   last,
   fourBytesMap,
+  resolvedAddresses,
 }) => {
   const raw4Bytes = extract4Bytes(t.input);
   const sigText =
@@ -42,6 +45,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
                 miner={t.to === txData.confirmedData?.miner}
                 txFrom={t.to === txData.from}
                 txTo={t.to === txData.to}
+                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
           </span>
@@ -66,6 +70,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
               txData={txData}
               last={i === a.length - 1}
               fourBytesMap={fourBytesMap}
+              resolvedAddresses={resolvedAddresses}
             />
           ))}
         </div>

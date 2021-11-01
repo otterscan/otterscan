@@ -127,7 +127,7 @@ const Transaction: React.FC = () => {
                 />
               </Route>
               <Route path="/tx/:txhash/trace" exact>
-                <Trace txData={txData} />
+                <Trace txData={txData} resolvedAddresses={resolvedAddresses} />
               </Route>
             </Switch>
           </React.Suspense>
