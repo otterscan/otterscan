@@ -1,5 +1,6 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { ensRenderer } from "../../components/ENSName";
+import { plainStringRenderer } from "../../components/PlainString";
 import { tokenRenderer } from "../../components/TokenName";
 import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
@@ -8,16 +9,19 @@ import {
 } from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
 import { ERCTokenResolver } from "./ERCTokenResolver";
+import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
 
 export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 
 // Create and configure the main resolver
 export const ensResolver = new ENSAddressResolver();
 export const ercTokenResolver = new ERCTokenResolver();
+export const hardcodedResolver = new HardcodedAddressResolver();
 
 const _mainResolver = new CompositeAddressResolver();
 _mainResolver.addResolver(ensResolver);
 _mainResolver.addResolver(ercTokenResolver);
+_mainResolver.addResolver(hardcodedResolver);
 
 export const mainResolver: IAddressResolver<SelectedResolvedName<any>> =
   _mainResolver;
@@ -28,6 +32,7 @@ export const resolverRendererRegistry = new Map<
 >();
 resolverRendererRegistry.set(ensResolver, ensRenderer);
 resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
+resolverRendererRegistry.set(hardcodedResolver, plainStringRenderer);
 
 // TODO: implement progressive resolving
 export const batchPopulate = async (
