@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons/faPlusSquare";
+import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare";
+import { Switch } from "@headlessui/react";
 import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import FormattedBalance from "../components/FormattedBalance";
@@ -23,6 +27,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
   fourBytesMap,
   resolvedAddresses,
 }) => {
+  const [expanded, setExpanded] = useState<boolean>(true);
   const raw4Bytes = extract4Bytes(t.input);
   const sigText =
     raw4Bytes === null
@@ -31,10 +36,22 @@ const TraceItem: React.FC<TraceItemProps> = ({
 
   return (
     <>
-      <div className="flex relative">
+      <div className="flex relative items-center">
         <div className="absolute border-l border-b w-5 h-full transform -translate-y-1/2"></div>
         {!last && (
           <div className="absolute left-0 border-l w-5 h-full transform translate-y-1/2"></div>
+        )}
+        {t.children && (
+          <Switch
+            className="absolute left-0 bg-white transform -translate-x-1/2 text-gray-500"
+            checked={expanded}
+            onChange={setExpanded}
+          >
+            <FontAwesomeIcon
+              icon={expanded ? faMinusSquare : faPlusSquare}
+              size="1x"
+            />
+          </Switch>
         )}
         <div className="ml-5 flex items-baseline border rounded px-1 py-px">
           <span className="text-xs text-gray-400 lowercase">{t.type}</span>
@@ -61,7 +78,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
           </span>
         </div>
       </div>
-      {t.children && (
+      {expanded && t.children && (
         <div className={`pl-10 ${last ? "" : "border-l"} space-y-3`}>
           {t.children.map((tc, i, a) => (
             <TraceItem
