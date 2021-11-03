@@ -78,8 +78,12 @@ const TraceItem: React.FC<TraceItemProps> = ({
           </span>
         </div>
       </div>
-      {expanded && t.children && (
-        <div className={`pl-10 ${last ? "" : "border-l"} space-y-3`}>
+      {t.children && (
+        <div
+          className={`pl-10 ${last ? "" : "border-l"} space-y-3 ${
+            expanded ? "" : "hidden"
+          }`}
+        >
           {t.children.map((tc, i, a) => (
             <TraceItem
               key={i}
