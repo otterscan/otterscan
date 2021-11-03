@@ -3,6 +3,7 @@ import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
 import { TransactionData } from "../../types";
 import { DevMethod, UserMethod } from "../../useSourcify";
+import { ResolvedAddresses } from "../../api/address-resolver";
 
 type DecodedParamsTableProps = {
   args: Result;
@@ -11,6 +12,7 @@ type DecodedParamsTableProps = {
   hasParamNames?: boolean;
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;
+  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
 const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
@@ -19,6 +21,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
   txData,
   hasParamNames = true,
   devMethod,
+  resolvedAddresses,
 }) => (
   <table className="border w-full">
     <thead>
@@ -48,6 +51,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
           paramType={paramTypes[i]}
           txData={txData}
           help={devMethod?.params?.[paramTypes[i].name]}
+          resolvedAddresses={resolvedAddresses}
         />
       ))}
     </tbody>

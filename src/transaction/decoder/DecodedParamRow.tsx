@@ -9,6 +9,7 @@ import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
 import { TransactionData } from "../../types";
+import { ResolvedAddresses } from "../../api/address-resolver";
 
 type DecodedParamRowProps = {
   prefix?: ReactNode;
@@ -18,6 +19,7 @@ type DecodedParamRowProps = {
   txData: TransactionData;
   arrayElem?: number | undefined;
   help?: string | undefined;
+  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
 const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
@@ -28,6 +30,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
   txData,
   arrayElem,
   help,
+  resolvedAddresses,
 }) => {
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
@@ -72,7 +75,11 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           {paramType.baseType === "uint256" ? (
             <Uint256Decoder r={r} />
           ) : paramType.baseType === "address" ? (
-            <AddressDecoder r={r} txData={txData} />
+            <AddressDecoder
+              r={r}
+              txData={txData}
+              resolvedAddresses={resolvedAddresses}
+            />
           ) : paramType.baseType === "bool" ? (
             <BooleanDecoder r={r} />
           ) : paramType.baseType === "bytes" ? (
