@@ -375,6 +375,7 @@ const Details: React.FC<DetailsProps> = ({
                   hasParamNames={resolvedTxDesc === txDesc}
                   userMethod={userMethod}
                   devMethod={devMethod}
+                  resolvedAddresses={resolvedAddresses}
                 />
               )}
             </Tab.Panel>

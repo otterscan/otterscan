@@ -40,6 +40,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             addressCtx={AddressContext.FROM}
             txFrom={t.from === txData.from}
             txTo={t.from === txData.to}
+            resolvedAddresses={resolvedAddresses}
           />
         </AddressHighlighter>
       </div>
@@ -51,6 +52,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             addressCtx={AddressContext.TO}
             txFrom={t.to === txData.from}
             txTo={t.to === txData.to}
+            resolvedAddresses={resolvedAddresses}
           />
         </AddressHighlighter>
       </div>
