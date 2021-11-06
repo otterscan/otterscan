@@ -64,6 +64,22 @@ export type ConfirmedTransactionData = {
   logs: Log[];
 };
 
+export type SelectedTransactionContext = {
+  from: string;
+  to: string | undefined;
+  miner: string | undefined;
+};
+
+export const toTransactionContext = (
+  txData: TransactionData
+): SelectedTransactionContext => {
+  return {
+    from: txData.from,
+    to: txData.to,
+    miner: txData.confirmedData?.miner,
+  };
+};
+
 // The VOID...
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 

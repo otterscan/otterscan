@@ -8,7 +8,7 @@ import Uint256Decoder from "./Uint256Decoder";
 import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
-import { TransactionData } from "../../types";
+import { SelectedTransactionContext } from "../../types";
 import { ResolvedAddresses } from "../../api/address-resolver";
 
 type DecodedParamRowProps = {
@@ -16,7 +16,7 @@ type DecodedParamRowProps = {
   i?: number | undefined;
   r: any;
   paramType: ParamType;
-  txData: TransactionData;
+  txContext: SelectedTransactionContext;
   arrayElem?: number | undefined;
   help?: string | undefined;
   resolvedAddresses?: ResolvedAddresses | undefined;
@@ -27,7 +27,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
   i,
   r,
   paramType,
-  txData,
+  txContext,
   arrayElem,
   help,
   resolvedAddresses,
@@ -77,7 +77,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           ) : paramType.baseType === "address" ? (
             <AddressDecoder
               r={r.toString()}
-              txData={txData}
+              txContext={txContext}
               resolvedAddresses={resolvedAddresses}
             />
           ) : paramType.baseType === "bool" ? (
@@ -106,7 +106,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             i={idx}
             r={e}
             paramType={paramType.components[idx]}
-            txData={txData}
+            txContext={txContext}
           />
         ))}
       {paramType.baseType === "array" &&
@@ -116,7 +116,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             prefix={paramType.name ?? <span className="italic">param_{i}</span>}
             r={e}
             paramType={paramType.arrayChildren}
-            txData={txData}
+            txContext={txContext}
             arrayElem={idx}
           />
         ))}
