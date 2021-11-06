@@ -28,10 +28,10 @@ const TraceItem: React.FC<TraceItemProps> = ({
 
   return (
     <>
-      <div className="flex relative items-center">
-        <div className="absolute border-l border-b w-5 h-full transform -translate-y-1/2"></div>
+      <div className="flex relative">
+        <div className="absolute border-l border-b w-5 h-6 transform -translate-y-3"></div>
         {!last && (
-          <div className="absolute left-0 border-l w-5 h-full transform translate-y-1/2"></div>
+          <div className="absolute left-0 border-l w-5 h-full transform translate-y-3"></div>
         )}
         {t.children && (
           <Switch

@@ -1,6 +1,12 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useMemo } from "react";
+import {
+  Fragment,
+  Interface,
+  TransactionDescription,
+} from "@ethersproject/abi";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
+import { BigNumberish } from "@ethersproject/bignumber";
 
 export type FourBytesEntry = {
   name: string;
@@ -142,4 +148,26 @@ export const use4Bytes = (
   fullCache.delete(fourBytes);
   fullCache.set(fourBytes, entry);
   return entry;
+};
+
+export const useTransactionDescription = (
+  fourBytesEntry: FourBytesEntry | null | undefined,
+  data: string | undefined,
+  value: BigNumberish | undefined
+): TransactionDescription | null | undefined => {
+  const txDesc = useMemo(() => {
+    if (!fourBytesEntry) {
+      return fourBytesEntry;
+    }
+    if (!fourBytesEntry.signature || !data || !value) {
+      return undefined;
+    }
+
+    const sig = fourBytesEntry?.signature;
+    const functionFragment = Fragment.fromString(`function ${sig}`);
+    const intf = new Interface([functionFragment]);
+    return intf.parseTransaction({ data, value });
+  }, [fourBytesEntry, data, value]);
+
+  return txDesc;
 };

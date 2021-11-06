@@ -1,9 +1,5 @@
 import React, { useMemo } from "react";
-import {
-  TransactionDescription,
-  Fragment,
-  Interface,
-} from "@ethersproject/abi";
+import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
 import { Tab } from "@headlessui/react";
@@ -40,7 +36,11 @@ import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
-import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import {
+  rawInputTo4Bytes,
+  use4Bytes,
+  useTransactionDescription,
+} from "../use4Bytes";
 import { DevDoc, UserDoc } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 
@@ -81,18 +81,11 @@ const Details: React.FC<DetailsProps> = ({
 
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
-  const fourBytesTxDesc = useMemo(() => {
-    if (!fourBytesEntry) {
-      return fourBytesEntry;
-    }
-    if (!txData || !fourBytesEntry.signature) {
-      return undefined;
-    }
-    const sig = fourBytesEntry?.signature;
-    const functionFragment = Fragment.fromString(`function ${sig}`);
-    const intf = new Interface([functionFragment]);
-    return intf.parseTransaction({ data: txData.data, value: txData.value });
-  }, [txData, fourBytesEntry]);
+  const fourBytesTxDesc = useTransactionDescription(
+    fourBytesEntry,
+    txData.data,
+    txData.value
+  );
 
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
