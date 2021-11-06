@@ -42,7 +42,7 @@ const TraceInput: React.FC<TraceInputProps> = ({
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
-    <div className="ml-5 border rounded px-1 py-px">
+    <div className="ml-5 border rounded px-1 py-0.5">
       <div className="flex items-baseline">
         <span className="text-xs text-gray-400 lowercase">{t.type}</span>
         <span>
@@ -66,7 +66,11 @@ const TraceInput: React.FC<TraceInputProps> = ({
         <span className="whitespace-nowrap">
           (
           {hasParams && (
-            <Switch checked={expanded} onChange={setExpanded}>
+            <Switch
+              className="text-xs"
+              checked={expanded}
+              onChange={setExpanded}
+            >
               {expanded ? (
                 <span className="text-gray-400">[-]</span>
               ) : (
