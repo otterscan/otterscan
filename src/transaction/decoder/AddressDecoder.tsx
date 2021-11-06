@@ -6,7 +6,7 @@ import { TransactionData } from "../../types";
 import { ResolvedAddresses } from "../../api/address-resolver";
 
 type AddressDecoderProps = {
-  r: any;
+  r: string;
   txData: TransactionData;
   resolvedAddresses?: ResolvedAddresses | undefined;
 };
@@ -17,17 +17,17 @@ const AddressDecoder: React.FC<AddressDecoderProps> = ({
   resolvedAddresses,
 }) => (
   <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-    <AddressHighlighter address={r.toString()}>
+    <AddressHighlighter address={r}>
       <DecoratedAddressLink
-        address={r.toString()}
-        miner={r.toString() === txData.confirmedData?.miner}
-        txFrom={r.toString() === txData.from}
-        txTo={r.toString() === txData.to}
+        address={r}
+        miner={r === txData.confirmedData?.miner}
+        txFrom={r === txData.from}
+        txTo={r === txData.to}
         resolvedAddresses={resolvedAddresses}
       />
     </AddressHighlighter>
-    <Copy value={r.toString()} />
+    <Copy value={r} />
   </div>
 );
 
-export default React.memo(AddressDecoder);
+export default AddressDecoder;
