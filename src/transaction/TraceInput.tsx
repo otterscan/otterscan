@@ -6,7 +6,7 @@ import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import { TraceEntry } from "../useErigonHooks";
-import { toTransactionContext, TransactionData } from "../types";
+import { TransactionData } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
 import {
   extract4Bytes,
@@ -87,7 +87,6 @@ const TraceInput: React.FC<TraceInputProps> = ({
             <DecodedParamsTable
               args={fourBytesTxDesc.args}
               paramTypes={fourBytesTxDesc.functionFragment.inputs}
-              txContext={toTransactionContext(txData)}
               hasParamNames={false}
               resolvedAddresses={resolvedAddresses}
             />

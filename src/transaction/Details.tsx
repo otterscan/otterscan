@@ -24,11 +24,7 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import {
-  TransactionData,
-  InternalOperation,
-  toTransactionContext,
-} from "../types";
+import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -353,7 +349,6 @@ const Details: React.FC<DetailsProps> = ({
                 <DecodedParamsTable
                   args={resolvedTxDesc.args}
                   paramTypes={resolvedTxDesc.functionFragment.inputs}
-                  txContext={toTransactionContext(txData)}
                   hasParamNames={resolvedTxDesc === txDesc}
                   userMethod={userMethod}
                   devMethod={devMethod}

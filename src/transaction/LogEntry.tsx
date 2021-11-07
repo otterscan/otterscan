@@ -7,7 +7,7 @@ import Copy from "../components/Copy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
-import { toTransactionContext, TransactionData } from "../types";
+import { TransactionData } from "../types";
 import { useTopic0 } from "../useTopic0";
 import { ResolvedAddresses } from "../api/address-resolver";
 
@@ -106,7 +106,6 @@ const LogEntry: React.FC<LogEntryProps> = ({
                       <DecodedParamsTable
                         args={resolvedLogDesc.args}
                         paramTypes={resolvedLogDesc.eventFragment.inputs}
-                        txContext={toTransactionContext(txData)}
                         hasParamNames={resolvedLogDesc === logDesc}
                         resolvedAddresses={resolvedAddresses}
                       />

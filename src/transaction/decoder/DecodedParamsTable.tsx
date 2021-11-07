@@ -1,14 +1,12 @@
 import React from "react";
 import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
-import { SelectedTransactionContext } from "../../types";
 import { DevMethod, UserMethod } from "../../useSourcify";
 import { ResolvedAddresses } from "../../api/address-resolver";
 
 type DecodedParamsTableProps = {
   args: Result;
   paramTypes: ParamType[];
-  txContext: SelectedTransactionContext;
   hasParamNames?: boolean;
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;
@@ -18,7 +16,6 @@ type DecodedParamsTableProps = {
 const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
   args,
   paramTypes,
-  txContext,
   hasParamNames = true,
   devMethod,
   resolvedAddresses,
@@ -49,7 +46,6 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
           i={i}
           r={r}
           paramType={paramTypes[i]}
-          txContext={txContext}
           help={devMethod?.params?.[paramTypes[i].name]}
           resolvedAddresses={resolvedAddresses}
         />
