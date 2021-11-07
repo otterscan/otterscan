@@ -159,7 +159,11 @@ export const useTransactionDescription = (
     if (!fourBytesEntry) {
       return fourBytesEntry;
     }
-    if (!fourBytesEntry.signature || !data || !value) {
+    if (
+      !fourBytesEntry.signature ||
+      data === undefined ||
+      value === undefined
+    ) {
       return undefined;
     }
 
