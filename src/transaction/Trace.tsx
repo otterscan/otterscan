@@ -37,7 +37,7 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
   return (
     <ContentFrame tabs>
       <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start overflow-x-auto">
-        <div className="flex items-baseline border rounded px-1 py-0.5">
+        <div className="border hover:border-gray-500 rounded px-1 py-0.5">
           <AddressHighlighter address={txData.from}>
             <DecoratedAddressLink
               address={txData.from}

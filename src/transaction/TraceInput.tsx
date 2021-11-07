@@ -42,7 +42,7 @@ const TraceInput: React.FC<TraceInputProps> = ({
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
-    <div className="ml-5 border rounded px-1 py-0.5">
+    <div className="ml-5 border hover:border-gray-500 rounded px-1 py-0.5">
       <div className="flex items-baseline">
         <span className="text-xs text-gray-400 lowercase">{t.type}</span>
         <span>
