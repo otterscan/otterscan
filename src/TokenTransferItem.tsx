@@ -1,9 +1,8 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
-import AddressHighlighter from "./components/AddressHighlighter";
+import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
-import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import FormattedBalance from "./components/FormattedBalance";
 import {
   AddressContext,
@@ -34,27 +33,19 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
     <div className="grid grid-cols-5 gap-x-1">
       <div className="flex space-x-1">
         <span className="font-bold">From</span>
-        <AddressHighlighter address={t.from}>
-          <DecoratedAddressLink
-            address={t.from}
-            addressCtx={AddressContext.FROM}
-            txFrom={t.from === txData.from}
-            txTo={t.from === txData.to}
-            resolvedAddresses={resolvedAddresses}
-          />
-        </AddressHighlighter>
+        <TransactionAddress
+          address={t.from}
+          addressCtx={AddressContext.FROM}
+          resolvedAddresses={resolvedAddresses}
+        />
       </div>
       <div className="flex space-x-1">
         <span className="font-bold">To</span>
-        <AddressHighlighter address={t.to}>
-          <DecoratedAddressLink
-            address={t.to}
-            addressCtx={AddressContext.TO}
-            txFrom={t.to === txData.from}
-            txTo={t.to === txData.to}
-            resolvedAddresses={resolvedAddresses}
-          />
-        </AddressHighlighter>
+        <TransactionAddress
+          address={t.to}
+          addressCtx={AddressContext.TO}
+          resolvedAddresses={resolvedAddresses}
+        />
       </div>
       <div className="col-span-3 flex space-x-1">
         <span className="font-bold">For</span>
@@ -66,12 +57,10 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             />
           </ValueHighlighter>
         </span>
-        <AddressHighlighter address={t.token}>
-          <DecoratedAddressLink
-            address={t.token}
-            resolvedAddresses={resolvedAddresses}
-          />
-        </AddressHighlighter>
+        <TransactionAddress
+          address={t.token}
+          resolvedAddresses={resolvedAddresses}
+        />
       </div>
     </div>
   </div>

@@ -2,8 +2,7 @@ import React, { useMemo } from "react";
 import { Log } from "@ethersproject/abstract-provider";
 import { Fragment, Interface, LogDescription } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
@@ -63,15 +62,10 @@ const LogEntry: React.FC<LogEntryProps> = ({
           <div className="font-bold text-right">Address</div>
           <div className="col-span-11 mr-auto">
             <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-              <AddressHighlighter address={log.address}>
-                <DecoratedAddressLink
-                  address={log.address}
-                  miner={log.address === txData.confirmedData?.miner}
-                  txFrom={log.address === txData.from}
-                  txTo={log.address === txData.to}
-                  resolvedAddresses={resolvedAddresses}
-                />
-              </AddressHighlighter>
+              <TransactionAddress
+                address={log.address}
+                resolvedAddresses={resolvedAddresses}
+              />
               <Copy value={log.address} />
             </div>
           </div>

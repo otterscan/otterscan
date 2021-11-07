@@ -77,7 +77,6 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           ) : paramType.baseType === "address" ? (
             <AddressDecoder
               r={r.toString()}
-              txContext={txContext}
               resolvedAddresses={resolvedAddresses}
             />
           ) : paramType.baseType === "bool" ? (
