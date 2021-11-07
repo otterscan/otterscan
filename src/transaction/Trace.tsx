@@ -1,7 +1,6 @@
 import React, { useContext, useMemo } from "react";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import ContentFrame from "../ContentFrame";
+import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
 import { TransactionData } from "../types";
 import { useBatch4Bytes } from "../use4Bytes";
@@ -38,15 +37,10 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
     <ContentFrame tabs>
       <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start overflow-x-auto">
         <div className="border hover:border-gray-500 rounded px-1 py-0.5">
-          <AddressHighlighter address={txData.from}>
-            <DecoratedAddressLink
-              address={txData.from}
-              miner={txData.from === txData.confirmedData?.miner}
-              txFrom
-              txTo={txData.from === txData.to}
-              resolvedAddresses={mergedResolvedAddresses}
-            />
-          </AddressHighlighter>
+          <TransactionAddress
+            address={txData.from}
+            resolvedAddresses={resolvedAddresses}
+          />
         </div>
         <div className="flex">
           <div className="w-5"></div>

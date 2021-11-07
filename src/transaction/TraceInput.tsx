@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
@@ -46,15 +45,10 @@ const TraceInput: React.FC<TraceInputProps> = ({
       <div className="flex items-baseline">
         <span className="text-xs text-gray-400 lowercase">{t.type}</span>
         <span>
-          <AddressHighlighter address={t.to}>
-            <DecoratedAddressLink
-              address={t.to}
-              miner={t.to === txData.confirmedData?.miner}
-              txFrom={t.to === txData.from}
-              txTo={t.to === txData.to}
-              resolvedAddresses={resolvedAddresses}
-            />
-          </AddressHighlighter>
+          <TransactionAddress
+            address={t.to}
+            resolvedAddresses={resolvedAddresses}
+          />
         </span>
         <span>.</span>
         <FunctionSignature callType={t.type} sig={sigText} />
