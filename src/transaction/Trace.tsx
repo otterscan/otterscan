@@ -42,20 +42,17 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
             resolvedAddresses={resolvedAddresses}
           />
         </div>
-        <div className="flex">
-          <div className="w-5"></div>
-          <div className="space-y-3">
-            {traces?.map((t, i, a) => (
-              <TraceItem
-                key={i}
-                t={t}
-                txData={txData}
-                last={i === a.length - 1}
-                fourBytesMap={sigMap}
-                resolvedAddresses={mergedResolvedAddresses}
-              />
-            ))}
-          </div>
+        <div className="ml-5 space-y-3">
+          {traces?.map((t, i, a) => (
+            <TraceItem
+              key={i}
+              t={t}
+              txData={txData}
+              last={i === a.length - 1}
+              fourBytesMap={sigMap}
+              resolvedAddresses={mergedResolvedAddresses}
+            />
+          ))}
         </div>
       </div>
     </ContentFrame>
