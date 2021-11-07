@@ -15,8 +15,7 @@ import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
 import BlockConfirmations from "../components/BlockConfirmations";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import Nonce from "../components/Nonce";
 import Timestamp from "../components/Timestamp";
@@ -152,14 +151,10 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
           <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-            <AddressHighlighter address={txData.from}>
-              <DecoratedAddressLink
-                address={txData.from}
-                miner={txData.from === txData.confirmedData?.miner}
-                txFrom
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+            <TransactionAddress
+              address={txData.from}
+              resolvedAddresses={resolvedAddresses}
+            />
             <Copy value={txData.from} />
           </div>
           <div className="flex items-baseline pl-3">
@@ -170,14 +165,10 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <AddressHighlighter address={txData.to}>
-              <DecoratedAddressLink
-                address={txData.to}
-                miner={txData.to === txData.confirmedData?.miner}
-                txTo
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+            <TransactionAddress
+              address={txData.to}
+              resolvedAddresses={resolvedAddresses}
+            />
             <Copy value={txData.to} />
           </div>
         ) : txData.confirmedData === undefined ? (
@@ -186,16 +177,10 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         ) : (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <AddressHighlighter
+            <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-            >
-              <DecoratedAddressLink
-                address={txData.confirmedData.createdContractAddress!}
-                creation
-                txTo
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+              resolvedAddresses={resolvedAddresses}
+            />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
         )}

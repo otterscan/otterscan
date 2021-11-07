@@ -15,6 +15,7 @@ import {
   transactionDataCollector,
   useResolvedAddresses,
 } from "./useResolvedAddresses";
+import { SelectedTransactionContext } from "./useSelectedTransaction";
 
 const Details = React.lazy(
   () =>
@@ -76,54 +77,56 @@ const Transaction: React.FC = () => {
   const txDesc = useTransactionDescription(metadata, txData);
 
   return (
-    <StandardFrame>
-      <StandardSubtitle>Transaction Details</StandardSubtitle>
-      {txData === null && (
-        <ContentFrame>
-          <div className="py-4 text-sm">
-            Transaction <span className="font-hash">{txhash}</span> not found.
-          </div>
-        </ContentFrame>
-      )}
-      {txData && (
-        <SelectionContext.Provider value={selectionCtx}>
-          <Tab.Group>
-            <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-              <NavTab href={`/tx/${txhash}`}>Overview</NavTab>
-              {txData.confirmedData?.blockNumber !== undefined && (
-                <NavTab href={`/tx/${txhash}/logs`}>
-                  Logs
-                  {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
-                </NavTab>
-              )}
-            </Tab.List>
-          </Tab.Group>
-          <React.Suspense fallback={null}>
-            <Switch>
-              <Route path="/tx/:txhash/" exact>
-                <Details
-                  txData={txData}
-                  txDesc={txDesc}
-                  userDoc={metadata?.output.userdoc}
-                  devDoc={metadata?.output.devdoc}
-                  internalOps={internalOps}
-                  sendsEthToMiner={sendsEthToMiner}
-                  ethUSDPrice={blockETHUSDPrice}
-                  resolvedAddresses={resolvedAddresses}
-                />
-              </Route>
-              <Route path="/tx/:txhash/logs/" exact>
-                <Logs
-                  txData={txData}
-                  metadata={metadata}
-                  resolvedAddresses={resolvedAddresses}
-                />
-              </Route>
-            </Switch>
-          </React.Suspense>
-        </SelectionContext.Provider>
-      )}
-    </StandardFrame>
+    <SelectedTransactionContext.Provider value={txData}>
+      <StandardFrame>
+        <StandardSubtitle>Transaction Details</StandardSubtitle>
+        {txData === null && (
+          <ContentFrame>
+            <div className="py-4 text-sm">
+              Transaction <span className="font-hash">{txhash}</span> not found.
+            </div>
+          </ContentFrame>
+        )}
+        {txData && (
+          <SelectionContext.Provider value={selectionCtx}>
+            <Tab.Group>
+              <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+                <NavTab href={`/tx/${txhash}`}>Overview</NavTab>
+                {txData.confirmedData?.blockNumber !== undefined && (
+                  <NavTab href={`/tx/${txhash}/logs`}>
+                    Logs
+                    {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
+                  </NavTab>
+                )}
+              </Tab.List>
+            </Tab.Group>
+            <React.Suspense fallback={null}>
+              <Switch>
+                <Route path="/tx/:txhash/" exact>
+                  <Details
+                    txData={txData}
+                    txDesc={txDesc}
+                    userDoc={metadata?.output.userdoc}
+                    devDoc={metadata?.output.devdoc}
+                    internalOps={internalOps}
+                    sendsEthToMiner={sendsEthToMiner}
+                    ethUSDPrice={blockETHUSDPrice}
+                    resolvedAddresses={resolvedAddresses}
+                  />
+                </Route>
+                <Route path="/tx/:txhash/logs/" exact>
+                  <Logs
+                    txData={txData}
+                    metadata={metadata}
+                    resolvedAddresses={resolvedAddresses}
+                  />
+                </Route>
+              </Switch>
+            </React.Suspense>
+          </SelectionContext.Provider>
+        )}
+      </StandardFrame>
+    </SelectedTransactionContext.Provider>
   );
 };
 
