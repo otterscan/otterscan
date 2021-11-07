@@ -75,11 +75,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           {paramType.baseType === "uint256" ? (
             <Uint256Decoder r={r} />
           ) : paramType.baseType === "address" ? (
-            <AddressDecoder
-              r={r}
-              txData={txData}
-              resolvedAddresses={resolvedAddresses}
-            />
+            <AddressDecoder r={r} resolvedAddresses={resolvedAddresses} />
           ) : paramType.baseType === "bool" ? (
             <BooleanDecoder r={r} />
           ) : paramType.baseType === "bytes" ? (
