@@ -3,7 +3,7 @@ import { Switch } from "@headlessui/react";
 import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import InputDecoder from "./decoder/InputDecoder";
 import { TraceEntry } from "../useErigonHooks";
 import { ResolvedAddresses } from "../api/address-resolver";
 import {
@@ -75,10 +75,13 @@ const TraceInput: React.FC<TraceInputProps> = ({
       {hasParams && expanded && fourBytesTxDesc && (
         <>
           <div className="ml-5 mr-1 my-2">
-            <DecodedParamsTable
-              args={fourBytesTxDesc.args}
-              paramTypes={fourBytesTxDesc.functionFragment.inputs}
+            <InputDecoder
+              fourBytes={raw4Bytes ?? "0x"}
+              resolvedTxDesc={fourBytesTxDesc}
               hasParamNames={false}
+              data={t.input}
+              userMethod={undefined}
+              devMethod={undefined}
               resolvedAddresses={resolvedAddresses}
             />
           </div>
