@@ -44,7 +44,7 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
                 resolvedAddresses={resolvedAddresses}
               />
             </div>
-            <div className="ml-5 space-y-3">
+            <div className="ml-5 space-y-3 self-stretch">
               {traces.map((t, i, a) => (
                 <TraceItem
                   key={i}
