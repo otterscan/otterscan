@@ -77,7 +77,7 @@ const TraceInput: React.FC<TraceInputProps> = ({
       </div>
       {hasParams && expanded && fourBytesTxDesc && (
         <>
-          <div className="ml-5 my-5 mr-5">
+          <div className="ml-5 mr-1 my-2">
             <DecodedParamsTable
               args={fourBytesTxDesc.args}
               paramTypes={fourBytesTxDesc.functionFragment.inputs}
