@@ -69,7 +69,6 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
               {txData.confirmedData.logs.map((l, i) => (
                 <LogEntry
                   key={i}
-                  txData={txData}
                   log={l}
                   logDesc={logDescs?.[i]}
                   resolvedAddresses={resolvedAddresses}
