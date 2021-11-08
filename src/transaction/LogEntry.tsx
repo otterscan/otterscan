@@ -7,19 +7,16 @@ import Copy from "../components/Copy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
-import { TransactionData } from "../types";
 import { useTopic0 } from "../useTopic0";
 import { ResolvedAddresses } from "../api/address-resolver";
 
 type LogEntryProps = {
-  txData: TransactionData;
   log: Log;
   logDesc: LogDescription | null | undefined;
   resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const LogEntry: React.FC<LogEntryProps> = ({
-  txData,
   log,
   logDesc,
   resolvedAddresses,

@@ -1,8 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
-import { toUtf8String } from "@ethersproject/strings";
-import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -29,8 +27,7 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
-import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import InputDecoder from "./decoder/InputDecoder";
 import {
   rawInputTo4Bytes,
   use4Bytes,
@@ -63,16 +60,6 @@ const Details: React.FC<DetailsProps> = ({
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
-
-  const utfInput = useMemo(() => {
-    try {
-      return txData && toUtf8String(txData.data);
-    } catch (err) {
-      console.warn("Error while converting input data to string");
-      console.warn(err);
-      return "<can't decode>";
-    }
-  }, [txData]);
 
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
@@ -331,47 +318,15 @@ const Details: React.FC<DetailsProps> = ({
         </>
       )}
       <InfoRow title="Input Data">
-        <Tab.Group>
-          <Tab.List className="flex space-x-1 mb-1">
-            <ModeTab>Decoded</ModeTab>
-            <ModeTab>Raw</ModeTab>
-            <ModeTab>UTF-8</ModeTab>
-          </Tab.List>
-          <Tab.Panels>
-            <Tab.Panel>
-              {fourBytes === "0x" ? (
-                <>No parameters</>
-              ) : resolvedTxDesc === undefined ? (
-                <>Waiting for data...</>
-              ) : resolvedTxDesc === null ? (
-                <>Can't decode data</>
-              ) : (
-                <DecodedParamsTable
-                  args={resolvedTxDesc.args}
-                  paramTypes={resolvedTxDesc.functionFragment.inputs}
-                  hasParamNames={resolvedTxDesc === txDesc}
-                  userMethod={userMethod}
-                  devMethod={devMethod}
-                  resolvedAddresses={resolvedAddresses}
-                />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={txData.data}
-                readOnly
-              />
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={utfInput}
-                readOnly
-              />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+        <InputDecoder
+          fourBytes={fourBytes}
+          resolvedTxDesc={resolvedTxDesc}
+          hasParamNames={resolvedTxDesc === txDesc}
+          data={txData.data}
+          userMethod={userMethod}
+          devMethod={devMethod}
+          resolvedAddresses={resolvedAddresses}
+        />
       </InfoRow>
     </ContentFrame>
   );
