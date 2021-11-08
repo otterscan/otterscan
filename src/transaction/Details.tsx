@@ -6,7 +6,6 @@ import {
 } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { toUtf8String } from "@ethersproject/strings";
-import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -33,8 +32,7 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
-import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import InputDecoder from "./decoder/InputDecoder";
 import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
 import { DevDoc, UserDoc } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
@@ -338,48 +336,16 @@ const Details: React.FC<DetailsProps> = ({
         </>
       )}
       <InfoRow title="Input Data">
-        <Tab.Group>
-          <Tab.List className="flex space-x-1 mb-1">
-            <ModeTab>Decoded</ModeTab>
-            <ModeTab>Raw</ModeTab>
-            <ModeTab>UTF-8</ModeTab>
-          </Tab.List>
-          <Tab.Panels>
-            <Tab.Panel>
-              {fourBytes === "0x" ? (
-                <>No parameters</>
-              ) : resolvedTxDesc === undefined ? (
-                <>Waiting for data...</>
-              ) : resolvedTxDesc === null ? (
-                <>Can't decode data</>
-              ) : (
-                <DecodedParamsTable
-                  args={resolvedTxDesc.args}
-                  paramTypes={resolvedTxDesc.functionFragment.inputs}
-                  txData={txData}
-                  hasParamNames={resolvedTxDesc === txDesc}
-                  userMethod={userMethod}
-                  devMethod={devMethod}
-                  resolvedAddresses={resolvedAddresses}
-                />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={txData.data}
-                readOnly
-              />
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={utfInput}
-                readOnly
-              />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+        <InputDecoder
+          fourBytes={fourBytes}
+          resolvedTxDesc={resolvedTxDesc}
+          txDesc={txDesc}
+          txData={txData}
+          userMethod={userMethod}
+          devMethod={devMethod}
+          utfInput={utfInput}
+          resolvedAddresses={resolvedAddresses}
+        />
       </InfoRow>
     </ContentFrame>
   );
