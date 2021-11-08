@@ -5,7 +5,6 @@ import {
   Interface,
 } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
-import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -61,16 +60,6 @@ const Details: React.FC<DetailsProps> = ({
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
-
-  const utfInput = useMemo(() => {
-    try {
-      return txData && toUtf8String(txData.data);
-    } catch (err) {
-      console.warn("Error while converting input data to string");
-      console.warn(err);
-      return "<can't decode>";
-    }
-  }, [txData]);
 
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
@@ -339,11 +328,10 @@ const Details: React.FC<DetailsProps> = ({
         <InputDecoder
           fourBytes={fourBytes}
           resolvedTxDesc={resolvedTxDesc}
-          txDesc={txDesc}
-          txData={txData}
+          hasParamNames={resolvedTxDesc === txDesc}
+          data={txData.data}
           userMethod={userMethod}
           devMethod={devMethod}
-          utfInput={utfInput}
           resolvedAddresses={resolvedAddresses}
         />
       </InfoRow>
