@@ -39,7 +39,7 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
   return (
     <Tab.Group>
       <Tab.List className="flex space-x-1 mb-1">
-        <ModeTab>Decoded</ModeTab>
+        <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
         <ModeTab>UTF-8</ModeTab>
       </Tab.List>

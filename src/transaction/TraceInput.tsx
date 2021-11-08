@@ -72,7 +72,7 @@ const TraceInput: React.FC<TraceInputProps> = ({
           {(!hasParams || !expanded) && <>)</>}
         </span>
       </div>
-      {hasParams && expanded && fourBytesTxDesc && (
+      {hasParams && expanded && (
         <>
           <div className="ml-5 mr-1 my-2">
             <InputDecoder
