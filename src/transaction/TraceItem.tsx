@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons/faPlusSquare";
 import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare";
 import { Switch } from "@headlessui/react";
-import { TransactionData } from "../types";
 import { FourBytesEntry } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
 import { ResolvedAddresses } from "../api/address-resolver";
@@ -11,7 +10,6 @@ import TraceInput from "./TraceInput";
 
 type TraceItemProps = {
   t: TraceGroup;
-  txData: TransactionData;
   last: boolean;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
   resolvedAddresses: ResolvedAddresses | undefined;
@@ -19,7 +17,6 @@ type TraceItemProps = {
 
 const TraceItem: React.FC<TraceItemProps> = ({
   t,
-  txData,
   last,
   fourBytesMap,
   resolvedAddresses,
@@ -47,7 +44,6 @@ const TraceItem: React.FC<TraceItemProps> = ({
         )}
         <TraceInput
           t={t}
-          txData={txData}
           fourBytesMap={fourBytesMap}
           resolvedAddresses={resolvedAddresses}
         />
@@ -60,7 +56,6 @@ const TraceItem: React.FC<TraceItemProps> = ({
         >
           <TraceChildren
             c={t.children}
-            txData={txData}
             fourBytesMap={fourBytesMap}
             resolvedAddresses={resolvedAddresses}
           />
@@ -72,20 +67,18 @@ const TraceItem: React.FC<TraceItemProps> = ({
 
 type TraceChildrenProps = {
   c: TraceGroup[];
-  txData: TransactionData;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
   resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const TraceChildren: React.FC<TraceChildrenProps> = React.memo(
-  ({ c, txData, fourBytesMap, resolvedAddresses }) => {
+  ({ c, fourBytesMap, resolvedAddresses }) => {
     return (
       <>
         {c.map((tc, i, a) => (
           <TraceItem
             key={i}
             t={tc}
-            txData={txData}
             last={i === a.length - 1}
             fourBytesMap={fourBytesMap}
             resolvedAddresses={resolvedAddresses}

@@ -47,7 +47,6 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
             <TraceItem
               key={i}
               t={t}
-              txData={txData}
               last={i === a.length - 1}
               fourBytesMap={sigMap}
               resolvedAddresses={mergedResolvedAddresses}

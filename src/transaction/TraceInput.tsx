@@ -5,7 +5,6 @@ import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import { TraceEntry } from "../useErigonHooks";
-import { TransactionData } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
 import {
   extract4Bytes,
@@ -15,14 +14,12 @@ import {
 
 type TraceInputProps = {
   t: TraceEntry;
-  txData: TransactionData;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
   resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const TraceInput: React.FC<TraceInputProps> = ({
   t,
-  txData,
   fourBytesMap,
   resolvedAddresses,
 }) => {
