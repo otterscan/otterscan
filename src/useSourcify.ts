@@ -147,6 +147,9 @@ export const useMultipleMetadata = (
       }
 
       const results = await Promise.all(promises);
+      if (abortController.signal.aborted) {
+        return;
+      }
       const metadatas: Record<string, Metadata | null> = baseMetadatas
         ? { ...baseMetadatas }
         : {};

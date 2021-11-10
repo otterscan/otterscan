@@ -27,9 +27,7 @@ type TransactionItemProps = {
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
   priceMap: Record<BlockTag, BigNumber>;
-  metadatas:
-    | Record<ChecksummedAddress, Metadata | null | undefined>
-    | undefined;
+  metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
@@ -110,7 +108,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
                 resolvedAddresses={resolvedAddresses}
-                metadata={metadatas?.[tx.to]}
+                metadata={metadatas[tx.to]}
               />
             </AddressHighlighter>
           ) : (
@@ -120,7 +118,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 selectedAddress={selectedAddress}
                 creation
                 resolvedAddresses={resolvedAddresses}
-                metadata={metadatas?.[tx.createdContractAddress!]}
+                metadata={metadatas[tx.createdContractAddress!]}
               />
             </AddressHighlighter>
           )}
