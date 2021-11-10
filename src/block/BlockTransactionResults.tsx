@@ -9,9 +9,11 @@ import { useFeeToggler } from "../search/useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { SelectionContext, useSelection } from "../useSelection";
 import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
-import { ProcessedTransaction } from "../types";
+import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
+import { useAppConfigContext } from "../useAppConfig";
+import { useMultipleMetadata } from "../useSourcify";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;
@@ -33,6 +35,21 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
+
+  const addresses = useMemo((): ChecksummedAddress[] => {
+    if (!page) {
+      return [];
+    }
+
+    return page.map((t) => t.to).filter((to): to is string => to !== undefined);
+  }, [page]);
+  const { sourcifySource } = useAppConfigContext();
+  const metadatas = useMultipleMetadata(
+    undefined,
+    addresses,
+    provider?.network.chainId,
+    sourcifySource
+  );
 
   return (
     <ContentFrame>
@@ -63,6 +80,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
               resolvedAddresses={resolvedAddresses}
               feeDisplay={feeDisplay}
               priceMap={priceMap}
+              metadatas={metadatas}
             />
           ))}
           <div className="flex justify-between items-baseline py-3">

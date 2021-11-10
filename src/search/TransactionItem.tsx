@@ -27,7 +27,7 @@ type TransactionItemProps = {
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
   priceMap: Record<BlockTag, BigNumber>;
-  metadatas?:
+  metadatas:
     | Record<ChecksummedAddress, Metadata | null | undefined>
     | undefined;
 };
