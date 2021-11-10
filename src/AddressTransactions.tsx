@@ -32,6 +32,7 @@ import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useMultipleMetadata } from "./useSourcify";
+import { ChecksummedAddress } from "./types";
 import SourcifyLogo from "./sourcify.svg";
 
 type BlockParams = {
@@ -181,7 +182,20 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
-  const addresses = useMemo(() => [checksummedAddress], [checksummedAddress]);
+  const addresses = useMemo(() => {
+    const _addresses: ChecksummedAddress[] = [];
+    if (checksummedAddress) {
+      _addresses.push(checksummedAddress);
+    }
+    if (page) {
+      for (const t of page) {
+        if (t.to) {
+          _addresses.push(t.to);
+        }
+      }
+    }
+    return _addresses;
+  }, [checksummedAddress, page]);
   const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     undefined,
@@ -294,6 +308,7 @@ const AddressTransactions: React.FC = () => {
                               selectedAddress={checksummedAddress}
                               feeDisplay={feeDisplay}
                               priceMap={priceMap}
+                              metadatas={metadatas}
                             />
                           ))}
                           <div className="flex justify-between items-baseline py-3">
