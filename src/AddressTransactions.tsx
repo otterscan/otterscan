@@ -31,7 +31,7 @@ import { useFeeToggler } from "./search/useFeeToggler";
 import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
-import { useSourcify } from "./useSourcify";
+import { useMultipleMetadata } from "./useSourcify";
 import SourcifyLogo from "./sourcify.svg";
 
 type BlockParams = {
@@ -181,12 +181,18 @@ const AddressTransactions: React.FC = () => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const selectionCtx = useSelection();
+  const addresses = useMemo(() => [checksummedAddress], [checksummedAddress]);
   const { sourcifySource } = useAppConfigContext();
-  const rawMetadata = useSourcify(
-    checksummedAddress,
+  const metadatas = useMultipleMetadata(
+    undefined,
+    addresses,
     provider?.network.chainId,
     sourcifySource
   );
+  const addressMetadata =
+    checksummedAddress !== undefined
+      ? metadatas[checksummedAddress]
+      : undefined;
 
   return (
     <StandardFrame>
@@ -224,18 +230,18 @@ const AddressTransactions: React.FC = () => {
                 <NavTab href={`/address/${checksummedAddress}/contract`}>
                   <span
                     className={`flex items-baseline space-x-2 ${
-                      rawMetadata === undefined ? "italic opacity-50" : ""
+                      addressMetadata === undefined ? "italic opacity-50" : ""
                     }`}
                   >
                     <span>Contract</span>
-                    {rawMetadata === undefined ? (
+                    {addressMetadata === undefined ? (
                       <span className="self-center">
                         <FontAwesomeIcon
                           className="animate-spin"
                           icon={faCircleNotch}
                         />
                       </span>
-                    ) : rawMetadata === null ? (
+                    ) : addressMetadata === null ? (
                       <span className="self-center text-red-500">
                         <FontAwesomeIcon icon={faQuestionCircle} />
                       </span>
@@ -316,7 +322,7 @@ const AddressTransactions: React.FC = () => {
                   <Route path="/address/:addressOrName/contract" exact>
                     <Contracts
                       checksummedAddress={checksummedAddress}
-                      rawMetadata={rawMetadata}
+                      rawMetadata={addressMetadata}
                     />
                   </Route>
                 </Switch>

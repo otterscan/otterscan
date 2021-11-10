@@ -87,6 +87,7 @@ const fetchSourcifyMetadata = async (
   }
 };
 
+// TODO: replace every occurrence with the multiple version one
 export const useSourcify = (
   address: ChecksummedAddress | undefined,
   chainId: number | undefined,
@@ -121,7 +122,7 @@ export const useSourcify = (
 };
 
 export const useMultipleMetadata = (
-  baseMetadatas: Record<string, Metadata | null>,
+  baseMetadatas: Record<string, Metadata | null> | undefined,
   addresses: (ChecksummedAddress | undefined)[],
   chainId: number | undefined,
   source: SourcifySource
@@ -146,7 +147,9 @@ export const useMultipleMetadata = (
       }
 
       const results = await Promise.all(promises);
-      const metadatas: Record<string, Metadata | null> = { ...baseMetadatas };
+      const metadatas: Record<string, Metadata | null> = baseMetadatas
+        ? { ...baseMetadatas }
+        : {};
       for (let i = 0; i < results.length; i++) {
         metadatas[dedupedAddresses[i]] = results[i];
       }
@@ -156,7 +159,7 @@ export const useMultipleMetadata = (
     const deduped = new Set(
       addresses.filter(
         (a): a is ChecksummedAddress =>
-          a !== undefined && baseMetadatas[a] === undefined
+          a !== undefined && baseMetadatas?.[a] === undefined
       )
     );
     fetchMetadata(Array.from(deduped));
