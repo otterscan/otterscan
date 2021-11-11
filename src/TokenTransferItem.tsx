@@ -4,17 +4,11 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
-import {
-  AddressContext,
-  TokenMeta,
-  TokenTransfer,
-  TransactionData,
-} from "./types";
+import { AddressContext, TokenMeta, TokenTransfer } from "./types";
 import { ResolvedAddresses } from "./api/address-resolver";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
-  txData: TransactionData;
   tokenMeta?: TokenMeta | undefined;
   resolvedAddresses: ResolvedAddresses | undefined;
 };
@@ -22,7 +16,6 @@ type TokenTransferItemProps = {
 // TODO: handle partial
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
-  txData,
   tokenMeta,
   resolvedAddresses,
 }) => (

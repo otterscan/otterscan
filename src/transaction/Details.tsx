@@ -225,7 +225,6 @@ const Details: React.FC<DetailsProps> = ({
               <TokenTransferItem
                 key={i}
                 t={t}
-                txData={txData}
                 tokenMeta={txData.tokenMetas[t.token]}
                 resolvedAddresses={resolvedAddresses}
               />
