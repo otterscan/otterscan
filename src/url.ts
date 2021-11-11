@@ -1,4 +1,5 @@
 import { BlockTag } from "@ethersproject/abstract-provider";
+import { ChecksummedAddress } from "./types";
 
 export const fourBytesURL = (
   assetsURLPrefix: string,
@@ -42,23 +43,23 @@ const resolveSourcifySource = (source: SourcifySource) => {
 };
 
 export const sourcifyMetadata = (
-  checksummedAddress: string,
-  networkId: number,
+  address: ChecksummedAddress,
+  chainId: number,
   source: SourcifySource
 ) =>
   `${resolveSourcifySource(
     source
-  )}/contracts/full_match/${networkId}/${checksummedAddress}/metadata.json`;
+  )}/contracts/full_match/${chainId}/${address}/metadata.json`;
 
 export const sourcifySourceFile = (
-  checksummedAddress: string,
-  networkId: number,
+  address: ChecksummedAddress,
+  chainId: number,
   filepath: string,
   source: SourcifySource
 ) =>
   `${resolveSourcifySource(
     source
-  )}/contracts/full_match/${networkId}/${checksummedAddress}/sources/${filepath}`;
+  )}/contracts/full_match/${chainId}/${address}/sources/${filepath}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
   `https://remix.ethereum.org/#call=source-verification//fetchAndSave//${checksummedAddress}//${networkId}`;
