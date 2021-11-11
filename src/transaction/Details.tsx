@@ -225,17 +225,15 @@ const Details: React.FC<DetailsProps> = ({
       )}
       {txData.tokenTransfers.length > 0 && (
         <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-          <div>
-            {txData.tokenTransfers.map((t, i) => (
-              <TokenTransferItem
-                key={i}
-                t={t}
-                tokenMeta={txData.tokenMetas[t.token]}
-                resolvedAddresses={resolvedAddresses}
-                metadatas={metadatas}
-              />
-            ))}
-          </div>
+          {txData.tokenTransfers.map((t, i) => (
+            <TokenTransferItem
+              key={i}
+              t={t}
+              tokenMeta={txData.tokenMetas[t.token]}
+              resolvedAddresses={resolvedAddresses}
+              metadatas={metadatas}
+            />
+          ))}
         </InfoRow>
       )}
       <InfoRow title="Value">
@@ -262,24 +260,16 @@ const Details: React.FC<DetailsProps> = ({
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxPriorityFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+            <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
+            <FormattedBalance
+              value={txData.maxPriorityFeePerGas!}
+              decimals={9}
+            />{" "}
+            Gwei)
           </InfoRow>
           <InfoRow title="Max Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
           </InfoRow>
         </>
       )}
@@ -321,18 +311,16 @@ const Details: React.FC<DetailsProps> = ({
       )}
       {txData.confirmedData && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <span>
-            <FormattedBalance
-              value={txData.confirmedData.blockBaseFeePerGas!}
-              decimals={9}
-            />{" "}
-            Gwei (
-            <FormattedBalance
-              value={txData.confirmedData.blockBaseFeePerGas!}
-              decimals={0}
-            />{" "}
-            wei)
-          </span>
+          <FormattedBalance
+            value={txData.confirmedData.blockBaseFeePerGas!}
+            decimals={9}
+          />{" "}
+          Gwei (
+          <FormattedBalance
+            value={txData.confirmedData.blockBaseFeePerGas!}
+            decimals={0}
+          />{" "}
+          wei)
         </InfoRow>
       )}
       {txData.confirmedData && (
