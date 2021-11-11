@@ -67,6 +67,9 @@ export type ConfirmedTransactionData = {
 // The VOID...
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
+// TODO: replace all occurrences of plain string
+export type ChecksummedAddress = string;
+
 export enum AddressContext {
   FROM,
   TO,

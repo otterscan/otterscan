@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useMemo } from "react";
 import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,11 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import { TransactionData, InternalOperation } from "../types";
+import {
+  TransactionData,
+  InternalOperation,
+  ChecksummedAddress,
+} from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -33,8 +37,10 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, UserDoc } from "../useSourcify";
+import { DevDoc, useMultipleMetadata, UserDoc } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
+import { RuntimeContext } from "../useRuntime";
+import { useAppConfigContext } from "../useAppConfig";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -72,6 +78,25 @@ const Details: React.FC<DetailsProps> = ({
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
+
+  const { provider } = useContext(RuntimeContext);
+  const addresses = useMemo(() => {
+    const _addresses: ChecksummedAddress[] = [];
+    if (txData.to) {
+      _addresses.push(txData.to);
+    }
+    if (txData.confirmedData?.createdContractAddress) {
+      _addresses.push(txData.confirmedData.createdContractAddress);
+    }
+    return _addresses;
+  }, [txData]);
+  const { sourcifySource } = useAppConfigContext();
+  const metadatas = useMultipleMetadata(
+    undefined,
+    addresses,
+    provider?.network.chainId,
+    sourcifySource
+  );
 
   return (
     <ContentFrame tabs>
@@ -148,6 +173,7 @@ const Details: React.FC<DetailsProps> = ({
             <TransactionAddress
               address={txData.to}
               resolvedAddresses={resolvedAddresses}
+              metadata={metadatas?.[txData.to]}
             />
             <Copy value={txData.to} />
           </div>
@@ -160,6 +186,9 @@ const Details: React.FC<DetailsProps> = ({
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
               resolvedAddresses={resolvedAddresses}
+              metadata={
+                metadatas?.[txData.confirmedData?.createdContractAddress!]
+              }
             />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>

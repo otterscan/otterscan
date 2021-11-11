@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
-import { TransactionData } from "./types";
+import { ChecksummedAddress, TransactionData } from "./types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
 
 export type UserMethod = {
@@ -65,24 +65,19 @@ export type Metadata = {
   };
 };
 
-export const fetchSourcifyMetadata = async (
-  checksummedAddress: string,
+const fetchSourcifyMetadata = async (
+  address: ChecksummedAddress,
   chainId: number,
   source: SourcifySource,
   abortController: AbortController
 ): Promise<Metadata | null> => {
   try {
-    const contractMetadataURL = sourcifyMetadata(
-      checksummedAddress,
-      chainId,
-      source
-    );
-    const result = await fetch(contractMetadataURL, {
+    const metadataURL = sourcifyMetadata(address, chainId, source);
+    const result = await fetch(metadataURL, {
       signal: abortController.signal,
     });
     if (result.ok) {
-      const _metadata = await result.json();
-      return _metadata;
+      return await result.json();
     }
 
     return null;
@@ -92,15 +87,16 @@ export const fetchSourcifyMetadata = async (
   }
 };
 
+// TODO: replace every occurrence with the multiple version one
 export const useSourcify = (
-  checksummedAddress: string | undefined,
+  address: ChecksummedAddress | undefined,
   chainId: number | undefined,
   source: SourcifySource
 ): Metadata | null | undefined => {
   const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
 
   useEffect(() => {
-    if (!checksummedAddress || chainId === undefined) {
+    if (!address || chainId === undefined) {
       return;
     }
     setRawMetadata(undefined);
@@ -108,7 +104,7 @@ export const useSourcify = (
     const abortController = new AbortController();
     const fetchMetadata = async () => {
       const _metadata = await fetchSourcifyMetadata(
-        checksummedAddress,
+        address,
         chainId,
         source,
         abortController
@@ -120,47 +116,53 @@ export const useSourcify = (
     return () => {
       abortController.abort();
     };
-  }, [checksummedAddress, chainId, source]);
+  }, [address, chainId, source]);
 
   return rawMetadata;
 };
 
 export const useMultipleMetadata = (
-  baseMetadatas: Record<string, Metadata | null>,
-  checksummedAddress: (string | undefined)[],
+  baseMetadatas: Record<string, Metadata | null> | undefined,
+  addresses: (ChecksummedAddress | undefined)[],
   chainId: number | undefined,
   source: SourcifySource
-): Record<string, Metadata | null | undefined> => {
+): Record<ChecksummedAddress, Metadata | null | undefined> => {
   const [rawMetadata, setRawMetadata] = useState<
     Record<string, Metadata | null | undefined>
   >({});
 
   useEffect(() => {
-    if (!checksummedAddress || chainId === undefined) {
+    if (!addresses || chainId === undefined) {
       return;
     }
     setRawMetadata({});
 
     const abortController = new AbortController();
-    const fetchMetadata = async (addresses: string[]) => {
+    const fetchMetadata = async (dedupedAddresses: string[]) => {
       const promises: Promise<Metadata | null>[] = [];
-      for (const addr of addresses) {
+      for (const address of dedupedAddresses) {
         promises.push(
-          fetchSourcifyMetadata(addr, chainId, source, abortController)
+          fetchSourcifyMetadata(address, chainId, source, abortController)
         );
       }
 
       const results = await Promise.all(promises);
-      const metadatas: Record<string, Metadata | null> = { ...baseMetadatas };
+      if (abortController.signal.aborted) {
+        return;
+      }
+      const metadatas: Record<string, Metadata | null> = baseMetadatas
+        ? { ...baseMetadatas }
+        : {};
       for (let i = 0; i < results.length; i++) {
-        metadatas[addresses[i]] = results[i];
+        metadatas[dedupedAddresses[i]] = results[i];
       }
       setRawMetadata(metadatas);
     };
 
     const deduped = new Set(
-      checksummedAddress.filter(
-        (a): a is string => a !== undefined && baseMetadatas[a] === undefined
+      addresses.filter(
+        (a): a is ChecksummedAddress =>
+          a !== undefined && baseMetadatas?.[a] === undefined
       )
     );
     fetchMetadata(Array.from(deduped));
@@ -168,7 +170,7 @@ export const useMultipleMetadata = (
     return () => {
       abortController.abort();
     };
-  }, [baseMetadatas, checksummedAddress, chainId, source]);
+  }, [baseMetadatas, addresses, chainId, source]);
 
   return rawMetadata;
 };
