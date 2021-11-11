@@ -95,6 +95,11 @@ const Details: React.FC<DetailsProps> = ({
     if (txData.confirmedData?.createdContractAddress) {
       _addresses.push(txData.confirmedData.createdContractAddress);
     }
+    for (const t of txData.tokenTransfers) {
+      _addresses.push(t.from);
+      _addresses.push(t.to);
+      _addresses.push(t.token);
+    }
     return _addresses;
   }, [txData]);
   const { sourcifySource } = useAppConfigContext();
@@ -227,6 +232,7 @@ const Details: React.FC<DetailsProps> = ({
                 t={t}
                 tokenMeta={txData.tokenMetas[t.token]}
                 resolvedAddresses={resolvedAddresses}
+                metadatas={metadatas}
               />
             ))}
           </div>

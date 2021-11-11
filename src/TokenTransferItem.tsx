@@ -4,13 +4,20 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
-import { AddressContext, TokenMeta, TokenTransfer } from "./types";
+import {
+  AddressContext,
+  ChecksummedAddress,
+  TokenMeta,
+  TokenTransfer,
+} from "./types";
 import { ResolvedAddresses } from "./api/address-resolver";
+import { Metadata } from "./useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
   tokenMeta?: TokenMeta | undefined;
   resolvedAddresses: ResolvedAddresses | undefined;
+  metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
 // TODO: handle partial
@@ -18,6 +25,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMeta,
   resolvedAddresses,
+  metadatas,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
     <span className="text-gray-500">
@@ -30,6 +38,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           address={t.from}
           addressCtx={AddressContext.FROM}
           resolvedAddresses={resolvedAddresses}
+          metadata={metadatas[t.from]}
         />
       </div>
       <div className="flex space-x-1">
@@ -38,6 +47,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           address={t.to}
           addressCtx={AddressContext.TO}
           resolvedAddresses={resolvedAddresses}
+          metadata={metadatas[t.to]}
         />
       </div>
       <div className="col-span-3 flex space-x-1">
@@ -53,6 +63,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
         <TransactionAddress
           address={t.token}
           resolvedAddresses={resolvedAddresses}
+          metadata={metadatas[t.token]}
         />
       </div>
     </div>
