@@ -8,9 +8,6 @@ import { TransactionData, InternalOperation } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
 import TransactionAddress from "./TransactionAddress";
 
-const CHI_ADDRESS = "0x0000000000004946c0e9F43F4Dee607b0eF1fA1c";
-const GST2_ADDRESS = "0x0000000000b3F879cb30FE243b4Dfee438691c04";
-
 type InternalSelfDestructProps = {
   txData: TransactionData;
   internalOp: InternalOperation;
@@ -81,4 +78,4 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   );
 };
 
-export default React.memo(InternalSelfDestruct);
+export default InternalSelfDestruct;

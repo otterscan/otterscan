@@ -71,4 +71,4 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   );
 };
 
-export default React.memo(InternalTransfer);
+export default InternalTransfer;
