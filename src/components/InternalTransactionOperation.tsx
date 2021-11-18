@@ -31,7 +31,6 @@ const InternalTransactionOperation: React.FC<InternalTransactionOperationProps> 
       {(internalOp.type === OperationType.CREATE ||
         internalOp.type === OperationType.CREATE2) && (
         <InternalCreate
-          txData={txData}
           internalOp={internalOp}
           resolvedAddresses={resolvedAddresses}
         />

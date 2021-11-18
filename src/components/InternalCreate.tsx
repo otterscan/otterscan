@@ -1,19 +1,18 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import TransactionAddress from "./TransactionAddress";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
-import { TransactionData, InternalOperation } from "../types";
+import { InternalOperation } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
 
 type InternalCreateProps = {
-  txData: TransactionData;
   internalOp: InternalOperation;
   resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const InternalCreate: React.FC<InternalCreateProps> = ({
-  txData,
   internalOp,
   resolvedAddresses,
 }) => (
@@ -33,14 +32,10 @@ const InternalCreate: React.FC<InternalCreateProps> = ({
     </div>
     <span className="flex items-baseline text-gray-400">
       (Creator:{" "}
-      <AddressHighlighter address={internalOp.from}>
-        <DecoratedAddressLink
-          address={internalOp.from}
-          txFrom={internalOp.from === txData.from}
-          txTo={internalOp.from === txData.to}
-          resolvedAddresses={resolvedAddresses}
-        />
-      </AddressHighlighter>
+      <TransactionAddress
+        address={internalOp.from}
+        resolvedAddresses={resolvedAddresses}
+      />
       )
     </span>
   </div>
