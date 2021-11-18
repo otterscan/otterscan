@@ -22,11 +22,19 @@ const InternalTransactionOperation: React.FC<InternalTransactionOperationProps> 
         />
       )}
       {internalOp.type === OperationType.SELF_DESTRUCT && (
-        <InternalSelfDestruct txData={txData} internalOp={internalOp} />
+        <InternalSelfDestruct
+          txData={txData}
+          internalOp={internalOp}
+          resolvedAddresses={resolvedAddresses}
+        />
       )}
       {(internalOp.type === OperationType.CREATE ||
         internalOp.type === OperationType.CREATE2) && (
-        <InternalCreate txData={txData} internalOp={internalOp} />
+        <InternalCreate
+          txData={txData}
+          internalOp={internalOp}
+          resolvedAddresses={resolvedAddresses}
+        />
       )}
     </>
   );

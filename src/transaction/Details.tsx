@@ -206,7 +206,7 @@ const Details: React.FC<DetailsProps> = ({
           </div>
         )}
         {internalOps && internalOps.length > 0 && (
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-1 overflow-x-auto">
             {internalOps.map((op, i) => (
               <InternalTransactionOperation
                 key={i}
