@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
@@ -75,7 +76,10 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         </span>
       )}
       {metadata && (
-        <span className="self-center flex-shrink-0 flex items-center">
+        <NavLink
+          className="self-center flex-shrink-0 flex items-center"
+          to={`/address/${address}/contract`}
+        >
           <img
             src={SourcifyLogo}
             alt="Sourcify logo"
@@ -83,7 +87,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
             width={16}
             height={16}
           />
-        </span>
+        </NavLink>
       )}
       <AddressOrENSName
         address={address}
