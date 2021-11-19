@@ -55,30 +55,30 @@ const TraceInput: React.FC<TraceInputProps> = ({
           <>
             <span>.</span>
             <FunctionSignature callType={t.type} sig={sigText} />
+            {t.value && !t.value.isZero() && (
+              <span className="text-red-700 whitespace-nowrap">
+                {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
+              </span>
+            )}
+            <span className="whitespace-nowrap">
+              (
+              {hasParams && (
+                <Switch
+                  className="text-xs"
+                  checked={expanded}
+                  onChange={setExpanded}
+                >
+                  {expanded ? (
+                    <span className="text-gray-400">[-]</span>
+                  ) : (
+                    <>[...]</>
+                  )}
+                </Switch>
+              )}
+              {(!hasParams || !expanded) && <>)</>}
+            </span>
           </>
         )}
-        {t.value && !t.value.isZero() && (
-          <span className="text-red-700 whitespace-nowrap">
-            {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
-          </span>
-        )}
-        <span className="whitespace-nowrap">
-          (
-          {hasParams && (
-            <Switch
-              className="text-xs"
-              checked={expanded}
-              onChange={setExpanded}
-            >
-              {expanded ? (
-                <span className="text-gray-400">[-]</span>
-              ) : (
-                <>[...]</>
-              )}
-            </Switch>
-          )}
-          {(!hasParams || !expanded) && <>)</>}
-        </span>
       </div>
       {hasParams && expanded && (
         <>
