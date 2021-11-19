@@ -51,8 +51,12 @@ const TraceInput: React.FC<TraceInputProps> = ({
             resolvedAddresses={resolvedAddresses}
           />
         </span>
-        <span>.</span>
-        <FunctionSignature callType={t.type} sig={sigText} />
+        {t.type !== "CREATE" && t.type !== "CREATE2" && (
+          <>
+            <span>.</span>
+            <FunctionSignature callType={t.type} sig={sigText} />
+          </>
+        )}
         {t.value && !t.value.isZero() && (
           <span className="text-red-700 whitespace-nowrap">
             {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
