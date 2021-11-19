@@ -17,7 +17,7 @@ type DecodedParamRowProps = {
   paramType: ParamType;
   arrayElem?: number | undefined;
   help?: string | undefined;
-  resolvedAddresses?: ResolvedAddresses | undefined;
+  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
@@ -99,6 +99,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             i={idx}
             r={e}
             paramType={paramType.components[idx]}
+            resolvedAddresses={resolvedAddresses}
           />
         ))}
       {paramType.baseType === "array" &&
@@ -109,6 +110,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             r={e}
             paramType={paramType.arrayChildren}
             arrayElem={idx}
+            resolvedAddresses={resolvedAddresses}
           />
         ))}
     </>
