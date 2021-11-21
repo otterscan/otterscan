@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
@@ -45,6 +48,16 @@ const TraceInput: React.FC<TraceInputProps> = ({
     >
       <div className="flex items-baseline">
         <span className="text-xs text-gray-400 lowercase">{t.type}</span>
+        {t.type === "SELFDESTRUCT" && (
+          <>
+            <span className="pl-2 text-red-800" title="Self destruct">
+              <FontAwesomeIcon icon={faBomb} size="1x" />
+            </span>
+            <span className="pl-px pr-2 text-xs text-gray-400 lowercase">
+              <FontAwesomeIcon icon={faArrowRight} size="1x" />
+            </span>
+          </>
+        )}
         <span>
           <TransactionAddress
             address={t.to}
