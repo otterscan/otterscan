@@ -6,12 +6,14 @@ import {
   useContext,
 } from "react";
 
+export type SelectionType = "address" | "value" | "functionSig";
+
 export type Selection = {
-  type: "address" | "value";
+  type: SelectionType;
   content: string;
 };
 
-type OptionalSelection = Selection | null;
+export type OptionalSelection = Selection | null;
 
 export const useSelection = (): [
   OptionalSelection,

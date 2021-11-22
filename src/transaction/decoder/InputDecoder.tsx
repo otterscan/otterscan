@@ -30,18 +30,17 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
     try {
       return toUtf8String(data);
     } catch (err) {
-      console.warn("Error while converting input data to string");
-      console.warn(err);
-      return "<can't decode>";
+      // Silently ignore on purpose
+      return undefined;
     }
   }, [data]);
 
   return (
     <Tab.Group>
       <Tab.List className="flex space-x-1 mb-1">
-        <ModeTab>Decoded</ModeTab>
+        <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
-        <ModeTab>UTF-8</ModeTab>
+        <ModeTab disabled={utfInput === undefined}>UTF-8</ModeTab>
       </Tab.List>
       <Tab.Panels>
         <Tab.Panel>

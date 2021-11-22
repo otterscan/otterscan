@@ -1,9 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import {
-  TransactionDescription,
-  Fragment,
-  Interface,
-} from "@ethersproject/abi";
+import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -36,7 +32,11 @@ import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import InputDecoder from "./decoder/InputDecoder";
-import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import {
+  rawInputTo4Bytes,
+  use4Bytes,
+  useTransactionDescription,
+} from "../use4Bytes";
 import { DevDoc, useMultipleMetadata, UserDoc } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
@@ -69,18 +69,11 @@ const Details: React.FC<DetailsProps> = ({
 
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
-  const fourBytesTxDesc = useMemo(() => {
-    if (!fourBytesEntry) {
-      return fourBytesEntry;
-    }
-    if (!txData || !fourBytesEntry.signature) {
-      return undefined;
-    }
-    const sig = fourBytesEntry?.signature;
-    const functionFragment = Fragment.fromString(`function ${sig}`);
-    const intf = new Interface([functionFragment]);
-    return intf.parseTransaction({ data: txData.data, value: txData.value });
-  }, [txData, fourBytesEntry]);
+  const fourBytesTxDesc = useTransactionDescription(
+    fourBytesEntry,
+    txData.data,
+    txData.value
+  );
 
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;

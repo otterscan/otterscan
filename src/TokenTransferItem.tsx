@@ -15,7 +15,7 @@ import { Metadata } from "./useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
-  tokenMeta?: TokenMeta | undefined;
+  tokenMeta?: TokenMeta | null | undefined;
   resolvedAddresses: ResolvedAddresses | undefined;
   metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };

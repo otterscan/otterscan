@@ -107,4 +107,4 @@ export type TokenMeta = {
   decimals: number;
 };
 
-export type TokenMetas = Record<string, TokenMeta>;
+export type TokenMetas = Record<string, TokenMeta | null | undefined>;

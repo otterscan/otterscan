@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ProcessedTransaction, TransactionData } from "./types";
 import { batchPopulate, ResolvedAddresses } from "./api/address-resolver";
+import { TraceGroup } from "./useErigonHooks";
 
 export type AddressCollector = () => string[];
 
@@ -58,6 +59,31 @@ export const transactionDataCollector =
       }
     }
 
+    return Array.from(uniqueAddresses);
+  };
+
+export const tracesCollector =
+  (traces: TraceGroup[] | undefined): AddressCollector =>
+  () => {
+    if (traces === undefined) {
+      return [];
+    }
+
+    const uniqueAddresses = new Set<string>();
+    let searchTraces = [...traces];
+    while (searchTraces.length > 0) {
+      const nextSearch: TraceGroup[] = [];
+
+      for (const g of searchTraces) {
+        uniqueAddresses.add(g.from);
+        uniqueAddresses.add(g.to);
+        if (g.children) {
+          nextSearch.push(...g.children);
+        }
+      }
+
+      searchTraces = nextSearch;
+    }
     return Array.from(uniqueAddresses);
   };
 
