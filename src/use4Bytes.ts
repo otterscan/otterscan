@@ -16,7 +16,7 @@ export type FourBytesEntry = {
 export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
 
 const simpleTransfer: FourBytesEntry = {
-  name: "Transfer",
+  name: "transfer",
   signature: undefined,
 };
 
