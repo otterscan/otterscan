@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Switch } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons/faArrowRight";
 import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
@@ -48,48 +47,46 @@ const TraceInput: React.FC<TraceInputProps> = ({
     >
       <div className="flex items-baseline">
         <span className="text-xs text-gray-400 lowercase">{t.type}</span>
-        {t.type === "SELFDESTRUCT" && (
+        {t.type === "SELFDESTRUCT" ? (
+          <span className="pl-2 text-red-800" title="Self destruct">
+            <FontAwesomeIcon icon={faBomb} size="1x" />
+          </span>
+        ) : (
           <>
-            <span className="pl-2 text-red-800" title="Self destruct">
-              <FontAwesomeIcon icon={faBomb} size="1x" />
+            <span>
+              <TransactionAddress
+                address={t.to}
+                resolvedAddresses={resolvedAddresses}
+              />
             </span>
-            <span className="pl-px pr-2 text-xs text-gray-400 lowercase">
-              <FontAwesomeIcon icon={faArrowRight} size="1x" />
-            </span>
-          </>
-        )}
-        <span>
-          <TransactionAddress
-            address={t.to}
-            resolvedAddresses={resolvedAddresses}
-          />
-        </span>
-        {t.type !== "CREATE" && t.type !== "CREATE2" && (
-          <>
-            <span>.</span>
-            <FunctionSignature callType={t.type} sig={sigText} />
-            {t.value && !t.value.isZero() && (
-              <span className="text-red-700 whitespace-nowrap">
-                {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
-              </span>
-            )}
-            <span className="whitespace-nowrap">
-              (
-              {hasParams && (
-                <Switch
-                  className="text-xs"
-                  checked={expanded}
-                  onChange={setExpanded}
-                >
-                  {expanded ? (
-                    <span className="text-gray-400">[-]</span>
-                  ) : (
-                    <>[...]</>
+            {t.type !== "CREATE" && t.type !== "CREATE2" && (
+              <>
+                <span>.</span>
+                <FunctionSignature callType={t.type} sig={sigText} />
+                {t.value && !t.value.isZero() && (
+                  <span className="text-red-700 whitespace-nowrap">
+                    {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
+                  </span>
+                )}
+                <span className="whitespace-nowrap">
+                  (
+                  {hasParams && (
+                    <Switch
+                      className="text-xs"
+                      checked={expanded}
+                      onChange={setExpanded}
+                    >
+                      {expanded ? (
+                        <span className="text-gray-400">[-]</span>
+                      ) : (
+                        <>[...]</>
+                      )}
+                    </Switch>
                   )}
-                </Switch>
-              )}
-              {(!hasParams || !expanded) && <>)</>}
-            </span>
+                  {(!hasParams || !expanded) && <>)</>}
+                </span>
+              </>
+            )}
           </>
         )}
       </div>
