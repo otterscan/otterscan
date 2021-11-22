@@ -69,7 +69,7 @@ export const useBatch4Bytes = (
 
   const [fourBytesMap, setFourBytesMap] = useState<FourBytesMap>({});
   useEffect(() => {
-    if (!rawFourByteSigs || !assetsURLPrefix) {
+    if (!rawFourByteSigs || assetsURLPrefix === undefined) {
       setFourBytesMap({});
       return;
     }
