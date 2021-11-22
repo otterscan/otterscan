@@ -1,40 +1,22 @@
-import React, { useMemo } from "react";
-import { useSelectionContext } from "../useSelection";
+import React from "react";
+import SelectionHighlighter, { addressSelector } from "./SelectionHighlighter";
 
 type AddressHighlighterProps = React.PropsWithChildren<{
   address: string;
 }>;
 
+// TODO: replace all occurences with SelectionHighlighter and remove this component
 const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   address,
   children,
-}) => {
-  const [selection, setSelection] = useSelectionContext();
-  const [select, deselect] = useMemo(() => {
-    const _select = () => {
-      setSelection({ type: "address", content: address });
-    };
-    const _deselect = () => {
-      setSelection(null);
-    };
-    return [_select, _deselect];
-  }, [setSelection, address]);
+}) => (
+  <SelectionHighlighter
+    myType="address"
+    myContent={address}
+    selector={addressSelector}
+  >
+    {children}
+  </SelectionHighlighter>
+);
 
-  return (
-    <div
-      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
-        selection !== null &&
-        selection.type === "address" &&
-        selection.content === address
-          ? "border-orange-400 bg-yellow-100"
-          : "border-transparent"
-      }`}
-      onMouseEnter={select}
-      onMouseLeave={deselect}
-    >
-      {children}
-    </div>
-  );
-};
-
-export default React.memo(AddressHighlighter);
+export default AddressHighlighter;

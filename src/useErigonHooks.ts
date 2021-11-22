@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Block, BlockWithTransactions } from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
+import { extract4Bytes } from "./use4Bytes";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -221,7 +222,7 @@ export const useTxData = (
       // Extract token meta
       const tokenMetas: TokenMetas = {};
       for (const t of tokenTransfers) {
-        if (tokenMetas[t.token]) {
+        if (tokenMetas[t.token] !== undefined) {
           continue;
         }
         const erc20Contract = new Contract(t.token, erc20, provider);
@@ -237,6 +238,7 @@ export const useTxData = (
             decimals,
           };
         } catch (err) {
+          tokenMetas[t.token] = null;
           console.warn(`Couldn't get token ${t.token} metadata; ignoring`, err);
         }
       }
@@ -307,4 +309,134 @@ export const useInternalOperations = (
   }, [provider, txData]);
 
   return intTransfers;
+};
+
+export type TraceEntry = {
+  type: string;
+  depth: number;
+  from: string;
+  to: string;
+  value: BigNumber;
+  input: string;
+};
+
+export type TraceGroup = TraceEntry & {
+  children: TraceGroup[] | null;
+};
+
+export const useTraceTransaction = (
+  provider: JsonRpcProvider | undefined,
+  txHash: string
+): TraceGroup[] | undefined => {
+  const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
+
+  useEffect(() => {
+    if (!provider) {
+      setTraceGroups(undefined);
+      return;
+    }
+
+    const traceTx = async () => {
+      const results = await provider.send("ots_traceTransaction", [txHash]);
+
+      // Implement better formatter
+      for (let i = 0; i < results.length; i++) {
+        results[i].from = provider.formatter.address(results[i].from);
+        results[i].to = provider.formatter.address(results[i].to);
+        results[i].value =
+          results[i].value === null
+            ? null
+            : provider.formatter.bigNumber(results[i].value);
+      }
+
+      // Build trace tree
+      const buildTraceTree = (
+        flatList: TraceEntry[],
+        depth: number = 0
+      ): TraceGroup[] => {
+        const entries: TraceGroup[] = [];
+
+        let children: TraceEntry[] | null = null;
+        for (let i = 0; i < flatList.length; i++) {
+          if (flatList[i].depth === depth) {
+            if (children !== null) {
+              const childrenTree = buildTraceTree(children, depth + 1);
+              const prev = entries.pop();
+              if (prev) {
+                prev.children = childrenTree;
+                entries.push(prev);
+              }
+            }
+
+            entries.push({
+              ...flatList[i],
+              children: null,
+            });
+            children = null;
+          } else {
+            if (children === null) {
+              children = [];
+            }
+            children.push(flatList[i]);
+          }
+        }
+        if (children !== null) {
+          const childrenTree = buildTraceTree(children, depth + 1);
+          const prev = entries.pop();
+          if (prev) {
+            prev.children = childrenTree;
+            entries.push(prev);
+          }
+        }
+
+        return entries;
+      };
+
+      const traceTree = buildTraceTree(results);
+      setTraceGroups(traceTree);
+    };
+    traceTx();
+  }, [provider, txHash]);
+
+  return traceGroups;
+};
+
+/**
+ * Flatten a trace tree and extract and dedup 4byte function signatures
+ */
+export const useUniqueSignatures = (traces: TraceGroup[] | undefined) => {
+  const uniqueSignatures = useMemo(() => {
+    if (!traces) {
+      return undefined;
+    }
+
+    const sigs = new Set<string>();
+    let nextTraces: TraceGroup[] = [...traces];
+    while (nextTraces.length > 0) {
+      const traces = nextTraces;
+      nextTraces = [];
+
+      for (const t of traces) {
+        if (
+          t.type === "CALL" ||
+          t.type === "DELEGATECALL" ||
+          t.type === "STATICCALL" ||
+          t.type === "CALLCODE"
+        ) {
+          const fourBytes = extract4Bytes(t.input);
+          if (fourBytes) {
+            sigs.add(fourBytes);
+          }
+        }
+
+        if (t.children) {
+          nextTraces.push(...t.children);
+        }
+      }
+    }
+
+    return [...sigs];
+  }, [traces]);
+
+  return uniqueSignatures;
 };

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
 import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
@@ -6,6 +6,7 @@ import { TransactionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
 import { Metadata, useMultipleMetadata } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
+import { RuntimeContext } from "../useRuntime";
 
 type LogsProps = {
   txData: TransactionData;
@@ -24,15 +25,16 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
     return md;
   }, [txData.to, metadata]);
 
-  const { sourcifySource } = useAppConfigContext();
   const logAddresses = useMemo(
     () => txData.confirmedData?.logs.map((l) => l.address) ?? [],
     [txData]
   );
+  const { provider } = useContext(RuntimeContext);
+  const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     baseMetadatas,
     logAddresses,
-    1,
+    provider?.network.chainId,
     sourcifySource
   );
   const logDescs = useMemo(() => {
@@ -69,10 +71,10 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
               {txData.confirmedData.logs.map((l, i) => (
                 <LogEntry
                   key={i}
-                  txData={txData}
                   log={l}
                   logDesc={logDescs?.[i]}
                   resolvedAddresses={resolvedAddresses}
+                  metadatas={metadatas}
                 />
               ))}
             </>

@@ -26,7 +26,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
     internalOp.to === txData.confirmedData.miner;
 
   return (
-    <div className="flex items-baseline space-x-1 text-xs">
+    <div className="flex items-baseline space-x-1 whitespace-nowrap">
       <span className="text-gray-500">
         <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
       </span>
@@ -44,6 +44,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               miner={fromMiner}
               txFrom={internalOp.from === txData.from}
               txTo={internalOp.from === txData.to}
+              resolvedAddresses={resolvedAddresses}
             />
           </div>
         </AddressHighlighter>
@@ -61,6 +62,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               miner={toMiner}
               txFrom={internalOp.to === txData.from}
               txTo={internalOp.to === txData.to}
+              resolvedAddresses={resolvedAddresses}
             />
           </div>
         </AddressHighlighter>
@@ -69,4 +71,4 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   );
 };
 
-export default React.memo(InternalTransfer);
+export default InternalTransfer;

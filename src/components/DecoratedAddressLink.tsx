@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
@@ -8,6 +9,8 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import AddressOrENSName from "./AddressOrENSName";
 import { AddressContext, ZERO_ADDRESS } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
+import { Metadata } from "../useSourcify";
+import SourcifyLogo from "../sourcify.svg";
 
 type DecoratedAddressLinkProps = {
   address: string;
@@ -19,6 +22,7 @@ type DecoratedAddressLinkProps = {
   txFrom?: boolean;
   txTo?: boolean;
   resolvedAddresses?: ResolvedAddresses | undefined;
+  metadata?: Metadata | null | undefined;
 };
 
 const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
@@ -31,6 +35,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   txFrom,
   txTo,
   resolvedAddresses,
+  metadata,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -69,6 +74,20 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         <span className="text-yellow-400" title="Miner address">
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
+      )}
+      {metadata && (
+        <NavLink
+          className="self-center flex-shrink-0 flex items-center"
+          to={`/address/${address}/contract`}
+        >
+          <img
+            src={SourcifyLogo}
+            alt="Sourcify logo"
+            title="Verified by Sourcify"
+            width={16}
+            height={16}
+          />
+        </NavLink>
       )}
       <AddressOrENSName
         address={address}

@@ -1,12 +1,6 @@
-import React, { useMemo } from "react";
-import {
-  TransactionDescription,
-  Fragment,
-  Interface,
-} from "@ethersproject/abi";
+import React, { useContext, useMemo } from "react";
+import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
-import { toUtf8String } from "@ethersproject/strings";
-import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -15,8 +9,7 @@ import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
 import BlockConfirmations from "../components/BlockConfirmations";
-import AddressHighlighter from "../components/AddressHighlighter";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import Nonce from "../components/Nonce";
 import Timestamp from "../components/Timestamp";
@@ -29,16 +22,25 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import { TransactionData, InternalOperation } from "../types";
+import {
+  TransactionData,
+  InternalOperation,
+  ChecksummedAddress,
+} from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
-import ModeTab from "../components/ModeTab";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
-import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
-import { DevDoc, UserDoc } from "../useSourcify";
+import InputDecoder from "./decoder/InputDecoder";
+import {
+  rawInputTo4Bytes,
+  use4Bytes,
+  useTransactionDescription,
+} from "../use4Bytes";
+import { DevDoc, useMultipleMetadata, UserDoc } from "../useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
+import { RuntimeContext } from "../useRuntime";
+import { useAppConfigContext } from "../useAppConfig";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -65,34 +67,41 @@ const Details: React.FC<DetailsProps> = ({
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
 
-  const utfInput = useMemo(() => {
-    try {
-      return txData && toUtf8String(txData.data);
-    } catch (err) {
-      console.warn("Error while converting input data to string");
-      console.warn(err);
-      return "<can't decode>";
-    }
-  }, [txData]);
-
   const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
-  const fourBytesTxDesc = useMemo(() => {
-    if (!fourBytesEntry) {
-      return fourBytesEntry;
-    }
-    if (!txData || !fourBytesEntry.signature) {
-      return undefined;
-    }
-    const sig = fourBytesEntry?.signature;
-    const functionFragment = Fragment.fromString(`function ${sig}`);
-    const intf = new Interface([functionFragment]);
-    return intf.parseTransaction({ data: txData.data, value: txData.value });
-  }, [txData, fourBytesEntry]);
+  const fourBytesTxDesc = useTransactionDescription(
+    fourBytesEntry,
+    txData.data,
+    txData.value
+  );
 
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
+
+  const { provider } = useContext(RuntimeContext);
+  const addresses = useMemo(() => {
+    const _addresses: ChecksummedAddress[] = [];
+    if (txData.to) {
+      _addresses.push(txData.to);
+    }
+    if (txData.confirmedData?.createdContractAddress) {
+      _addresses.push(txData.confirmedData.createdContractAddress);
+    }
+    for (const t of txData.tokenTransfers) {
+      _addresses.push(t.from);
+      _addresses.push(t.to);
+      _addresses.push(t.token);
+    }
+    return _addresses;
+  }, [txData]);
+  const { sourcifySource } = useAppConfigContext();
+  const metadatas = useMultipleMetadata(
+    undefined,
+    addresses,
+    provider?.network.chainId,
+    sourcifySource
+  );
 
   return (
     <ContentFrame tabs>
@@ -152,14 +161,10 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
           <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-            <AddressHighlighter address={txData.from}>
-              <DecoratedAddressLink
-                address={txData.from}
-                miner={txData.from === txData.confirmedData?.miner}
-                txFrom
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+            <TransactionAddress
+              address={txData.from}
+              resolvedAddresses={resolvedAddresses}
+            />
             <Copy value={txData.from} />
           </div>
           <div className="flex items-baseline pl-3">
@@ -170,14 +175,11 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <AddressHighlighter address={txData.to}>
-              <DecoratedAddressLink
-                address={txData.to}
-                miner={txData.to === txData.confirmedData?.miner}
-                txTo
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+            <TransactionAddress
+              address={txData.to}
+              resolvedAddresses={resolvedAddresses}
+              metadata={metadatas?.[txData.to]}
+            />
             <Copy value={txData.to} />
           </div>
         ) : txData.confirmedData === undefined ? (
@@ -186,21 +188,18 @@ const Details: React.FC<DetailsProps> = ({
           </span>
         ) : (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <AddressHighlighter
+            <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-            >
-              <DecoratedAddressLink
-                address={txData.confirmedData.createdContractAddress!}
-                creation
-                txTo
-                resolvedAddresses={resolvedAddresses}
-              />
-            </AddressHighlighter>
+              resolvedAddresses={resolvedAddresses}
+              metadata={
+                metadatas?.[txData.confirmedData?.createdContractAddress!]
+              }
+            />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
         )}
         {internalOps && internalOps.length > 0 && (
-          <div className="mt-2 space-y-1">
+          <div className="mt-2 space-y-1 overflow-x-auto">
             {internalOps.map((op, i) => (
               <InternalTransactionOperation
                 key={i}
@@ -219,17 +218,15 @@ const Details: React.FC<DetailsProps> = ({
       )}
       {txData.tokenTransfers.length > 0 && (
         <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-          <div>
-            {txData.tokenTransfers.map((t, i) => (
-              <TokenTransferItem
-                key={i}
-                t={t}
-                txData={txData}
-                tokenMeta={txData.tokenMetas[t.token]}
-                resolvedAddresses={resolvedAddresses}
-              />
-            ))}
-          </div>
+          {txData.tokenTransfers.map((t, i) => (
+            <TokenTransferItem
+              key={i}
+              t={t}
+              tokenMeta={txData.tokenMetas[t.token]}
+              resolvedAddresses={resolvedAddresses}
+              metadatas={metadatas}
+            />
+          ))}
         </InfoRow>
       )}
       <InfoRow title="Value">
@@ -256,24 +253,16 @@ const Details: React.FC<DetailsProps> = ({
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxPriorityFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+            <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
+            <FormattedBalance
+              value={txData.maxPriorityFeePerGas!}
+              decimals={9}
+            />{" "}
+            Gwei)
           </InfoRow>
           <InfoRow title="Max Fee Per Gas">
-            <span>
-              <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
-              <FormattedBalance
-                value={txData.maxFeePerGas!}
-                decimals={9}
-              />{" "}
-              Gwei)
-            </span>
+            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
           </InfoRow>
         </>
       )}
@@ -315,18 +304,16 @@ const Details: React.FC<DetailsProps> = ({
       )}
       {txData.confirmedData && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <span>
-            <FormattedBalance
-              value={txData.confirmedData.blockBaseFeePerGas!}
-              decimals={9}
-            />{" "}
-            Gwei (
-            <FormattedBalance
-              value={txData.confirmedData.blockBaseFeePerGas!}
-              decimals={0}
-            />{" "}
-            wei)
-          </span>
+          <FormattedBalance
+            value={txData.confirmedData.blockBaseFeePerGas!}
+            decimals={9}
+          />{" "}
+          Gwei (
+          <FormattedBalance
+            value={txData.confirmedData.blockBaseFeePerGas!}
+            decimals={0}
+          />{" "}
+          wei)
         </InfoRow>
       )}
       {txData.confirmedData && (
@@ -353,47 +340,15 @@ const Details: React.FC<DetailsProps> = ({
         </>
       )}
       <InfoRow title="Input Data">
-        <Tab.Group>
-          <Tab.List className="flex space-x-1 mb-1">
-            <ModeTab>Decoded</ModeTab>
-            <ModeTab>Raw</ModeTab>
-            <ModeTab>UTF-8</ModeTab>
-          </Tab.List>
-          <Tab.Panels>
-            <Tab.Panel>
-              {fourBytes === "0x" ? (
-                <>No parameters</>
-              ) : resolvedTxDesc === undefined ? (
-                <>Waiting for data...</>
-              ) : resolvedTxDesc === null ? (
-                <>Can't decode data</>
-              ) : (
-                <DecodedParamsTable
-                  args={resolvedTxDesc.args}
-                  paramTypes={resolvedTxDesc.functionFragment.inputs}
-                  txData={txData}
-                  hasParamNames={resolvedTxDesc === txDesc}
-                  userMethod={userMethod}
-                  devMethod={devMethod}
-                />
-              )}
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={txData.data}
-                readOnly
-              />
-            </Tab.Panel>
-            <Tab.Panel>
-              <textarea
-                className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
-                value={utfInput}
-                readOnly
-              />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+        <InputDecoder
+          fourBytes={fourBytes}
+          resolvedTxDesc={resolvedTxDesc}
+          hasParamNames={resolvedTxDesc === txDesc}
+          data={txData.data}
+          userMethod={userMethod}
+          devMethod={devMethod}
+          resolvedAddresses={resolvedAddresses}
+        />
       </InfoRow>
     </ContentFrame>
   );
