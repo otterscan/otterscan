@@ -6,7 +6,7 @@
   "dependencies": {
     "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@chainlink/contracts": "^0.2.2",
-    "@craco/craco": "^6.4.0",
+    "@craco/craco": "^6.4.1",
     "@fontsource/fira-code": "^4.5.2",
     "@fontsource/roboto": "^4.5.1",
     "@fontsource/roboto-mono": "^4.5.0",
@@ -17,7 +17,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "@headlessui/react": "^1.4.2",
-    "@testing-library/jest-dom": "^5.15.0",
+    "@testing-library/jest-dom": "^5.15.1",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^26.0.24",
