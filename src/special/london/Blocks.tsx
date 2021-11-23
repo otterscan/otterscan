@@ -8,6 +8,15 @@ import React, {
 import { Block } from "@ethersproject/abstract-provider";
 import { FixedNumber } from "@ethersproject/bignumber";
 import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+} from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
@@ -24,6 +33,15 @@ import {
   gasChartOptions,
   gasChartData,
 } from "./chart";
+
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip
+);
 
 const MAX_BLOCK_HISTORY = 20;
 
