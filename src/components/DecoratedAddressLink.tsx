@@ -7,10 +7,10 @@ import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons/faMoneyBillAlt
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import AddressOrENSName from "./AddressOrENSName";
+import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { AddressContext, ZERO_ADDRESS } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { Metadata } from "../useSourcify";
-import SourcifyLogo from "../sourcify.svg";
 
 type DecoratedAddressLinkProps = {
   address: string;
@@ -80,13 +80,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
           className="self-center flex-shrink-0 flex items-center"
           to={`/address/${address}/contract`}
         >
-          <img
-            src={SourcifyLogo}
-            alt="Sourcify logo"
-            title="Verified by Sourcify"
-            width={16}
-            height={16}
-          />
+          <SourcifyLogo />
         </NavLink>
       )}
       <AddressOrENSName

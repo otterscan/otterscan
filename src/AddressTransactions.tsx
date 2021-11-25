@@ -16,12 +16,12 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
 import NavTab from "./components/NavTab";
+import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSingleMetadata } from "./useSourcify";
-import SourcifyLogo from "./sourcify.svg";
 
 const AddressTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -143,13 +143,7 @@ const AddressTransactions: React.FC = () => {
                       </span>
                     ) : (
                       <span className="self-center">
-                        <img
-                          src={SourcifyLogo}
-                          alt="Sourcify logo"
-                          title="Verified by Sourcify"
-                          width={16}
-                          height={16}
-                        />
+                        <SourcifyLogo />
                       </span>
                     )}
                   </span>
