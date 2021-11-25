@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   useParams,
   useNavigate,
@@ -20,7 +20,7 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
-import { useMultipleMetadata } from "./useSourcify";
+import { useSingleMetadata } from "./useSourcify";
 import SourcifyLogo from "./sourcify.svg";
 
 const AddressTransactions: React.FC = () => {
@@ -83,21 +83,12 @@ const AddressTransactions: React.FC = () => {
     resolveName();
   }, [provider, addressOrName, navigate, direction, searchParams]);
 
-  const addresses = useMemo(
-    () => (checksummedAddress ? [checksummedAddress] : []),
-    [checksummedAddress]
-  );
   const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    undefined,
-    addresses,
+  const addressMetadata = useSingleMetadata(
+    checksummedAddress,
     provider?.network.chainId,
     sourcifySource
   );
-  const addressMetadata =
-    checksummedAddress !== undefined
-      ? metadatas[checksummedAddress]
-      : undefined;
 
   return (
     <StandardFrame>
@@ -151,7 +142,7 @@ const AddressTransactions: React.FC = () => {
                         <FontAwesomeIcon icon={faQuestionCircle} />
                       </span>
                     ) : (
-                      <span className="self-center text-green-500">
+                      <span className="self-center">
                         <img
                           src={SourcifyLogo}
                           alt="Sourcify logo"
@@ -169,9 +160,7 @@ const AddressTransactions: React.FC = () => {
                   <Route
                     path="*"
                     element={
-                      <AddressTransactionResults
-                        address={checksummedAddress}
-                      />
+                      <AddressTransactionResults address={checksummedAddress} />
                     }
                   />
                   <Route

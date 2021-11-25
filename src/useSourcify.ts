@@ -121,6 +121,16 @@ export const useSourcify = (
   return rawMetadata;
 };
 
+export const useSingleMetadata = (
+  address: ChecksummedAddress | undefined,
+  chainId: number | undefined,
+  source: SourcifySource
+) => {
+  const addresses = useMemo(() => (address ? [address] : []), [address]);
+  const metadatas = useMultipleMetadata(undefined, addresses, chainId, source);
+  return address !== undefined ? metadatas[address] : undefined;
+};
+
 export const useMultipleMetadata = (
   baseMetadatas: Record<string, Metadata | null> | undefined,
   addresses: (ChecksummedAddress | undefined)[],
