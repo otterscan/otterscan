@@ -4,7 +4,7 @@ import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
-import { Metadata, useMultipleMetadata } from "../useSourcify";
+import { Metadata, useMultipleMetadata } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 

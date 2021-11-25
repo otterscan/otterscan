@@ -21,7 +21,7 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
-import { useSingleMetadata } from "./useSourcify";
+import { useSingleMetadata } from "./sourcify/useSourcify";
 
 const AddressTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);

@@ -10,7 +10,7 @@ import AddressOrENSName from "./AddressOrENSName";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { AddressContext, ZERO_ADDRESS } from "../types";
 import { ResolvedAddresses } from "../api/address-resolver";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 
 type DecoratedAddressLinkProps = {
   address: string;

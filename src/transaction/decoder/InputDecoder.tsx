@@ -4,7 +4,7 @@ import { toUtf8String } from "@ethersproject/strings";
 import { Tab } from "@headlessui/react";
 import ModeTab from "../../components/ModeTab";
 import DecodedParamsTable from "./DecodedParamsTable";
-import { DevMethod, UserMethod } from "../../useSourcify";
+import { DevMethod, UserMethod } from "../../sourcify/useSourcify";
 import { ResolvedAddresses } from "../../api/address-resolver";
 
 type InputDecoderProps = {

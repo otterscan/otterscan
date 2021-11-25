@@ -10,7 +10,7 @@ import { SelectionContext, useSelection } from "./useSelection";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
-import { useSourcify, useTransactionDescription } from "./useSourcify";
+import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
 import {
   transactionDataCollector,
   useResolvedAddresses,

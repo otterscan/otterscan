@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
-import { ChecksummedAddress, TransactionData } from "./types";
-import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
+import { ChecksummedAddress, TransactionData } from "../types";
+import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
 export type UserMethod = {
   notice?: string | undefined;

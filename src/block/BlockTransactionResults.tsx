@@ -13,7 +13,7 @@ import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { useAppConfigContext } from "../useAppConfig";
-import { useMultipleMetadata } from "../useSourcify";
+import { useMultipleMetadata } from "../sourcify/useSourcify";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;

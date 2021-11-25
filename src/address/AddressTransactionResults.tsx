@@ -8,7 +8,7 @@ import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
-import { useMultipleMetadata } from "../useSourcify";
+import { useMultipleMetadata } from "../sourcify/useSourcify";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
