@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useMemo, useContext } from "react";
 import {
   useParams,
-  useLocation,
-  useHistory,
-  Switch,
+  useNavigate,
+  Routes,
   Route,
+  useSearchParams,
 } from "react-router-dom";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import { getAddress, isAddress } from "@ethersproject/address";
 import { Tab } from "@headlessui/react";
-import queryString from "query-string";
 import Blockies from "react-blockies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
@@ -35,47 +34,50 @@ import { useMultipleMetadata } from "./useSourcify";
 import { ChecksummedAddress } from "./types";
 import SourcifyLogo from "./sourcify.svg";
 
-type BlockParams = {
-  addressOrName: string;
-  direction?: string;
-};
-
-type PageParams = {
-  p?: number;
-};
-
 const AddressTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const params = useParams<BlockParams>();
-  const location = useLocation<PageParams>();
-  const history = useHistory();
-  const qs = queryString.parse(location.search);
-  let hash: string | undefined;
-  if (qs.h) {
-    hash = qs.h as string;
+  const { addressOrName, direction } = useParams();
+  if (addressOrName === undefined) {
+    throw new Error("addressOrName couldn't be undefined here");
   }
 
-  const [checksummedAddress, setChecksummedAddress] = useState<string>();
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const h = searchParams.get("h");
+  let hash: string | undefined;
+  if (h) {
+    hash = h;
+  }
+
+  const [checksummedAddress, setChecksummedAddress] = useState<
+    string | undefined
+  >();
   const [isENS, setENS] = useState<boolean>();
   const [error, setError] = useState<boolean>();
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
-    if (isAddress(params.addressOrName)) {
+    // TODO: handle and offer fallback to bad checksummed addresses
+    if (isAddress(addressOrName)) {
       setENS(false);
       setError(false);
 
       // Normalize to checksummed address
-      const _checksummedAddress = getAddress(params.addressOrName);
-      if (_checksummedAddress !== params.addressOrName) {
+      const _checksummedAddress = getAddress(addressOrName);
+      if (_checksummedAddress !== addressOrName) {
         // Request came with a non-checksummed address; fix the URL
-        history.replace(
+        navigate(
           `/address/${_checksummedAddress}${
-            params.direction ? "/" + params.direction : ""
-          }${location.search}`
+            direction ? "/" + direction : ""
+          }?${searchParams.toString()}`,
+          { replace: true }
         );
+        return;
       }
+
       setChecksummedAddress(_checksummedAddress);
+      document.title = `Address ${_checksummedAddress} | Otterscan`;
       return;
     }
 
@@ -83,11 +85,12 @@ const AddressTransactions: React.FC = () => {
       return;
     }
     const resolveName = async () => {
-      const resolvedAddress = await provider.resolveName(params.addressOrName);
+      const resolvedAddress = await provider.resolveName(addressOrName);
       if (resolvedAddress !== null) {
         setENS(true);
         setError(false);
         setChecksummedAddress(resolvedAddress);
+        document.title = `Address ${addressOrName} | Otterscan`;
       } else {
         setENS(false);
         setError(true);
@@ -95,13 +98,7 @@ const AddressTransactions: React.FC = () => {
       }
     };
     resolveName();
-  }, [
-    provider,
-    params.addressOrName,
-    history,
-    params.direction,
-    location.search,
-  ]);
+  }, [provider, addressOrName, navigate, direction, searchParams]);
 
   const [controller, setController] = useState<SearchController>();
   useEffect(() => {
@@ -142,28 +139,28 @@ const AddressTransactions: React.FC = () => {
     };
 
     // Page load from scratch
-    if (params.direction === "first" || params.direction === undefined) {
+    if (direction === "first" || direction === undefined) {
       if (!controller?.isFirst || controller.address !== checksummedAddress) {
         readFirstPage();
       }
-    } else if (params.direction === "prev") {
+    } else if (direction === "prev") {
       if (controller && controller.address === checksummedAddress) {
         prevPage();
       } else {
         readMiddlePage(false);
       }
-    } else if (params.direction === "next") {
+    } else if (direction === "next") {
       if (controller && controller.address === checksummedAddress) {
         nextPage();
       } else {
         readMiddlePage(true);
       }
-    } else if (params.direction === "last") {
+    } else if (direction === "last") {
       if (!controller?.isLast || controller.address !== checksummedAddress) {
         readLastPage();
       }
     }
-  }, [provider, checksummedAddress, params.direction, hash, controller]);
+  }, [provider, checksummedAddress, direction, hash, controller]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
   const addrCollector = useMemo(() => pageCollector(page), [page]);
@@ -176,8 +173,6 @@ const AddressTransactions: React.FC = () => {
     return page.map((p) => p.blockNumber);
   }, [page]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
-
-  document.title = `Address ${params.addressOrName} | Otterscan`;
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
@@ -212,7 +207,7 @@ const AddressTransactions: React.FC = () => {
     <StandardFrame>
       {error ? (
         <span className="text-base">
-          "{params.addressOrName}" is not an ETH address or ENS name.
+          "{addressOrName}" is not an ETH address or ENS name.
         </span>
       ) : (
         checksummedAddress && (
@@ -231,7 +226,7 @@ const AddressTransactions: React.FC = () => {
                 <Copy value={checksummedAddress} rounded />
                 {isENS && (
                   <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
-                    ENS: {params.addressOrName}
+                    ENS: {addressOrName}
                   </span>
                 )}
               </div>
@@ -274,73 +269,81 @@ const AddressTransactions: React.FC = () => {
                 </NavTab>
               </Tab.List>
               <Tab.Panels>
-                <Switch>
-                  <Route path="/address/:addressOrName" exact>
-                    <ContentFrame tabs>
-                      <div className="flex justify-between items-baseline py-3">
-                        <div className="text-sm text-gray-500">
-                          {page === undefined ? (
-                            <>Waiting for search results...</>
-                          ) : (
-                            <>{page.length} transactions on this page</>
-                          )}
-                        </div>
-                        <UndefinedPageControl
-                          address={params.addressOrName}
-                          isFirst={controller?.isFirst}
-                          isLast={controller?.isLast}
-                          prevHash={page ? page[0].hash : ""}
-                          nextHash={page ? page[page.length - 1].hash : ""}
-                          disabled={controller === undefined}
-                        />
-                      </div>
-                      <ResultHeader
-                        feeDisplay={feeDisplay}
-                        feeDisplayToggler={feeDisplayToggler}
-                      />
-                      {page ? (
-                        <SelectionContext.Provider value={selectionCtx}>
-                          {page.map((tx) => (
-                            <TransactionItem
-                              key={tx.hash}
-                              tx={tx}
-                              resolvedAddresses={resolvedAddresses}
-                              selectedAddress={checksummedAddress}
-                              feeDisplay={feeDisplay}
-                              priceMap={priceMap}
-                              metadatas={metadatas}
-                            />
-                          ))}
-                          <div className="flex justify-between items-baseline py-3">
-                            <div className="text-sm text-gray-500">
-                              {page === undefined ? (
-                                <>Waiting for search results...</>
-                              ) : (
-                                <>{page.length} transactions on this page</>
-                              )}
-                            </div>
-                            <UndefinedPageControl
-                              address={params.addressOrName}
-                              isFirst={controller?.isFirst}
-                              isLast={controller?.isLast}
-                              prevHash={page ? page[0].hash : ""}
-                              nextHash={page ? page[page.length - 1].hash : ""}
-                              disabled={controller === undefined}
-                            />
+                <Routes>
+                  <Route
+                    path="*"
+                    element={
+                      <ContentFrame tabs>
+                        <div className="flex justify-between items-baseline py-3">
+                          <div className="text-sm text-gray-500">
+                            {page === undefined ? (
+                              <>Waiting for search results...</>
+                            ) : (
+                              <>{page.length} transactions on this page</>
+                            )}
                           </div>
-                        </SelectionContext.Provider>
-                      ) : (
-                        <PendingResults />
-                      )}
-                    </ContentFrame>
-                  </Route>
-                  <Route path="/address/:addressOrName/contract" exact>
-                    <Contracts
-                      checksummedAddress={checksummedAddress}
-                      rawMetadata={addressMetadata}
-                    />
-                  </Route>
-                </Switch>
+                          <UndefinedPageControl
+                            address={checksummedAddress}
+                            isFirst={controller?.isFirst}
+                            isLast={controller?.isLast}
+                            prevHash={page ? page[0].hash : ""}
+                            nextHash={page ? page[page.length - 1].hash : ""}
+                            disabled={controller === undefined}
+                          />
+                        </div>
+                        <ResultHeader
+                          feeDisplay={feeDisplay}
+                          feeDisplayToggler={feeDisplayToggler}
+                        />
+                        {page ? (
+                          <SelectionContext.Provider value={selectionCtx}>
+                            {page.map((tx) => (
+                              <TransactionItem
+                                key={tx.hash}
+                                tx={tx}
+                                resolvedAddresses={resolvedAddresses}
+                                selectedAddress={checksummedAddress}
+                                feeDisplay={feeDisplay}
+                                priceMap={priceMap}
+                                metadatas={metadatas}
+                              />
+                            ))}
+                            <div className="flex justify-between items-baseline py-3">
+                              <div className="text-sm text-gray-500">
+                                {page === undefined ? (
+                                  <>Waiting for search results...</>
+                                ) : (
+                                  <>{page.length} transactions on this page</>
+                                )}
+                              </div>
+                              <UndefinedPageControl
+                                address={checksummedAddress}
+                                isFirst={controller?.isFirst}
+                                isLast={controller?.isLast}
+                                prevHash={page ? page[0].hash : ""}
+                                nextHash={
+                                  page ? page[page.length - 1].hash : ""
+                                }
+                                disabled={controller === undefined}
+                              />
+                            </div>
+                          </SelectionContext.Provider>
+                        ) : (
+                          <PendingResults />
+                        )}
+                      </ContentFrame>
+                    }
+                  />
+                  <Route
+                    path="contract"
+                    element={
+                      <Contracts
+                        checksummedAddress={checksummedAddress}
+                        rawMetadata={addressMetadata}
+                      />
+                    }
+                  />
+                </Routes>
               </Tab.Panels>
             </Tab.Group>
           </>
@@ -350,4 +353,4 @@ const AddressTransactions: React.FC = () => {
   );
 };
 
-export default React.memo(AddressTransactions);
+export default AddressTransactions;

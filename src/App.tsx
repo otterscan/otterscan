@@ -1,15 +1,12 @@
-import React, { Suspense, useMemo, useState } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { Suspense } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import WarningHeader from "./WarningHeader";
 import Home from "./Home";
-import Search from "./Search";
-import Title from "./Title";
+import Main from "./Main";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
-import { AppConfig, AppConfigContext } from "./useAppConfig";
-import { SourcifySource } from "./url";
 
 const Block = React.lazy(
   () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
@@ -39,15 +36,6 @@ const London = React.lazy(
 
 const App = () => {
   const runtime = useRuntime();
-  const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
-    SourcifySource.IPFS_IPNS
-  );
-  const appConfig = useMemo((): AppConfig => {
-    return {
-      sourcifySource,
-      setSourcifySource,
-    };
-  }, [sourcifySource, setSourcifySource]);
 
   return (
     <Suspense fallback={null}>
@@ -61,34 +49,27 @@ const App = () => {
           <div className="h-screen flex flex-col">
             <WarningHeader />
             <Router>
-              <Switch>
-                <Route path="/" exact>
-                  <Home />
+              <Routes>
+                <Route index element={<Home />} />
+                <Route path="/special/london" element={<London />} />
+                <Route path="*" element={<Main />}>
+                  <Route path="block/:blockNumberOrHash" element={<Block />} />
+                  <Route
+                    path="block/:blockNumber/txs"
+                    element={<BlockTransactions />}
+                  />
+                  <Route path="tx/:txhash/*" element={<Transaction />} />
+                  <Route
+                    path="address/:addressOrName"
+                    element={<AddressTransactions />}
+                  />
+                  <Route
+                    path="address/:addressOrName/:direction"
+                    element={<AddressTransactions />}
+                  />
+                  <Route path="*" element={<Home />} />
                 </Route>
-                <Route path="/search" exact>
-                  <Search />
-                </Route>
-                <Route path="/special/london" exact>
-                  <London />
-                </Route>
-                <Route>
-                  <AppConfigContext.Provider value={appConfig}>
-                    <Title />
-                    <Route path="/block/:blockNumberOrHash" exact>
-                      <Block />
-                    </Route>
-                    <Route path="/block/:blockNumber/txs" exact>
-                      <BlockTransactions />
-                    </Route>
-                    <Route path="/tx/:txhash">
-                      <Transaction />
-                    </Route>
-                    <Route path="/address/:addressOrName/:direction?">
-                      <AddressTransactions />
-                    </Route>
-                  </AppConfigContext.Provider>
-                </Route>
-              </Switch>
+              </Routes>
             </Router>
             <Footer />
           </div>
@@ -98,4 +79,4 @@ const App = () => {
   );
 };
 
-export default React.memo(App);
+export default App;

@@ -1,5 +1,5 @@
 import React, { useMemo, useContext } from "react";
-import { Route, Switch, useParams } from "react-router-dom";
+import { useParams, Routes, Route } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
@@ -37,14 +37,12 @@ const Trace = React.lazy(
     )
 );
 
-type TransactionParams = {
-  txhash: string;
-};
-
 const Transaction: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const params = useParams<TransactionParams>();
-  const { txhash } = params;
+  const { txhash } = useParams();
+  if (txhash === undefined) {
+    throw new Error("txhash couldn't be undefined here");
+  }
 
   const txData = useTxData(provider, txhash);
   const addrCollector = useMemo(
@@ -97,44 +95,53 @@ const Transaction: React.FC = () => {
           <SelectionContext.Provider value={selectionCtx}>
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-                <NavTab href={`/tx/${txhash}`}>Overview</NavTab>
+                <NavTab href=".">Overview</NavTab>
                 {txData.confirmedData?.blockNumber !== undefined && (
-                  <NavTab href={`/tx/${txhash}/logs`}>
+                  <NavTab href="logs">
                     Logs
                     {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
                   </NavTab>
                 )}
-                <NavTab href={`/tx/${txhash}/trace`}>Trace</NavTab>
+                <NavTab href="trace">Trace</NavTab>
               </Tab.List>
             </Tab.Group>
             <React.Suspense fallback={null}>
-              <Switch>
-                <Route path="/tx/:txhash/" exact>
-                  <Details
-                    txData={txData}
-                    txDesc={txDesc}
-                    userDoc={metadata?.output.userdoc}
-                    devDoc={metadata?.output.devdoc}
-                    internalOps={internalOps}
-                    sendsEthToMiner={sendsEthToMiner}
-                    ethUSDPrice={blockETHUSDPrice}
-                    resolvedAddresses={resolvedAddresses}
-                  />
-                </Route>
-                <Route path="/tx/:txhash/logs/" exact>
-                  <Logs
-                    txData={txData}
-                    metadata={metadata}
-                    resolvedAddresses={resolvedAddresses}
-                  />
-                </Route>
-                <Route path="/tx/:txhash/trace" exact>
-                  <Trace
-                    txData={txData}
-                    resolvedAddresses={resolvedAddresses}
-                  />
-                </Route>
-              </Switch>
+              <Routes>
+                <Route
+                  index
+                  element={
+                    <Details
+                      txData={txData}
+                      txDesc={txDesc}
+                      userDoc={metadata?.output.userdoc}
+                      devDoc={metadata?.output.devdoc}
+                      internalOps={internalOps}
+                      sendsEthToMiner={sendsEthToMiner}
+                      ethUSDPrice={blockETHUSDPrice}
+                      resolvedAddresses={resolvedAddresses}
+                    />
+                  }
+                />
+                <Route
+                  path="logs"
+                  element={
+                    <Logs
+                      txData={txData}
+                      metadata={metadata}
+                      resolvedAddresses={resolvedAddresses}
+                    />
+                  }
+                />
+                <Route
+                  path="trace"
+                  element={
+                    <Trace
+                      txData={txData}
+                      resolvedAddresses={resolvedAddresses}
+                    />
+                  }
+                />
+              </Routes>
             </React.Suspense>
           </SelectionContext.Provider>
         )}
@@ -143,4 +150,4 @@ const Transaction: React.FC = () => {
   );
 };
 
-export default React.memo(Transaction);
+export default Transaction;

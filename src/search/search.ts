@@ -1,4 +1,7 @@
 import { JsonRpcProvider, TransactionResponse } from "@ethersproject/providers";
+import { isAddress } from "@ethersproject/address";
+import { isHexString } from "@ethersproject/bytes";
+import { NavigateFunction } from "react-router";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 
@@ -194,3 +197,24 @@ export class SearchController {
     return this;
   }
 }
+
+export const search = (q: string, navigate: NavigateFunction) => {
+  if (isAddress(q)) {
+    navigate(`/address/${q}`, { replace: true });
+    return;
+  }
+
+  if (isHexString(q, 32)) {
+    navigate(`/tx/${q}`, { replace: true });
+    return;
+  }
+
+  const blockNumber = parseInt(q);
+  if (!isNaN(blockNumber)) {
+    navigate(`/block/${blockNumber}`, { replace: true });
+    return;
+  }
+
+  // Assume it is an ENS name
+  navigate(`/address/${q}`);
+};

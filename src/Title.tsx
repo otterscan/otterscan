@@ -1,24 +1,26 @@
 import React, { useState, useRef, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
+import { search } from "./search/search";
 import Otter from "./otter.jpg";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
 const Title: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const [search, setSearch] = useState<string>();
+  const [searchString, setSearchString] = useState<string>("");
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setCanSubmit(e.target.value.trim().length > 0);
-    setSearch(e.target.value.trim());
+    const searchTerm = e.target.value.trim();
+    setCanSubmit(searchTerm.length > 0);
+    setSearchString(searchTerm);
   };
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -27,7 +29,10 @@ const Title: React.FC = () => {
       return;
     }
 
-    history.push(`/search?q=${search}`);
+    if (searchRef.current) {
+      searchRef.current.value = "";
+    }
+    search(searchString, navigate);
   };
 
   const searchRef = useRef<HTMLInputElement>(null);
@@ -92,4 +97,4 @@ const Title: React.FC = () => {
   );
 };
 
-export default React.memo(Title);
+export default Title;

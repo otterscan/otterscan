@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
@@ -9,18 +9,20 @@ import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
 import { blockURL } from "./url";
+import { search } from "./search/search";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
 const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const [search, setSearch] = useState<string>();
+  const [searchString, setSearchString] = useState<string>("");
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setCanSubmit(e.target.value.trim().length > 0);
-    setSearch(e.target.value.trim());
+    const searchTerm = e.target.value.trim();
+    setCanSubmit(searchTerm.length > 0);
+    setSearchString(searchTerm);
   };
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
@@ -29,7 +31,7 @@ const Home: React.FC = () => {
       return;
     }
 
-    history.push(`/search?q=${search}`);
+    search(searchString, navigate);
   };
 
   const latestBlock = useLatestBlock(provider);
