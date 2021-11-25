@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
-import Title from "./Title";
+import Header from "./Header";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
 import { SourcifySource } from "./url";
 
@@ -17,7 +17,7 @@ const Main: React.FC = () => {
 
   return (
     <AppConfigContext.Provider value={appConfig}>
-      <Title />
+      <Header />
       <Outlet />
     </AppConfigContext.Provider>
   );
