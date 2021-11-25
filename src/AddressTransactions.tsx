@@ -16,18 +16,13 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestion
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import Copy from "./components/Copy";
-import ContentFrame from "./ContentFrame";
 import NavTab from "./components/NavTab";
+import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
-import UndefinedPageControl from "./search/UndefinedPageControl";
-import ResultHeader from "./search/ResultHeader";
-import PendingResults from "./search/PendingResults";
-import TransactionItem from "./search/TransactionItem";
 import { SearchController } from "./search/search";
 import { RuntimeContext } from "./useRuntime";
 import { pageCollector, useResolvedAddresses } from "./useResolvedAddresses";
 import { useFeeToggler } from "./search/useFeeToggler";
-import { SelectionContext, useSelection } from "./useSelection";
 import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useMultipleMetadata } from "./useSourcify";
@@ -176,7 +171,6 @@ const AddressTransactions: React.FC = () => {
 
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
-  const selectionCtx = useSelection();
   const addresses = useMemo(() => {
     const _addresses: ChecksummedAddress[] = [];
     if (checksummedAddress) {
@@ -273,65 +267,16 @@ const AddressTransactions: React.FC = () => {
                   <Route
                     path="*"
                     element={
-                      <ContentFrame tabs>
-                        <div className="flex justify-between items-baseline py-3">
-                          <div className="text-sm text-gray-500">
-                            {page === undefined ? (
-                              <>Waiting for search results...</>
-                            ) : (
-                              <>{page.length} transactions on this page</>
-                            )}
-                          </div>
-                          <UndefinedPageControl
-                            address={checksummedAddress}
-                            isFirst={controller?.isFirst}
-                            isLast={controller?.isLast}
-                            prevHash={page ? page[0].hash : ""}
-                            nextHash={page ? page[page.length - 1].hash : ""}
-                            disabled={controller === undefined}
-                          />
-                        </div>
-                        <ResultHeader
-                          feeDisplay={feeDisplay}
-                          feeDisplayToggler={feeDisplayToggler}
-                        />
-                        {page ? (
-                          <SelectionContext.Provider value={selectionCtx}>
-                            {page.map((tx) => (
-                              <TransactionItem
-                                key={tx.hash}
-                                tx={tx}
-                                resolvedAddresses={resolvedAddresses}
-                                selectedAddress={checksummedAddress}
-                                feeDisplay={feeDisplay}
-                                priceMap={priceMap}
-                                metadatas={metadatas}
-                              />
-                            ))}
-                            <div className="flex justify-between items-baseline py-3">
-                              <div className="text-sm text-gray-500">
-                                {page === undefined ? (
-                                  <>Waiting for search results...</>
-                                ) : (
-                                  <>{page.length} transactions on this page</>
-                                )}
-                              </div>
-                              <UndefinedPageControl
-                                address={checksummedAddress}
-                                isFirst={controller?.isFirst}
-                                isLast={controller?.isLast}
-                                prevHash={page ? page[0].hash : ""}
-                                nextHash={
-                                  page ? page[page.length - 1].hash : ""
-                                }
-                                disabled={controller === undefined}
-                              />
-                            </div>
-                          </SelectionContext.Provider>
-                        ) : (
-                          <PendingResults />
-                        )}
-                      </ContentFrame>
+                      <AddressTransactionResults
+                        page={page}
+                        checksummedAddress={checksummedAddress}
+                        controller={controller}
+                        feeDisplay={feeDisplay}
+                        feeDisplayToggler={feeDisplayToggler}
+                        resolvedAddresses={resolvedAddresses}
+                        priceMap={priceMap}
+                        metadatas={metadatas}
+                      />
                     }
                   />
                   <Route
