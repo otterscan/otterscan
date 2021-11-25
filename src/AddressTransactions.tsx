@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import {
   useParams,
   useNavigate,
@@ -6,7 +6,6 @@ import {
   Route,
   useSearchParams,
 } from "react-router-dom";
-import { getAddress, isAddress } from "@ethersproject/address";
 import { Tab } from "@headlessui/react";
 import Blockies from "react-blockies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,7 +20,9 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
+import { useAddressOrENSFromURL } from "./useResolvedAddresses";
 import { useSingleMetadata } from "./sourcify/useSourcify";
+import { ChecksummedAddress } from "./types";
 
 const AddressTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -32,56 +33,29 @@ const AddressTransactions: React.FC = () => {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const urlFixer = useCallback(
+    (address: ChecksummedAddress) => {
+      navigate(
+        `/address/${address}${
+          direction ? "/" + direction : ""
+        }?${searchParams.toString()}`,
+        { replace: true }
+      );
+    },
+    [navigate, direction, searchParams]
+  );
+  const [checksummedAddress, isENS, error] = useAddressOrENSFromURL(
+    addressOrName,
+    urlFixer
+  );
 
-  const [checksummedAddress, setChecksummedAddress] = useState<
-    string | undefined
-  >();
-  const [isENS, setENS] = useState<boolean>();
-  const [error, setError] = useState<boolean>();
-
-  // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
-    // TODO: handle and offer fallback to bad checksummed addresses
-    if (isAddress(addressOrName)) {
-      setENS(false);
-      setError(false);
-
-      // Normalize to checksummed address
-      const _checksummedAddress = getAddress(addressOrName);
-      if (_checksummedAddress !== addressOrName) {
-        // Request came with a non-checksummed address; fix the URL
-        navigate(
-          `/address/${_checksummedAddress}${
-            direction ? "/" + direction : ""
-          }?${searchParams.toString()}`,
-          { replace: true }
-        );
-        return;
-      }
-
-      setChecksummedAddress(_checksummedAddress);
-      document.title = `Address ${_checksummedAddress} | Otterscan`;
-      return;
+    if (isENS || checksummedAddress === undefined) {
+      document.title = `Address ${addressOrName} | Otterscan`;
+    } else {
+      document.title = `Address ${checksummedAddress} | Otterscan`;
     }
-
-    if (!provider) {
-      return;
-    }
-    const resolveName = async () => {
-      const resolvedAddress = await provider.resolveName(addressOrName);
-      if (resolvedAddress !== null) {
-        setENS(true);
-        setError(false);
-        setChecksummedAddress(resolvedAddress);
-        document.title = `Address ${addressOrName} | Otterscan`;
-      } else {
-        setENS(false);
-        setError(true);
-        setChecksummedAddress(undefined);
-      }
-    };
-    resolveName();
-  }, [provider, addressOrName, navigate, direction, searchParams]);
+  }, [addressOrName, checksummedAddress, isENS]);
 
   const { sourcifySource } = useAppConfigContext();
   const addressMetadata = useSingleMetadata(
