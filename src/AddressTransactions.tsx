@@ -6,7 +6,6 @@ import {
   Route,
   useSearchParams,
 } from "react-router-dom";
-import { BlockTag } from "@ethersproject/abstract-provider";
 import { getAddress, isAddress } from "@ethersproject/address";
 import { Tab } from "@headlessui/react";
 import Blockies from "react-blockies";
@@ -19,14 +18,9 @@ import Copy from "./components/Copy";
 import NavTab from "./components/NavTab";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
-import { SearchController } from "./search/search";
 import { RuntimeContext } from "./useRuntime";
-import { pageCollector, useResolvedAddresses } from "./useResolvedAddresses";
-import { useFeeToggler } from "./search/useFeeToggler";
-import { useMultipleETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useMultipleMetadata } from "./useSourcify";
-import { ChecksummedAddress } from "./types";
 import SourcifyLogo from "./sourcify.svg";
 
 const AddressTransactions: React.FC = () => {
@@ -37,13 +31,7 @@ const AddressTransactions: React.FC = () => {
   }
 
   const navigate = useNavigate();
-
   const [searchParams] = useSearchParams();
-  const h = searchParams.get("h");
-  let hash: string | undefined;
-  if (h) {
-    hash = h;
-  }
 
   const [checksummedAddress, setChecksummedAddress] = useState<
     string | undefined
@@ -95,96 +83,10 @@ const AddressTransactions: React.FC = () => {
     resolveName();
   }, [provider, addressOrName, navigate, direction, searchParams]);
 
-  const [controller, setController] = useState<SearchController>();
-  useEffect(() => {
-    if (!provider || !checksummedAddress) {
-      return;
-    }
-
-    const readFirstPage = async () => {
-      const _controller = await SearchController.firstPage(
-        provider,
-        checksummedAddress
-      );
-      setController(_controller);
-    };
-    const readMiddlePage = async (next: boolean) => {
-      const _controller = await SearchController.middlePage(
-        provider,
-        checksummedAddress,
-        hash!,
-        next
-      );
-      setController(_controller);
-    };
-    const readLastPage = async () => {
-      const _controller = await SearchController.lastPage(
-        provider,
-        checksummedAddress
-      );
-      setController(_controller);
-    };
-    const prevPage = async () => {
-      const _controller = await controller!.prevPage(provider, hash!);
-      setController(_controller);
-    };
-    const nextPage = async () => {
-      const _controller = await controller!.nextPage(provider, hash!);
-      setController(_controller);
-    };
-
-    // Page load from scratch
-    if (direction === "first" || direction === undefined) {
-      if (!controller?.isFirst || controller.address !== checksummedAddress) {
-        readFirstPage();
-      }
-    } else if (direction === "prev") {
-      if (controller && controller.address === checksummedAddress) {
-        prevPage();
-      } else {
-        readMiddlePage(false);
-      }
-    } else if (direction === "next") {
-      if (controller && controller.address === checksummedAddress) {
-        nextPage();
-      } else {
-        readMiddlePage(true);
-      }
-    } else if (direction === "last") {
-      if (!controller?.isLast || controller.address !== checksummedAddress) {
-        readLastPage();
-      }
-    }
-  }, [provider, checksummedAddress, direction, hash, controller]);
-
-  const page = useMemo(() => controller?.getPage(), [controller]);
-  const addrCollector = useMemo(() => pageCollector(page), [page]);
-  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
-
-  const blockTags: BlockTag[] = useMemo(() => {
-    if (!page) {
-      return [];
-    }
-    return page.map((p) => p.blockNumber);
-  }, [page]);
-  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
-
-  const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-
-  const addresses = useMemo(() => {
-    const _addresses: ChecksummedAddress[] = [];
-    if (checksummedAddress) {
-      _addresses.push(checksummedAddress);
-    }
-    if (page) {
-      for (const t of page) {
-        if (t.to) {
-          _addresses.push(t.to);
-        }
-      }
-    }
-    return _addresses;
-  }, [checksummedAddress, page]);
+  const addresses = useMemo(
+    () => (checksummedAddress ? [checksummedAddress] : []),
+    [checksummedAddress]
+  );
   const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     undefined,
@@ -268,14 +170,7 @@ const AddressTransactions: React.FC = () => {
                     path="*"
                     element={
                       <AddressTransactionResults
-                        page={page}
-                        checksummedAddress={checksummedAddress}
-                        controller={controller}
-                        feeDisplay={feeDisplay}
-                        feeDisplayToggler={feeDisplayToggler}
-                        resolvedAddresses={resolvedAddresses}
-                        priceMap={priceMap}
-                        metadatas={metadatas}
+                        address={checksummedAddress}
                       />
                     }
                   />

@@ -1,40 +1,131 @@
-import React from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BlockTag } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
-import { ResolvedAddresses } from "../api/address-resolver";
 import ContentFrame from "../ContentFrame";
 import PendingResults from "../search/PendingResults";
 import ResultHeader from "../search/ResultHeader";
 import { SearchController } from "../search/search";
 import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
-import { FeeDisplay } from "../search/useFeeToggler";
-import { ProcessedTransaction } from "../types";
+import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
-import { Metadata } from "../useSourcify";
+import { useMultipleMetadata } from "../useSourcify";
+import { useMultipleETHUSDOracle } from "../usePriceOracle";
+import { RuntimeContext } from "../useRuntime";
+import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
+import { useAppConfigContext } from "../useAppConfig";
+import { useParams, useSearchParams } from "react-router-dom";
+import { ChecksummedAddress } from "../types";
 
 type AddressTransactionResultsProps = {
-  page: ProcessedTransaction[] | undefined;
-  checksummedAddress: string;
-  controller: SearchController | undefined;
-  feeDisplay: FeeDisplay;
-  feeDisplayToggler: () => void;
-  resolvedAddresses: ResolvedAddresses | undefined;
-  priceMap: Record<BlockTag, BigNumber>;
-  metadatas: Record<string, Metadata | null | undefined>;
+  address: ChecksummedAddress;
 };
 
 const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
-  page,
-  checksummedAddress,
-  controller,
-  feeDisplay,
-  feeDisplayToggler,
-  resolvedAddresses,
-  priceMap,
-  metadatas,
+  address,
 }) => {
+  const { provider } = useContext(RuntimeContext);
   const selectionCtx = useSelection();
+  const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+
+  const { addressOrName, direction } = useParams();
+  if (addressOrName === undefined) {
+    throw new Error("addressOrName couldn't be undefined here");
+  }
+
+  const [searchParams] = useSearchParams();
+  const hash = searchParams.get("h");
+
+  const [controller, setController] = useState<SearchController>();
+  useEffect(() => {
+    if (!provider || !address) {
+      return;
+    }
+
+    const readFirstPage = async () => {
+      const _controller = await SearchController.firstPage(provider, address);
+      setController(_controller);
+    };
+    const readMiddlePage = async (next: boolean) => {
+      const _controller = await SearchController.middlePage(
+        provider,
+        address,
+        hash!,
+        next
+      );
+      setController(_controller);
+    };
+    const readLastPage = async () => {
+      const _controller = await SearchController.lastPage(provider, address);
+      setController(_controller);
+    };
+    const prevPage = async () => {
+      const _controller = await controller!.prevPage(provider, hash!);
+      setController(_controller);
+    };
+    const nextPage = async () => {
+      const _controller = await controller!.nextPage(provider, hash!);
+      setController(_controller);
+    };
+
+    // Page load from scratch
+    if (direction === "first" || direction === undefined) {
+      if (!controller?.isFirst || controller.address !== address) {
+        readFirstPage();
+      }
+    } else if (direction === "prev") {
+      if (controller && controller.address === address) {
+        prevPage();
+      } else {
+        readMiddlePage(false);
+      }
+    } else if (direction === "next") {
+      if (controller && controller.address === address) {
+        nextPage();
+      } else {
+        readMiddlePage(true);
+      }
+    } else if (direction === "last") {
+      if (!controller?.isLast || controller.address !== address) {
+        readLastPage();
+      }
+    }
+  }, [provider, address, direction, hash, controller]);
+
+  const page = useMemo(() => controller?.getPage(), [controller]);
+
+  // Extract block number from all txs on current page
+  // TODO: dedup blockTags
+  const blockTags: BlockTag[] = useMemo(() => {
+    if (!page) {
+      return [];
+    }
+    return page.map((t) => t.blockNumber);
+  }, [page]);
+  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
+
+  // Resolve all addresses that appear on this page results
+  const addrCollector = useMemo(() => pageCollector(page), [page]);
+  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
+
+  // Calculate Sourcify metadata for all addresses that appear on this page results
+  const addresses = useMemo(() => {
+    const _addresses = [address];
+    if (page) {
+      for (const t of page) {
+        if (t.to) {
+          _addresses.push(t.to);
+        }
+      }
+    }
+    return _addresses;
+  }, [address, page]);
+  const { sourcifySource } = useAppConfigContext();
+  const metadatas = useMultipleMetadata(
+    undefined,
+    addresses,
+    provider?.network.chainId,
+    sourcifySource
+  );
 
   return (
     <ContentFrame tabs>
@@ -47,7 +138,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
           )}
         </div>
         <UndefinedPageControl
-          address={checksummedAddress}
+          address={address}
           isFirst={controller?.isFirst}
           isLast={controller?.isLast}
           prevHash={page ? page[0].hash : ""}
@@ -66,7 +157,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
               key={tx.hash}
               tx={tx}
               resolvedAddresses={resolvedAddresses}
-              selectedAddress={checksummedAddress}
+              selectedAddress={address}
               feeDisplay={feeDisplay}
               priceMap={priceMap}
               metadatas={metadatas}
@@ -81,7 +172,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
               )}
             </div>
             <UndefinedPageControl
-              address={checksummedAddress}
+              address={address}
               isFirst={controller?.isFirst}
               isLast={controller?.isLast}
               prevHash={page ? page[0].hash : ""}

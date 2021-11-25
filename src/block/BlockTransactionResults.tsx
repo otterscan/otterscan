@@ -28,9 +28,9 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   total,
   pageNumber,
 }) => {
+  const { provider } = useContext(RuntimeContext);
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-  const { provider } = useContext(RuntimeContext);
   const addrCollector = useMemo(() => pageCollector(page), [page]);
   const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
