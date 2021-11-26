@@ -4,7 +4,7 @@ import DecoratedAddressLink from "./DecoratedAddressLink";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { useSelectedTransaction } from "../useSelectedTransaction";
 import { AddressContext } from "../types";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 
 type TransactionAddressProps = {
   address: string;

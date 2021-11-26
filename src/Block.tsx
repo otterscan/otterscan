@@ -26,15 +26,14 @@ import { blockTxsURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 
-type BlockParams = {
-  blockNumberOrHash: string;
-};
-
 const Block: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const params = useParams<BlockParams>();
+  const { blockNumberOrHash } = useParams();
+  if (blockNumberOrHash === undefined) {
+    throw new Error("blockNumberOrHash couldn't be undefined here");
+  }
 
-  const block = useBlockData(provider, params.blockNumberOrHash);
+  const block = useBlockData(provider, blockNumberOrHash);
   useEffect(() => {
     if (block) {
       document.title = `Block #${block.number} | Otterscan`;
@@ -63,9 +62,7 @@ const Block: React.FC = () => {
       <StandardSubtitle>
         <div className="flex space-x-1 items-baseline">
           <span>Block</span>
-          <span className="text-base text-gray-500">
-            #{params.blockNumberOrHash}
-          </span>
+          <span className="text-base text-gray-500">#{blockNumberOrHash}</span>
           {block && (
             <NavBlock
               blockNumber={block.number}
@@ -192,4 +189,4 @@ const Block: React.FC = () => {
   );
 };
 
-export default React.memo(Block);
+export default Block;

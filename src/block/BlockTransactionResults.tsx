@@ -13,7 +13,7 @@ import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { useAppConfigContext } from "../useAppConfig";
-import { useMultipleMetadata } from "../useSourcify";
+import { useMultipleMetadata } from "../sourcify/useSourcify";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;
@@ -28,9 +28,9 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   total,
   pageNumber,
 }) => {
+  const { provider } = useContext(RuntimeContext);
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-  const { provider } = useContext(RuntimeContext);
   const addrCollector = useMemo(() => pageCollector(page), [page]);
   const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);

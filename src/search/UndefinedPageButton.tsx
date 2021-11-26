@@ -26,7 +26,7 @@ const UndefinedPageButton: React.FC<UndefinedPageButtonProps> = ({
   return (
     <NavLink
       className="transition-colors bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded-lg px-3 py-2 text-xs"
-      to={`/address/${address}/${direction}${
+      to={`/address/${address}/txs/${direction}${
         direction === "prev" || direction === "next" ? `?h=${hash}` : ""
       }`}
     >

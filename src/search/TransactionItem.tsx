@@ -19,7 +19,7 @@ import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
 import { ResolvedAddresses } from "../api/address-resolver";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;

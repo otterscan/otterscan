@@ -10,7 +10,7 @@ import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { useTopic0 } from "../useTopic0";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { ChecksummedAddress } from "../types";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 
 type LogEntryProps = {
   log: Log;

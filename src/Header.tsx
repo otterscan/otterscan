@@ -1,40 +1,18 @@
-import React, { useState, useRef, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
-import useKeyboardShortcut from "use-keyboard-shortcut";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
+import { useGenericSearch } from "./search/search";
 import Otter from "./otter.jpg";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
-const Title: React.FC = () => {
+const Header: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const [search, setSearch] = useState<string>();
-  const [canSubmit, setCanSubmit] = useState<boolean>(false);
-  const history = useHistory();
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setCanSubmit(e.target.value.trim().length > 0);
-    setSearch(e.target.value.trim());
-  };
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    if (!canSubmit) {
-      return;
-    }
-
-    history.push(`/search?q=${search}`);
-  };
-
-  const searchRef = useRef<HTMLInputElement>(null);
-  useKeyboardShortcut(["/"], () => {
-    searchRef.current?.focus();
-  });
-
+  const [searchRef, handleChange, handleSubmit] = useGenericSearch();
   const [isScanning, setScanning] = useState<boolean>(false);
 
   return (
@@ -92,4 +70,4 @@ const Title: React.FC = () => {
   );
 };
 
-export default React.memo(Title);
+export default Header;

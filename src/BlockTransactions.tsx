@@ -1,31 +1,24 @@
 import React, { useMemo, useContext } from "react";
-import { useParams, useLocation } from "react-router";
+import { useParams } from "react-router";
 import { BigNumber } from "@ethersproject/bignumber";
-import queryString from "query-string";
 import StandardFrame from "./StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
 import { PAGE_SIZE } from "./params";
 import { RuntimeContext } from "./useRuntime";
 import { useBlockTransactions } from "./useErigonHooks";
-
-type BlockParams = {
-  blockNumber: string;
-};
-
-type PageParams = {
-  p?: number;
-};
+import { useSearchParams } from "react-router-dom";
 
 const BlockTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const params = useParams<BlockParams>();
-  const location = useLocation<PageParams>();
-  const qs = queryString.parse(location.search);
+  const params = useParams();
+
+  const [searchParams] = useSearchParams();
   let pageNumber = 1;
-  if (qs.p) {
+  const p = searchParams.get("p");
+  if (p) {
     try {
-      pageNumber = parseInt(qs.p as string);
+      pageNumber = parseInt(p);
     } catch (err) {}
   }
 
@@ -56,4 +49,4 @@ const BlockTransactions: React.FC = () => {
   );
 };
 
-export default React.memo(BlockTransactions);
+export default BlockTransactions;

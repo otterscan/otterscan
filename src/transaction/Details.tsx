@@ -37,7 +37,7 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, useMultipleMetadata, UserDoc } from "../useSourcify";
+import { DevDoc, useMultipleMetadata, UserDoc } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 import { useAppConfigContext } from "../useAppConfig";

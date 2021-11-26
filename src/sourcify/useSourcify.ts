@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
-import { ChecksummedAddress, TransactionData } from "./types";
-import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
+import { ChecksummedAddress, TransactionData } from "../types";
+import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
 export type UserMethod = {
   notice?: string | undefined;
@@ -119,6 +119,16 @@ export const useSourcify = (
   }, [address, chainId, source]);
 
   return rawMetadata;
+};
+
+export const useSingleMetadata = (
+  address: ChecksummedAddress | undefined,
+  chainId: number | undefined,
+  source: SourcifySource
+) => {
+  const addresses = useMemo(() => (address ? [address] : []), [address]);
+  const metadatas = useMultipleMetadata(undefined, addresses, chainId, source);
+  return address !== undefined ? metadatas[address] : undefined;
 };
 
 export const useMultipleMetadata = (

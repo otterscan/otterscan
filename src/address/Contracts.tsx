@@ -7,7 +7,7 @@ import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
 import { RuntimeContext } from "../useRuntime";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 import ExternalLink from "../components/ExternalLink";
 import { openInRemixURL } from "../url";
 import ContractABI from "./ContractABI";

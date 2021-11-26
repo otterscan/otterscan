@@ -11,7 +11,7 @@ import {
   TokenTransfer,
 } from "./types";
 import { ResolvedAddresses } from "./api/address-resolver";
-import { Metadata } from "./useSourcify";
+import { Metadata } from "./sourcify/useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;

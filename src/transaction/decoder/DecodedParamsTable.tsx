@@ -1,7 +1,7 @@
 import React from "react";
 import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
-import { DevMethod, UserMethod } from "../../useSourcify";
+import { DevMethod, UserMethod } from "../../sourcify/useSourcify";
 import { ResolvedAddresses } from "../../api/address-resolver";
 
 type DecodedParamsTableProps = {

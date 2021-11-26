@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isAddress } from "@ethersproject/address";
 import { QrReader } from "@blackbox-vision/react-qr-reader";
 import { OnResultFunction } from "@blackbox-vision/react-qr-reader/dist-types/types";
@@ -11,7 +11,7 @@ type CameraScannerProps = {
 };
 
 const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const evaluateScan: OnResultFunction = (result, error, codeReader) => {
     console.log("scan");
@@ -23,7 +23,7 @@ const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
         return;
       }
 
-      history.push(`/search?q=${text}`);
+      navigate(`/search?q=${text}`);
       turnOffScan();
     }
   };
