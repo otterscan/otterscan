@@ -126,7 +126,13 @@ const AddressTransactions: React.FC = () => {
               <Tab.Panels>
                 <Routes>
                   <Route
-                    path="*"
+                    index
+                    element={
+                      <AddressTransactionResults address={checksummedAddress} />
+                    }
+                  />
+                  <Route
+                    path="txs/:direction"
                     element={
                       <AddressTransactionResults address={checksummedAddress} />
                     }

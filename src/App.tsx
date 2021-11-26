@@ -60,11 +60,7 @@ const App = () => {
                   />
                   <Route path="tx/:txhash/*" element={<Transaction />} />
                   <Route
-                    path="address/:addressOrName"
-                    element={<AddressTransactions />}
-                  />
-                  <Route
-                    path="address/:addressOrName/:direction"
+                    path="address/:addressOrName/*"
                     element={<AddressTransactions />}
                   />
                   <Route path="*" element={<Home />} />
