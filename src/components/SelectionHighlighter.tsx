@@ -18,6 +18,7 @@ export const genericSelector =
     selection.content === content;
 
 export const addressSelector: ContentSelector = genericSelector("address");
+export const valueSelector: ContentSelector = genericSelector("value");
 export const functionSigSelector: ContentSelector =
   genericSelector("functionSig");
 

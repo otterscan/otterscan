@@ -9,6 +9,9 @@ import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
 import { ResolvedAddresses } from "../../api/address-resolver";
+import SelectionHighlighter, {
+  valueSelector,
+} from "../../components/SelectionHighlighter";
 
 type DecodedParamRowProps = {
   prefix?: ReactNode;
@@ -68,24 +71,30 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           {help && showHelp && <div className="mt-2 text-gray-400">{help}</div>}
         </td>
         <td className="col-span-1 text-gray-500">{paramType.type}</td>
-        <td className="col-span-8 pr-1 font-code break-all">
-          {paramType.baseType === "uint256" ? (
-            <Uint256Decoder r={r} />
-          ) : paramType.baseType === "address" ? (
-            <AddressDecoder
-              r={r.toString()}
-              resolvedAddresses={resolvedAddresses}
-            />
-          ) : paramType.baseType === "bool" ? (
-            <BooleanDecoder r={r} />
-          ) : paramType.baseType === "bytes" ? (
-            <BytesDecoder r={r} />
-          ) : paramType.baseType === "tuple" ||
-            paramType.baseType === "array" ? (
-            <></>
-          ) : (
-            r.toString()
-          )}
+        <td className="col-span-8 pr-1 font-code break-all flex">
+          <SelectionHighlighter
+            myType="value"
+            myContent={r.toString()}
+            selector={valueSelector}
+          >
+            {paramType.baseType === "uint256" ? (
+              <Uint256Decoder r={r} />
+            ) : paramType.baseType === "address" ? (
+              <AddressDecoder
+                r={r.toString()}
+                resolvedAddresses={resolvedAddresses}
+              />
+            ) : paramType.baseType === "bool" ? (
+              <BooleanDecoder r={r} />
+            ) : paramType.baseType === "bytes" ? (
+              <BytesDecoder r={r} />
+            ) : paramType.baseType === "tuple" ||
+              paramType.baseType === "array" ? (
+              <></>
+            ) : (
+              r.toString()
+            )}
+          </SelectionHighlighter>
         </td>
       </tr>
       {paramType.baseType === "tuple" &&
