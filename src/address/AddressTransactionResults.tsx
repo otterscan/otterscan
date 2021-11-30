@@ -8,7 +8,11 @@ import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
-import { useMultipleMetadata } from "../sourcify/useSourcify";
+import {
+  useDedupedAddresses,
+  useMultipleMetadata,
+} from "../sourcify/useSourcify";
+import { useAddressCodes } from "../useErigonHooks";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
@@ -120,9 +124,11 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     return _addresses;
   }, [address, page]);
   const { sourcifySource } = useAppConfigContext();
+  const deduped = useDedupedAddresses(addresses);
+  const checked = useAddressCodes(provider, deduped);
   const metadatas = useMultipleMetadata(
     undefined,
-    addresses,
+    checked,
     provider?.network.chainId,
     sourcifySource
   );

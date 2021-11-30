@@ -14,6 +14,7 @@ import {
   InternalOperation,
   ProcessedTransaction,
   OperationType,
+  ChecksummedAddress,
 } from "./types";
 import erc20 from "./erc20.json";
 
@@ -439,4 +440,43 @@ export const useUniqueSignatures = (traces: TraceGroup[] | undefined) => {
   }, [traces]);
 
   return uniqueSignatures;
+};
+
+const checkCode = async (
+  provider: JsonRpcProvider,
+  address: ChecksummedAddress
+): Promise<boolean> => {
+  const code = await provider.getCode(address);
+  if (code !== "0x") {
+    console.log(`Has code: ${address}`);
+  }
+  return code === "0x";
+};
+
+export const useAddressCodes = (
+  provider: JsonRpcProvider | undefined,
+  addresses: ChecksummedAddress[]
+): ChecksummedAddress[] | undefined => {
+  const [hasCode, setCode] = useState<ChecksummedAddress[] | undefined>();
+
+  useEffect(() => {
+    if (provider === undefined) {
+      setCode(undefined);
+      return;
+    }
+
+    const readCodes = async () => {
+      const checkers: Promise<boolean>[] = [];
+      for (const a of addresses) {
+        checkers.push(checkCode(provider, a));
+      }
+
+      const result = await Promise.all(checkers);
+      const filtered = addresses.filter((_, i) => result[i]);
+      setCode(filtered);
+    };
+    readCodes();
+  }, [provider, addresses]);
+
+  return hasCode;
 };
