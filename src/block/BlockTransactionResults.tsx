@@ -17,7 +17,7 @@ import {
   useDedupedAddresses,
   useMultipleMetadata,
 } from "../sourcify/useSourcify";
-import { useAddressCodes } from "../useErigonHooks";
+import { useAddressesWithCode } from "../useErigonHooks";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;
@@ -49,7 +49,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   }, [page]);
   const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(addresses);
-  const checked = useAddressCodes(provider, deduped);
+  const checked = useAddressesWithCode(provider, deduped);
   const metadatas = useMultipleMetadata(
     undefined,
     checked,

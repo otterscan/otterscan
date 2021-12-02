@@ -442,41 +442,38 @@ export const useUniqueSignatures = (traces: TraceGroup[] | undefined) => {
   return uniqueSignatures;
 };
 
-const checkCode = async (
+const hasCode = async (
   provider: JsonRpcProvider,
   address: ChecksummedAddress
 ): Promise<boolean> => {
-  const code = await provider.getCode(address);
-  if (code !== "0x") {
-    console.log(`Has code: ${address}`);
-  }
-  return code === "0x";
+  const result = await provider.send("ots_hasCode", [address, "latest"]);
+  return result as boolean;
 };
 
-export const useAddressCodes = (
+export const useAddressesWithCode = (
   provider: JsonRpcProvider | undefined,
   addresses: ChecksummedAddress[]
 ): ChecksummedAddress[] | undefined => {
-  const [hasCode, setCode] = useState<ChecksummedAddress[] | undefined>();
+  const [results, setResults] = useState<ChecksummedAddress[] | undefined>();
 
   useEffect(() => {
     if (provider === undefined) {
-      setCode(undefined);
+      setResults(undefined);
       return;
     }
 
     const readCodes = async () => {
       const checkers: Promise<boolean>[] = [];
       for (const a of addresses) {
-        checkers.push(checkCode(provider, a));
+        checkers.push(hasCode(provider, a));
       }
 
       const result = await Promise.all(checkers);
       const filtered = addresses.filter((_, i) => result[i]);
-      setCode(filtered);
+      setResults(filtered);
     };
     readCodes();
   }, [provider, addresses]);
 
-  return hasCode;
+  return results;
 };

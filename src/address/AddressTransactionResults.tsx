@@ -12,7 +12,7 @@ import {
   useDedupedAddresses,
   useMultipleMetadata,
 } from "../sourcify/useSourcify";
-import { useAddressCodes } from "../useErigonHooks";
+import { useAddressesWithCode } from "../useErigonHooks";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
@@ -125,7 +125,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   }, [address, page]);
   const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(addresses);
-  const checked = useAddressCodes(provider, deduped);
+  const checked = useAddressesWithCode(provider, deduped);
   const metadatas = useMultipleMetadata(
     undefined,
     checked,

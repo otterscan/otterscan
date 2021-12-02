@@ -9,7 +9,7 @@ import {
   useDedupedAddresses,
   useMultipleMetadata,
 } from "../sourcify/useSourcify";
-import { useAddressCodes } from "../useErigonHooks";
+import { useAddressesWithCode } from "../useErigonHooks";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 
@@ -37,7 +37,7 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
   const { provider } = useContext(RuntimeContext);
   const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(logAddresses);
-  const checked = useAddressCodes(provider, deduped);
+  const checked = useAddressesWithCode(provider, deduped);
   const metadatas = useMultipleMetadata(
     baseMetadatas,
     checked,
