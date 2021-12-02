@@ -12,12 +12,7 @@ import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
-import { useAppConfigContext } from "../useAppConfig";
-import {
-  useDedupedAddresses,
-  useMultipleMetadata,
-} from "../sourcify/useSourcify";
-import { useAddressesWithCode } from "../useErigonHooks";
+import { useContractsMetadata } from "../hooks";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;
@@ -47,15 +42,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
 
     return page.map((t) => t.to).filter((to): to is string => to !== undefined);
   }, [page]);
-  const deduped = useDedupedAddresses(addresses);
-  const contracts = useAddressesWithCode(provider, deduped);
-  const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    undefined,
-    contracts,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadatas = useContractsMetadata(addresses, provider);
 
   return (
     <ContentFrame>

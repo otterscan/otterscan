@@ -8,17 +8,12 @@ import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
-import {
-  useDedupedAddresses,
-  useMultipleMetadata,
-} from "../sourcify/useSourcify";
-import { useAddressesWithCode } from "../useErigonHooks";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
-import { useAppConfigContext } from "../useAppConfig";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress } from "../types";
+import { useContractsMetadata } from "../hooks";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -123,15 +118,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     }
     return _addresses;
   }, [address, page]);
-  const deduped = useDedupedAddresses(addresses);
-  const contracts = useAddressesWithCode(provider, deduped);
-  const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    undefined,
-    contracts,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadatas = useContractsMetadata(addresses, provider);
 
   return (
     <ContentFrame tabs>
