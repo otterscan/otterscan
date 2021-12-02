@@ -101,12 +101,12 @@ const Details: React.FC<DetailsProps> = ({
     }
     return _addresses;
   }, [txData]);
-  const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(addresses);
-  const checked = useAddressesWithCode(provider, deduped);
+  const contracts = useAddressesWithCode(provider, deduped);
+  const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     undefined,
-    checked,
+    contracts,
     provider?.network.chainId,
     sourcifySource
   );

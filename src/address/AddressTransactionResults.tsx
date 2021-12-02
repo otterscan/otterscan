@@ -123,12 +123,12 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     }
     return _addresses;
   }, [address, page]);
-  const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(addresses);
-  const checked = useAddressesWithCode(provider, deduped);
+  const contracts = useAddressesWithCode(provider, deduped);
+  const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     undefined,
-    checked,
+    contracts,
     provider?.network.chainId,
     sourcifySource
   );

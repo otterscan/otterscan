@@ -132,12 +132,10 @@ export const useSingleMetadata = (
 };
 
 export const useDedupedAddresses = (
-  addresses: (ChecksummedAddress | undefined)[]
+  addresses: ChecksummedAddress[]
 ): ChecksummedAddress[] => {
   return useMemo(() => {
-    const deduped = new Set(
-      addresses.filter((a): a is ChecksummedAddress => a !== undefined)
-    );
+    const deduped = new Set(addresses);
     return [...deduped];
   }, [addresses]);
 };

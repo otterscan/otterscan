@@ -47,12 +47,12 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
 
     return page.map((t) => t.to).filter((to): to is string => to !== undefined);
   }, [page]);
-  const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(addresses);
-  const checked = useAddressesWithCode(provider, deduped);
+  const contracts = useAddressesWithCode(provider, deduped);
+  const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     undefined,
-    checked,
+    contracts,
     provider?.network.chainId,
     sourcifySource
   );

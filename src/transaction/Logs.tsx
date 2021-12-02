@@ -35,12 +35,12 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
     [txData]
   );
   const { provider } = useContext(RuntimeContext);
-  const { sourcifySource } = useAppConfigContext();
   const deduped = useDedupedAddresses(logAddresses);
-  const checked = useAddressesWithCode(provider, deduped);
+  const contracts = useAddressesWithCode(provider, deduped);
+  const { sourcifySource } = useAppConfigContext();
   const metadatas = useMultipleMetadata(
     baseMetadatas,
-    checked,
+    contracts,
     provider?.network.chainId,
     sourcifySource
   );
