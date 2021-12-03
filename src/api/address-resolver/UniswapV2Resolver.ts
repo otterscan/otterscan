@@ -60,7 +60,6 @@ export class UniswapV2Resolver implements IAddressResolver<UniswapV2PairMeta> {
         return undefined;
       }
 
-      console.log(`Found pair: ${token0}/${token1}`);
       const [meta0, meta1] = await Promise.all([
         ercResolver.resolveAddress(provider, token0),
         ercResolver.resolveAddress(provider, token1),
