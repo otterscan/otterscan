@@ -2,12 +2,14 @@ import { BaseProvider } from "@ethersproject/providers";
 import { ensRenderer } from "../../components/ENSName";
 import { plainStringRenderer } from "../../components/PlainString";
 import { tokenRenderer } from "../../components/TokenName";
+import { uniswapV2PairRenderer } from "../../components/UniswapV2PairName";
 import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
   CompositeAddressResolver,
   SelectedResolvedName,
 } from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
+import { UniswapV2Resolver } from "./UniswapV2Resolver";
 import { ERCTokenResolver } from "./ERCTokenResolver";
 import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
 
@@ -15,11 +17,13 @@ export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 
 // Create and configure the main resolver
 export const ensResolver = new ENSAddressResolver();
+export const uniswapV2Resolver = new UniswapV2Resolver();
 export const ercTokenResolver = new ERCTokenResolver();
 export const hardcodedResolver = new HardcodedAddressResolver();
 
 const _mainResolver = new CompositeAddressResolver();
 _mainResolver.addResolver(ensResolver);
+_mainResolver.addResolver(uniswapV2Resolver);
 _mainResolver.addResolver(ercTokenResolver);
 _mainResolver.addResolver(hardcodedResolver);
 
@@ -31,6 +35,7 @@ export const resolverRendererRegistry = new Map<
   ResolvedAddressRenderer<any>
 >();
 resolverRendererRegistry.set(ensResolver, ensRenderer);
+resolverRendererRegistry.set(uniswapV2Resolver, uniswapV2PairRenderer);
 resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 resolverRendererRegistry.set(hardcodedResolver, plainStringRenderer);
 
