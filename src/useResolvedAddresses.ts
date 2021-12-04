@@ -86,6 +86,9 @@ export const pageCollector =
       if (tx.to) {
         uniqueAddresses.add(tx.to);
       }
+      if (tx.createdContractAddress) {
+        uniqueAddresses.add(tx.createdContractAddress);
+      }
     }
 
     return Array.from(uniqueAddresses);
