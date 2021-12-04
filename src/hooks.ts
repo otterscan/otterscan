@@ -1,12 +1,18 @@
+import { useMemo } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ChecksummedAddress } from "./types";
-import {
-  Metadata,
-  useDedupedAddresses,
-  useMultipleMetadata,
-} from "./sourcify/useSourcify";
+import { Metadata, useMultipleMetadata } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressesWithCode } from "./useErigonHooks";
+
+export const useDedupedAddresses = (
+  addresses: ChecksummedAddress[]
+): ChecksummedAddress[] => {
+  return useMemo(() => {
+    const deduped = new Set(addresses);
+    return [...deduped];
+  }, [addresses]);
+};
 
 export const useContractsMetadata = (
   addresses: ChecksummedAddress[],

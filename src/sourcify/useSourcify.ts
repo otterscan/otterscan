@@ -121,15 +121,6 @@ export const useSourcify = (
   return rawMetadata;
 };
 
-export const useDedupedAddresses = (
-  addresses: ChecksummedAddress[]
-): ChecksummedAddress[] => {
-  return useMemo(() => {
-    const deduped = new Set(addresses);
-    return [...deduped];
-  }, [addresses]);
-};
-
 export const useMultipleMetadata = (
   baseMetadatas: Record<string, Metadata | null> | undefined,
   addresses: ChecksummedAddress[] | undefined,
