@@ -103,7 +103,7 @@ export const useBlockTransactions = (
             idx: i,
             hash: t.hash,
             from: t.from,
-            to: t.to,
+            to: t.to ?? null,
             createdContractAddress: _receipts[i].contractAddress,
             value: t.value,
             fee:
@@ -457,8 +457,10 @@ export const useAddressesWithCode = (
   const [results, setResults] = useState<ChecksummedAddress[] | undefined>();
 
   useEffect(() => {
+    // Reset
+    setResults(undefined);
+
     if (provider === undefined) {
-      setResults(undefined);
       return;
     }
 

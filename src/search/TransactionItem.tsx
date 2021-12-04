@@ -99,7 +99,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           />
         </span>
       </span>
-      <span className="col-span-2 flex items-baseline" title={tx.to}>
+      <span
+        className="col-span-2 flex items-baseline"
+        title={tx.to ?? tx.createdContractAddress}
+      >
         <span className="truncate">
           {tx.to ? (
             <AddressHighlighter address={tx.to}>

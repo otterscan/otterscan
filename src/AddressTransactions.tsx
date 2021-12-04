@@ -108,11 +108,9 @@ const AddressTransactions: React.FC = () => {
             </StandardSubtitle>
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-                <NavTab href={`/address/${checksummedAddress}`}>
-                  Overview
-                </NavTab>
+                <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
                 {(contractAddresses?.length ?? 0) > 0 && (
-                  <NavTab href={`/address/${checksummedAddress}/contract`}>
+                  <NavTab href={`/address/${addressOrName}/contract`}>
                     <span
                       className={`flex items-baseline space-x-2 ${
                         addressMetadata === undefined ? "italic opacity-50" : ""

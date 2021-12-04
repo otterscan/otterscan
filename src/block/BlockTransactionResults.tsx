@@ -40,7 +40,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
       return [];
     }
 
-    return page.map((t) => t.to).filter((to): to is string => to !== undefined);
+    return page.map((t) => t.to).filter((to): to is string => to !== null);
   }, [page]);
   const metadatas = useContractsMetadata(addresses, provider);
 

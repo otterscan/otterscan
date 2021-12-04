@@ -27,6 +27,11 @@ export const useAddressOrENSFromURL = (
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
+    // Reset
+    setENS(false);
+    setError(false);
+    setChecksummedAddress(undefined);
+
     // TODO: handle and offer fallback to bad checksummed addresses
     if (isAddress(addressOrName)) {
       // Normalize to checksummed address

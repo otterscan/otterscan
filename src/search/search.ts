@@ -52,7 +52,7 @@ export class SearchController {
           idx: _receipt.transactionIndex,
           hash: t.hash,
           from: t.from,
-          to: t.to,
+          to: t.to ?? null,
           createdContractAddress: _receipt.contractAddress,
           value: t.value,
           fee: _receipt.gasUsed.mul(t.gasPrice!),
