@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback } from "react";
+import React, { useEffect, useContext, useCallback, useMemo } from "react";
 import {
   useParams,
   useNavigate,
@@ -21,8 +21,9 @@ import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressOrENSFromURL } from "./useResolvedAddresses";
-import { useSingleMetadata } from "./sourcify/useSourcify";
+import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
+import { useAddressesWithCode } from "./useErigonHooks";
 
 const AddressTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -58,11 +59,24 @@ const AddressTransactions: React.FC = () => {
   }, [addressOrName, checksummedAddress, isENS]);
 
   const { sourcifySource } = useAppConfigContext();
-  const addressMetadata = useSingleMetadata(
-    checksummedAddress,
+  const checksummedAddressAsArray = useMemo(
+    () => (checksummedAddress !== undefined ? [checksummedAddress] : []),
+    [checksummedAddress]
+  );
+  const contractAddresses = useAddressesWithCode(
+    provider,
+    checksummedAddressAsArray
+  );
+  const metadatas = useMultipleMetadata(
+    undefined,
+    contractAddresses,
     provider?.network.chainId,
     sourcifySource
   );
+  const addressMetadata =
+    checksummedAddress !== undefined
+      ? metadatas[checksummedAddress]
+      : undefined;
 
   return (
     <StandardFrame>
@@ -97,31 +111,33 @@ const AddressTransactions: React.FC = () => {
                 <NavTab href={`/address/${checksummedAddress}`}>
                   Overview
                 </NavTab>
-                <NavTab href={`/address/${checksummedAddress}/contract`}>
-                  <span
-                    className={`flex items-baseline space-x-2 ${
-                      addressMetadata === undefined ? "italic opacity-50" : ""
-                    }`}
-                  >
-                    <span>Contract</span>
-                    {addressMetadata === undefined ? (
-                      <span className="self-center">
-                        <FontAwesomeIcon
-                          className="animate-spin"
-                          icon={faCircleNotch}
-                        />
-                      </span>
-                    ) : addressMetadata === null ? (
-                      <span className="self-center text-red-500">
-                        <FontAwesomeIcon icon={faQuestionCircle} />
-                      </span>
-                    ) : (
-                      <span className="self-center">
-                        <SourcifyLogo />
-                      </span>
-                    )}
-                  </span>
-                </NavTab>
+                {(contractAddresses?.length ?? 0) > 0 && (
+                  <NavTab href={`/address/${checksummedAddress}/contract`}>
+                    <span
+                      className={`flex items-baseline space-x-2 ${
+                        addressMetadata === undefined ? "italic opacity-50" : ""
+                      }`}
+                    >
+                      <span>Contract</span>
+                      {addressMetadata === undefined ? (
+                        <span className="self-center">
+                          <FontAwesomeIcon
+                            className="animate-spin"
+                            icon={faCircleNotch}
+                          />
+                        </span>
+                      ) : addressMetadata === null ? (
+                        <span className="self-center text-red-500">
+                          <FontAwesomeIcon icon={faQuestionCircle} />
+                        </span>
+                      ) : (
+                        <span className="self-center">
+                          <SourcifyLogo />
+                        </span>
+                      )}
+                    </span>
+                  </NavTab>
+                )}
               </Tab.List>
               <Tab.Panels>
                 <Routes>
@@ -142,7 +158,12 @@ const AddressTransactions: React.FC = () => {
                     element={
                       <Contracts
                         checksummedAddress={checksummedAddress}
-                        rawMetadata={addressMetadata}
+                        rawMetadata={
+                          contractAddresses !== undefined &&
+                          contractAddresses.length === 0
+                            ? null
+                            : addressMetadata
+                        }
                       />
                     }
                   />
