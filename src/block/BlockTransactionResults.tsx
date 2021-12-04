@@ -40,7 +40,16 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
       return [];
     }
 
-    return page.map((t) => t.to).filter((to): to is string => to !== undefined);
+    const _addresses: ChecksummedAddress[] = [];
+    for (const t of page) {
+      if (t.to) {
+        _addresses.push(t.to);
+      }
+      if (t.createdContractAddress) {
+        _addresses.push(t.createdContractAddress);
+      }
+    }
+    return _addresses;
   }, [page]);
   const metadatas = useContractsMetadata(addresses, provider);
 

@@ -114,6 +114,9 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
         if (t.to) {
           _addresses.push(t.to);
         }
+        if (t.createdContractAddress) {
+          _addresses.push(t.createdContractAddress);
+        }
       }
     }
     return _addresses;

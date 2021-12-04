@@ -95,33 +95,38 @@ export const useBlockTransactions = (
       const _receipts = result.receipts;
 
       const rawTxs = _block.transactions
-        .map(
-          (t, i): ProcessedTransaction => ({
+        .map((t, i): ProcessedTransaction => {
+          const _rawReceipt = _receipts[i];
+          // Empty logs on purpose because of ethers formatter requires it
+          _rawReceipt.logs = [];
+          const _receipt = provider.formatter.receipt(_rawReceipt);
+
+          return {
             blockNumber: blockNumber,
             timestamp: _block.timestamp,
             miner: _block.miner,
             idx: i,
             hash: t.hash,
             from: t.from,
-            to: t.to,
-            createdContractAddress: _receipts[i].contractAddress,
+            to: t.to ?? null,
+            createdContractAddress: _receipt.contractAddress,
             value: t.value,
             fee:
               t.type !== 2
                 ? provider.formatter
-                    .bigNumber(_receipts[i].gasUsed)
+                    .bigNumber(_receipt.gasUsed)
                     .mul(t.gasPrice!)
                 : provider.formatter
-                    .bigNumber(_receipts[i].gasUsed)
+                    .bigNumber(_receipt.gasUsed)
                     .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
             gasPrice:
               t.type !== 2
                 ? t.gasPrice!
                 : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
             data: t.data,
-            status: provider.formatter.number(_receipts[i].status),
-          })
-        )
+            status: provider.formatter.number(_receipt.status),
+          };
+        })
         .reverse();
       setTxs(rawTxs);
       setTotalTxs(result.fullblock.transactionCount);
@@ -457,8 +462,10 @@ export const useAddressesWithCode = (
   const [results, setResults] = useState<ChecksummedAddress[] | undefined>();
 
   useEffect(() => {
+    // Reset
+    setResults(undefined);
+
     if (provider === undefined) {
-      setResults(undefined);
       return;
     }
 
