@@ -1,8 +1,73 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { ProcessedTransaction, TransactionData } from "./types";
+import { getAddress, isAddress } from "@ethersproject/address";
 import { batchPopulate, ResolvedAddresses } from "./api/address-resolver";
 import { TraceGroup } from "./useErigonHooks";
+import { RuntimeContext } from "./useRuntime";
+import {
+  ChecksummedAddress,
+  ProcessedTransaction,
+  TransactionData,
+} from "./types";
+
+export const useAddressOrENSFromURL = (
+  addressOrName: string,
+  urlFixer: (address: ChecksummedAddress) => void
+): [
+  ChecksummedAddress | undefined,
+  boolean | undefined,
+  boolean | undefined
+] => {
+  const { provider } = useContext(RuntimeContext);
+  const [checksummedAddress, setChecksummedAddress] = useState<
+    ChecksummedAddress | undefined
+  >();
+  const [isENS, setENS] = useState<boolean>();
+  const [error, setError] = useState<boolean>();
+
+  // If it looks like it is an ENS name, try to resolve it
+  useEffect(() => {
+    // Reset
+    setENS(false);
+    setError(false);
+    setChecksummedAddress(undefined);
+
+    // TODO: handle and offer fallback to bad checksummed addresses
+    if (isAddress(addressOrName)) {
+      // Normalize to checksummed address
+      const _checksummedAddress = getAddress(addressOrName);
+      if (_checksummedAddress !== addressOrName) {
+        // Request came with a non-checksummed address; fix the URL
+        urlFixer(_checksummedAddress);
+        return;
+      }
+
+      setENS(false);
+      setError(false);
+      setChecksummedAddress(_checksummedAddress);
+      return;
+    }
+
+    if (!provider) {
+      return;
+    }
+    const resolveName = async () => {
+      const resolvedAddress = await provider.resolveName(addressOrName);
+      if (resolvedAddress !== null) {
+        setENS(true);
+        setError(false);
+        setChecksummedAddress(resolvedAddress);
+      } else {
+        setENS(false);
+        setError(true);
+        setChecksummedAddress(undefined);
+      }
+    };
+    resolveName();
+  }, [provider, addressOrName, urlFixer]);
+
+  return [checksummedAddress, isENS, error];
+};
 
 export type AddressCollector = () => string[];
 
@@ -20,6 +85,9 @@ export const pageCollector =
       }
       if (tx.to) {
         uniqueAddresses.add(tx.to);
+      }
+      if (tx.createdContractAddress) {
+        uniqueAddresses.add(tx.createdContractAddress);
       }
     }
 

@@ -11,7 +11,7 @@ import {
   TokenTransfer,
 } from "./types";
 import { ResolvedAddresses } from "./api/address-resolver";
-import { Metadata } from "./useSourcify";
+import { Metadata } from "./sourcify/useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
@@ -31,8 +31,8 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faCaretRight} size="1x" />
     </span>
-    <div className="grid grid-cols-5 gap-x-1">
-      <div className="flex space-x-1">
+    <div className="grid grid-cols-7 gap-x-1 w-full">
+      <div className="col-span-2 flex space-x-1">
         <span className="font-bold">From</span>
         <TransactionAddress
           address={t.from}
@@ -41,7 +41,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           metadata={metadatas[t.from]}
         />
       </div>
-      <div className="flex space-x-1">
+      <div className="col-span-2 flex space-x-1">
         <span className="font-bold">To</span>
         <TransactionAddress
           address={t.to}

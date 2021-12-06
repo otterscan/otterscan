@@ -37,10 +37,10 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, useMultipleMetadata, UserDoc } from "../useSourcify";
+import { DevDoc, UserDoc } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
-import { useAppConfigContext } from "../useAppConfig";
+import { useContractsMetadata } from "../hooks";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -95,13 +95,7 @@ const Details: React.FC<DetailsProps> = ({
     }
     return _addresses;
   }, [txData]);
-  const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    undefined,
-    addresses,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadatas = useContractsMetadata(addresses, provider);
 
   return (
     <ContentFrame tabs>

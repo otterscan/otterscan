@@ -1,4 +1,15 @@
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  RefObject,
+  useRef,
+  useState,
+} from "react";
+import { NavigateFunction, useNavigate } from "react-router";
 import { JsonRpcProvider, TransactionResponse } from "@ethersproject/providers";
+import { isAddress } from "@ethersproject/address";
+import { isHexString } from "@ethersproject/bytes";
+import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 
@@ -41,7 +52,7 @@ export class SearchController {
           idx: _receipt.transactionIndex,
           hash: t.hash,
           from: t.from,
-          to: t.to,
+          to: t.to ?? null,
           createdContractAddress: _receipt.contractAddress,
           value: t.value,
           fee: _receipt.gasUsed.mul(t.gasPrice!),
@@ -194,3 +205,59 @@ export class SearchController {
     return this;
   }
 }
+
+const doSearch = (q: string, navigate: NavigateFunction) => {
+  if (isAddress(q)) {
+    navigate(`/address/${q}`, { replace: true });
+    return;
+  }
+
+  if (isHexString(q, 32)) {
+    navigate(`/tx/${q}`, { replace: true });
+    return;
+  }
+
+  const blockNumber = parseInt(q);
+  if (!isNaN(blockNumber)) {
+    navigate(`/block/${blockNumber}`, { replace: true });
+    return;
+  }
+
+  // Assume it is an ENS name
+  navigate(`/address/${q}`);
+};
+
+export const useGenericSearch = (): [
+  RefObject<HTMLInputElement>,
+  ChangeEventHandler<HTMLInputElement>,
+  FormEventHandler<HTMLFormElement>
+] => {
+  const [searchString, setSearchString] = useState<string>("");
+  const [canSubmit, setCanSubmit] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    const searchTerm = e.target.value.trim();
+    setCanSubmit(searchTerm.length > 0);
+    setSearchString(searchTerm);
+  };
+
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    if (!canSubmit) {
+      return;
+    }
+
+    if (searchRef.current) {
+      searchRef.current.value = "";
+    }
+    doSearch(searchString, navigate);
+  };
+
+  const searchRef = useRef<HTMLInputElement>(null);
+  useKeyboardShortcut(["/"], () => {
+    searchRef.current?.focus();
+  });
+
+  return [searchRef, handleChange, handleSubmit];
+};

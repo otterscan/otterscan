@@ -3,10 +3,10 @@ import { Interface } from "@ethersproject/abi";
 import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
-import { useAppConfigContext } from "../useAppConfig";
-import { Metadata, useMultipleMetadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
+import { useContractsMetadata } from "../hooks";
 
 type LogsProps = {
   txData: TransactionData;
@@ -30,13 +30,8 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
     [txData]
   );
   const { provider } = useContext(RuntimeContext);
-  const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    baseMetadatas,
-    logAddresses,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadatas = useContractsMetadata(logAddresses, provider, baseMetadatas);
+
   const logDescs = useMemo(() => {
     if (!txData) {
       return undefined;

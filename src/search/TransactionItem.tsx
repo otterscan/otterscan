@@ -19,7 +19,7 @@ import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
 import { ResolvedAddresses } from "../api/address-resolver";
-import { Metadata } from "../useSourcify";
+import { Metadata } from "../sourcify/useSourcify";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
@@ -99,7 +99,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           />
         </span>
       </span>
-      <span className="col-span-2 flex items-baseline" title={tx.to}>
+      <span
+        className="col-span-2 flex items-baseline"
+        title={tx.to ?? tx.createdContractAddress}
+      >
         <span className="truncate">
           {tx.to ? (
             <AddressHighlighter address={tx.to}>

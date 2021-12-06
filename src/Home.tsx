@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { NavLink, useHistory } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
@@ -9,28 +9,13 @@ import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlock } from "./useLatestBlock";
 import { blockURL } from "./url";
+import { useGenericSearch } from "./search/search";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
 const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const [search, setSearch] = useState<string>();
-  const [canSubmit, setCanSubmit] = useState<boolean>(false);
-  const history = useHistory();
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setCanSubmit(e.target.value.trim().length > 0);
-    setSearch(e.target.value.trim());
-  };
-
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    if (!canSubmit) {
-      return;
-    }
-
-    history.push(`/search?q=${search}`);
-  };
+  const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
   const latestBlock = useLatestBlock(provider);
   const [isScanning, setScanning] = useState<boolean>(false);
@@ -56,6 +41,7 @@ const Home: React.FC = () => {
             size={50}
             placeholder="Search by address / txn hash / block number / ENS name"
             onChange={handleChange}
+            ref={searchRef}
             autoFocus
           />
           <button

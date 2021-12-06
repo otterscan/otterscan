@@ -9,7 +9,7 @@ type NavTabProps = {
 const NavTab: React.FC<NavTabProps> = ({ href, children }) => (
   <Tab as={Fragment}>
     <NavLink
-      className={(isActive) =>
+      className={({ isActive }) =>
         `${
           isActive
             ? "text-link-blue border-link-blue"
@@ -17,7 +17,7 @@ const NavTab: React.FC<NavTabProps> = ({ href, children }) => (
         } hover:text-link-blue text-sm font-bold px-3 py-3 border-b-2`
       }
       to={href}
-      exact
+      end
       replace
     >
       {children}

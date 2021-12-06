@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
-import { ChecksummedAddress, TransactionData } from "./types";
-import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "./url";
+import { ChecksummedAddress, TransactionData } from "../types";
+import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
 export type UserMethod = {
   notice?: string | undefined;
@@ -123,49 +123,44 @@ export const useSourcify = (
 
 export const useMultipleMetadata = (
   baseMetadatas: Record<string, Metadata | null> | undefined,
-  addresses: (ChecksummedAddress | undefined)[],
+  addresses: ChecksummedAddress[] | undefined,
   chainId: number | undefined,
   source: SourcifySource
 ): Record<ChecksummedAddress, Metadata | null | undefined> => {
   const [rawMetadata, setRawMetadata] = useState<
     Record<string, Metadata | null | undefined>
   >({});
-
   useEffect(() => {
-    if (!addresses || chainId === undefined) {
+    if (addresses === undefined || chainId === undefined) {
       return;
     }
     setRawMetadata({});
 
     const abortController = new AbortController();
-    const fetchMetadata = async (dedupedAddresses: string[]) => {
-      const promises: Promise<Metadata | null>[] = [];
-      for (const address of dedupedAddresses) {
-        promises.push(
+    const fetchMetadata = async (_addresses: string[]) => {
+      const fetchers: Promise<Metadata | null>[] = [];
+      for (const address of _addresses) {
+        fetchers.push(
           fetchSourcifyMetadata(address, chainId, source, abortController)
         );
       }
 
-      const results = await Promise.all(promises);
+      const results = await Promise.all(fetchers);
       if (abortController.signal.aborted) {
         return;
       }
-      const metadatas: Record<string, Metadata | null> = baseMetadatas
-        ? { ...baseMetadatas }
-        : {};
+      let metadatas: Record<string, Metadata | null> = {};
+      if (baseMetadatas) {
+        metadatas = { ...baseMetadatas };
+      }
       for (let i = 0; i < results.length; i++) {
-        metadatas[dedupedAddresses[i]] = results[i];
+        metadatas[_addresses[i]] = results[i];
       }
       setRawMetadata(metadatas);
     };
 
-    const deduped = new Set(
-      addresses.filter(
-        (a): a is ChecksummedAddress =>
-          a !== undefined && baseMetadatas?.[a] === undefined
-      )
-    );
-    fetchMetadata(Array.from(deduped));
+    const filtered = addresses.filter((a) => baseMetadatas?.[a] === undefined);
+    fetchMetadata(filtered);
 
     return () => {
       abortController.abort();

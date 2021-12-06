@@ -50,7 +50,8 @@ export const useMultipleETHUSDOracle = (
             const priceData = await ethFeed.latestRoundData({ blockTag });
             return BigNumber.from(priceData.answer);
           } catch (err) {
-            console.error(err);
+            // Silently ignore on purpose; it means the network or block number does
+            // not contain the chainlink feed contract
             return undefined;
           }
         })()

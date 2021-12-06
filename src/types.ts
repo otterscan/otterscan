@@ -16,7 +16,7 @@ export type ProcessedTransaction = {
   idx: number;
   hash: string;
   from?: string;
-  to?: string;
+  to: string | null;
   createdContractAddress?: string;
   internalMinerInteraction?: boolean;
   value: BigNumber;

@@ -1,6 +1,6 @@
 import React from "react";
 import { SyntaxHighlighter, docco } from "../highlight-init";
-import { useContract } from "../useSourcify";
+import { useContract } from "../sourcify/useSourcify";
 import { useAppConfigContext } from "../useAppConfig";
 
 type ContractProps = {

@@ -12,8 +12,7 @@ import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
-import { useAppConfigContext } from "../useAppConfig";
-import { useMultipleMetadata } from "../useSourcify";
+import { useContractsMetadata } from "../hooks";
 
 type BlockTransactionResultsProps = {
   blockTag: BlockTag;
@@ -28,9 +27,9 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   total,
   pageNumber,
 }) => {
+  const { provider } = useContext(RuntimeContext);
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-  const { provider } = useContext(RuntimeContext);
   const addrCollector = useMemo(() => pageCollector(page), [page]);
   const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
@@ -41,15 +40,18 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
       return [];
     }
 
-    return page.map((t) => t.to).filter((to): to is string => to !== undefined);
+    const _addresses: ChecksummedAddress[] = [];
+    for (const t of page) {
+      if (t.to) {
+        _addresses.push(t.to);
+      }
+      if (t.createdContractAddress) {
+        _addresses.push(t.createdContractAddress);
+      }
+    }
+    return _addresses;
   }, [page]);
-  const { sourcifySource } = useAppConfigContext();
-  const metadatas = useMultipleMetadata(
-    undefined,
-    addresses,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadatas = useContractsMetadata(addresses, provider);
 
   return (
     <ContentFrame>
