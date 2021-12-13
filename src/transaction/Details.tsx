@@ -1,4 +1,5 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useState } from "react";
+import { Tab } from "@headlessui/react";
 import { TransactionDescription } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,6 +9,8 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
+import ModeTab from "../components/ModeTab";
+import ExpanderSwitch from "../components/ExpanderSwitch";
 import BlockConfirmations from "../components/BlockConfirmations";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
@@ -97,7 +100,11 @@ const Details: React.FC<DetailsProps> = ({
     return _addresses;
   }, [txData]);
   const metadatas = useContractsMetadata(addresses, provider);
-  const errorMsg = useTransactionError(provider, txData.transactionHash);
+  const [errorMsg, outputData, isCustomError] = useTransactionError(
+    provider,
+    txData.transactionHash
+  );
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
     <ContentFrame tabs>
@@ -111,24 +118,75 @@ const Details: React.FC<DetailsProps> = ({
         {txData.confirmedData === undefined ? (
           <span className="italic text-gray-400">Pending</span>
         ) : txData.confirmedData.status ? (
-          <span className="flex items-center w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
-            <FontAwesomeIcon icon={faCheckCircle} size="1x" />
+          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
+            <FontAwesomeIcon
+              className="self-center"
+              icon={faCheckCircle}
+              size="1x"
+            />
             <span>Success</span>
           </span>
         ) : (
-          <div className="inline-flex justify-start items-center rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
-            <FontAwesomeIcon icon={faTimesCircle} size="1x" />
-            <span>
-              Fail
-              {errorMsg && (
-                <>
-                  {" "}
-                  with revert message: '
-                  <span className="font-bold underline">{errorMsg}</span>'
-                </>
+          <>
+            <div className="flex space-x-1 items-baseline">
+              <div className="flex rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
+                <FontAwesomeIcon
+                  className="self-center"
+                  icon={faTimesCircle}
+                  size="1x"
+                />
+                <span>
+                  Fail
+                  {errorMsg && (
+                    <>
+                      {" "}
+                      with revert message: '
+                      <span className="font-bold underline">{errorMsg}</span>'
+                    </>
+                  )}
+                  {isCustomError && <> with custom error</>}
+                </span>
+              </div>
+              {isCustomError && (
+                <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
               )}
-            </span>
-          </div>
+            </div>
+            {expanded && (
+              <Tab.Group>
+                <Tab.List className="flex space-x-1 mt-2 mb-1">
+                  <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
+                  <ModeTab>Raw</ModeTab>
+                </Tab.List>
+                <Tab.Panels>
+                  <Tab.Panel>
+                    {/* {fourBytes === "0x" ? (
+                    <>No parameters</>
+                  ) : resolvedTxDesc === undefined ? (
+                    <>Waiting for data...</>
+                  ) : resolvedTxDesc === null ? (
+                    <>Can't decode data</>
+                  ) : (
+                    <DecodedParamsTable
+                      args={resolvedTxDesc.args}
+                      paramTypes={resolvedTxDesc.functionFragment.inputs}
+                      hasParamNames={hasParamNames}
+                      userMethod={userMethod}
+                      devMethod={devMethod}
+                      resolvedAddresses={resolvedAddresses}
+                    />
+                  )} */}
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <textarea
+                      className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+                      value={outputData}
+                      readOnly
+                    />
+                  </Tab.Panel>
+                </Tab.Panels>
+              </Tab.Group>
+            )}
+          </>
         )}
       </InfoRow>
       {txData.confirmedData && (

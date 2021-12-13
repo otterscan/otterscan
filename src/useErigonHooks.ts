@@ -492,12 +492,16 @@ const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
 export const useTransactionError = (
   provider: JsonRpcProvider | undefined,
   txHash: string
-): string | undefined => {
+): [string | undefined, string | undefined, boolean | undefined] => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
+  const [data, setData] = useState<string | undefined>();
+  const [isCustomError, setCustomError] = useState<boolean | undefined>();
 
   useEffect(() => {
     // Reset
     setErrorMsg(undefined);
+    setData(undefined);
+    setCustomError(undefined);
 
     if (provider === undefined) {
       return;
@@ -510,6 +514,9 @@ export const useTransactionError = (
 
       // Empty or success
       if (result === "0x") {
+        setErrorMsg(undefined);
+        setData(result);
+        setCustomError(false);
         return;
       }
 
@@ -522,11 +529,17 @@ export const useTransactionError = (
           "0x" + result.substr(10)
         );
         setErrorMsg(msg[0]);
+        setData(result);
+        setCustomError(false);
         return;
       }
+
+      setErrorMsg(undefined);
+      setData(result);
+      setCustomError(true);
     };
     readCodes();
   }, [provider, txHash]);
 
-  return errorMsg;
+  return [errorMsg, data, isCustomError];
 };
