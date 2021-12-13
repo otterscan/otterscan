@@ -41,6 +41,7 @@ import { DevDoc, UserDoc } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
+import { useTransactionError } from "../useErigonHooks";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -96,6 +97,7 @@ const Details: React.FC<DetailsProps> = ({
     return _addresses;
   }, [txData]);
   const metadatas = useContractsMetadata(addresses, provider);
+  const errorMsg = useTransactionError(provider, txData.transactionHash);
 
   return (
     <ContentFrame tabs>
@@ -114,10 +116,19 @@ const Details: React.FC<DetailsProps> = ({
             <span>Success</span>
           </span>
         ) : (
-          <span className="flex items-center w-min rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
+          <div className="inline-flex justify-start items-center rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
             <FontAwesomeIcon icon={faTimesCircle} size="1x" />
-            <span>Fail</span>
-          </span>
+            <span>
+              Fail
+              {errorMsg && (
+                <>
+                  {" "}
+                  with revert message: '
+                  <span className="font-bold underline">{errorMsg}</span>'
+                </>
+              )}
+            </span>
+          </div>
         )}
       </InfoRow>
       {txData.confirmedData && (
