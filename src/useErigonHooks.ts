@@ -486,6 +486,9 @@ export const useAddressesWithCode = (
   return results;
 };
 
+// Error(string)
+const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
+
 export const useTransactionError = (
   provider: JsonRpcProvider | undefined,
   txHash: string
@@ -505,14 +508,22 @@ export const useTransactionError = (
         txHash,
       ])) as string;
 
-      // Filter hardcoded Error(string) selector because ethers don't let us
-      // construct it
-      if (result.substr(0, 10) !== "0x08c379a0") {
+      // Empty or success
+      if (result === "0x") {
         return;
       }
 
-      const msg = defaultAbiCoder.decode(["string"], "0x" + result.substr(10));
-      setErrorMsg(msg[0]);
+      // Filter hardcoded Error(string) selector because ethers don't let us
+      // construct it
+      const selector = result.substr(0, 10);
+      if (selector === ERROR_MESSAGE_SELECTOR) {
+        const msg = defaultAbiCoder.decode(
+          ["string"],
+          "0x" + result.substr(10)
+        );
+        setErrorMsg(msg[0]);
+        return;
+      }
     };
     readCodes();
   }, [provider, txHash]);
