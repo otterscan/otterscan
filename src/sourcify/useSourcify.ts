@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
+import { ErrorDescription } from "@ethersproject/abi/lib/interface";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
@@ -11,12 +12,19 @@ export type UserEvent = {
   notice?: string | undefined;
 };
 
+export type UserError = [
+  {
+    notice?: string | undefined;
+  }
+];
+
 export type UserDoc = {
   kind: "user";
   version?: number | undefined;
   notice?: string | undefined;
   methods: Record<string, UserMethod>;
   events: Record<string, UserEvent>;
+  errors?: Record<string, UserError> | undefined;
 };
 
 export type DevMethod = {
@@ -24,10 +32,17 @@ export type DevMethod = {
   returns?: Record<string, string>;
 };
 
+export type DevError = [
+  {
+    params?: Record<string, string>;
+  }
+];
+
 export type DevDoc = {
   kind: "dev";
   version?: number | undefined;
   methods: Record<string, DevMethod>;
+  errors?: Record<string, DevError> | undefined;
 };
 
 export type Metadata = {
@@ -235,4 +250,26 @@ export const useTransactionDescription = (
   }, [metadata, txData]);
 
   return txDesc;
+};
+
+export const useError = (
+  metadata: Metadata | null | undefined,
+  output: string | null | undefined
+): ErrorDescription | null | undefined => {
+  const err = useMemo(() => {
+    if (!metadata || !output) {
+      return undefined;
+    }
+
+    const abi = metadata.output.abi;
+    const intf = new Interface(abi as any);
+    try {
+      return intf.parseError(output);
+    } catch (err) {
+      console.warn("Couldn't find error signature", err);
+      return null;
+    }
+  }, [metadata, output]);
+
+  return err;
 };

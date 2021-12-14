@@ -3,6 +3,7 @@ import { Block, BlockWithTransactions } from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
+import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import { extract4Bytes } from "./use4Bytes";
@@ -483,4 +484,62 @@ export const useAddressesWithCode = (
   }, [provider, addresses]);
 
   return results;
+};
+
+// Error(string)
+const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
+
+export const useTransactionError = (
+  provider: JsonRpcProvider | undefined,
+  txHash: string
+): [string | undefined, string | undefined, boolean | undefined] => {
+  const [errorMsg, setErrorMsg] = useState<string | undefined>();
+  const [data, setData] = useState<string | undefined>();
+  const [isCustomError, setCustomError] = useState<boolean | undefined>();
+
+  useEffect(() => {
+    // Reset
+    setErrorMsg(undefined);
+    setData(undefined);
+    setCustomError(undefined);
+
+    if (provider === undefined) {
+      return;
+    }
+
+    const readCodes = async () => {
+      const result = (await provider.send("ots_getTransactionError", [
+        txHash,
+      ])) as string;
+
+      // Empty or success
+      if (result === "0x") {
+        setErrorMsg(undefined);
+        setData(result);
+        setCustomError(false);
+        return;
+      }
+
+      // Filter hardcoded Error(string) selector because ethers don't let us
+      // construct it
+      const selector = result.substr(0, 10);
+      if (selector === ERROR_MESSAGE_SELECTOR) {
+        const msg = defaultAbiCoder.decode(
+          ["string"],
+          "0x" + result.substr(10)
+        );
+        setErrorMsg(msg[0]);
+        setData(result);
+        setCustomError(false);
+        return;
+      }
+
+      setErrorMsg(undefined);
+      setData(result);
+      setCustomError(true);
+    };
+    readCodes();
+  }, [provider, txHash]);
+
+  return [errorMsg, data, isCustomError];
 };
