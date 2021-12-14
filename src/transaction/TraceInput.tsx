@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Switch } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
 import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import InputDecoder from "./decoder/InputDecoder";
+import ExpanderSwitch from "../components/ExpanderSwitch";
 import { TraceEntry } from "../useErigonHooks";
 import { ResolvedAddresses } from "../api/address-resolver";
 import {
@@ -71,17 +71,10 @@ const TraceInput: React.FC<TraceInputProps> = ({
                 <span className="whitespace-nowrap">
                   (
                   {hasParams && (
-                    <Switch
-                      className="text-xs"
-                      checked={expanded}
-                      onChange={setExpanded}
-                    >
-                      {expanded ? (
-                        <span className="text-gray-400">[-]</span>
-                      ) : (
-                        <>[...]</>
-                      )}
-                    </Switch>
+                    <ExpanderSwitch
+                      expanded={expanded}
+                      setExpanded={setExpanded}
+                    />
                   )}
                   {(!hasParams || !expanded) && <>)</>}
                 </span>
