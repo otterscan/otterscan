@@ -113,6 +113,7 @@ const Transaction: React.FC = () => {
                     <Details
                       txData={txData}
                       txDesc={txDesc}
+                      toMetadata={metadata}
                       userDoc={metadata?.output.userdoc}
                       devDoc={metadata?.output.devdoc}
                       internalOps={internalOps}

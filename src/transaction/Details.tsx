@@ -34,13 +34,14 @@ import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
 import {
   rawInputTo4Bytes,
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, UserDoc } from "../sourcify/useSourcify";
+import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
 import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
@@ -49,6 +50,7 @@ import { useTransactionError } from "../useErigonHooks";
 type DetailsProps = {
   txData: TransactionData;
   txDesc: TransactionDescription | null | undefined;
+  toMetadata: Metadata | null | undefined;
   userDoc?: UserDoc | undefined;
   devDoc?: DevDoc | undefined;
   internalOps?: InternalOperation[];
@@ -60,6 +62,7 @@ type DetailsProps = {
 const Details: React.FC<DetailsProps> = ({
   txData,
   txDesc,
+  toMetadata,
   userDoc,
   devDoc,
   internalOps,
@@ -104,6 +107,16 @@ const Details: React.FC<DetailsProps> = ({
     provider,
     txData.transactionHash
   );
+  const errorDescription = useError(
+    toMetadata,
+    isCustomError ? outputData : undefined
+  );
+  const userError = errorDescription
+    ? userDoc?.errors?.[errorDescription.signature]?.[0]
+    : undefined;
+  const devError = errorDescription
+    ? devDoc?.errors?.[errorDescription.signature]?.[0]
+    : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
 
   return (
@@ -129,7 +142,7 @@ const Details: React.FC<DetailsProps> = ({
         ) : (
           <>
             <div className="flex space-x-1 items-baseline">
-              <div className="flex rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
+              <div className="flex items-baseline rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
                 <FontAwesomeIcon
                   className="self-center"
                   icon={faTimesCircle}
@@ -144,7 +157,21 @@ const Details: React.FC<DetailsProps> = ({
                       <span className="font-bold underline">{errorMsg}</span>'
                     </>
                   )}
-                  {isCustomError && <> with custom error</>}
+                  {isCustomError && (
+                    <>
+                      {" "}
+                      with custom error
+                      {errorDescription && (
+                        <>
+                          {" '"}
+                          <span className="font-code font-bold underline">
+                            {errorDescription.name}
+                          </span>
+                          {"'"}
+                        </>
+                      )}
+                    </>
+                  )}
                 </span>
               </div>
               {isCustomError && (
@@ -154,27 +181,27 @@ const Details: React.FC<DetailsProps> = ({
             {expanded && (
               <Tab.Group>
                 <Tab.List className="flex space-x-1 mt-2 mb-1">
-                  <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
+                  <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
                   <ModeTab>Raw</ModeTab>
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel>
-                    {/* {fourBytes === "0x" ? (
-                    <>No parameters</>
-                  ) : resolvedTxDesc === undefined ? (
-                    <>Waiting for data...</>
-                  ) : resolvedTxDesc === null ? (
-                    <>Can't decode data</>
-                  ) : (
-                    <DecodedParamsTable
-                      args={resolvedTxDesc.args}
-                      paramTypes={resolvedTxDesc.functionFragment.inputs}
-                      hasParamNames={hasParamNames}
-                      userMethod={userMethod}
-                      devMethod={devMethod}
-                      resolvedAddresses={resolvedAddresses}
-                    />
-                  )} */}
+                    {errorDescription === undefined ? (
+                      <>Waiting for data...</>
+                    ) : errorDescription === null ? (
+                      <>Can't decode data</>
+                    ) : errorDescription.args.length === 0 ? (
+                      <>No parameters</>
+                    ) : (
+                      <DecodedParamsTable
+                        args={errorDescription.args}
+                        paramTypes={errorDescription.errorFragment.inputs}
+                        hasParamNames
+                        userMethod={userError}
+                        devMethod={devError}
+                        resolvedAddresses={resolvedAddresses}
+                      />
+                    )}
                   </Tab.Panel>
                   <Tab.Panel>
                     <textarea
