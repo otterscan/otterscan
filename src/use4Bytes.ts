@@ -140,6 +140,22 @@ export const use4Bytes = (
   return data;
 };
 
+export const useMethodSelector = (data: string): [boolean, string, string] => {
+  const rawFourBytes = extract4Bytes(data);
+  const fourBytesEntry = use4Bytes(rawFourBytes);
+  const isSimpleTransfer = data === "0x";
+  const methodName = isSimpleTransfer
+    ? "transfer"
+    : fourBytesEntry?.name ?? rawFourBytes ?? "-";
+  const methodTitle = isSimpleTransfer
+    ? "ETH Transfer"
+    : methodName === rawFourBytes
+    ? methodName
+    : `${methodName} [${rawFourBytes}]`;
+
+  return [isSimpleTransfer, methodName, methodTitle];
+};
+
 export const useTransactionDescription = (
   fourBytesEntry: FourBytesEntry | null | undefined,
   data: string | undefined,
