@@ -37,7 +37,7 @@ import PercentagePosition from "../components/PercentagePosition";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
 import {
-  rawInputTo4Bytes,
+  extract4Bytes,
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
@@ -74,7 +74,8 @@ const Details: React.FC<DetailsProps> = ({
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
 
-  const fourBytes = txData.to !== null ? rawInputTo4Bytes(txData.data) : "0x";
+  const fourBytes =
+    txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
   const fourBytesEntry = use4Bytes(fourBytes);
   const fourBytesTxDesc = useTransactionDescription(
     fourBytesEntry,

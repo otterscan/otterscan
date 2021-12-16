@@ -21,7 +21,8 @@ export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
  *
  * @param rawInput Raw tx input including the "0x"
  * @returns the first 4 bytes, including the "0x" or null if the input
- * contains an invalid selector, e.g., txs with 0x00 data
+ * contains an invalid selector, e.g., txs with 0x00 data; simple transfers (0x)
+ * return null as well as it is not a method selector
  */
 export const extract4Bytes = (rawInput: string): string | null => {
   if (rawInput.length < 10) {
@@ -29,8 +30,6 @@ export const extract4Bytes = (rawInput: string): string | null => {
   }
   return rawInput.slice(0, 10);
 };
-
-export const rawInputTo4Bytes = (rawInput: string) => rawInput.slice(0, 10);
 
 const fetch4Bytes = async (
   assetsURLPrefix: string,
