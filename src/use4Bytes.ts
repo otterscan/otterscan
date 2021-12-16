@@ -16,11 +16,13 @@ export type FourBytesEntry = {
 
 export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
 
-const simpleTransfer: FourBytesEntry = {
-  name: "transfer",
-  signature: undefined,
-};
-
+/**
+ * Given a hex input data; extract the method selector
+ *
+ * @param rawInput Raw tx input including the "0x"
+ * @returns the first 4 bytes, including the "0x" or null if the input
+ * contains an invalid selector, e.g., txs with 0x00 data
+ */
 export const extract4Bytes = (rawInput: string): string | null => {
   if (rawInput.length < 10) {
     return null;
@@ -60,6 +62,7 @@ const fetch4Bytes = async (
   }
 };
 
+// TODO: migrate to swr and merge with use4Bytes
 export const useBatch4Bytes = (
   rawFourByteSigs: string[] | undefined
 ): FourBytesMap => {
@@ -97,9 +100,9 @@ export const useBatch4Bytes = (
  * @param rawFourBytes an hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
  */
 export const use4Bytes = (
-  rawFourBytes: string
+  rawFourBytes: string | null
 ): FourBytesEntry | null | undefined => {
-  if (!rawFourBytes.startsWith("0x")) {
+  if (rawFourBytes !== null && !rawFourBytes.startsWith("0x")) {
     throw new Error(
       `rawFourBytes must contain a bytes hex string starting with 0x; received value: "${rawFourBytes}"`
     );
@@ -108,12 +111,12 @@ export const use4Bytes = (
   const { config } = useContext(RuntimeContext);
   const assetsURLPrefix = config?.assetsURLPrefix;
 
-  const fourBytesFetcher = (key: string) => {
+  const fourBytesFetcher = (key: string | null) => {
     // TODO: throw error?
     if (assetsURLPrefix === undefined) {
       return undefined;
     }
-    if (key === "0x") {
+    if (key === null || key === "0x") {
       return undefined;
     }
 
@@ -131,9 +134,6 @@ export const use4Bytes = (
     rawFourBytes,
     fourBytesFetcher
   );
-  if (rawFourBytes === "0x") {
-    return simpleTransfer;
-  }
   if (error) {
     return undefined;
   }
