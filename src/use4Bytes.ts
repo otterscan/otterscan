@@ -4,9 +4,10 @@ import {
   Interface,
   TransactionDescription,
 } from "@ethersproject/abi";
+import { BigNumberish } from "@ethersproject/bignumber";
+import useSWR from "swr";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
-import { BigNumberish } from "@ethersproject/bignumber";
 
 export type FourBytesEntry = {
   name: string;
@@ -19,8 +20,6 @@ const simpleTransfer: FourBytesEntry = {
   name: "transfer",
   signature: undefined,
 };
-
-const fullCache = new Map<string, FourBytesEntry | null>();
 
 export const extract4Bytes = (rawInput: string): string | null => {
   if (rawInput.length < 10) {
@@ -100,54 +99,45 @@ export const useBatch4Bytes = (
 export const use4Bytes = (
   rawFourBytes: string
 ): FourBytesEntry | null | undefined => {
-  if (rawFourBytes !== "0x") {
-    if (rawFourBytes.length !== 10 || !rawFourBytes.startsWith("0x")) {
-      throw new Error(
-        `rawFourBytes must contain a 4 bytes hex method signature starting with 0x; received value: "${rawFourBytes}"`
-      );
-    }
+  if (!rawFourBytes.startsWith("0x")) {
+    throw new Error(
+      `rawFourBytes must contain a bytes hex string starting with 0x; received value: "${rawFourBytes}"`
+    );
   }
 
-  const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
+  const { config } = useContext(RuntimeContext);
+  const assetsURLPrefix = config?.assetsURLPrefix;
 
-  const fourBytes = rawFourBytes.slice(2);
-  const [entry, setEntry] = useState<FourBytesEntry | null | undefined>(
-    fullCache.get(fourBytes)
-  );
-  useEffect(() => {
+  const fourBytesFetcher = (key: string) => {
+    // TODO: throw error?
     if (assetsURLPrefix === undefined) {
-      return;
+      return undefined;
     }
-    if (fourBytes === "") {
-      return;
+    if (key === "0x") {
+      return undefined;
     }
 
-    const loadSig = async () => {
-      const entry = await fetch4Bytes(assetsURLPrefix, fourBytes);
-      fullCache.set(fourBytes, entry);
-      setEntry(entry);
-    };
-    loadSig();
-  }, [fourBytes, assetsURLPrefix]);
+    // Handle simple transfers with invalid selector like tx:
+    // 0x8bcbdcc1589b5c34c1e55909c8269a411f0267a4fed59a73dd4348cc71addbb9,
+    // which contains 0x00 as data
+    if (key.length !== 10) {
+      return undefined;
+    }
 
+    return fetch4Bytes(assetsURLPrefix, key.slice(2));
+  };
+
+  const { data, error } = useSWR<FourBytesEntry | null | undefined>(
+    rawFourBytes,
+    fourBytesFetcher
+  );
   if (rawFourBytes === "0x") {
     return simpleTransfer;
   }
-  if (assetsURLPrefix === undefined) {
+  if (error) {
     return undefined;
   }
-
-  // Try to resolve 4bytes name
-  if (entry === null || entry === undefined) {
-    return entry;
-  }
-
-  // Simulates LRU
-  // TODO: implement LRU purging
-  fullCache.delete(fourBytes);
-  fullCache.set(fourBytes, entry);
-  return entry;
+  return data;
 };
 
 export const useTransactionDescription = (
