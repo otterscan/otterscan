@@ -5,22 +5,15 @@ import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare
 import { Switch } from "@headlessui/react";
 import { FourBytesEntry } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
-import { ResolvedAddresses } from "../api/address-resolver";
 import TraceInput from "./TraceInput";
 
 type TraceItemProps = {
   t: TraceGroup;
   last: boolean;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const TraceItem: React.FC<TraceItemProps> = ({
-  t,
-  last,
-  fourBytesMap,
-  resolvedAddresses,
-}) => {
+const TraceItem: React.FC<TraceItemProps> = ({ t, last, fourBytesMap }) => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   return (
@@ -42,11 +35,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
             />
           </Switch>
         )}
-        <TraceInput
-          t={t}
-          fourBytesMap={fourBytesMap}
-          resolvedAddresses={resolvedAddresses}
-        />
+        <TraceInput t={t} fourBytesMap={fourBytesMap} />
       </div>
       {t.children && (
         <div
@@ -54,11 +43,7 @@ const TraceItem: React.FC<TraceItemProps> = ({
             expanded ? "" : "hidden"
           }`}
         >
-          <TraceChildren
-            c={t.children}
-            fourBytesMap={fourBytesMap}
-            resolvedAddresses={resolvedAddresses}
-          />
+          <TraceChildren c={t.children} fourBytesMap={fourBytesMap} />
         </div>
       )}
     </>
@@ -68,11 +53,10 @@ const TraceItem: React.FC<TraceItemProps> = ({
 type TraceChildrenProps = {
   c: TraceGroup[];
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const TraceChildren: React.FC<TraceChildrenProps> = React.memo(
-  ({ c, fourBytesMap, resolvedAddresses }) => {
+  ({ c, fourBytesMap }) => {
     return (
       <>
         {c.map((tc, i, a) => (
@@ -81,7 +65,6 @@ const TraceChildren: React.FC<TraceChildrenProps> = React.memo(
             t={tc}
             last={i === a.length - 1}
             fourBytesMap={fourBytesMap}
-            resolvedAddresses={resolvedAddresses}
           />
         ))}
       </>

@@ -11,10 +11,7 @@ import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
-import {
-  transactionDataCollector,
-  useResolvedAddresses,
-} from "./useResolvedAddresses";
+import { transactionDataCollector } from "./useResolvedAddresses";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 
 const Details = React.lazy(
@@ -49,7 +46,6 @@ const Transaction: React.FC = () => {
     () => transactionDataCollector(txData),
     [txData]
   );
-  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
 
   const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
@@ -119,29 +115,14 @@ const Transaction: React.FC = () => {
                       internalOps={internalOps}
                       sendsEthToMiner={sendsEthToMiner}
                       ethUSDPrice={blockETHUSDPrice}
-                      resolvedAddresses={resolvedAddresses}
                     />
                   }
                 />
                 <Route
                   path="logs"
-                  element={
-                    <Logs
-                      txData={txData}
-                      metadata={metadata}
-                      resolvedAddresses={resolvedAddresses}
-                    />
-                  }
+                  element={<Logs txData={txData} metadata={metadata} />}
                 />
-                <Route
-                  path="trace"
-                  element={
-                    <Trace
-                      txData={txData}
-                      resolvedAddresses={resolvedAddresses}
-                    />
-                  }
-                />
+                <Route path="trace" element={<Trace txData={txData} />} />
               </Routes>
             </React.Suspense>
           </SelectionContext.Provider>

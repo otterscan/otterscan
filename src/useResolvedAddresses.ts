@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { BaseProvider, JsonRpcProvider } from "@ethersproject/providers";
 import { getAddress, isAddress } from "@ethersproject/address";
-import { batchPopulate, ResolvedAddresses } from "./api/address-resolver";
+import useSWR from "swr";
+import {
+  batchPopulate,
+  mainResolver,
+  ResolvedAddresses,
+} from "./api/address-resolver";
+import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
 import { TraceGroup } from "./useErigonHooks";
 import { RuntimeContext } from "./useRuntime";
 import {
@@ -183,4 +189,24 @@ export const useResolvedAddresses = (
   );
 
   return names;
+};
+
+export const useResolvedAddress = (
+  provider: BaseProvider | undefined,
+  address: ChecksummedAddress
+): SelectedResolvedName<any> | undefined => {
+  const fetcher = async (
+    key: string
+  ): Promise<SelectedResolvedName<any> | undefined> => {
+    if (!provider) {
+      return undefined;
+    }
+    return mainResolver.resolveAddress(provider, address);
+  };
+
+  const { data, error } = useSWR(address, fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data;
 };

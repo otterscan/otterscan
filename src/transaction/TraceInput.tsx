@@ -7,7 +7,6 @@ import FunctionSignature from "./FunctionSignature";
 import InputDecoder from "./decoder/InputDecoder";
 import ExpanderSwitch from "../components/ExpanderSwitch";
 import { TraceEntry } from "../useErigonHooks";
-import { ResolvedAddresses } from "../api/address-resolver";
 import {
   extract4Bytes,
   FourBytesEntry,
@@ -17,14 +16,9 @@ import {
 type TraceInputProps = {
   t: TraceEntry;
   fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const TraceInput: React.FC<TraceInputProps> = ({
-  t,
-  fourBytesMap,
-  resolvedAddresses,
-}) => {
+const TraceInput: React.FC<TraceInputProps> = ({ t, fourBytesMap }) => {
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = raw4Bytes !== null ? fourBytesMap[raw4Bytes] : null;
   const sigText =
@@ -54,10 +48,7 @@ const TraceInput: React.FC<TraceInputProps> = ({
         ) : (
           <>
             <span>
-              <TransactionAddress
-                address={t.to}
-                resolvedAddresses={resolvedAddresses}
-              />
+              <TransactionAddress address={t.to} />
             </span>
             {t.type !== "CREATE" && t.type !== "CREATE2" && (
               <>
@@ -93,7 +84,6 @@ const TraceInput: React.FC<TraceInputProps> = ({
               data={t.input}
               userMethod={undefined}
               devMethod={undefined}
-              resolvedAddresses={resolvedAddresses}
             />
           </div>
           <div>)</div>

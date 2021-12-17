@@ -9,7 +9,6 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import AddressOrENSName from "./AddressOrENSName";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { AddressContext, ZERO_ADDRESS } from "../types";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { Metadata } from "../sourcify/useSourcify";
 
 type DecoratedAddressLinkProps = {
@@ -21,7 +20,6 @@ type DecoratedAddressLinkProps = {
   selfDestruct?: boolean;
   txFrom?: boolean;
   txTo?: boolean;
-  resolvedAddresses?: ResolvedAddresses | undefined;
   metadata?: Metadata | null | undefined;
 };
 
@@ -34,7 +32,6 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   selfDestruct,
   txFrom,
   txTo,
-  resolvedAddresses,
   metadata,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
@@ -87,7 +84,6 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         address={address}
         selectedAddress={selectedAddress}
         dontOverrideColors={mint || burn}
-        resolvedAddresses={resolvedAddresses}
       />
     </div>
   );

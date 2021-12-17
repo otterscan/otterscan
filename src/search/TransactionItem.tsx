@@ -18,12 +18,10 @@ import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { Metadata } from "../sourcify/useSourcify";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
-  resolvedAddresses?: ResolvedAddresses;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
   priceMap: Record<BlockTag, BigNumber>;
@@ -32,7 +30,6 @@ type TransactionItemProps = {
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
-  resolvedAddresses,
   selectedAddress,
   feeDisplay,
   priceMap,
@@ -87,7 +84,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 address={tx.from}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.from}
-                resolvedAddresses={resolvedAddresses}
               />
             </AddressHighlighter>
           )}
@@ -110,7 +106,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 address={tx.to}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
-                resolvedAddresses={resolvedAddresses}
                 metadata={metadatas[tx.to]}
               />
             </AddressHighlighter>
@@ -120,7 +115,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 address={tx.createdContractAddress!}
                 selectedAddress={selectedAddress}
                 creation
-                resolvedAddresses={resolvedAddresses}
                 metadata={metadatas[tx.createdContractAddress!]}
               />
             </AddressHighlighter>

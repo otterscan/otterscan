@@ -104,7 +104,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
 
   // Resolve all addresses that appear on this page results
   const addrCollector = useMemo(() => pageCollector(page), [page]);
-  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
 
   // Calculate Sourcify metadata for all addresses that appear on this page results
   const addresses = useMemo(() => {
@@ -152,7 +151,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
             <TransactionItem
               key={tx.hash}
               tx={tx}
-              resolvedAddresses={resolvedAddresses}
               selectedAddress={address}
               feeDisplay={feeDisplay}
               priceMap={priceMap}
