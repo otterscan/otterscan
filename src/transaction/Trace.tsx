@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import ContentFrame from "../ContentFrame";
 import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
@@ -6,7 +6,6 @@ import { TransactionData } from "../types";
 import { useBatch4Bytes } from "../use4Bytes";
 import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
-import { tracesCollector } from "../useResolvedAddresses";
 
 type TraceProps = {
   txData: TransactionData;
@@ -17,8 +16,6 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
   const traces = useTraceTransaction(provider, txData.transactionHash);
   const uniqueSignatures = useUniqueSignatures(traces);
   const sigMap = useBatch4Bytes(uniqueSignatures);
-
-  const addrCollector = useMemo(() => tracesCollector(traces), [traces]);
 
   return (
     <ContentFrame tabs>

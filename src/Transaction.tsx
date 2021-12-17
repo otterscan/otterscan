@@ -11,7 +11,6 @@ import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
-import { transactionDataCollector } from "./useResolvedAddresses";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 
 const Details = React.lazy(
@@ -42,11 +41,6 @@ const Transaction: React.FC = () => {
   }
 
   const txData = useTxData(provider, txhash);
-  const addrCollector = useMemo(
-    () => transactionDataCollector(txData),
-    [txData]
-  );
-
   const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
     if (!txData || !internalOps) {
