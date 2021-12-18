@@ -1,10 +1,12 @@
-# Custom APIs
+# Otterscan extended JSON-RPC APIs
 
-The standard jsonrpc APIs are very limitting and in some cases non-performant for what you can do with an archive node.
+The standard Ethereum jsonrpc APIs are very limitting and in some cases non-performant for what you can do with an archive node.
 
 There is plenty of useful data that can be extracted and we implemented some extra RPC methods for them.
 
 They are all used by Otterscan, but we are documenting them here so others can try it, give feedback and eventually get it merged upstream if they are generalized enough.
+
+We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
 ## Methods
 
