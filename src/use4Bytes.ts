@@ -5,7 +5,7 @@ import {
   TransactionDescription,
 } from "@ethersproject/abi";
 import { BigNumberish } from "@ethersproject/bignumber";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
 
@@ -129,7 +129,7 @@ export const use4Bytes = (
     return fetch4Bytes(assetsURLPrefix, key.slice(2));
   };
 
-  const { data, error } = useSWR<FourBytesEntry | null | undefined>(
+  const { data, error } = useSWRImmutable<FourBytesEntry | null | undefined>(
     rawFourBytes,
     fourBytesFetcher
   );
