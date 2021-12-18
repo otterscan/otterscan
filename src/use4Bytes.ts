@@ -111,10 +111,6 @@ export const use4Bytes = (
   const assetsURLPrefix = config?.assetsURLPrefix;
 
   const fourBytesFetcher = (key: string | null) => {
-    // TODO: throw error?
-    if (assetsURLPrefix === undefined) {
-      return undefined;
-    }
     if (key === null || key === "0x") {
       return undefined;
     }
@@ -126,17 +122,14 @@ export const use4Bytes = (
       return undefined;
     }
 
-    return fetch4Bytes(assetsURLPrefix, key.slice(2));
+    return fetch4Bytes(assetsURLPrefix!, key.slice(2));
   };
 
   const { data, error } = useSWRImmutable<FourBytesEntry | null | undefined>(
-    rawFourBytes,
+    assetsURLPrefix !== undefined ? rawFourBytes : null,
     fourBytesFetcher
   );
-  if (error) {
-    return undefined;
-  }
-  return data;
+  return error ? undefined : data;
 };
 
 export const useMethodSelector = (data: string): [boolean, string, string] => {
