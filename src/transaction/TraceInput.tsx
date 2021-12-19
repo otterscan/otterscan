@@ -9,18 +9,17 @@ import ExpanderSwitch from "../components/ExpanderSwitch";
 import { TraceEntry } from "../useErigonHooks";
 import {
   extract4Bytes,
-  FourBytesEntry,
+  use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
 
 type TraceInputProps = {
   t: TraceEntry;
-  fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
 };
 
-const TraceInput: React.FC<TraceInputProps> = ({ t, fourBytesMap }) => {
+const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const raw4Bytes = extract4Bytes(t.input);
-  const fourBytes = raw4Bytes !== null ? fourBytesMap[raw4Bytes] : null;
+  const fourBytes = use4Bytes(raw4Bytes);
   const sigText =
     raw4Bytes === null ? "<fallback>" : fourBytes?.name ?? raw4Bytes;
   const hasParams = t.input.length > 10;

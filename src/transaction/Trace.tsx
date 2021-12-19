@@ -3,8 +3,7 @@ import ContentFrame from "../ContentFrame";
 import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
 import { TransactionData } from "../types";
-import { useBatch4Bytes } from "../use4Bytes";
-import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
+import { useTraceTransaction } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 
 type TraceProps = {
@@ -14,8 +13,6 @@ type TraceProps = {
 const Trace: React.FC<TraceProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const traces = useTraceTransaction(provider, txData.transactionHash);
-  const uniqueSignatures = useUniqueSignatures(traces);
-  const sigMap = useBatch4Bytes(uniqueSignatures);
 
   return (
     <ContentFrame tabs>
@@ -27,12 +24,7 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
             </div>
             <div className="ml-5 space-y-3 self-stretch">
               {traces.map((t, i, a) => (
-                <TraceItem
-                  key={i}
-                  t={t}
-                  last={i === a.length - 1}
-                  fourBytesMap={sigMap}
-                />
+                <TraceItem key={i} t={t} last={i === a.length - 1} />
               ))}
             </div>
           </>

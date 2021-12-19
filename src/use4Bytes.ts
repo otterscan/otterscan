@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import {
   Fragment,
   Interface,
@@ -13,8 +13,6 @@ export type FourBytesEntry = {
   name: string;
   signature: string | undefined;
 };
-
-export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
 
 /**
  * Given a hex input data; extract the method selector
@@ -59,38 +57,6 @@ const fetch4Bytes = async (
     console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
     return null;
   }
-};
-
-// TODO: migrate to swr and merge with use4Bytes
-export const useBatch4Bytes = (
-  rawFourByteSigs: string[] | undefined
-): FourBytesMap => {
-  const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
-
-  const [fourBytesMap, setFourBytesMap] = useState<FourBytesMap>({});
-  useEffect(() => {
-    if (!rawFourByteSigs || assetsURLPrefix === undefined) {
-      setFourBytesMap({});
-      return;
-    }
-
-    const loadSigs = async () => {
-      const promises = rawFourByteSigs.map((s) =>
-        fetch4Bytes(assetsURLPrefix, s.slice(2))
-      );
-      const results = await Promise.all(promises);
-
-      const _fourBytesMap: Record<string, FourBytesEntry | null> = {};
-      for (let i = 0; i < rawFourByteSigs.length; i++) {
-        _fourBytesMap[rawFourByteSigs[i]] = results[i];
-      }
-      setFourBytesMap(_fourBytesMap);
-    };
-    loadSigs();
-  }, [assetsURLPrefix, rawFourByteSigs]);
-
-  return fourBytesMap;
 };
 
 /**

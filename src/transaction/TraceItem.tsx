@@ -3,17 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-regular-svg-icons/faPlusSquare";
 import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare";
 import { Switch } from "@headlessui/react";
-import { FourBytesEntry } from "../use4Bytes";
 import { TraceGroup } from "../useErigonHooks";
 import TraceInput from "./TraceInput";
 
 type TraceItemProps = {
   t: TraceGroup;
   last: boolean;
-  fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
 };
 
-const TraceItem: React.FC<TraceItemProps> = ({ t, last, fourBytesMap }) => {
+const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   return (
@@ -35,7 +33,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last, fourBytesMap }) => {
             />
           </Switch>
         )}
-        <TraceInput t={t} fourBytesMap={fourBytesMap} />
+        <TraceInput t={t} />
       </div>
       {t.children && (
         <div
@@ -43,7 +41,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last, fourBytesMap }) => {
             expanded ? "" : "hidden"
           }`}
         >
-          <TraceChildren c={t.children} fourBytesMap={fourBytesMap} />
+          <TraceChildren c={t.children} />
         </div>
       )}
     </>
@@ -52,24 +50,16 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last, fourBytesMap }) => {
 
 type TraceChildrenProps = {
   c: TraceGroup[];
-  fourBytesMap: Record<string, FourBytesEntry | null | undefined>;
 };
 
-const TraceChildren: React.FC<TraceChildrenProps> = React.memo(
-  ({ c, fourBytesMap }) => {
-    return (
-      <>
-        {c.map((tc, i, a) => (
-          <TraceItem
-            key={i}
-            t={tc}
-            last={i === a.length - 1}
-            fourBytesMap={fourBytesMap}
-          />
-        ))}
-      </>
-    );
-  }
-);
+const TraceChildren: React.FC<TraceChildrenProps> = React.memo(({ c }) => {
+  return (
+    <>
+      {c.map((tc, i, a) => (
+        <TraceItem key={i} t={tc} last={i === a.length - 1} />
+      ))}
+    </>
+  );
+});
 
 export default TraceItem;
