@@ -5,7 +5,6 @@ import { Tab } from "@headlessui/react";
 import ModeTab from "../../components/ModeTab";
 import DecodedParamsTable from "./DecodedParamsTable";
 import { DevMethod, UserMethod } from "../../sourcify/useSourcify";
-import { ResolvedAddresses } from "../../api/address-resolver";
 
 type InputDecoderProps = {
   fourBytes: string;
@@ -14,7 +13,6 @@ type InputDecoderProps = {
   data: string;
   userMethod: UserMethod | undefined;
   devMethod: DevMethod | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const InputDecoder: React.FC<InputDecoderProps> = ({
@@ -24,7 +22,6 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
   data,
   userMethod,
   devMethod,
-  resolvedAddresses,
 }) => {
   const utfInput = useMemo(() => {
     try {
@@ -57,7 +54,6 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
               hasParamNames={hasParamNames}
               userMethod={userMethod}
               devMethod={devMethod}
-              resolvedAddresses={resolvedAddresses}
             />
           )}
         </Tab.Panel>

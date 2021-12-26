@@ -8,7 +8,6 @@ import TransactionItem from "../search/TransactionItem";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { SelectionContext, useSelection } from "../useSelection";
-import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
@@ -30,8 +29,6 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   const { provider } = useContext(RuntimeContext);
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-  const addrCollector = useMemo(() => pageCollector(page), [page]);
-  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
   const blockTags = useMemo(() => [blockTag], [blockTag]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
@@ -79,7 +76,6 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
             <TransactionItem
               key={tx.hash}
               tx={tx}
-              resolvedAddresses={resolvedAddresses}
               feeDisplay={feeDisplay}
               priceMap={priceMap}
               metadatas={metadatas}

@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import {
   Fragment,
   Interface,
   TransactionDescription,
 } from "@ethersproject/abi";
 import { BigNumberish } from "@ethersproject/bignumber";
-import useSWR from "swr";
+import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
 
@@ -13,8 +13,6 @@ export type FourBytesEntry = {
   name: string;
   signature: string | undefined;
 };
-
-export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
 
 /**
  * Given a hex input data; extract the method selector
@@ -61,38 +59,6 @@ const fetch4Bytes = async (
   }
 };
 
-// TODO: migrate to swr and merge with use4Bytes
-export const useBatch4Bytes = (
-  rawFourByteSigs: string[] | undefined
-): FourBytesMap => {
-  const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
-
-  const [fourBytesMap, setFourBytesMap] = useState<FourBytesMap>({});
-  useEffect(() => {
-    if (!rawFourByteSigs || assetsURLPrefix === undefined) {
-      setFourBytesMap({});
-      return;
-    }
-
-    const loadSigs = async () => {
-      const promises = rawFourByteSigs.map((s) =>
-        fetch4Bytes(assetsURLPrefix, s.slice(2))
-      );
-      const results = await Promise.all(promises);
-
-      const _fourBytesMap: Record<string, FourBytesEntry | null> = {};
-      for (let i = 0; i < rawFourByteSigs.length; i++) {
-        _fourBytesMap[rawFourByteSigs[i]] = results[i];
-      }
-      setFourBytesMap(_fourBytesMap);
-    };
-    loadSigs();
-  }, [assetsURLPrefix, rawFourByteSigs]);
-
-  return fourBytesMap;
-};
-
 /**
  * Extract 4bytes DB info
  *
@@ -111,10 +77,6 @@ export const use4Bytes = (
   const assetsURLPrefix = config?.assetsURLPrefix;
 
   const fourBytesFetcher = (key: string | null) => {
-    // TODO: throw error?
-    if (assetsURLPrefix === undefined) {
-      return undefined;
-    }
     if (key === null || key === "0x") {
       return undefined;
     }
@@ -126,17 +88,14 @@ export const use4Bytes = (
       return undefined;
     }
 
-    return fetch4Bytes(assetsURLPrefix, key.slice(2));
+    return fetch4Bytes(assetsURLPrefix!, key.slice(2));
   };
 
-  const { data, error } = useSWR<FourBytesEntry | null | undefined>(
-    rawFourBytes,
+  const { data, error } = useSWRImmutable<FourBytesEntry | null | undefined>(
+    assetsURLPrefix !== undefined ? rawFourBytes : null,
     fourBytesFetcher
   );
-  if (error) {
-    return undefined;
-  }
-  return data;
+  return error ? undefined : data;
 };
 
 export const useMethodSelector = (data: string): [boolean, string, string] => {

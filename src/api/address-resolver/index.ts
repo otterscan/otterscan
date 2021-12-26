@@ -1,4 +1,3 @@
-import { BaseProvider } from "@ethersproject/providers";
 import { ensRenderer } from "../../components/ENSName";
 import { plainStringRenderer } from "../../components/PlainString";
 import { tokenRenderer } from "../../components/TokenName";
@@ -48,30 +47,3 @@ resolverRendererRegistry.set(uniswapV2Resolver, uniswapV2PairRenderer);
 resolverRendererRegistry.set(uniswapV3Resolver, uniswapV3PairRenderer);
 resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 resolverRendererRegistry.set(hardcodedResolver, plainStringRenderer);
-
-// TODO: implement progressive resolving
-export const batchPopulate = async (
-  provider: BaseProvider,
-  addresses: string[],
-  currentMap: ResolvedAddresses | undefined
-): Promise<ResolvedAddresses> => {
-  const solvers: Promise<SelectedResolvedName<any> | undefined>[] = [];
-  const unresolvedAddresses = addresses.filter(
-    (a) => currentMap?.[a] === undefined
-  );
-  for (const a of unresolvedAddresses) {
-    solvers.push(mainResolver.resolveAddress(provider, a));
-  }
-
-  const resultMap: ResolvedAddresses = currentMap ? { ...currentMap } : {};
-  const results = await Promise.all(solvers);
-  for (let i = 0; i < results.length; i++) {
-    const r = results[i];
-    if (r === undefined) {
-      continue;
-    }
-    resultMap[unresolvedAddresses[i]] = r;
-  }
-
-  return resultMap;
-};

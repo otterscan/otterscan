@@ -8,23 +8,16 @@ import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { useTopic0 } from "../useTopic0";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { ChecksummedAddress } from "../types";
 import { Metadata } from "../sourcify/useSourcify";
 
 type LogEntryProps = {
   log: Log;
   logDesc: LogDescription | null | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
   metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
-const LogEntry: React.FC<LogEntryProps> = ({
-  log,
-  logDesc,
-  resolvedAddresses,
-  metadatas,
-}) => {
+const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc, metadatas }) => {
   const rawTopic0 = log.topics[0];
   const topic0 = useTopic0(rawTopic0);
 
@@ -65,7 +58,6 @@ const LogEntry: React.FC<LogEntryProps> = ({
             <div className="flex items-baseline space-x-2 -ml-1 mr-3">
               <TransactionAddress
                 address={log.address}
-                resolvedAddresses={resolvedAddresses}
                 metadata={metadatas[log.address]}
               />
               <Copy value={log.address} />
@@ -109,7 +101,6 @@ const LogEntry: React.FC<LogEntryProps> = ({
                         args={resolvedLogDesc.args}
                         paramTypes={resolvedLogDesc.eventFragment.inputs}
                         hasParamNames={resolvedLogDesc === logDesc}
-                        resolvedAddresses={resolvedAddresses}
                       />
                     </div>
                   </div>

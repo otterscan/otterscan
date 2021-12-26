@@ -42,7 +42,6 @@ import {
   useTransactionDescription,
 } from "../use4Bytes";
 import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
 import { useTransactionError } from "../useErigonHooks";
@@ -56,7 +55,6 @@ type DetailsProps = {
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
   ethUSDPrice: BigNumber | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const Details: React.FC<DetailsProps> = ({
@@ -68,7 +66,6 @@ const Details: React.FC<DetailsProps> = ({
   internalOps,
   sendsEthToMiner,
   ethUSDPrice,
-  resolvedAddresses,
 }) => {
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
@@ -200,7 +197,6 @@ const Details: React.FC<DetailsProps> = ({
                         hasParamNames
                         userMethod={userError}
                         devMethod={devError}
-                        resolvedAddresses={resolvedAddresses}
                       />
                     )}
                   </Tab.Panel>
@@ -252,10 +248,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
           <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-            <TransactionAddress
-              address={txData.from}
-              resolvedAddresses={resolvedAddresses}
-            />
+            <TransactionAddress address={txData.from} />
             <Copy value={txData.from} />
           </div>
           <div className="flex items-baseline pl-3">
@@ -268,7 +261,6 @@ const Details: React.FC<DetailsProps> = ({
           <div className="flex items-baseline space-x-2 -ml-1">
             <TransactionAddress
               address={txData.to}
-              resolvedAddresses={resolvedAddresses}
               metadata={metadatas?.[txData.to]}
             />
             <Copy value={txData.to} />
@@ -281,7 +273,6 @@ const Details: React.FC<DetailsProps> = ({
           <div className="flex items-baseline space-x-2 -ml-1">
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-              resolvedAddresses={resolvedAddresses}
               metadata={
                 metadatas?.[txData.confirmedData?.createdContractAddress!]
               }
@@ -296,7 +287,6 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 txData={txData}
                 internalOp={op}
-                resolvedAddresses={resolvedAddresses}
               />
             ))}
           </div>
@@ -314,7 +304,6 @@ const Details: React.FC<DetailsProps> = ({
               key={i}
               t={t}
               tokenMeta={txData.tokenMetas[t.token]}
-              resolvedAddresses={resolvedAddresses}
               metadatas={metadatas}
             />
           ))}
@@ -438,7 +427,6 @@ const Details: React.FC<DetailsProps> = ({
           data={txData.data}
           userMethod={userMethod}
           devMethod={devMethod}
-          resolvedAddresses={resolvedAddresses}
         />
       </InfoRow>
     </ContentFrame>

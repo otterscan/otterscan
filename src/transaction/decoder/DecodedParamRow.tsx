@@ -8,7 +8,6 @@ import Uint256Decoder from "./Uint256Decoder";
 import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
-import { ResolvedAddresses } from "../../api/address-resolver";
 import SelectionHighlighter, {
   valueSelector,
 } from "../../components/SelectionHighlighter";
@@ -20,7 +19,6 @@ type DecodedParamRowProps = {
   paramType: ParamType;
   arrayElem?: number | undefined;
   help?: string | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
@@ -30,7 +28,6 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
   paramType,
   arrayElem,
   help,
-  resolvedAddresses,
 }) => {
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
@@ -80,10 +77,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             {paramType.baseType === "uint256" ? (
               <Uint256Decoder r={r} />
             ) : paramType.baseType === "address" ? (
-              <AddressDecoder
-                r={r.toString()}
-                resolvedAddresses={resolvedAddresses}
-              />
+              <AddressDecoder r={r.toString()} />
             ) : paramType.baseType === "bool" ? (
               <BooleanDecoder r={r} />
             ) : paramType.baseType === "bytes" ? (
@@ -111,7 +105,6 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             i={idx}
             r={e}
             paramType={paramType.components[idx]}
-            resolvedAddresses={resolvedAddresses}
           />
         ))}
       {paramType.baseType === "array" &&
@@ -122,7 +115,6 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
             r={e}
             paramType={paramType.arrayChildren}
             arrayElem={idx}
-            resolvedAddresses={resolvedAddresses}
           />
         ))}
     </>

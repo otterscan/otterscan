@@ -10,7 +10,6 @@ import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
-import { pageCollector, useResolvedAddresses } from "../useResolvedAddresses";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress } from "../types";
 import { useContractsMetadata } from "../hooks";
@@ -102,10 +101,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   }, [page]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
-  // Resolve all addresses that appear on this page results
-  const addrCollector = useMemo(() => pageCollector(page), [page]);
-  const resolvedAddresses = useResolvedAddresses(provider, addrCollector);
-
   // Calculate Sourcify metadata for all addresses that appear on this page results
   const addresses = useMemo(() => {
     const _addresses = [address];
@@ -152,7 +147,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
             <TransactionItem
               key={tx.hash}
               tx={tx}
-              resolvedAddresses={resolvedAddresses}
               selectedAddress={address}
               feeDisplay={feeDisplay}
               priceMap={priceMap}

@@ -10,13 +10,11 @@ import {
   TokenMeta,
   TokenTransfer,
 } from "./types";
-import { ResolvedAddresses } from "./api/address-resolver";
 import { Metadata } from "./sourcify/useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
   tokenMeta?: TokenMeta | null | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
   metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
@@ -24,7 +22,6 @@ type TokenTransferItemProps = {
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMeta,
-  resolvedAddresses,
   metadatas,
 }) => (
   <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
@@ -37,7 +34,6 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
         <TransactionAddress
           address={t.from}
           addressCtx={AddressContext.FROM}
-          resolvedAddresses={resolvedAddresses}
           metadata={metadatas[t.from]}
         />
       </div>
@@ -46,7 +42,6 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
         <TransactionAddress
           address={t.to}
           addressCtx={AddressContext.TO}
-          resolvedAddresses={resolvedAddresses}
           metadata={metadatas[t.to]}
         />
       </div>
@@ -60,11 +55,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             />
           </ValueHighlighter>
         </span>
-        <TransactionAddress
-          address={t.token}
-          resolvedAddresses={resolvedAddresses}
-          metadata={metadatas[t.token]}
-        />
+        <TransactionAddress address={t.token} metadata={metadatas[t.token]} />
       </div>
     </div>
   </div>
