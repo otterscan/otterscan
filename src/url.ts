@@ -18,6 +18,8 @@ export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
+export const transactionURL = (txHash: string) => `/tx/${txHash}`;
+
 export enum SourcifySource {
   // Resolve trusted IPNS for root IPFS
   IPFS_IPNS,

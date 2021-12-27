@@ -502,3 +502,43 @@ export const useTransactionError = (
 
   return [errorMsg, data, isCustomError];
 };
+
+export const useTransactionBySenderAndNonce = (
+  provider: JsonRpcProvider | undefined,
+  sender: ChecksummedAddress | undefined,
+  nonce: number | undefined
+): string | undefined => {
+  const [txHash, setTxHash] = useState<string | undefined>();
+
+  useEffect(() => {
+    // Reset
+    setTxHash(undefined);
+
+    if (
+      provider === undefined ||
+      sender === undefined ||
+      nonce === undefined ||
+      nonce < 0
+    ) {
+      return;
+    }
+
+    const readTxHash = async () => {
+      const result = (await provider.send(
+        "ots_getTransactionBySenderAndNonce",
+        [sender, nonce]
+      )) as string;
+
+      // Empty or success
+      if (result === "0x") {
+        setTxHash(undefined);
+        return;
+      }
+
+      setTxHash(result);
+    };
+    readTxHash();
+  }, [provider, sender, nonce]);
+
+  return txHash;
+};
