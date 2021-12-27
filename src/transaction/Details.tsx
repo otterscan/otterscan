@@ -254,11 +254,7 @@ const Details: React.FC<DetailsProps> = ({
           </div>
           <div className="flex items-baseline pl-3">
             <Nonce value={txData.nonce} />
-            <NavNonce
-              sender={txData.from}
-              nonce={txData.nonce}
-              latestBlockNumber={undefined}
-            />
+            <NavNonce sender={txData.from} nonce={txData.nonce} />
           </div>
         </div>
       </InfoRow>

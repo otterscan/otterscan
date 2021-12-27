@@ -5,19 +5,17 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons/faChevronRight
 import NavButton from "./NavButton";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
-import { useTransactionBySenderAndNonce } from "../useErigonHooks";
+import {
+  useTransactionBySenderAndNonce,
+  useTransactionCount,
+} from "../useErigonHooks";
 
 type NavNonceProps = {
   sender: ChecksummedAddress;
   nonce: number;
-  latestBlockNumber: number | undefined;
 };
 
-const NavNonce: React.FC<NavNonceProps> = ({
-  sender,
-  nonce,
-  latestBlockNumber,
-}) => {
+const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
   const { provider } = useContext(RuntimeContext);
   const prevTxHash = useTransactionBySenderAndNonce(
     provider,
@@ -29,7 +27,12 @@ const NavNonce: React.FC<NavNonceProps> = ({
     sender,
     nonce + 1
   );
-  const lastTxHash = nextTxHash;
+  const count = useTransactionCount(provider, sender);
+  const lastTxHash = useTransactionBySenderAndNonce(
+    provider,
+    sender,
+    count !== undefined ? count - 1 : undefined
+  );
 
   return (
     <div className="pl-2 self-center flex space-x-1">
@@ -38,13 +41,13 @@ const NavNonce: React.FC<NavNonceProps> = ({
       </NavButton>
       <NavButton
         txHash={nextTxHash}
-        disabled={latestBlockNumber === undefined || nonce >= latestBlockNumber}
+        disabled={count === undefined || nonce >= count - 1}
       >
         <FontAwesomeIcon icon={faChevronRight} />
       </NavButton>
       <NavButton
         txHash={lastTxHash}
-        disabled={latestBlockNumber === undefined || nonce >= latestBlockNumber}
+        disabled={count === undefined || nonce >= count - 1}
       >
         <FontAwesomeIcon icon={faChevronRight} />
         <FontAwesomeIcon icon={faChevronRight} />

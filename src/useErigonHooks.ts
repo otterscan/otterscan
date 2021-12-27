@@ -503,6 +503,30 @@ export const useTransactionError = (
   return [errorMsg, data, isCustomError];
 };
 
+export const useTransactionCount = (
+  provider: JsonRpcProvider | undefined,
+  sender: ChecksummedAddress | undefined
+): number | undefined => {
+  const [count, setCount] = useState<number | undefined>();
+
+  useEffect(() => {
+    // Reset
+    setCount(undefined);
+
+    if (provider === undefined || sender === undefined) {
+      return;
+    }
+
+    const readCount = async () => {
+      const _count = await provider.getTransactionCount(sender);
+      setCount(_count);
+    };
+    readCount();
+  }, [provider, sender]);
+
+  return count;
+};
+
 export const useTransactionBySenderAndNonce = (
   provider: JsonRpcProvider | undefined,
   sender: ChecksummedAddress | undefined,
