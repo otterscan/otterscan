@@ -531,6 +531,10 @@ const getTransactionBySenderAndNonceFetcher = async ({
   sender,
   nonce,
 }: TransactionBySenderAndNonceKey): Promise<string | undefined> => {
+  if (nonce < 0) {
+    return undefined;
+  }
+
   const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
     sender,
     nonce,
