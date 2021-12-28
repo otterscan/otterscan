@@ -6,6 +6,7 @@ import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
+import useSWR, { useSWRConfig } from "swr";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -507,24 +508,52 @@ export const useTransactionCount = (
   provider: JsonRpcProvider | undefined,
   sender: ChecksummedAddress | undefined
 ): number | undefined => {
-  const [count, setCount] = useState<number | undefined>();
+  const { data, error } = useSWR(
+    provider && sender ? { provider, sender } : null,
+    async ({ provider, sender }): Promise<number | undefined> =>
+      provider.getTransactionCount(sender)
+  );
 
-  useEffect(() => {
-    // Reset
-    setCount(undefined);
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
 
-    if (provider === undefined || sender === undefined) {
-      return;
-    }
+type TransactionBySenderAndNonceKey = {
+  provider: JsonRpcProvider;
+  sender: ChecksummedAddress;
+  nonce: number;
+};
 
-    const readCount = async () => {
-      const _count = await provider.getTransactionCount(sender);
-      setCount(_count);
-    };
-    readCount();
-  }, [provider, sender]);
+const getTransactionBySenderAndNonceFetcher = async ({
+  provider,
+  sender,
+  nonce,
+}: TransactionBySenderAndNonceKey): Promise<string | undefined> => {
+  const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
+    sender,
+    nonce,
+  ])) as string;
 
-  return count;
+  // Empty or success
+  if (result === "0x") {
+    return undefined;
+  }
+
+  return result;
+};
+
+export const prefetchTransactionBySenderAndNonce = (
+  { cache, mutate }: ReturnType<typeof useSWRConfig>,
+  provider: JsonRpcProvider,
+  sender: ChecksummedAddress,
+  nonce: number
+) => {
+  const key: TransactionBySenderAndNonceKey = { provider, sender, nonce };
+  if (cache.get(key)) {
+    mutate(key, getTransactionBySenderAndNonceFetcher(key));
+  }
 };
 
 export const useTransactionBySenderAndNonce = (
@@ -532,37 +561,19 @@ export const useTransactionBySenderAndNonce = (
   sender: ChecksummedAddress | undefined,
   nonce: number | undefined
 ): string | undefined => {
-  const [txHash, setTxHash] = useState<string | undefined>();
+  const { data, error } = useSWR<
+    string | undefined,
+    any,
+    TransactionBySenderAndNonceKey | null
+  >(
+    provider && sender && nonce !== undefined
+      ? { provider, sender, nonce }
+      : null,
+    getTransactionBySenderAndNonceFetcher
+  );
 
-  useEffect(() => {
-    // Reset
-    setTxHash(undefined);
-
-    if (
-      provider === undefined ||
-      sender === undefined ||
-      nonce === undefined ||
-      nonce < 0
-    ) {
-      return;
-    }
-
-    const readTxHash = async () => {
-      const result = (await provider.send(
-        "ots_getTransactionBySenderAndNonce",
-        [sender, nonce]
-      )) as string;
-
-      // Empty or success
-      if (result === "0x") {
-        setTxHash(undefined);
-        return;
-      }
-
-      setTxHash(result);
-    };
-    readTxHash();
-  }, [provider, sender, nonce]);
-
-  return txHash;
+  if (error) {
+    return undefined;
+  }
+  return data;
 };

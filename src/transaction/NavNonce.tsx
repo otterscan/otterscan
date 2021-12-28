@@ -6,9 +6,11 @@ import NavButton from "./NavButton";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 import {
+  prefetchTransactionBySenderAndNonce,
   useTransactionBySenderAndNonce,
   useTransactionCount,
 } from "../useErigonHooks";
+import { useSWRConfig } from "swr";
 
 type NavNonceProps = {
   sender: ChecksummedAddress;
@@ -34,8 +36,27 @@ const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
     count !== undefined ? count - 1 : undefined
   );
 
+  // Prefetch
+  const swrConfig = useSWRConfig();
+  const prefetch = () => {
+    if (provider && sender && nonce !== undefined) {
+      prefetchTransactionBySenderAndNonce(
+        swrConfig,
+        provider,
+        sender,
+        nonce - 2
+      );
+      prefetchTransactionBySenderAndNonce(
+        swrConfig,
+        provider,
+        sender,
+        nonce + 2
+      );
+    }
+  };
+
   return (
-    <div className="pl-2 self-center flex space-x-1">
+    <div className="pl-2 self-center flex space-x-1" onMouseEnter={prefetch}>
       <NavButton txHash={prevTxHash} disabled={nonce === 0}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </NavButton>
