@@ -55,8 +55,11 @@ const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
     }
   };
 
+  // Always prefetch
+  prefetch();
+
   return (
-    <div className="pl-2 self-center flex space-x-1" onMouseEnter={prefetch}>
+    <div className="pl-2 self-center flex space-x-1">
       <NavButton txHash={prevTxHash} disabled={nonce === 0}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </NavButton>
