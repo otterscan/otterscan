@@ -26,6 +26,8 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 
 ### `ots_getTransactionBySenderAndNonce`
 
+Given a sender address and a nonce, returns the tx hash or `null` if not found. It returns only the tx hash on success, you can use the standard `eth_getTransactionByHash` after that to get the full transaction data.
+
 Parameters:
 
 `sender` - The sender ETH address.
