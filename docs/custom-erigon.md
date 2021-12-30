@@ -1,6 +1,6 @@
-# Otterscan extended JSON-RPC APIs
+# Otterscan JSON-RPC API extensions
 
-The standard Ethereum jsonrpc APIs are very limitting and in some cases non-performant for what you can do with an archive node.
+The [standard Ethereum JSON-RPC APIs](https://ethereum.org/en/developers/docs/apis/json-rpc/) are very limitting and in some cases non-performant for what you can do with an archive node.
 
 There is plenty of useful data that can be extracted and we implemented some extra RPC methods for them.
 
@@ -8,7 +8,7 @@ They are all used by Otterscan, but we are documenting them here so others can t
 
 We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
-## Methods
+## Method summary
 
 All methods are prefixed with the `ots_` namespace in order to make it clear it is vendor-specific and there is no name clash with other same-name implementations.
 
@@ -22,3 +22,16 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | `ots_getBlockDetails`       | Tailor-made and expanded version of `eth_getBlock*` for block details page in Otterscan. | The standard `eth_getBlock*` is quite verbose and it doesn't bring all info we need. We explicitly remove the transaction list (unnecessary for that page and also this call doesn't scale well), log blooms and other unnecessary fields. We add issuance and block fees info and return all of this in just one call. |
 | `ots_getBlockTransactions`  | Get paginated transactions for a certain block. Also remove some verbose fields like logs. | As block size increases, getting all transactions from a block aat once doesn't scale, so the first point here is to add pagination support. The second point is that receipts may have big, unnec essary information, like logs. So we cap all of them of save network bandwidth. |
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard jsonrpc API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
+| `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. |
+
+### `ots_getTransactionBySenderAndNonce`
+
+Parameters:
+
+`sender` - The sender ETH address.
+
+`nonce` - The sender nonce.
+
+Returns:
+
+`string` containing the corresponding transaction hash or `null` if it doesn't exist.
