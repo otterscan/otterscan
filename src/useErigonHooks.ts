@@ -530,7 +530,7 @@ const getTransactionBySenderAndNonceFetcher = async ({
   provider,
   sender,
   nonce,
-}: TransactionBySenderAndNonceKey): Promise<string | undefined> => {
+}: TransactionBySenderAndNonceKey): Promise<string | null | undefined> => {
   if (nonce < 0) {
     return undefined;
   }
@@ -541,10 +541,6 @@ const getTransactionBySenderAndNonceFetcher = async ({
   ])) as string;
 
   // Empty or success
-  if (result === "0x") {
-    return undefined;
-  }
-
   return result;
 };
 
@@ -564,9 +560,9 @@ export const useTransactionBySenderAndNonce = (
   provider: JsonRpcProvider | undefined,
   sender: ChecksummedAddress | undefined,
   nonce: number | undefined
-): string | undefined => {
+): string | null | undefined => {
   const { data, error } = useSWR<
-    string | undefined,
+    string | null | undefined,
     any,
     TransactionBySenderAndNonceKey | null
   >(
