@@ -38,6 +38,80 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard JSON-RPC API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
 | `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. | There is no native support for this search in the standard JSON-RPC API. Otterscan needs it to allow user navigation between nonces from the same sender address. |
 
+### `ots_getApiLevel`
+
+Very simple API versioning scheme. Every time we add a new capability, the number is incremented. This allows for Otterscan to check if the Erigon node contains all API it needs.
+
+Parameters:
+
+`<none>`
+
+Returns:
+
+`number` containing the API version.
+
+### `ots_getInternalOperations`
+
+Trace internal ETH transfers, contracts creation (CREATE/CREATE2) and self-destructs for a certain transaction.
+
+Parameters:
+
+`txhash` - The transaction hash.
+
+Returns:
+
+`array` of operations, sorted by their occurrence inside the transaction.
+
+The operation is an object with the following fields:
+
+`type` - transfer (`0`), self-destruct (`1`), create (`2`) or create2 (`3`).
+
+`from` - the ETH sender, contract creator or contract address being self-destructed.
+
+`to` - the ETH receiver, newly created contract address or the target ETH receiver resulting of the self-destruction.
+
+`value` - the amount of ETH transferred.
+
+### `ots_hasCode`
+
+Check if an ETH address contains a deployed code.
+
+Parameters:
+
+`address` - The ETH address to be checked.
+
+`block` - The block number or "latest" to check the latest state.
+
+Returns:
+
+`boolean` indicating if the address contains a bytecode or not.
+
+### `ots_getTransactionError`
+
+Given a transaction hash, returns its raw revert reason.
+
+The returned byte blob should be ABI decoded in order to be presented to the user.
+
+For instance, the most common error format is a `string` revert message; in this case, it should be decoded using the `Error(string)` method selector, which will allow you to extract the string message.
+
+If it is not the case, it should probably be a solidity custom error, so you must have the custom error ABI in order to decoded it.
+
+Parameters:
+
+`txhash` - The transaction hash.
+
+Returns:
+
+`string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
+
+### `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter`
+
+These are address history navigation methods. They are similar, the difference is `ots_searchTransactionsBefore` searches the history backwards and `ots_searchTransactionsAfter` searches forward a certain point in time.
+
+They are paginated, you **MUST** inform the page size. Some addresses like exchange addresses or very popular DeFi contracts like Uniswap Router will return millions of results.
+
+TODO: finish
+
 ### `ots_getTransactionBySenderAndNonce`
 
 Given a sender address and a nonce, returns the tx hash or `null` if not found. It returns only the tx hash on success, you can use the standard `eth_getTransactionByHash` after that to get the full transaction data.
