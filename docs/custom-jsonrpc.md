@@ -8,19 +8,33 @@ They are all used by Otterscan, but we are documenting them here so others can t
 
 We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
+## Why don't you use _Some Product XXX_ for Otterscan? And why shouldn't I?
+
+If you are happy using _Some Product XXX_, go ahead.
+
+Otterscan pursues a minimalistic approach and at the same time it is very easy to modify Erigon for your own needs.
+
+Most of the features we implemented are quite basic and it is unfortunate they are not part of the standard API.
+
+> We believe most people end up using _Some Product XXX_ not because of its own unique features, but because the standard JSON-RPC API is quite limited even for basic features.
+
+Implementing everything in-node allows you to plug a dapp directly to your node itself. No need to install any additional indexer middleware or SQL database, each of it own consuming extra disk space and CPU.
+
+> Take Otterscan as an example, **ALL** you need is Otterscan itself (a SPA, can be served by any static provider) and our modified Erigon's rpcdaemon.
+
 ## Method summary
 
 All methods are prefixed with the `ots_` namespace in order to make it clear it is vendor-specific and there is no name clash with other same-name implementations.
 
 | Name              | Description      | Reasoning |
 |-------------------|------------------|-----------|
-| `ots_getApiLevel`           | Totally Otterscan internal API, absolutely no reason for anything outside Otterscan to use it. | Used by Otterscan to check if it's connecting to a compatible patched Erigon node. |
+| `ots_getApiLevel`           | Totally Otterscan internal API, absolutely no reason for anything outside Otterscan to use it. | Used by Otterscan to check if it's connecting to a compatible patched Erigon node and display a friendly message if it is not. |
 | `ots_getInternalOperations` | Return the internal ETH transfers inside a transaction. | For complex contract interactions, there may be internal calls that forward ETH between addresses. A very common example is someone swapping some token for ETH, in this case there is a ETH send to the sender address which is only unveiled by examining the internal calls. |
 | `ots_hasCode`               | Check if a certain address contains a deployed code. | A common way to check if an address is a contract or an EOA is calling `eth_getCode` to see if it has some code deployed. However this call is expensive regarding this purpose, as it returns the entire contract code over the network just for the client to check its presence. This call just returns a boolean. |
 | `ots_getTransactionError`   | Extract the transaction raw error output. | In order to get the error message or custom error from a failed transaction, you need to get its error output and decoded it. This info is not exposed through standard APIs. |
 | `ots_traceTransaction`      | Extract all variations of calls, contract creation and self-destructs and returns a call tree. | This is an optimized version of tracing; regular tracing returns lots of data, and custom tracing using a JS tracer could be slow. |
 | `ots_getBlockDetails`       | Tailor-made and expanded version of `eth_getBlock*` for block details page in Otterscan. | The standard `eth_getBlock*` is quite verbose and it doesn't bring all info we need. We explicitly remove the transaction list (unnecessary for that page and also this call doesn't scale well), log blooms and other unnecessary fields. We add issuance and block fees info and return all of this in just one call. |
-| `ots_getBlockTransactions`  | Get paginated transactions for a certain block. Also remove some verbose fields like logs. | As block size increases, getting all transactions from a block at once doesn't scale, so the first point here is to add pagination support. The second point is that receipts may have big, unnecessary information, like logs. So we cap all of them of save network bandwidth. |
+| `ots_getBlockTransactions`  | Get paginated transactions for a certain block. Also remove some verbose fields like logs. | As block size increases, getting all transactions from a block at once doesn't scale, so the first point here is to add pagination support. The second point is that receipts may have big, unnecessary information, like logs. So we cap all of them to save network bandwidth. |
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard JSON-RPC API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
 | `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. | There is no native support for this search in the standard JSON-RPC API. Otterscan needs it to allow user navigation between nonces from the same sender address. |
 
