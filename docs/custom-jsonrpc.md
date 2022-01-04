@@ -159,8 +159,6 @@ These are address history navigation methods. They are similar, the difference i
 
 They are paginated, you **MUST** inform the page size. Some addresses like exchange addresses or very popular DeFi contracts like Uniswap Router will return millions of results.
 
-TODO: finish
-
 ### `ots_getTransactionBySenderAndNonce`
 
 Given a sender address and a nonce, returns the tx hash or `null` if not found. It returns only the tx hash on success, you can use the standard `eth_getTransactionByHash` after that to get the full transaction data.
