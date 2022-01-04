@@ -43,7 +43,7 @@
     "serve": "^13.0.2",
     "swr": "^1.1.2",
     "typescript": "^4.5.4",
-    "use-keyboard-shortcut": "^1.1.0",
+    "use-keyboard-shortcut": "^1.1.2",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
