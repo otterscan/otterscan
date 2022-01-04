@@ -86,6 +86,18 @@ Returns:
 
 `boolean` indicating if the address contains a bytecode or not.
 
+### `ots_traceTransaction`
+
+Trace a transaction and generate a trace call tree.
+
+Parameters:
+
+`txhash` - The transaction hash.
+
+Returns:
+
+`object` containing the trace tree.
+
 ### `ots_getTransactionError`
 
 Given a transaction hash, returns its raw revert reason.
@@ -103,6 +115,43 @@ Parameters:
 Returns:
 
 `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
+
+### `ots_getBlockDetails`
+
+Given a block number, return its data. Similar to the standard `eth_getBlockByNumber/Hash` method, but optimized.
+
+Parameters:
+
+`number` representing the desired block number.
+
+Returns:
+
+`object` in a format similar to the one returned by `eth_getBlockByNumber/Hash` (please refer to their docs), with some small differences:
+
+- the block data comes nested inside a `block` attribute.
+- the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
+- the transaction count is returned in a `transactionCount` attribute.
+- the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
+- an extra `issuance` attribute returns an `object` with the fields:
+  - `blockReward` - the miner reward.
+  - `uncleReward` - the total reward issued to uncle blocks.
+  - `issuance` - the total ETH issued in this block (miner + uncle rewards).
+- an extra `totalFees` attribute containing the sum of fees paid by senders in this block. Note that due to EIP-1559 this is **NOT** the same amount earned by the miner as block fees since it contains the amount paid as base fee.
+
+### `ots_getBlockTransactions`
+
+Gets paginated transaction data for a certain block. Think of an optimized `eth_getBlockBy*` + `eth_getTransactionReceipt`.
+
+The `transactions` field contains the transaction list with their bodies in a similar format of `eth_getBlockBy*` with transaction bodies, with a few differences:
+
+- the `input` field returns only the 4 bytes method selector instead of the entire calldata byte blob.
+
+The `receipts` attribute contains the transactions receipt list, in the same sort order as the block transactions. Returning it here avoid the caller of making N+1 calls (`eth_getBlockBy*` and `eth_getTransactionReceipt`).
+
+For receipts, it contains some differences from the `eth_getTransactionReceipt` object format:
+
+- `logs` attribute returns `null`.
+- `logsBloom` attribute returns `null`.
 
 ### `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter`
 
