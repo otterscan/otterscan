@@ -8,7 +8,9 @@ They are all used by Otterscan, but we are documenting them here so others can t
 
 We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
-## Why don't you use _Some Product XXX_ for Otterscan? And why shouldn't I?
+## FAQ
+
+### Why don't you use _Some Product XXX_ for Otterscan? And why shouldn't I?
 
 If you are happy using _Some Product XXX_, go ahead.
 
@@ -21,6 +23,14 @@ Most of the features we implemented are quite basic and it is unfortunate they a
 Implementing everything in-node allows you to plug a dapp directly to your node itself. No need to install any additional indexer middleware or SQL database, each of it own consuming extra disk space and CPU.
 
 > Take Otterscan as an example, **ALL** you need is Otterscan itself (a SPA, can be served by any static provider) and our modified Erigon's rpcdaemon.
+
+### But your API doesn't scale and it is slower than _Some Product XXX_!!!
+
+Not everyone needs to serve thousands of request per second. Go ahead and use _Some Product XXX_.
+
+Some people just want to run standalone development tools and calculating some data on-the-fly works fine for single user local apps.
+
+Even so, we may introduce custom indexes for some operations in future if there is such demand, so you may opt-in for a better performance by spending more disk space.
 
 ## Method summary
 
@@ -158,6 +168,25 @@ For receipts, it contains some differences from the `eth_getTransactionReceipt` 
 These are address history navigation methods. They are similar, the difference is `ots_searchTransactionsBefore` searches the history backwards and `ots_searchTransactionsAfter` searches forward a certain point in time.
 
 They are paginated, you **MUST** inform the page size. Some addresses like exchange addresses or very popular DeFi contracts like Uniswap Router will return millions of results.
+
+Parameters:
+
+`address` - The ETH address to be searched.
+`blockNumber` - It searches for occurrences of `address` starting from `blockNumber` (inclusive). A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
+`pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
+
+Returns:
+
+`object` containing two attributes:
+
+- `txs` - An array of objects representing the transaction results. The results are returned sorted from the most recent to the older one (descending order).
+- `receipts` - An array of objects containing the transaction receipts for the transactions returned in the `txs` attribute.
+- `firstPage` - Boolean indicating this is the first page. It should be `true` when calling `ots_searchTransactionsBefore` with `blockNumber` == 0 (search from `latest`); because the results are in descending order, the search from the most recent block is the "first" one. It should also return `true` when calling `ots_searchTransactionsAfter` with a `blockNumber` which results in no more transactions after the returned ones because it searched forward up to the tip of the chain.
+- `lastPage` - Boolean indicating this is the last page. It should be `true` when calling `ots_searchTransactionsAfter` with `blockNumber` == 0 (search from genesis); because the results are in descending order, the genesis page is the "last" one. It should also return `true` when calling `ots_searchTransactionsBefore` with a `blockNumber` which results in no more transactions before the returned ones because it searched backwards up to the genesis block.
+
+There is a small gotcha regarding `pageSize`. If there are less results than `pageSize`, they are just returned as is.
+
+But if there are more than `pageSize` results, they are capped by the last found block. For example, let's say you are searching for Uniswap Router address and it already found 24 matches; it then looks at the next block containing this addresses occurrences and there are 5 matches inside the block. They are all returned, so it returns 30 transaction results. The caller code should be aware of this.
 
 ### `ots_getTransactionBySenderAndNonce`
 
