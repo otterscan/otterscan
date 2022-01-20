@@ -68,35 +68,15 @@ My personal experience: at the moment of this writing (~block 14,000,000), setti
 
 They have weekly stable releases, make sure you are running on of them, not development ones.
 
-### Install Otterscan patches on top of Erigon
+### Install Otterscan-patched rpcdaemon
 
-Add our forked Erigon git tree as an additional remote and checkout the corresponding branch.
+We rely on custom JSON-RPC APIs which are not available in a standard ETH node. We keep a separated repository containing an Erigon fork here: https://github.com/wmitsuda/erigon.
 
-The repository with Otterscan patches is [here](https://github.com/wmitsuda/erigon).
+Please follow the instructions in the repository `README` and replace the original Erigon `rpcdaemon` with our patched one.
 
-```
-git remote add otterscan https://github.com/wmitsuda/erigon.git
-```
+### Enable Otterscan namespace on rpcdaemon
 
-Checkout the tag corresponding to the stable version you are running. For each supported Erigon version, there should be a corresponding tag containing Otterscan patches.
-
-For example, if you are running Erigon from `v2021.07.01` tag, checkout the tag `v2021.07.01-otterscan` and rebuild `rpcdaemon`.
-
-We intend to release a compatible rebased version containing our changes every week just after Erigon's weekly release, as time permits.
-
-```
-git fetch --all
-git fetch otterscan --tags
-git checkout <version-tag-otterscan>
-```
-
-Build the patched `rpcdaemon` binary.
-
-```
-make rpcdaemon
-```
-
-Run it paying attention to enable the `erigon`, `ots`, `eth` apis to whatever cli options you are using to start `rpcdaemon`.
+When running `rpcdaemon`, make sure to enable the `erigon`, `ots`, `eth` APIs in addition to whatever cli options you are using to start `rpcdaemon`.
 
 `ots` stands for Otterscan and it is the namespace we use for our own custom APIs.
 
@@ -106,9 +86,9 @@ Run it paying attention to enable the `erigon`, `ots`, `eth` apis to whatever cl
 
 Be sure to include both `--private.api.addr` and `--datadir` parameter so you run it in dual mode, otherwise the performance will be much worse.
 
-Also pay attention to the `--http.corsdomain` parameter, CORS is required for the browser to call the node directly.
+Also pay attention to the `--http.corsdomain` parameter, CORS is **required** for the browser to call the node directly.
 
-Now you should have an Erigon node with Otterscan jsonrpc APIs enabled, running in dual mode with CORS enabled.
+Now you should have an Erigon node with Otterscan JSON-RPC APIs enabled, running in dual mode with CORS enabled.
 
 ### Run Otterscan docker image from Docker Hub
 
