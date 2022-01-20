@@ -1,6 +1,6 @@
 # Otterscan JSON-RPC API extensions
 
-The [standard Ethereum JSON-RPC APIs](https://ethereum.org/en/developers/docs/apis/json-rpc/) are very limitting and in some cases non-performant for what you can do with an archive node.
+The [standard Ethereum JSON-RPC APIs](https://ethereum.org/en/developers/docs/apis/json-rpc/) are very limited and in some cases non-performant for what you can do with an archive node.
 
 There is plenty of useful data that can be extracted and we implemented some extra RPC methods for them.
 
@@ -8,7 +8,7 @@ They are all used by Otterscan, but we are documenting them here so others can t
 
 We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
-## FAQ
+## Quick FAQ
 
 ### Why don't you use _Some Product XXX_ for Otterscan? And why shouldn't I?
 
@@ -26,11 +26,39 @@ Implementing everything in-node allows you to plug a dapp directly to your node 
 
 ### But your API doesn't scale and it is slower than _Some Product XXX_!!!
 
-Not everyone needs to serve thousands of request per second. Go ahead and use _Some Product XXX_.
+Not everyone needs to serve thousands of requests per second. Go ahead and use _Some Product XXX_.
 
 Some people just want to run standalone development tools and calculating some data on-the-fly works fine for single user local apps.
 
-Even so, we may introduce custom indexes for some operations in future if there is such demand, so you may opt-in for a better performance by spending more disk space.
+Even so, we may introduce custom indexes to speed up some operations in future if there is such demand, so you may opt-in for a better performance by spending more disk space.
+
+### Wen PR upstream?
+
+API design is hard and once it goes public you have to support it forever. For this reason we are primarily keeping it in our own fork and under a vendor specific namespace (`ots_`).
+
+Also, the quality level of the current APIs differs, some are very generic, some are very Otterscan specific. Our API design has been driven mainly by Otterscan feature needs, which is a good thing (tm), so no useless features.
+
+Having said that, we want to have people experimenting with our APIs, bringing other use cases, and driving the API evolution. If there are enough users vouching for a certain feature, we would gladly submit a PR to Erigon upstream repo.
+
+The first step to achieving that is having this own page properly documenting our APIs so people don't have to look at our source code 😅.
+
+Your feedback is important, please get in touch using our communication channels.
+
+## How to use it?
+
+They are all JSON-RPC methods, so your favorite web3 library _should_ have some way to custom call them.
+
+For example, ethers.js wraps standard calls in nice, user-friendly classes and parses results into easy-to-use objects, but also allows you to do custom calls and get raw results while still taking advantage of their capabilities like automatic batching, network timeout handling, etc.
+
+I'll use ethers.js as an example here because it is what I use in Otterscan, please check your web3 library docs for custom call support.
+
+Let's call the `ots_getTransactionError` method to obtain the revert reason of a failed transaction. It accepts one string parameter containing the transaction hash and returns a byte blob that can be ABI-decoded:
+
+```
+const provider = ...; // Obtain a JsonRpcProvider object
+const txHash = "..."; // Set the transaction hash
+const result = (await provider.send("ots_getTransactionError", [txHash])) as string;
+```
 
 ## Method summary
 
