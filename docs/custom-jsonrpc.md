@@ -86,7 +86,7 @@ Parameters:
 
 Returns:
 
-`number` containing the API version.
+1. `number` containing the API version.
 
 ### `ots_getInternalOperations`
 
@@ -94,21 +94,18 @@ Trace internal ETH transfers, contracts creation (CREATE/CREATE2) and self-destr
 
 Parameters:
 
-`txhash` - The transaction hash.
+1. `txhash` - The transaction hash.
 
 Returns:
 
-`array` of operations, sorted by their occurrence inside the transaction.
+1. `array` of operations, sorted by their occurrence inside the transaction.
 
 The operation is an object with the following fields:
 
-`type` - transfer (`0`), self-destruct (`1`), create (`2`) or create2 (`3`).
-
-`from` - the ETH sender, contract creator or contract address being self-destructed.
-
-`to` - the ETH receiver, newly created contract address or the target ETH receiver resulting of the self-destruction.
-
-`value` - the amount of ETH transferred.
+- `type` - transfer (`0`), self-destruct (`1`), create (`2`) or create2 (`3`).
+- `from` - the ETH sender, contract creator or contract address being self-destructed.
+- `to` - the ETH receiver, newly created contract address or the target ETH receiver resulting of the self-destruction.
+- `value` - the amount of ETH transferred.
 
 ### `ots_hasCode`
 
@@ -116,13 +113,12 @@ Check if an ETH address contains a deployed code.
 
 Parameters:
 
-`address` - The ETH address to be checked.
-
-`block` - The block number or "latest" to check the latest state.
+1. `address` - The ETH address to be checked.
+2. `block` - The block number or "latest" to check the latest state.
 
 Returns:
 
-`boolean` indicating if the address contains a bytecode or not.
+1. `boolean` indicating if the address contains a bytecode or not.
 
 ### `ots_traceTransaction`
 
@@ -130,11 +126,11 @@ Trace a transaction and generate a trace call tree.
 
 Parameters:
 
-`txhash` - The transaction hash.
+1. `txhash` - The transaction hash.
 
 Returns:
 
-`object` containing the trace tree.
+1. `object` containing the trace tree.
 
 ### `ots_getTransactionError`
 
