@@ -64,7 +64,7 @@ It depends heavily on a working Erigon installation with Otterscan patches appli
 
 You will need an Erigon executing node (`erigon`). Also you will need Erigon RPC daemon (`rpcdaemon`) with Otterscan patches. Since setting up an Erigon environment itself can take some work, make sure to follow their instructions and have a working archive node before continuing.
 
-My personal experience: at the moment of this writing (~block 12,700,000), setting up an archive node takes over 5-6 days and ~1.3 TB of SSD.
+My personal experience: at the moment of this writing (~block 14,000,000), setting up an archive node takes over 5-6 days and ~1.7 TB of SSD.
 
 They have weekly stable releases, make sure you are running on of them, not development ones.
 
