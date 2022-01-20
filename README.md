@@ -60,9 +60,7 @@ However, you will see that we made many UI improvements.
 
 ## Contract verification
 
-We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info.
-
-More info [here](docs/sourcify.md).
+We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info. More info [here](docs/sourcify.md).
 
 ## Kudos (in no particular order)
 
