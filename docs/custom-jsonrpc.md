@@ -86,7 +86,7 @@ Parameters:
 
 Returns:
 
-1. `number` containing the API version.
+- `number` containing the API version.
 
 ### `ots_getInternalOperations`
 
@@ -98,7 +98,7 @@ Parameters:
 
 Returns:
 
-1. `array` of operations, sorted by their occurrence inside the transaction.
+- `array` of operations, sorted by their occurrence inside the transaction.
 
 The operation is an object with the following fields:
 
@@ -118,7 +118,7 @@ Parameters:
 
 Returns:
 
-1. `boolean` indicating if the address contains a bytecode or not.
+- `boolean` indicating if the address contains a bytecode or not.
 
 ### `ots_traceTransaction`
 
@@ -130,7 +130,7 @@ Parameters:
 
 Returns:
 
-1. `object` containing the trace tree.
+- `object` containing the trace tree.
 
 ### `ots_getTransactionError`
 
@@ -144,11 +144,11 @@ If it is not the case, it should probably be a solidity custom error, so you mus
 
 Parameters:
 
-`txhash` - The transaction hash.
+1. `txhash` - The transaction hash.
 
 Returns:
 
-`string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
+- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
 
 ### `ots_getBlockDetails`
 
@@ -156,21 +156,20 @@ Given a block number, return its data. Similar to the standard `eth_getBlockByNu
 
 Parameters:
 
-`number` representing the desired block number.
+1. `number` representing the desired block number.
 
 Returns:
 
-`object` in a format similar to the one returned by `eth_getBlockByNumber/Hash` (please refer to their docs), with some small differences:
-
-- the block data comes nested inside a `block` attribute.
-- the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
-- the transaction count is returned in a `transactionCount` attribute.
-- the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
-- an extra `issuance` attribute returns an `object` with the fields:
-  - `blockReward` - the miner reward.
-  - `uncleReward` - the total reward issued to uncle blocks.
-  - `issuance` - the total ETH issued in this block (miner + uncle rewards).
-- an extra `totalFees` attribute containing the sum of fees paid by senders in this block. Note that due to EIP-1559 this is **NOT** the same amount earned by the miner as block fees since it contains the amount paid as base fee.
+- `object` in a format _similar_ to the one returned by `eth_getBlockByNumber/Hash` (please refer to their docs), with some small differences:
+  - the block data comes nested inside a `block` attribute.
+  - the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
+  - the transaction count is returned in a `transactionCount` attribute.
+  - the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
+  - an extra `issuance` attribute returns an `object` with the fields:
+    - `blockReward` - the miner reward.
+    - `uncleReward` - the total reward issued to uncle blocks.
+    - `issuance` - the total ETH issued in this block (miner + uncle rewards).
+  - an extra `totalFees` attribute containing the sum of fees paid by senders in this block. Note that due to EIP-1559 this is **NOT** the same amount earned by the miner as block fees since it contains the amount paid as base fee.
 
 ### `ots_getBlockTransactions`
 
@@ -197,18 +196,17 @@ They return inbound (`to`), outbound (`from`) and "internal" transactions. By in
 
 Parameters:
 
-`address` - The ETH address to be searched.
-`blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
-`pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
+1. `address` - The ETH address to be searched.
+2. `blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
+3. `pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
 
 Returns:
 
-`object` containing two attributes:
-
-- `txs` - An array of objects representing the transaction results. The results are returned sorted from the most recent to the older one (descending order).
-- `receipts` - An array of objects containing the transaction receipts for the transactions returned in the `txs` attribute.
-- `firstPage` - Boolean indicating this is the first page. It should be `true` when calling `ots_searchTransactionsBefore` with `blockNumber` == 0 (search from `latest`); because the results are in descending order, the search from the most recent block is the "first" one. It should also return `true` when calling `ots_searchTransactionsAfter` with a `blockNumber` which results in no more transactions after the returned ones because it searched forward up to the tip of the chain.
-- `lastPage` - Boolean indicating this is the last page. It should be `true` when calling `ots_searchTransactionsAfter` with `blockNumber` == 0 (search from genesis); because the results are in descending order, the genesis page is the "last" one. It should also return `true` when calling `ots_searchTransactionsBefore` with a `blockNumber` which results in no more transactions before the returned ones because it searched backwards up to the genesis block.
+- `object` containing the following attributes:
+  - `txs` - An array of objects representing the transaction results. The results are returned sorted from the most recent to the older one (descending order).
+  - `receipts` - An array of objects containing the transaction receipts for the transactions returned in the `txs` attribute.
+  - `firstPage` - Boolean indicating this is the first page. It should be `true` when calling `ots_searchTransactionsBefore` with `blockNumber` == 0 (search from `latest`); because the results are in descending order, the search from the most recent block is the "first" one. It should also return `true` when calling `ots_searchTransactionsAfter` with a `blockNumber` which results in no more transactions after the returned ones because it searched forward up to the tip of the chain.
+  - `lastPage` - Boolean indicating this is the last page. It should be `true` when calling `ots_searchTransactionsAfter` with `blockNumber` == 0 (search from genesis); because the results are in descending order, the genesis page is the "last" one. It should also return `true` when calling `ots_searchTransactionsBefore` with a `blockNumber` which results in no more transactions before the returned ones because it searched backwards up to the genesis block.
 
 There is a small gotcha regarding `pageSize`. If there are less results than `pageSize`, they are just returned as is.
 
@@ -220,10 +218,9 @@ Given a sender address and a nonce, returns the tx hash or `null` if not found. 
 
 Parameters:
 
-`sender` - The sender ETH address.
-
-`nonce` - The sender nonce.
+1. `sender` - The sender ETH address.
+2. `nonce` - The sender nonce.
 
 Returns:
 
-`string` containing the corresponding transaction hash or `null` if it doesn't exist.
+- `string` containing the corresponding transaction hash or `null` if it doesn't exist.
