@@ -197,10 +197,12 @@ These are address history navigation methods. They are similar, the difference i
 
 They are paginated, you **MUST** inform the page size. Some addresses like exchange addresses or very popular DeFi contracts like Uniswap Router will return millions of results.
 
+They return inbound (`to`), outbound (`from`) and "internal" transactions. By internal it means that if a transaction calls a contract and somewhere in the call stack it sends ETH to the address you are searching for or the address is a contract and it calls a method on it, the transaction is matched and returned in the search results.
+
 Parameters:
 
 `address` - The ETH address to be searched.
-`blockNumber` - It searches for occurrences of `address` starting from `blockNumber` (inclusive). A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
+`blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
 `pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
 
 Returns:
