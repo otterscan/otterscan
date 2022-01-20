@@ -62,6 +62,10 @@ However, you will see that we made many UI improvements.
 
 We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info. More info [here](docs/sourcify.md).
 
+## Otterscan JSON-RPC API extensions
+
+We implemented new JSON-RPC APIs to expose information not available in a standard ETH node. They can be useful for non-Otterscan users and their specification is available [here](./docs/custom-jsonrpc.md).
+
 ## Kudos (in no particular order)
 
 We make use of many open-source software and integrate many public datasources, mainly:
