@@ -195,7 +195,7 @@ Example: get the revert reason of a random transaction spotted in the wild to Un
 Request:
 
 ```
-curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionError","params":["0xcdb0e53c4f1b5f37ea7f0d2a8428b13a5bff47fb457d11ef9bc85ccdc489635b"]}' http://127.0.0.1:8545
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionError","params":["0xcdb0e53c4f1b5f37ea7f0d2a8428b13a5bff47fb457d11ef9bc85ccdc489635b"]}' http://127.0.0.1:8545
 ```
 
 Response:
