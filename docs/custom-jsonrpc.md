@@ -8,6 +8,8 @@ They are all used by Otterscan, but we are documenting them here so others can t
 
 We take an incremental approach when design the APIs, so there may be some methods very specific to Otterscan use cases, others that look more generic.
 
+Please see the [install instructions](./install.md) if you want to run a patched Erigon with those customizations enabled.
+
 ## Quick FAQ
 
 ### Why don't you use _Some Product XXX_ for Otterscan? And why shouldn't I?
