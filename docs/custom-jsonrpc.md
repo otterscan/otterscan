@@ -67,7 +67,7 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | Name              | Description      | Reasoning |
 |-------------------|------------------|-----------|
 | `ots_getApiLevel`           | Totally Otterscan internal API, absolutely no reason for anything outside Otterscan to use it. | Used by Otterscan to check if it's connecting to a compatible patched Erigon node and display a friendly message if it is not. |
-| `ots_getInternalOperations` | Return the internal ETH transfers inside a transaction. | For complex contract interactions, there may be internal calls that forward ETH between addresses. A very common example is someone swapping some token for ETH, in this case there is a ETH send to the sender address which is only unveiled by examining the internal calls. |
+| `ots_getInternalOperations` | Return the internal ETH transfers inside a transaction. | For complex contract interactions, there may be internal calls that forward ETH between addresses. A very common example is someone swapping some token for ETH, in this case there is an ETH send to the sender address which is only unveiled by examining the internal calls. |
 | `ots_hasCode`               | Check if a certain address contains a deployed code. | A common way to check if an address is a contract or an EOA is calling `eth_getCode` to see if it has some code deployed. However this call is expensive regarding this purpose, as it returns the entire contract code over the network just for the client to check its presence. This call just returns a boolean. |
 | `ots_getTransactionError`   | Extract the transaction raw error output. | In order to get the error message or custom error from a failed transaction, you need to get its error output and decoded it. This info is not exposed through standard APIs. |
 | `ots_traceTransaction`      | Extract all variations of calls, contract creation and self-destructs and returns a call tree. | This is an optimized version of tracing; regular tracing returns lots of data, and custom tracing using a JS tracer could be slow. |
@@ -75,6 +75,10 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | `ots_getBlockTransactions`  | Get paginated transactions for a certain block. Also remove some verbose fields like logs. | As block size increases, getting all transactions from a block at once doesn't scale, so the first point here is to add pagination support. The second point is that receipts may have big, unnecessary information, like logs. So we cap all of them to save network bandwidth. |
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard JSON-RPC API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
 | `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. | There is no native support for this search in the standard JSON-RPC API. Otterscan needs it to allow user navigation between nonces from the same sender address. |
+
+## Method details
+
+> Some methods include a sample call so you call try it from cli. The examples use `curl` and assume you are running `rpcdaemon` at `http://127.0.0.1:8545`.
 
 ### `ots_getApiLevel`
 
@@ -86,7 +90,7 @@ Parameters:
 
 Returns:
 
-1. `number` containing the API version.
+- `number` containing the API version.
 
 ### `ots_getInternalOperations`
 
@@ -98,7 +102,7 @@ Parameters:
 
 Returns:
 
-1. `array` of operations, sorted by their occurrence inside the transaction.
+- `array` of operations, sorted by their occurrence inside the transaction.
 
 The operation is an object with the following fields:
 
@@ -114,11 +118,47 @@ Check if an ETH address contains a deployed code.
 Parameters:
 
 1. `address` - The ETH address to be checked.
-2. `block` - The block number or "latest" to check the latest state.
+2. `block` - The block number at which the code presence will be checked or "latest" to check the latest state.
 
 Returns:
 
-1. `boolean` indicating if the address contains a bytecode or not.
+- `boolean` indicating if the address contains a bytecode or not.
+
+Example 1: does Uniswap V1 Router address have a code deployed? (yes, it is a contract)
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_hasCode","params":["0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95", "latest"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": true
+}
+```
+
+Example 2: does Vitalik's public address have a code deployed? (no, it is an EOA)
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_hasCode","params":["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", "latest"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": false
+}
+```
 
 ### `ots_traceTransaction`
 
@@ -130,7 +170,7 @@ Parameters:
 
 Returns:
 
-1. `object` containing the trace tree.
+- `object` containing the trace tree.
 
 ### `ots_getTransactionError`
 
@@ -144,11 +184,31 @@ If it is not the case, it should probably be a solidity custom error, so you mus
 
 Parameters:
 
-`txhash` - The transaction hash.
+1. `txhash` - The transaction hash.
 
 Returns:
 
-`string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
+- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed. It is returns "0x" if it failed with no revert reason or out of gas, make sure to analyze this return value together with the transaction success/fail result.
+
+Example: get the revert reason of a random transaction spotted in the wild to Uniswap V3.
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionError","params":["0xcdb0e53c4f1b5f37ea7f0d2a8428b13a5bff47fb457d11ef9bc85ccdc489635b"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000135472616e73616374696f6e20746f6f206f6c6400000000000000000000000000"
+}
+```
+
+> ABI-decoding this byte string against `Error(string)` should result in the "Transaction too old" error message.
 
 ### `ots_getBlockDetails`
 
@@ -156,21 +216,20 @@ Given a block number, return its data. Similar to the standard `eth_getBlockByNu
 
 Parameters:
 
-`number` representing the desired block number.
+1. `number` representing the desired block number.
 
 Returns:
 
-`object` in a format similar to the one returned by `eth_getBlockByNumber/Hash` (please refer to their docs), with some small differences:
-
-- the block data comes nested inside a `block` attribute.
-- the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
-- the transaction count is returned in a `transactionCount` attribute.
-- the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
-- an extra `issuance` attribute returns an `object` with the fields:
-  - `blockReward` - the miner reward.
-  - `uncleReward` - the total reward issued to uncle blocks.
-  - `issuance` - the total ETH issued in this block (miner + uncle rewards).
-- an extra `totalFees` attribute containing the sum of fees paid by senders in this block. Note that due to EIP-1559 this is **NOT** the same amount earned by the miner as block fees since it contains the amount paid as base fee.
+- `object` in a format _similar_ to the one returned by `eth_getBlockByNumber/Hash` (please refer to their docs), with some small differences:
+  - the block data comes nested inside a `block` attribute.
+  - the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
+  - the transaction count is returned in a `transactionCount` attribute.
+  - the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
+  - an extra `issuance` attribute returns an `object` with the fields:
+    - `blockReward` - the miner reward.
+    - `uncleReward` - the total reward issued to uncle blocks.
+    - `issuance` - the total ETH issued in this block (miner + uncle rewards).
+  - an extra `totalFees` attribute containing the sum of fees paid by senders in this block. Note that due to EIP-1559 this is **NOT** the same amount earned by the miner as block fees since it contains the amount paid as base fee.
 
 ### `ots_getBlockTransactions`
 
@@ -197,22 +256,52 @@ They return inbound (`to`), outbound (`from`) and "internal" transactions. By in
 
 Parameters:
 
-`address` - The ETH address to be searched.
-`blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
-`pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
+1. `address` - The ETH address to be searched.
+2. `blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
+3. `pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
 
 Returns:
 
-`object` containing two attributes:
-
-- `txs` - An array of objects representing the transaction results. The results are returned sorted from the most recent to the older one (descending order).
-- `receipts` - An array of objects containing the transaction receipts for the transactions returned in the `txs` attribute.
-- `firstPage` - Boolean indicating this is the first page. It should be `true` when calling `ots_searchTransactionsBefore` with `blockNumber` == 0 (search from `latest`); because the results are in descending order, the search from the most recent block is the "first" one. It should also return `true` when calling `ots_searchTransactionsAfter` with a `blockNumber` which results in no more transactions after the returned ones because it searched forward up to the tip of the chain.
-- `lastPage` - Boolean indicating this is the last page. It should be `true` when calling `ots_searchTransactionsAfter` with `blockNumber` == 0 (search from genesis); because the results are in descending order, the genesis page is the "last" one. It should also return `true` when calling `ots_searchTransactionsBefore` with a `blockNumber` which results in no more transactions before the returned ones because it searched backwards up to the genesis block.
+- `object` containing the following attributes:
+  - `txs` - An array of objects representing the transaction results. The results are returned sorted from the most recent to the older one (descending order).
+  - `receipts` - An array of objects containing the transaction receipts for the transactions returned in the `txs` attribute.
+  - `firstPage` - Boolean indicating this is the first page. It should be `true` when calling `ots_searchTransactionsBefore` with `blockNumber` == 0 (search from `latest`); because the results are in descending order, the search from the most recent block is the "first" one. It should also return `true` when calling `ots_searchTransactionsAfter` with a `blockNumber` which results in no more transactions after the returned ones because it searched forward up to the tip of the chain.
+  - `lastPage` - Boolean indicating this is the last page. It should be `true` when calling `ots_searchTransactionsAfter` with `blockNumber` == 0 (search from genesis); because the results are in descending order, the genesis page is the "last" one. It should also return `true` when calling `ots_searchTransactionsBefore` with a `blockNumber` which results in no more transactions before the returned ones because it searched backwards up to the genesis block.
 
 There is a small gotcha regarding `pageSize`. If there are less results than `pageSize`, they are just returned as is.
 
 But if there are more than `pageSize` results, they are capped by the last found block. For example, let's say you are searching for Uniswap Router address and it already found 24 matches; it then looks at the next block containing this addresses occurrences and there are 5 matches inside the block. They are all returned, so it returns 30 transaction results. The caller code should be aware of this.
+
+Example: get the first 5 transactions that touched Uniswap V1 router (including the contract creation).
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_searchTransactionsAfter","params":["0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95", 0, 5]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "txs": [
+      {
+        "blockHash": "0x06a77abe52c486f58696665eaebd707f17fbe97eb54480c6533db725769ce3b7",
+        "blockNumber": "0x652284",
+        "from": "0xd1c24f50d05946b3fabefbae3cd0a7e9938c63f2",
+        "gas": "0xf4240",
+        "gasPrice": "0x2cb417800",
+        "hash": "0x14455f1af43a52112d4ccf6043cb081fea4ea3a07d90dd57f2a9e1278114be94",
+        "input": "0x1648f38e000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498",
+        "nonce": "0x6",
+        "to": "0xc0a47dfe034b400b47bdad5fecda2621de6c4d95",
+        "transactionIndex": "0x71",
+        ...
+  }
+```
 
 ### `ots_getTransactionBySenderAndNonce`
 
@@ -220,10 +309,27 @@ Given a sender address and a nonce, returns the tx hash or `null` if not found. 
 
 Parameters:
 
-`sender` - The sender ETH address.
-
-`nonce` - The sender nonce.
+1. `sender` - The sender ETH address.
+2. `nonce` - The sender nonce.
 
 Returns:
 
-`string` containing the corresponding transaction hash or `null` if it doesn't exist.
+- `string` containing the corresponding transaction hash or `null` if it doesn't exist.
+
+Example: get the 4th transaction sent by Vitalik's public address (nonce == 3).
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionBySenderAndNonce","params":["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", 3]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x021304206b2517c3f8f2df07014a55b79aac2ae097488fa807cc88eccd851a50"
+}
+```
