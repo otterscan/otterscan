@@ -76,6 +76,10 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard JSON-RPC API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
 | `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. | There is no native support for this search in the standard JSON-RPC API. Otterscan needs it to allow user navigation between nonces from the same sender address. |
 
+## Method details
+
+> Some methods include a sample call so you call try it from cli. The examples use `curl` and assume you are running `rpcdaemon` at `http://127.0.0.1:8545`.
+
 ### `ots_getApiLevel`
 
 Very simple API versioning scheme. Every time we add a new capability, the number is incremented. This allows for Otterscan to check if the Erigon node contains all API it needs.
@@ -114,11 +118,47 @@ Check if an ETH address contains a deployed code.
 Parameters:
 
 1. `address` - The ETH address to be checked.
-2. `block` - The block number or "latest" to check the latest state.
+2. `block` - The block number at which the code presence will be checked or "latest" to check the latest state.
 
 Returns:
 
 - `boolean` indicating if the address contains a bytecode or not.
+
+Example 1: does Uniswap V1 Router address have a code deployed? (yes, it is a contract)
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_hasCode","params":["0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95", "latest"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": true
+}
+```
+
+Example 2: does Vitalik's public address have a code deployed? (no, it is an EOA)
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_hasCode","params":["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", "latest"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": false
+}
+```
 
 ### `ots_traceTransaction`
 
@@ -148,7 +188,26 @@ Parameters:
 
 Returns:
 
-- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed.
+- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed. It is returns "0x" if it failed with no revert reason or out of gas, make sure to analyze this return value together with the transaction success/fail result.
+
+Example: get the revert reason of a random transaction spotted in the wild to Uniswap V3.
+
+Request:
+
+```
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionError","params":["0xcdb0e53c4f1b5f37ea7f0d2a8428b13a5bff47fb457d11ef9bc85ccdc489635b"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000135472616e73616374696f6e20746f6f206f6c6400000000000000000000000000"
+}```
+
+> ABI-decode this byte string against `Error(string)` should result in the "Transaction too old" error message.
 
 ### `ots_getBlockDetails`
 
@@ -212,6 +271,37 @@ There is a small gotcha regarding `pageSize`. If there are less results than `pa
 
 But if there are more than `pageSize` results, they are capped by the last found block. For example, let's say you are searching for Uniswap Router address and it already found 24 matches; it then looks at the next block containing this addresses occurrences and there are 5 matches inside the block. They are all returned, so it returns 30 transaction results. The caller code should be aware of this.
 
+Example: get the first 5 transactions that touch Uniswap V1 router (including the contract creation).
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_searchTransactionsAfter","params":["0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95", 0, 5]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "txs": [
+      {
+        "blockHash": "0x06a77abe52c486f58696665eaebd707f17fbe97eb54480c6533db725769ce3b7",
+        "blockNumber": "0x652284",
+        "from": "0xd1c24f50d05946b3fabefbae3cd0a7e9938c63f2",
+        "gas": "0xf4240",
+        "gasPrice": "0x2cb417800",
+        "hash": "0x14455f1af43a52112d4ccf6043cb081fea4ea3a07d90dd57f2a9e1278114be94",
+        "input": "0x1648f38e000000000000000000000000e41d2489571d322189246dafa5ebde1f4699f498",
+        "nonce": "0x6",
+        "to": "0xc0a47dfe034b400b47bdad5fecda2621de6c4d95",
+        "transactionIndex": "0x71",
+        ...
+  }
+```
+
 ### `ots_getTransactionBySenderAndNonce`
 
 Given a sender address and a nonce, returns the tx hash or `null` if not found. It returns only the tx hash on success, you can use the standard `eth_getTransactionByHash` after that to get the full transaction data.
@@ -224,3 +314,21 @@ Parameters:
 Returns:
 
 - `string` containing the corresponding transaction hash or `null` if it doesn't exist.
+
+Example: get the 4th transaction sent by Vitalik's public address (nonce == 3).
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getTransactionBySenderAndNonce","params":["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", 3]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": "0x021304206b2517c3f8f2df07014a55b79aac2ae097488fa807cc88eccd851a50"
+}
+```
