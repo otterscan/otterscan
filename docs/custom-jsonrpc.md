@@ -67,7 +67,7 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | Name              | Description      | Reasoning |
 |-------------------|------------------|-----------|
 | `ots_getApiLevel`           | Totally Otterscan internal API, absolutely no reason for anything outside Otterscan to use it. | Used by Otterscan to check if it's connecting to a compatible patched Erigon node and display a friendly message if it is not. |
-| `ots_getInternalOperations` | Return the internal ETH transfers inside a transaction. | For complex contract interactions, there may be internal calls that forward ETH between addresses. A very common example is someone swapping some token for ETH, in this case there is a ETH send to the sender address which is only unveiled by examining the internal calls. |
+| `ots_getInternalOperations` | Return the internal ETH transfers inside a transaction. | For complex contract interactions, there may be internal calls that forward ETH between addresses. A very common example is someone swapping some token for ETH, in this case there is an ETH send to the sender address which is only unveiled by examining the internal calls. |
 | `ots_hasCode`               | Check if a certain address contains a deployed code. | A common way to check if an address is a contract or an EOA is calling `eth_getCode` to see if it has some code deployed. However this call is expensive regarding this purpose, as it returns the entire contract code over the network just for the client to check its presence. This call just returns a boolean. |
 | `ots_getTransactionError`   | Extract the transaction raw error output. | In order to get the error message or custom error from a failed transaction, you need to get its error output and decoded it. This info is not exposed through standard APIs. |
 | `ots_traceTransaction`      | Extract all variations of calls, contract creation and self-destructs and returns a call tree. | This is an optimized version of tracing; regular tracing returns lots of data, and custom tracing using a JS tracer could be slow. |
@@ -208,7 +208,7 @@ Response:
 }
 ```
 
-> ABI-decode this byte string against `Error(string)` should result in the "Transaction too old" error message.
+> ABI-decoding this byte string against `Error(string)` should result in the "Transaction too old" error message.
 
 ### `ots_getBlockDetails`
 
@@ -272,7 +272,7 @@ There is a small gotcha regarding `pageSize`. If there are less results than `pa
 
 But if there are more than `pageSize` results, they are capped by the last found block. For example, let's say you are searching for Uniswap Router address and it already found 24 matches; it then looks at the next block containing this addresses occurrences and there are 5 matches inside the block. They are all returned, so it returns 30 transaction results. The caller code should be aware of this.
 
-Example: get the first 5 transactions that touch Uniswap V1 router (including the contract creation).
+Example: get the first 5 transactions that touched Uniswap V1 router (including the contract creation).
 
 Request:
 
