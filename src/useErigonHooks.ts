@@ -526,7 +526,7 @@ type TransactionBySenderAndNonceKey = {
   nonce: number;
 };
 
-const getTransactionBySenderAndNonceFetcher = async ({
+export const getTransactionBySenderAndNonceFetcher = async ({
   provider,
   sender,
   nonce,
