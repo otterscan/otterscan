@@ -250,7 +250,14 @@ const doSearch = async (
   // Assume it is an ENS name
   const resolvedName = await provider.resolveName(maybeAddress);
   if (resolvedName !== null) {
-    await navigateToTx(provider, resolvedName, maybeIndex, navigate);
+    // ENS name + nonce?
+    if (await navigateToTx(provider, resolvedName, maybeIndex, navigate)) {
+      return;
+    }
+
+    // ENS name
+    navigate(`/address/${maybeAddress}`, { replace: true });
+    return;
   }
 
   // TODO: handle default
