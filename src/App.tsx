@@ -17,11 +17,9 @@ const BlockTransactions = React.lazy(
       /* webpackChunkName: "blocktxs", webpackPrefetch: true */ "./BlockTransactions"
     )
 );
-const AddressTransactions = React.lazy(
+const Address = React.lazy(
   () =>
-    import(
-      /* webpackChunkName: "address", webpackPrefetch: true */ "./AddressTransactions"
-    )
+    import(/* webpackChunkName: "address", webpackPrefetch: true */ "./Address")
 );
 const Transaction = React.lazy(
   () =>
@@ -61,7 +59,7 @@ const App = () => {
                   <Route path="tx/:txhash/*" element={<Transaction />} />
                   <Route
                     path="address/:addressOrName/*"
-                    element={<AddressTransactions />}
+                    element={<Address />}
                   />
                   <Route path="*" element={<Home />} />
                 </Route>

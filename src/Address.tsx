@@ -25,7 +25,7 @@ import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
 
-const AddressTransactions: React.FC = () => {
+const Address: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -175,4 +175,4 @@ const AddressTransactions: React.FC = () => {
   );
 };
 
-export default AddressTransactions;
+export default Address;
