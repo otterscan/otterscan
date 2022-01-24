@@ -191,98 +191,107 @@ export const useTxData = (
     }
 
     const readTxData = async () => {
-      const [_response, _receipt] = await Promise.all([
-        provider.getTransaction(txhash),
-        provider.getTransactionReceipt(txhash),
-      ]);
-      if (_response === null) {
+      try {
+        const [_response, _receipt] = await Promise.all([
+          provider.getTransaction(txhash),
+          provider.getTransactionReceipt(txhash),
+        ]);
+        if (_response === null) {
+          setTxData(null);
+          return;
+        }
+
+        let _block: ExtendedBlock | undefined;
+        if (_response.blockNumber) {
+          _block = await readBlock(provider, _response.blockNumber.toString());
+        }
+
+        document.title = `Transaction ${_response.hash} | Otterscan`;
+
+        // Extract token transfers
+        const tokenTransfers: TokenTransfer[] = [];
+        if (_receipt) {
+          for (const l of _receipt.logs) {
+            if (l.topics.length !== 3) {
+              continue;
+            }
+            if (l.topics[0] !== TRANSFER_TOPIC) {
+              continue;
+            }
+            tokenTransfers.push({
+              token: l.address,
+              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+              value: BigNumber.from(l.data),
+            });
+          }
+        }
+
+        // Extract token meta
+        const tokenMetas: TokenMetas = {};
+        for (const t of tokenTransfers) {
+          if (tokenMetas[t.token] !== undefined) {
+            continue;
+          }
+          const erc20Contract = new Contract(t.token, erc20, provider);
+          try {
+            const [name, symbol, decimals] = await Promise.all([
+              erc20Contract.name(),
+              erc20Contract.symbol(),
+              erc20Contract.decimals(),
+            ]);
+            tokenMetas[t.token] = {
+              name,
+              symbol,
+              decimals,
+            };
+          } catch (err) {
+            tokenMetas[t.token] = null;
+            console.warn(
+              `Couldn't get token ${t.token} metadata; ignoring`,
+              err
+            );
+          }
+        }
+
+        setTxData({
+          transactionHash: _response.hash,
+          from: _response.from,
+          to: _response.to,
+          value: _response.value,
+          tokenTransfers,
+          tokenMetas,
+          type: _response.type ?? 0,
+          maxFeePerGas: _response.maxFeePerGas,
+          maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
+          gasPrice: _response.gasPrice!,
+          gasLimit: _response.gasLimit,
+          nonce: _response.nonce,
+          data: _response.data,
+          confirmedData:
+            _receipt === null
+              ? undefined
+              : {
+                  status: _receipt.status === 1,
+                  blockNumber: _receipt.blockNumber,
+                  transactionIndex: _receipt.transactionIndex,
+                  blockBaseFeePerGas: _block!.baseFeePerGas,
+                  blockTransactionCount: _block!.transactionCount,
+                  confirmations: _receipt.confirmations,
+                  timestamp: _block!.timestamp,
+                  miner: _block!.miner,
+                  createdContractAddress: _receipt.contractAddress,
+                  fee: _response.gasPrice!.mul(_receipt.gasUsed),
+                  gasUsed: _receipt.gasUsed,
+                  logs: _receipt.logs,
+                },
+        });
+      } catch (err) {
+        console.error(err);
         setTxData(null);
-        return;
       }
-
-      let _block: ExtendedBlock | undefined;
-      if (_response.blockNumber) {
-        _block = await readBlock(provider, _response.blockNumber.toString());
-      }
-
-      document.title = `Transaction ${_response.hash} | Otterscan`;
-
-      // Extract token transfers
-      const tokenTransfers: TokenTransfer[] = [];
-      if (_receipt) {
-        for (const l of _receipt.logs) {
-          if (l.topics.length !== 3) {
-            continue;
-          }
-          if (l.topics[0] !== TRANSFER_TOPIC) {
-            continue;
-          }
-          tokenTransfers.push({
-            token: l.address,
-            from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-            to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-            value: BigNumber.from(l.data),
-          });
-        }
-      }
-
-      // Extract token meta
-      const tokenMetas: TokenMetas = {};
-      for (const t of tokenTransfers) {
-        if (tokenMetas[t.token] !== undefined) {
-          continue;
-        }
-        const erc20Contract = new Contract(t.token, erc20, provider);
-        try {
-          const [name, symbol, decimals] = await Promise.all([
-            erc20Contract.name(),
-            erc20Contract.symbol(),
-            erc20Contract.decimals(),
-          ]);
-          tokenMetas[t.token] = {
-            name,
-            symbol,
-            decimals,
-          };
-        } catch (err) {
-          tokenMetas[t.token] = null;
-          console.warn(`Couldn't get token ${t.token} metadata; ignoring`, err);
-        }
-      }
-
-      setTxData({
-        transactionHash: _response.hash,
-        from: _response.from,
-        to: _response.to,
-        value: _response.value,
-        tokenTransfers,
-        tokenMetas,
-        type: _response.type ?? 0,
-        maxFeePerGas: _response.maxFeePerGas,
-        maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
-        gasPrice: _response.gasPrice!,
-        gasLimit: _response.gasLimit,
-        nonce: _response.nonce,
-        data: _response.data,
-        confirmedData:
-          _receipt === null
-            ? undefined
-            : {
-                status: _receipt.status === 1,
-                blockNumber: _receipt.blockNumber,
-                transactionIndex: _receipt.transactionIndex,
-                blockBaseFeePerGas: _block!.baseFeePerGas,
-                blockTransactionCount: _block!.transactionCount,
-                confirmations: _receipt.confirmations,
-                timestamp: _block!.timestamp,
-                miner: _block!.miner,
-                createdContractAddress: _receipt.contractAddress,
-                fee: _response.gasPrice!.mul(_receipt.gasUsed),
-                gasUsed: _receipt.gasUsed,
-                logs: _receipt.logs,
-              },
-      });
     };
+
     readTxData();
   }, [provider, txhash]);
 
