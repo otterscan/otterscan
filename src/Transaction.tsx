@@ -7,7 +7,7 @@ const Transaction: React.FC = () => {
   if (txhash === undefined) {
     throw new Error("txhash couldn't be undefined here");
   }
-  return <TransactionPageContent txhash={txhash} />;
+  return <TransactionPageContent txHash={txhash} />;
 };
 
 export default Transaction;

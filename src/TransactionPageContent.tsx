@@ -34,15 +34,15 @@ const Trace = React.lazy(
 );
 
 type TransactionPageContentProps = {
-  txhash: string;
+  txHash: string;
 };
 
 const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
-  txhash,
+  txHash,
 }) => {
   const { provider } = useContext(RuntimeContext);
 
-  const txData = useTxData(provider, txhash);
+  const txData = useTxData(provider, txHash);
   const internalOps = useInternalOperations(provider, txData);
   const sendsEthToMiner = useMemo(() => {
     if (!txData || !internalOps) {
@@ -79,7 +79,7 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
         {txData === null && (
           <ContentFrame>
             <div className="py-4 text-sm">
-              Transaction <span className="font-hash">{txhash}</span> not found.
+              Transaction <span className="font-hash">{txHash}</span> not found.
             </div>
           </ContentFrame>
         )}
