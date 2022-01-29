@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
+import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import { ChecksummedAddress } from "./types";
 import { transactionURL } from "./url";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
@@ -47,11 +48,7 @@ const AddressTransaction: React.FC = () => {
   );
 
   if (error) {
-    return (
-      <span className="text-base">
-        "{addressOrName}" is not an ETH address or ENS name.
-      </span>
-    );
+    return <AddressOrENSNameNotFound addressOrENSName={addressOrName} />;
   }
   if (txHash) {
     navigate(transactionURL(txHash));

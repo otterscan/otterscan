@@ -13,6 +13,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
+import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import Copy from "./components/Copy";
 import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
@@ -81,9 +82,7 @@ const Address: React.FC = () => {
   return (
     <StandardFrame>
       {error ? (
-        <span className="text-base">
-          "{addressOrName}" is not an ETH address or ENS name.
-        </span>
+        <AddressOrENSNameNotFound addressOrENSName={addressOrName} />
       ) : (
         checksummedAddress && (
           <>
