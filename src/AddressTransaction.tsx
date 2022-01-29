@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
+import { ChecksummedAddress } from "./types";
 import { transactionURL } from "./url";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
+import { useAddressOrENS } from "./useResolvedAddresses";
 import { RuntimeContext } from "./useRuntime";
 
 const AddressTransaction: React.FC = () => {
@@ -14,6 +16,19 @@ const AddressTransaction: React.FC = () => {
   }
 
   const [searchParams] = useSearchParams();
+  const urlFixer = useCallback(
+    (address: ChecksummedAddress) => {
+      navigate(`/address/${address}/tx?${searchParams.toString()}`, {
+        replace: true,
+      });
+    },
+    [navigate, searchParams]
+  );
+  const [checksummedAddress, isENS, error] = useAddressOrENS(
+    addressOrName,
+    urlFixer
+  );
+
   const rawNonce = searchParams.get("nonce");
   if (rawNonce === null) {
     throw new Error("rawNonce couldn't be undefined here");
@@ -25,7 +40,19 @@ const AddressTransaction: React.FC = () => {
     // ignore
   }
 
-  const txHash = useTransactionBySenderAndNonce(provider, addressOrName, nonce);
+  const txHash = useTransactionBySenderAndNonce(
+    provider,
+    checksummedAddress,
+    nonce
+  );
+
+  if (error) {
+    return (
+      <span className="text-base">
+        "{addressOrName}" is not an ETH address or ENS name.
+      </span>
+    );
+  }
   if (txHash) {
     navigate(transactionURL(txHash));
   }

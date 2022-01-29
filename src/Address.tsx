@@ -20,7 +20,7 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
-import { useAddressOrENSFromURL } from "./useResolvedAddresses";
+import { useAddressOrENS } from "./useResolvedAddresses";
 import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
@@ -45,7 +45,7 @@ const Address: React.FC = () => {
     },
     [navigate, direction, searchParams]
   );
-  const [checksummedAddress, isENS, error] = useAddressOrENSFromURL(
+  const [checksummedAddress, isENS, error] = useAddressOrENS(
     addressOrName,
     urlFixer
   );
