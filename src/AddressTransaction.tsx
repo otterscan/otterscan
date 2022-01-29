@@ -2,6 +2,7 @@ import React, { useCallback, useContext } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
 import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
+import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
 import { ChecksummedAddress } from "./types";
 import { transactionURL } from "./url";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
@@ -25,18 +26,15 @@ const AddressTransaction: React.FC = () => {
     },
     [navigate, searchParams]
   );
-  const [checksummedAddress, isENS, error] = useAddressOrENS(
+  const [checksummedAddress, , error] = useAddressOrENS(
     addressOrName,
     urlFixer
   );
 
   const rawNonce = searchParams.get("nonce");
-  if (rawNonce === null) {
-    throw new Error("rawNonce couldn't be undefined here");
-  }
   let nonce: number | undefined = undefined;
   try {
-    nonce = parseInt(rawNonce);
+    nonce = rawNonce === null ? undefined : parseInt(rawNonce);
   } catch (err) {
     // ignore
   }
@@ -48,7 +46,35 @@ const AddressTransaction: React.FC = () => {
   );
 
   if (error) {
-    return <AddressOrENSNameNotFound addressOrENSName={addressOrName} />;
+    return (
+      <StandardFrame>
+        <AddressOrENSNameNotFound addressOrENSName={addressOrName} />
+      </StandardFrame>
+    );
+  }
+  if (checksummedAddress !== undefined && rawNonce === null) {
+    return (
+      <StandardFrame>
+        <AddressOrENSNameInvalidNonce
+          addressOrENSName={checksummedAddress}
+          nonce={"undefined"}
+        />
+      </StandardFrame>
+    );
+  }
+  if (
+    checksummedAddress !== undefined &&
+    nonce !== undefined &&
+    txHash === null
+  ) {
+    return (
+      <StandardFrame>
+        <AddressOrENSNameInvalidNonce
+          addressOrENSName={checksummedAddress}
+          nonce={nonce.toString()}
+        />
+      </StandardFrame>
+    );
   }
   if (txHash) {
     navigate(transactionURL(txHash));
