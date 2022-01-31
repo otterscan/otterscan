@@ -9,36 +9,34 @@ import { RuntimeContext } from "./useRuntime";
 
 type AddressTransactionByNonceProps = {
   checksummedAddress: ChecksummedAddress | undefined;
-  nonce: number | undefined;
+  rawNonce: string;
 };
 
 const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   checksummedAddress,
-  nonce,
+  rawNonce,
 }) => {
   const { provider } = useContext(RuntimeContext);
+
+  const nonce = parseInt(rawNonce, 10);
   const txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    nonce
+    isNaN(nonce) ? undefined : nonce
   );
   const navigate = useNavigate();
 
-  if (checksummedAddress !== undefined && nonce === undefined) {
+  if (checksummedAddress !== undefined && isNaN(nonce)) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce
           addressOrENSName={checksummedAddress}
-          nonce={"undefined"}
+          nonce={rawNonce}
         />
       </StandardFrame>
     );
   }
-  if (
-    checksummedAddress !== undefined &&
-    nonce !== undefined &&
-    txHash === null
-  ) {
+  if (checksummedAddress !== undefined && !isNaN(nonce) && txHash === null) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce

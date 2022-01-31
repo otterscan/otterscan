@@ -89,16 +89,10 @@ const Address: React.FC = () => {
   // Search address by nonce === transaction @ nonce
   const rawNonce = searchParams.get("nonce");
   if (rawNonce !== null) {
-    let nonce: number | undefined = undefined;
-    try {
-      nonce = parseInt(rawNonce);
-    } catch (err) {
-      // ignore
-    }
     return (
       <AddressTransactionByNonce
         checksummedAddress={checksummedAddress}
-        nonce={nonce}
+        rawNonce={rawNonce}
       />
     );
   }
