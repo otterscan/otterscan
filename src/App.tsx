@@ -31,6 +31,12 @@ const London = React.lazy(
       /* webpackChunkName: "london", webpackPrefetch: true */ "./special/london/London"
     )
 );
+const PageNotFound = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "notfound", webpackPrefetch: true */ "./PageNotFound"
+    )
+);
 
 const App = () => {
   const runtime = useRuntime();
@@ -61,7 +67,7 @@ const App = () => {
                     path="address/:addressOrName/*"
                     element={<Address />}
                   />
-                  <Route path="*" element={<Home />} />
+                  <Route path="*" element={<PageNotFound />} />
                 </Route>
               </Routes>
             </Router>
