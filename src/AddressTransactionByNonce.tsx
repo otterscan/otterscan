@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
 import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
@@ -18,15 +18,41 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
 
-  const nonce = parseInt(rawNonce, 10);
+  // Calculate txCount ONLY when asked for latest nonce
+  const [txCount, setTxCount] = useState<number | undefined>();
+  useEffect(() => {
+    if (!provider || !checksummedAddress || rawNonce !== "latest") {
+      setTxCount(undefined);
+      return;
+    }
+
+    const readTxCount = async () => {
+      const count = await provider.getTransactionCount(checksummedAddress);
+      setTxCount(count);
+    };
+    readTxCount();
+  }, [provider, checksummedAddress, rawNonce]);
+
+  // Determine desired nonce from parse int query param or txCount - 1 nonce
+  // in case of latest
+  let nonce: number | undefined;
+  if (rawNonce === "latest") {
+    if (txCount !== undefined && txCount > 0) {
+      nonce = txCount - 1;
+    }
+  } else {
+    nonce = parseInt(rawNonce, 10);
+  }
+
+  // Given all base params are determined, get the corresponding tx
   const txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    isNaN(nonce) ? undefined : nonce
+    nonce !== undefined && isNaN(nonce) ? undefined : nonce
   );
   const navigate = useNavigate();
 
-  if (checksummedAddress === undefined) {
+  if (checksummedAddress === undefined || nonce === undefined) {
     return <StandardFrame />;
   }
 
