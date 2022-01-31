@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
 import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
+import AddressOrENSNameNoTx from "./components/AddressOrENSNameNoTx";
 import { ChecksummedAddress } from "./types";
 import { transactionURL } from "./url";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
@@ -37,7 +38,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   // in case of latest
   let nonce: number | undefined;
   if (rawNonce === "latest") {
-    if (txCount !== undefined && txCount > 0) {
+    if (txCount !== undefined) {
       nonce = txCount - 1;
     }
   } else {
@@ -52,8 +53,18 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   );
   const navigate = useNavigate();
 
+  // Loading...
   if (checksummedAddress === undefined || nonce === undefined) {
     return <StandardFrame />;
+  }
+
+  // Address hasn't made the first outbound tx yet
+  if (nonce < 0) {
+    return (
+      <StandardFrame>
+        <AddressOrENSNameNoTx addressOrENSName={checksummedAddress} />
+      </StandardFrame>
+    );
   }
 
   // Garbage nonce
