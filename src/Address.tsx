@@ -26,6 +26,13 @@ import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
 
+const AddressTransactionByNonce = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "addresstxbynonce", webpackPrefetch: true */ "./AddressTransactionByNonce"
+    )
+);
+
 const Address: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { addressOrName, direction } = useParams();
@@ -78,6 +85,23 @@ const Address: React.FC = () => {
     checksummedAddress !== undefined
       ? metadatas[checksummedAddress]
       : undefined;
+
+  // Search address by nonce === transaction @ nonce
+  const rawNonce = searchParams.get("nonce");
+  if (rawNonce !== null) {
+    let nonce: number | undefined = undefined;
+    try {
+      nonce = parseInt(rawNonce);
+    } catch (err) {
+      // ignore
+    }
+    return (
+      <AddressTransactionByNonce
+        checksummedAddress={checksummedAddress}
+        nonce={nonce}
+      />
+    );
+  }
 
   return (
     <StandardFrame>

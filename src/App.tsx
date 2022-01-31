@@ -21,12 +21,6 @@ const Address = React.lazy(
   () =>
     import(/* webpackChunkName: "address", webpackPrefetch: true */ "./Address")
 );
-const AddressTransaction = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "addresstx", webpackPrefetch: true */ "./AddressTransaction"
-    )
-);
 const Transaction = React.lazy(
   () =>
     import(/* webpackChunkName: "tx", webpackPrefetch: true */ "./Transaction")
@@ -66,10 +60,6 @@ const App = () => {
                   <Route
                     path="address/:addressOrName/*"
                     element={<Address />}
-                  />
-                  <Route
-                    path="address/:addressOrName/tx/*"
-                    element={<AddressTransaction />}
                   />
                   <Route path="*" element={<Home />} />
                 </Route>
