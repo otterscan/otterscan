@@ -47,7 +47,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     );
   }
   if (txHash) {
-    navigate(transactionURL(txHash));
+    navigate(transactionURL(txHash), { replace: true });
   }
   return <StandardFrame />;
 };
