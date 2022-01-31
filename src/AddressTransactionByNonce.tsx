@@ -26,7 +26,12 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   );
   const navigate = useNavigate();
 
-  if (checksummedAddress !== undefined && isNaN(nonce)) {
+  if (checksummedAddress === undefined) {
+    return <StandardFrame />;
+  }
+
+  // Garbage nonce
+  if (isNaN(nonce)) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce
@@ -36,7 +41,9 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
       </StandardFrame>
     );
   }
-  if (checksummedAddress !== undefined && !isNaN(nonce) && txHash === null) {
+
+  // Valid nonce, but no tx found
+  if (!txHash) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce
@@ -46,9 +53,9 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
       </StandardFrame>
     );
   }
-  if (txHash) {
-    navigate(transactionURL(txHash), { replace: true });
-  }
+
+  // Success; replace and render filler
+  navigate(transactionURL(txHash), { replace: true });
   return <StandardFrame />;
 };
 
