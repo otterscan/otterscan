@@ -7,7 +7,6 @@ import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 import {
   prefetchTransactionBySenderAndNonce,
-  useTransactionBySenderAndNonce,
   useTransactionCount,
 } from "../useErigonHooks";
 import { useSWRConfig } from "swr";
@@ -19,22 +18,7 @@ type NavNonceProps = {
 
 const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
   const { provider } = useContext(RuntimeContext);
-  const prevTxHash = useTransactionBySenderAndNonce(
-    provider,
-    sender,
-    nonce - 1
-  );
-  const nextTxHash = useTransactionBySenderAndNonce(
-    provider,
-    sender,
-    nonce + 1
-  );
   const count = useTransactionCount(provider, sender);
-  const lastTxHash = useTransactionBySenderAndNonce(
-    provider,
-    sender,
-    count !== undefined ? count - 1 : undefined
-  );
 
   // Prefetch
   const swrConfig = useSWRConfig();
@@ -60,17 +44,19 @@ const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
 
   return (
     <div className="pl-2 self-center flex space-x-1">
-      <NavButton txHash={prevTxHash} disabled={nonce === 0}>
+      <NavButton sender={sender} nonce={nonce - 1} disabled={nonce === 0}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </NavButton>
       <NavButton
-        txHash={nextTxHash}
+        sender={sender}
+        nonce={nonce + 1}
         disabled={count === undefined || nonce >= count - 1}
       >
         <FontAwesomeIcon icon={faChevronRight} />
       </NavButton>
       <NavButton
-        txHash={lastTxHash}
+        sender={sender}
+        nonce={count !== undefined ? count - 1 : -1}
         disabled={count === undefined || nonce >= count - 1}
       >
         <FontAwesomeIcon icon={faChevronRight} />

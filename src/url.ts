@@ -20,6 +20,9 @@ export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
 export const transactionURL = (txHash: string) => `/tx/${txHash}`;
 
+export const addressByNonceURL = (address: ChecksummedAddress, nonce: number) =>
+  `/address/${address}?nonce=${nonce}`;
+
 export enum SourcifySource {
   // Resolve trusted IPNS for root IPFS
   IPFS_IPNS,
