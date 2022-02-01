@@ -2,7 +2,6 @@ import {
   ChangeEventHandler,
   FormEventHandler,
   RefObject,
-  useContext,
   useRef,
   useState,
 } from "react";
@@ -13,8 +12,6 @@ import { isHexString } from "@ethersproject/bytes";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
-import { RuntimeContext } from "../useRuntime";
-import { getTransactionBySenderAndNonceFetcher } from "../useErigonHooks";
 
 export class SearchController {
   private txs: ProcessedTransaction[];
@@ -209,38 +206,36 @@ export class SearchController {
   }
 }
 
-const doSearch = async (
-  provider: JsonRpcProvider,
-  q: string,
-  navigate: NavigateFunction
-) => {
+const doSearch = async (q: string, navigate: NavigateFunction) => {
   // Cleanup
   q = q.trim();
 
   let maybeAddress = q;
-  let maybeIndex: string | undefined;
+  let maybeIndex = "";
   const sepIndex = q.lastIndexOf(":");
   if (sepIndex !== -1) {
     maybeAddress = q.substring(0, sepIndex);
     maybeIndex = q.substring(sepIndex + 1);
   }
 
+  // Plain address?
   if (isAddress(maybeAddress)) {
-    // Plain address + nonce?
-    if (await navigateToTx(provider, maybeAddress, maybeIndex, navigate)) {
-      return;
-    }
-
-    // Plain address
-    navigate(`/address/${maybeAddress}`, { replace: true });
+    navigate(
+      `/address/${maybeAddress}${
+        maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
+      }`,
+      { replace: true }
+    );
     return;
   }
 
+  // Tx hash?
   if (isHexString(q, 32)) {
     navigate(`/tx/${q}`, { replace: true });
     return;
   }
 
+  // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
     navigate(`/block/${blockNumber}`, { replace: true });
@@ -248,54 +243,12 @@ const doSearch = async (
   }
 
   // Assume it is an ENS name
-  const resolvedName = await provider.resolveName(maybeAddress);
-  if (resolvedName !== null) {
-    // ENS name + nonce?
-    if (await navigateToTx(provider, resolvedName, maybeIndex, navigate)) {
-      return;
-    }
-
-    // ENS name
-    navigate(`/address/${maybeAddress}`, { replace: true });
-    return;
-  }
-
-  // TODO: handle default
-};
-
-const navigateToTx = async (
-  provider: JsonRpcProvider,
-  maybeAddress: string,
-  maybeIndex: string | undefined,
-  navigate: NavigateFunction
-): Promise<boolean> => {
-  if (maybeIndex !== undefined) {
-    try {
-      let nonce = 0;
-      if (maybeIndex === "latest") {
-        const count = await provider.getTransactionCount(maybeAddress);
-        if (count > 0) {
-          nonce = count - 1;
-        }
-      } else {
-        nonce = parseInt(maybeIndex);
-      }
-
-      const txHash = await getTransactionBySenderAndNonceFetcher({
-        provider,
-        sender: maybeAddress,
-        nonce,
-      });
-      if (txHash) {
-        navigate(`/tx/${txHash}`, { replace: true });
-      }
-      return true;
-    } catch (err) {
-      // ignore
-    }
-  }
-
-  return false;
+  navigate(
+    `/address/${maybeAddress}${
+      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
+    }`,
+    { replace: true }
+  );
 };
 
 export const useGenericSearch = (): [
@@ -303,7 +256,6 @@ export const useGenericSearch = (): [
   ChangeEventHandler<HTMLInputElement>,
   FormEventHandler<HTMLFormElement>
 ] => {
-  const { provider } = useContext(RuntimeContext);
   const [searchString, setSearchString] = useState<string>("");
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -316,14 +268,14 @@ export const useGenericSearch = (): [
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (!canSubmit || !provider) {
+    if (!canSubmit) {
       return;
     }
 
     if (searchRef.current) {
       searchRef.current.value = "";
     }
-    doSearch(provider, searchString, navigate);
+    doSearch(searchString, navigate);
   };
 
   const searchRef = useRef<HTMLInputElement>(null);
