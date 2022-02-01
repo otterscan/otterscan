@@ -57,7 +57,11 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   const navigate = useNavigate();
 
   // Loading...
-  if (checksummedAddress === undefined || nonce === undefined) {
+  if (
+    checksummedAddress === undefined ||
+    nonce === undefined ||
+    txHash === undefined
+  ) {
     return <StandardFrame />;
   }
 
@@ -83,7 +87,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   }
 
   // Valid nonce, but no tx found
-  if (!txHash) {
+  if (txHash === null) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce
