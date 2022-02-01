@@ -530,39 +530,49 @@ export const useTransactionCount = (
 };
 
 type TransactionBySenderAndNonceKey = {
-  provider: JsonRpcProvider;
+  network: number;
   sender: ChecksummedAddress;
   nonce: number;
 };
 
-export const getTransactionBySenderAndNonceFetcher = async ({
-  provider,
-  sender,
-  nonce,
-}: TransactionBySenderAndNonceKey): Promise<string | null | undefined> => {
-  if (nonce < 0) {
-    return undefined;
-  }
-
-  const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
+const getTransactionBySenderAndNonceFetcher =
+  (provider: JsonRpcProvider) =>
+  async ({
+    network,
     sender,
     nonce,
-  ])) as string;
+  }: TransactionBySenderAndNonceKey): Promise<string | null | undefined> => {
+    if (nonce < 0) {
+      return undefined;
+    }
 
-  // Empty or success
-  return result;
-};
+    const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
+      sender,
+      nonce,
+    ])) as string;
+
+    // Empty or success
+    return result;
+  };
 
 export const prefetchTransactionBySenderAndNonce = (
-  { cache, mutate }: ReturnType<typeof useSWRConfig>,
+  { mutate }: ReturnType<typeof useSWRConfig>,
   provider: JsonRpcProvider,
   sender: ChecksummedAddress,
   nonce: number
 ) => {
-  const key: TransactionBySenderAndNonceKey = { provider, sender, nonce };
-  if (cache.get(key)) {
-    mutate(key, getTransactionBySenderAndNonceFetcher(key));
-  }
+  const key: TransactionBySenderAndNonceKey = {
+    network: provider.network.chainId,
+    sender,
+    nonce,
+  };
+  mutate(key, (curr: any) => {
+    if (curr) {
+      return curr;
+    }
+    return getTransactionBySenderAndNonceFetcher(provider)(key);
+  });
+  // }
 };
 
 export const useTransactionBySenderAndNonce = (
@@ -576,9 +586,13 @@ export const useTransactionBySenderAndNonce = (
     TransactionBySenderAndNonceKey | null
   >(
     provider && sender && nonce !== undefined
-      ? { provider, sender, nonce }
+      ? {
+          network: provider.network.chainId,
+          sender,
+          nonce,
+        }
       : null,
-    getTransactionBySenderAndNonceFetcher
+    getTransactionBySenderAndNonceFetcher(provider!)
   );
 
   if (error) {
