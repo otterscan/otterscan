@@ -43,6 +43,9 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     }
   } else {
     nonce = parseInt(rawNonce, 10);
+    if (nonce < 0) {
+      nonce = NaN;
+    }
   }
 
   // Given all base params are determined, get the corresponding tx
