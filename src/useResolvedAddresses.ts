@@ -7,7 +7,7 @@ import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressRes
 import { RuntimeContext } from "./useRuntime";
 import { ChecksummedAddress } from "./types";
 
-export const useAddressOrENSFromURL = (
+export const useAddressOrENS = (
   addressOrName: string,
   urlFixer: (address: ChecksummedAddress) => void
 ): [

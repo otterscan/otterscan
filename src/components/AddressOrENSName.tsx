@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
+import PlainAddress from "./PlainAddress";
 import { resolverRendererRegistry } from "../api/address-resolver";
 import { useResolvedAddress } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
-import PlainAddress from "./PlainAddress";
+import { ChecksummedAddress } from "../types";
 
 type AddressOrENSNameProps = {
-  address: string;
+  address: ChecksummedAddress;
   selectedAddress?: string;
   dontOverrideColors?: boolean;
 };

@@ -6,6 +6,7 @@ import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
+import useSWR, { useSWRConfig } from "swr";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -190,98 +191,107 @@ export const useTxData = (
     }
 
     const readTxData = async () => {
-      const [_response, _receipt] = await Promise.all([
-        provider.getTransaction(txhash),
-        provider.getTransactionReceipt(txhash),
-      ]);
-      if (_response === null) {
+      try {
+        const [_response, _receipt] = await Promise.all([
+          provider.getTransaction(txhash),
+          provider.getTransactionReceipt(txhash),
+        ]);
+        if (_response === null) {
+          setTxData(null);
+          return;
+        }
+
+        let _block: ExtendedBlock | undefined;
+        if (_response.blockNumber) {
+          _block = await readBlock(provider, _response.blockNumber.toString());
+        }
+
+        document.title = `Transaction ${_response.hash} | Otterscan`;
+
+        // Extract token transfers
+        const tokenTransfers: TokenTransfer[] = [];
+        if (_receipt) {
+          for (const l of _receipt.logs) {
+            if (l.topics.length !== 3) {
+              continue;
+            }
+            if (l.topics[0] !== TRANSFER_TOPIC) {
+              continue;
+            }
+            tokenTransfers.push({
+              token: l.address,
+              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+              value: BigNumber.from(l.data),
+            });
+          }
+        }
+
+        // Extract token meta
+        const tokenMetas: TokenMetas = {};
+        for (const t of tokenTransfers) {
+          if (tokenMetas[t.token] !== undefined) {
+            continue;
+          }
+          const erc20Contract = new Contract(t.token, erc20, provider);
+          try {
+            const [name, symbol, decimals] = await Promise.all([
+              erc20Contract.name(),
+              erc20Contract.symbol(),
+              erc20Contract.decimals(),
+            ]);
+            tokenMetas[t.token] = {
+              name,
+              symbol,
+              decimals,
+            };
+          } catch (err) {
+            tokenMetas[t.token] = null;
+            console.warn(
+              `Couldn't get token ${t.token} metadata; ignoring`,
+              err
+            );
+          }
+        }
+
+        setTxData({
+          transactionHash: _response.hash,
+          from: _response.from,
+          to: _response.to,
+          value: _response.value,
+          tokenTransfers,
+          tokenMetas,
+          type: _response.type ?? 0,
+          maxFeePerGas: _response.maxFeePerGas,
+          maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
+          gasPrice: _response.gasPrice!,
+          gasLimit: _response.gasLimit,
+          nonce: _response.nonce,
+          data: _response.data,
+          confirmedData:
+            _receipt === null
+              ? undefined
+              : {
+                  status: _receipt.status === 1,
+                  blockNumber: _receipt.blockNumber,
+                  transactionIndex: _receipt.transactionIndex,
+                  blockBaseFeePerGas: _block!.baseFeePerGas,
+                  blockTransactionCount: _block!.transactionCount,
+                  confirmations: _receipt.confirmations,
+                  timestamp: _block!.timestamp,
+                  miner: _block!.miner,
+                  createdContractAddress: _receipt.contractAddress,
+                  fee: _response.gasPrice!.mul(_receipt.gasUsed),
+                  gasUsed: _receipt.gasUsed,
+                  logs: _receipt.logs,
+                },
+        });
+      } catch (err) {
+        console.error(err);
         setTxData(null);
-        return;
       }
-
-      let _block: ExtendedBlock | undefined;
-      if (_response.blockNumber) {
-        _block = await readBlock(provider, _response.blockNumber.toString());
-      }
-
-      document.title = `Transaction ${_response.hash} | Otterscan`;
-
-      // Extract token transfers
-      const tokenTransfers: TokenTransfer[] = [];
-      if (_receipt) {
-        for (const l of _receipt.logs) {
-          if (l.topics.length !== 3) {
-            continue;
-          }
-          if (l.topics[0] !== TRANSFER_TOPIC) {
-            continue;
-          }
-          tokenTransfers.push({
-            token: l.address,
-            from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-            to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-            value: BigNumber.from(l.data),
-          });
-        }
-      }
-
-      // Extract token meta
-      const tokenMetas: TokenMetas = {};
-      for (const t of tokenTransfers) {
-        if (tokenMetas[t.token] !== undefined) {
-          continue;
-        }
-        const erc20Contract = new Contract(t.token, erc20, provider);
-        try {
-          const [name, symbol, decimals] = await Promise.all([
-            erc20Contract.name(),
-            erc20Contract.symbol(),
-            erc20Contract.decimals(),
-          ]);
-          tokenMetas[t.token] = {
-            name,
-            symbol,
-            decimals,
-          };
-        } catch (err) {
-          tokenMetas[t.token] = null;
-          console.warn(`Couldn't get token ${t.token} metadata; ignoring`, err);
-        }
-      }
-
-      setTxData({
-        transactionHash: _response.hash,
-        from: _response.from,
-        to: _response.to,
-        value: _response.value,
-        tokenTransfers,
-        tokenMetas,
-        type: _response.type ?? 0,
-        maxFeePerGas: _response.maxFeePerGas,
-        maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
-        gasPrice: _response.gasPrice!,
-        gasLimit: _response.gasLimit,
-        nonce: _response.nonce,
-        data: _response.data,
-        confirmedData:
-          _receipt === null
-            ? undefined
-            : {
-                status: _receipt.status === 1,
-                blockNumber: _receipt.blockNumber,
-                transactionIndex: _receipt.transactionIndex,
-                blockBaseFeePerGas: _block!.baseFeePerGas,
-                blockTransactionCount: _block!.transactionCount,
-                confirmations: _receipt.confirmations,
-                timestamp: _block!.timestamp,
-                miner: _block!.miner,
-                createdContractAddress: _receipt.contractAddress,
-                fee: _response.gasPrice!.mul(_receipt.gasUsed),
-                gasUsed: _receipt.gasUsed,
-                logs: _receipt.logs,
-              },
-      });
     };
+
     readTxData();
   }, [provider, txhash]);
 
@@ -501,4 +511,92 @@ export const useTransactionError = (
   }, [provider, txHash]);
 
   return [errorMsg, data, isCustomError];
+};
+
+export const useTransactionCount = (
+  provider: JsonRpcProvider | undefined,
+  sender: ChecksummedAddress | undefined
+): number | undefined => {
+  const { data, error } = useSWR(
+    provider && sender ? { provider, sender } : null,
+    async ({ provider, sender }): Promise<number | undefined> =>
+      provider.getTransactionCount(sender)
+  );
+
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
+
+type TransactionBySenderAndNonceKey = {
+  network: number;
+  sender: ChecksummedAddress;
+  nonce: number;
+};
+
+const getTransactionBySenderAndNonceFetcher =
+  (provider: JsonRpcProvider) =>
+  async ({
+    network,
+    sender,
+    nonce,
+  }: TransactionBySenderAndNonceKey): Promise<string | null | undefined> => {
+    if (nonce < 0) {
+      return undefined;
+    }
+
+    const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
+      sender,
+      nonce,
+    ])) as string;
+
+    // Empty or success
+    return result;
+  };
+
+export const prefetchTransactionBySenderAndNonce = (
+  { mutate }: ReturnType<typeof useSWRConfig>,
+  provider: JsonRpcProvider,
+  sender: ChecksummedAddress,
+  nonce: number
+) => {
+  const key: TransactionBySenderAndNonceKey = {
+    network: provider.network.chainId,
+    sender,
+    nonce,
+  };
+  mutate(key, (curr: any) => {
+    if (curr) {
+      return curr;
+    }
+    return getTransactionBySenderAndNonceFetcher(provider)(key);
+  });
+  // }
+};
+
+export const useTransactionBySenderAndNonce = (
+  provider: JsonRpcProvider | undefined,
+  sender: ChecksummedAddress | undefined,
+  nonce: number | undefined
+): string | null | undefined => {
+  const { data, error } = useSWR<
+    string | null | undefined,
+    any,
+    TransactionBySenderAndNonceKey | null
+  >(
+    provider && sender && nonce !== undefined
+      ? {
+          network: provider.network.chainId,
+          sender,
+          nonce,
+        }
+      : null,
+    getTransactionBySenderAndNonceFetcher(provider!)
+  );
+
+  if (error) {
+    return undefined;
+  }
+  return data;
 };

@@ -15,6 +15,7 @@ import BlockConfirmations from "../components/BlockConfirmations";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import Nonce from "../components/Nonce";
+import NavNonce from "./NavNonce";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
@@ -253,6 +254,7 @@ const Details: React.FC<DetailsProps> = ({
           </div>
           <div className="flex items-baseline pl-3">
             <Nonce value={txData.nonce} />
+            <NavNonce sender={txData.from} nonce={txData.nonce} />
           </div>
         </div>
       </InfoRow>

@@ -13,6 +13,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
+import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import Copy from "./components/Copy";
 import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
@@ -20,12 +21,19 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
-import { useAddressOrENSFromURL } from "./useResolvedAddresses";
+import { useAddressOrENS } from "./useResolvedAddresses";
 import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
 
-const AddressTransactions: React.FC = () => {
+const AddressTransactionByNonce = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "addresstxbynonce", webpackPrefetch: true */ "./AddressTransactionByNonce"
+    )
+);
+
+const Address: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -45,7 +53,7 @@ const AddressTransactions: React.FC = () => {
     },
     [navigate, direction, searchParams]
   );
-  const [checksummedAddress, isENS, error] = useAddressOrENSFromURL(
+  const [checksummedAddress, isENS, error] = useAddressOrENS(
     addressOrName,
     urlFixer
   );
@@ -78,12 +86,21 @@ const AddressTransactions: React.FC = () => {
       ? metadatas[checksummedAddress]
       : undefined;
 
+  // Search address by nonce === transaction @ nonce
+  const rawNonce = searchParams.get("nonce");
+  if (rawNonce !== null) {
+    return (
+      <AddressTransactionByNonce
+        checksummedAddress={checksummedAddress}
+        rawNonce={rawNonce}
+      />
+    );
+  }
+
   return (
     <StandardFrame>
       {error ? (
-        <span className="text-base">
-          "{addressOrName}" is not an ETH address or ENS name.
-        </span>
+        <AddressOrENSNameNotFound addressOrENSName={addressOrName} />
       ) : (
         checksummedAddress && (
           <>
@@ -175,4 +192,4 @@ const AddressTransactions: React.FC = () => {
   );
 };
 
-export default AddressTransactions;
+export default Address;
