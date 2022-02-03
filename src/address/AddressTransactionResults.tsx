@@ -132,8 +132,8 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
           address={address}
           isFirst={controller?.isFirst}
           isLast={controller?.isLast}
-          prevHash={page ? page[0].hash : ""}
-          nextHash={page ? page[page.length - 1].hash : ""}
+          prevHash={page?.[0]?.hash ?? ""}
+          nextHash={page?.[page.length - 1]?.hash ?? ""}
           disabled={controller === undefined}
         />
       </div>
@@ -165,8 +165,8 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
               address={address}
               isFirst={controller?.isFirst}
               isLast={controller?.isLast}
-              prevHash={page ? page[0].hash : ""}
-              nextHash={page ? page[page.length - 1].hash : ""}
+              prevHash={page?.[0]?.hash ?? ""}
+              nextHash={page?.[page.length - 1]?.hash ?? ""}
               disabled={controller === undefined}
             />
           </div>
