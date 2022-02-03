@@ -206,17 +206,36 @@ export class SearchController {
   }
 }
 
-const doSearch = (q: string, navigate: NavigateFunction) => {
-  if (isAddress(q)) {
-    navigate(`/address/${q}`, { replace: true });
+const doSearch = async (q: string, navigate: NavigateFunction) => {
+  // Cleanup
+  q = q.trim();
+
+  let maybeAddress = q;
+  let maybeIndex = "";
+  const sepIndex = q.lastIndexOf(":");
+  if (sepIndex !== -1) {
+    maybeAddress = q.substring(0, sepIndex);
+    maybeIndex = q.substring(sepIndex + 1);
+  }
+
+  // Plain address?
+  if (isAddress(maybeAddress)) {
+    navigate(
+      `/address/${maybeAddress}${
+        maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
+      }`,
+      { replace: true }
+    );
     return;
   }
 
+  // Tx hash?
   if (isHexString(q, 32)) {
     navigate(`/tx/${q}`, { replace: true });
     return;
   }
 
+  // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
     navigate(`/block/${blockNumber}`, { replace: true });
@@ -224,7 +243,12 @@ const doSearch = (q: string, navigate: NavigateFunction) => {
   }
 
   // Assume it is an ENS name
-  navigate(`/address/${q}`);
+  navigate(
+    `/address/${maybeAddress}${
+      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
+    }`,
+    { replace: true }
+  );
 };
 
 export const useGenericSearch = (): [

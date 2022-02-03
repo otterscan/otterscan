@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { transactionURL } from "../url";
 
 type TransactionLinkProps = {
   txHash: string;
@@ -8,7 +9,7 @@ type TransactionLinkProps = {
 const TransactionLink: React.FC<TransactionLinkProps> = ({ txHash }) => (
   <NavLink
     className="text-link-blue hover:text-link-blue-hover font-hash"
-    to={`/tx/${txHash}`}
+    to={transactionURL(txHash)}
   >
     <p className="truncate">{txHash}</p>
   </NavLink>

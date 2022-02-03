@@ -1,35 +1,33 @@
-import { useState, useEffect, useContext, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import {
   Fragment,
   Interface,
   TransactionDescription,
 } from "@ethersproject/abi";
+import { BigNumberish } from "@ethersproject/bignumber";
+import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
-import { BigNumberish } from "@ethersproject/bignumber";
 
 export type FourBytesEntry = {
   name: string;
   signature: string | undefined;
 };
 
-export type FourBytesMap = Record<string, FourBytesEntry | null | undefined>;
-
-const simpleTransfer: FourBytesEntry = {
-  name: "transfer",
-  signature: undefined,
-};
-
-const fullCache = new Map<string, FourBytesEntry | null>();
-
+/**
+ * Given a hex input data; extract the method selector
+ *
+ * @param rawInput Raw tx input including the "0x"
+ * @returns the first 4 bytes, including the "0x" or null if the input
+ * contains an invalid selector, e.g., txs with 0x00 data; simple transfers (0x)
+ * return null as well as it is not a method selector
+ */
 export const extract4Bytes = (rawInput: string): string | null => {
   if (rawInput.length < 10) {
     return null;
   }
   return rawInput.slice(0, 10);
 };
-
-export const rawInputTo4Bytes = (rawInput: string) => rawInput.slice(0, 10);
 
 const fetch4Bytes = async (
   assetsURLPrefix: string,
@@ -61,93 +59,59 @@ const fetch4Bytes = async (
   }
 };
 
-export const useBatch4Bytes = (
-  rawFourByteSigs: string[] | undefined
-): FourBytesMap => {
-  const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
-
-  const [fourBytesMap, setFourBytesMap] = useState<FourBytesMap>({});
-  useEffect(() => {
-    if (!rawFourByteSigs || assetsURLPrefix === undefined) {
-      setFourBytesMap({});
-      return;
-    }
-
-    const loadSigs = async () => {
-      const promises = rawFourByteSigs.map((s) =>
-        fetch4Bytes(assetsURLPrefix, s.slice(2))
-      );
-      const results = await Promise.all(promises);
-
-      const _fourBytesMap: Record<string, FourBytesEntry | null> = {};
-      for (let i = 0; i < rawFourByteSigs.length; i++) {
-        _fourBytesMap[rawFourByteSigs[i]] = results[i];
-      }
-      setFourBytesMap(_fourBytesMap);
-    };
-    loadSigs();
-  }, [assetsURLPrefix, rawFourByteSigs]);
-
-  return fourBytesMap;
-};
-
 /**
  * Extract 4bytes DB info
  *
  * @param rawFourBytes an hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
  */
 export const use4Bytes = (
-  rawFourBytes: string
+  rawFourBytes: string | null
 ): FourBytesEntry | null | undefined => {
-  if (rawFourBytes !== "0x") {
-    if (rawFourBytes.length !== 10 || !rawFourBytes.startsWith("0x")) {
-      throw new Error(
-        `rawFourBytes must contain a 4 bytes hex method signature starting with 0x; received value: "${rawFourBytes}"`
-      );
-    }
+  if (rawFourBytes !== null && !rawFourBytes.startsWith("0x")) {
+    throw new Error(
+      `rawFourBytes must contain a bytes hex string starting with 0x; received value: "${rawFourBytes}"`
+    );
   }
 
-  const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
+  const { config } = useContext(RuntimeContext);
+  const assetsURLPrefix = config?.assetsURLPrefix;
 
-  const fourBytes = rawFourBytes.slice(2);
-  const [entry, setEntry] = useState<FourBytesEntry | null | undefined>(
-    fullCache.get(fourBytes)
+  const fourBytesFetcher = (key: string | null) => {
+    if (key === null || key === "0x") {
+      return undefined;
+    }
+
+    // Handle simple transfers with invalid selector like tx:
+    // 0x8bcbdcc1589b5c34c1e55909c8269a411f0267a4fed59a73dd4348cc71addbb9,
+    // which contains 0x00 as data
+    if (key.length !== 10) {
+      return undefined;
+    }
+
+    return fetch4Bytes(assetsURLPrefix!, key.slice(2));
+  };
+
+  const { data, error } = useSWRImmutable<FourBytesEntry | null | undefined>(
+    assetsURLPrefix !== undefined ? rawFourBytes : null,
+    fourBytesFetcher
   );
-  useEffect(() => {
-    if (assetsURLPrefix === undefined) {
-      return;
-    }
-    if (fourBytes === "") {
-      return;
-    }
+  return error ? undefined : data;
+};
 
-    const loadSig = async () => {
-      const entry = await fetch4Bytes(assetsURLPrefix, fourBytes);
-      fullCache.set(fourBytes, entry);
-      setEntry(entry);
-    };
-    loadSig();
-  }, [fourBytes, assetsURLPrefix]);
+export const useMethodSelector = (data: string): [boolean, string, string] => {
+  const rawFourBytes = extract4Bytes(data);
+  const fourBytesEntry = use4Bytes(rawFourBytes);
+  const isSimpleTransfer = data === "0x";
+  const methodName = isSimpleTransfer
+    ? "transfer"
+    : fourBytesEntry?.name ?? rawFourBytes ?? "-";
+  const methodTitle = isSimpleTransfer
+    ? "ETH Transfer"
+    : methodName === rawFourBytes
+    ? methodName
+    : `${methodName} [${rawFourBytes}]`;
 
-  if (rawFourBytes === "0x") {
-    return simpleTransfer;
-  }
-  if (assetsURLPrefix === undefined) {
-    return undefined;
-  }
-
-  // Try to resolve 4bytes name
-  if (entry === null || entry === undefined) {
-    return entry;
-  }
-
-  // Simulates LRU
-  // TODO: implement LRU purging
-  fullCache.delete(fourBytes);
-  fullCache.set(fourBytes, entry);
-  return entry;
+  return [isSimpleTransfer, methodName, methodTitle];
 };
 
 export const useTransactionDescription = (

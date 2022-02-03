@@ -5,19 +5,16 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import { TransactionData, InternalOperation } from "../types";
-import { ResolvedAddresses } from "../api/address-resolver";
 import TransactionAddress from "./TransactionAddress";
 
 type InternalSelfDestructProps = {
   txData: TransactionData;
   internalOp: InternalOperation;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
 const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   txData,
   internalOp,
-  resolvedAddresses,
 }) => {
   const toMiner =
     txData.confirmedData?.miner !== undefined &&
@@ -32,21 +29,12 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
         <span>Contract</span>
         <div className="flex items-baseline">
           <AddressHighlighter address={internalOp.from}>
-            <DecoratedAddressLink
-              address={internalOp.from}
-              selfDestruct
-              resolvedAddresses={resolvedAddresses}
-            />
+            <DecoratedAddressLink address={internalOp.from} selfDestruct />
           </AddressHighlighter>
         </div>
         {internalOp.value.isZero() && (
           <div className="flex items-baseline text-gray-400">
-            (To:{" "}
-            <TransactionAddress
-              address={internalOp.to}
-              resolvedAddresses={resolvedAddresses}
-            />
-            )
+            (To: <TransactionAddress address={internalOp.to} />)
           </div>
         )}
       </div>
@@ -64,11 +52,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
                   toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
                 }`}
               >
-                <DecoratedAddressLink
-                  address={internalOp.to}
-                  miner={toMiner}
-                  resolvedAddresses={resolvedAddresses}
-                />
+                <DecoratedAddressLink address={internalOp.to} miner={toMiner} />
               </div>
             </AddressHighlighter>
           </div>

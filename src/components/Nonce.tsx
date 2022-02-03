@@ -1,4 +1,5 @@
 import React from "react";
+import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons/faArrowUp";
 
@@ -14,7 +15,7 @@ const Nonce: React.FC<NonceProps> = ({ value }) => (
     <span className="text-green-400">
       <FontAwesomeIcon icon={faArrowUp} size="1x" />
     </span>
-    <span className="text-green-600">{value}</span>
+    <span className="text-green-600">{commify(value)}</span>
   </span>
 );
 

@@ -4,17 +4,15 @@ import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
 import { TransactionData } from "../types";
 import { Metadata } from "../sourcify/useSourcify";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
 
 type LogsProps = {
   txData: TransactionData;
   metadata: Metadata | null | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
+const Logs: React.FC<LogsProps> = ({ txData, metadata }) => {
   const baseMetadatas = useMemo((): Record<string, Metadata | null> => {
     if (!txData.to || metadata === undefined) {
       return {};
@@ -68,7 +66,6 @@ const Logs: React.FC<LogsProps> = ({ txData, metadata, resolvedAddresses }) => {
                   key={i}
                   log={l}
                   logDesc={logDescs?.[i]}
-                  resolvedAddresses={resolvedAddresses}
                   metadatas={metadatas}
                 />
               ))}

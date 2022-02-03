@@ -1,20 +1,12 @@
 import React from "react";
-import { rawInputTo4Bytes, use4Bytes } from "../use4Bytes";
+import { useMethodSelector } from "../use4Bytes";
 
 type MethodNameProps = {
   data: string;
 };
 
 const MethodName: React.FC<MethodNameProps> = ({ data }) => {
-  const rawFourBytes = rawInputTo4Bytes(data);
-  const fourBytesEntry = use4Bytes(rawFourBytes);
-  const methodName = fourBytesEntry?.name ?? rawFourBytes;
-  const isSimpleTransfer = rawFourBytes === "0x";
-  const methodTitle = isSimpleTransfer
-    ? "ETH Transfer"
-    : methodName === rawFourBytes
-    ? methodName
-    : `${methodName} [${rawFourBytes}]`;
+  const [isSimpleTransfer, methodName, methodTitle] = useMethodSelector(data);
 
   return (
     <div

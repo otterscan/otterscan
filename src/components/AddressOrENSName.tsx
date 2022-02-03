@@ -1,24 +1,23 @@
-import React from "react";
-import {
-  ResolvedAddresses,
-  resolverRendererRegistry,
-} from "../api/address-resolver";
+import React, { useContext } from "react";
 import PlainAddress from "./PlainAddress";
+import { resolverRendererRegistry } from "../api/address-resolver";
+import { useResolvedAddress } from "../useResolvedAddresses";
+import { RuntimeContext } from "../useRuntime";
+import { ChecksummedAddress } from "../types";
 
 type AddressOrENSNameProps = {
-  address: string;
+  address: ChecksummedAddress;
   selectedAddress?: string;
   dontOverrideColors?: boolean;
-  resolvedAddresses?: ResolvedAddresses | undefined;
 };
 
 const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   address,
   selectedAddress,
   dontOverrideColors,
-  resolvedAddresses,
 }) => {
-  const resolvedAddress = resolvedAddresses?.[address];
+  const { provider } = useContext(RuntimeContext);
+  const resolvedAddress = useResolvedAddress(provider, address);
   const linkable = address !== selectedAddress;
 
   if (!resolvedAddress) {

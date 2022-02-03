@@ -1,7 +1,6 @@
 import React from "react";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
-import { ResolvedAddresses } from "../api/address-resolver";
 import { useSelectedTransaction } from "../useSelectedTransaction";
 import { AddressContext } from "../types";
 import { Metadata } from "../sourcify/useSourcify";
@@ -9,14 +8,12 @@ import { Metadata } from "../sourcify/useSourcify";
 type TransactionAddressProps = {
   address: string;
   addressCtx?: AddressContext | undefined;
-  resolvedAddresses: ResolvedAddresses | undefined;
   metadata?: Metadata | null | undefined;
 };
 
 const TransactionAddress: React.FC<TransactionAddressProps> = ({
   address,
   addressCtx,
-  resolvedAddresses,
   metadata,
 }) => {
   const txData = useSelectedTransaction();
@@ -32,7 +29,6 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
         txFrom={address === txData?.from}
         txTo={address === txData?.to || creation}
         creation={creation}
-        resolvedAddresses={resolvedAddresses}
         metadata={metadata}
       />
     </AddressHighlighter>

@@ -1,37 +1,18 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import ContentFrame from "../ContentFrame";
 import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
 import { TransactionData } from "../types";
-import { useBatch4Bytes } from "../use4Bytes";
-import { useTraceTransaction, useUniqueSignatures } from "../useErigonHooks";
+import { useTraceTransaction } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
-import { ResolvedAddresses } from "../api/address-resolver";
-import { tracesCollector, useResolvedAddresses } from "../useResolvedAddresses";
 
 type TraceProps = {
   txData: TransactionData;
-  resolvedAddresses: ResolvedAddresses | undefined;
 };
 
-const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
+const Trace: React.FC<TraceProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const traces = useTraceTransaction(provider, txData.transactionHash);
-  const uniqueSignatures = useUniqueSignatures(traces);
-  const sigMap = useBatch4Bytes(uniqueSignatures);
-
-  const addrCollector = useMemo(() => tracesCollector(traces), [traces]);
-  const traceResolvedAddresses = useResolvedAddresses(provider, addrCollector);
-  const mergedResolvedAddresses = useMemo(() => {
-    const merge = {};
-    if (resolvedAddresses) {
-      Object.assign(merge, resolvedAddresses);
-    }
-    if (traceResolvedAddresses) {
-      Object.assign(merge, traceResolvedAddresses);
-    }
-    return merge;
-  }, [resolvedAddresses, traceResolvedAddresses]);
 
   return (
     <ContentFrame tabs>
@@ -39,20 +20,11 @@ const Trace: React.FC<TraceProps> = ({ txData, resolvedAddresses }) => {
         {traces ? (
           <>
             <div className="border hover:border-gray-500 rounded px-1 py-0.5">
-              <TransactionAddress
-                address={txData.from}
-                resolvedAddresses={resolvedAddresses}
-              />
+              <TransactionAddress address={txData.from} />
             </div>
             <div className="ml-5 space-y-3 self-stretch">
               {traces.map((t, i, a) => (
-                <TraceItem
-                  key={i}
-                  t={t}
-                  last={i === a.length - 1}
-                  fourBytesMap={sigMap}
-                  resolvedAddresses={mergedResolvedAddresses}
-                />
+                <TraceItem key={i} t={t} last={i === a.length - 1} />
               ))}
             </div>
           </>
