@@ -41,7 +41,7 @@
     "react-scripts": "4.0.3",
     "react-syntax-highlighter": "^15.4.5",
     "serve": "^13.0.2",
-    "swr": "^1.1.2",
+    "swr": "^1.2.1",
     "typescript": "^4.5.4",
     "use-keyboard-shortcut": "^1.1.2",
     "web-vitals": "^1.0.1"
