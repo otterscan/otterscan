@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { BaseProvider } from "@ethersproject/providers";
 import { getAddress, isAddress } from "@ethersproject/address";
 import useSWRImmutable from "swr/immutable";
-import { mainResolver } from "./api/address-resolver";
+import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
 import { RuntimeContext } from "./useRuntime";
 import { ChecksummedAddress } from "./types";
@@ -76,7 +76,8 @@ export const useResolvedAddress = (
     if (!provider) {
       return undefined;
     }
-    return mainResolver.resolveAddress(provider, address);
+    const resolver = getResolver(provider.network.chainId);
+    return resolver.resolveAddress(provider, address);
   };
 
   const { data, error } = useSWRImmutable(address, fetcher);

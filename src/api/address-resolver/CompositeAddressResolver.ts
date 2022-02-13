@@ -17,9 +17,14 @@ export class CompositeAddressResolver<T = any>
     address: string
   ): Promise<SelectedResolvedName<T> | undefined> {
     for (const r of this.resolvers) {
-      const resolvedAddress = await r.resolveAddress(provider, address);
-      if (resolvedAddress !== undefined) {
-        return [r, resolvedAddress];
+      try {
+        const resolvedAddress = await r.resolveAddress(provider, address);
+        if (resolvedAddress !== undefined) {
+          return [r, resolvedAddress];
+        }
+      } catch (err) {
+        console.warn(`Error while trying to resolve addr ${address}`);
+        console.warn(err);
       }
     }
 

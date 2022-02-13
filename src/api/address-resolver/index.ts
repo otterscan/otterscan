@@ -19,23 +19,38 @@ import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
 export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 
 // Create and configure the main resolver
-export const ensResolver = new ENSAddressResolver();
-export const uniswapV1Resolver = new UniswapV1Resolver();
-export const uniswapV2Resolver = new UniswapV2Resolver();
-export const uniswapV3Resolver = new UniswapV3Resolver();
-export const ercTokenResolver = new ERCTokenResolver();
-export const hardcodedResolver = new HardcodedAddressResolver();
+const ensResolver = new ENSAddressResolver();
+const uniswapV1Resolver = new UniswapV1Resolver();
+const uniswapV2Resolver = new UniswapV2Resolver();
+const uniswapV3Resolver = new UniswapV3Resolver();
+const ercTokenResolver = new ERCTokenResolver();
+const hardcodedResolver = new HardcodedAddressResolver();
 
-const _mainResolver = new CompositeAddressResolver();
-_mainResolver.addResolver(ensResolver);
-_mainResolver.addResolver(uniswapV3Resolver);
-_mainResolver.addResolver(uniswapV2Resolver);
-_mainResolver.addResolver(uniswapV1Resolver);
-_mainResolver.addResolver(ercTokenResolver);
-_mainResolver.addResolver(hardcodedResolver);
+const _mainnetResolver = new CompositeAddressResolver();
+_mainnetResolver.addResolver(ensResolver);
+_mainnetResolver.addResolver(uniswapV3Resolver);
+_mainnetResolver.addResolver(uniswapV2Resolver);
+_mainnetResolver.addResolver(uniswapV1Resolver);
+_mainnetResolver.addResolver(ercTokenResolver);
+_mainnetResolver.addResolver(hardcodedResolver);
 
-export const mainResolver: IAddressResolver<SelectedResolvedName<any>> =
-  _mainResolver;
+const _defaultResolver = new CompositeAddressResolver();
+_defaultResolver.addResolver(hardcodedResolver);
+
+const resolvers: Record<number, IAddressResolver<SelectedResolvedName<any>>> = {
+  1: _mainnetResolver,
+  0: _defaultResolver,
+};
+
+export const getResolver = (
+  chainId: number
+): IAddressResolver<SelectedResolvedName<any>> => {
+  const resolver = resolvers[chainId];
+  if (resolver === undefined) {
+    return resolver[0]; // default MAGIC NUMBER
+  }
+  return resolver;
+};
 
 export const resolverRendererRegistry = new Map<
   IAddressResolver<any>,
