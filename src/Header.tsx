@@ -44,7 +44,9 @@ const Header: React.FC = () => {
               className="w-full border-t border-b border-l rounded-l focus:outline-none px-2 py-1 text-sm"
               type="text"
               size={60}
-              placeholder='Type "/" to search by address / txn hash / block number / ENS name'
+              placeholder={`Type "/" to search by address / txn hash / block number${
+                provider?.network.ensAddress ? " / ENS name" : ""
+              }`}
               onChange={handleChange}
               ref={searchRef}
             />
