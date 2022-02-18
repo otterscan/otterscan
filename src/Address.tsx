@@ -100,7 +100,10 @@ const Address: React.FC = () => {
   return (
     <StandardFrame>
       {error ? (
-        <AddressOrENSNameNotFound addressOrENSName={addressOrName} />
+        <AddressOrENSNameNotFound
+          addressOrENSName={addressOrName}
+          supportsENS={provider?.network.ensAddress !== undefined}
+        />
       ) : (
         checksummedAddress && (
           <>

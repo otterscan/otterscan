@@ -48,19 +48,25 @@ export const useAddressOrENS = (
     if (!provider) {
       return;
     }
-    const resolveName = async () => {
-      const resolvedAddress = await provider.resolveName(addressOrName);
-      if (resolvedAddress !== null) {
-        setENS(true);
-        setError(false);
-        setChecksummedAddress(resolvedAddress);
-      } else {
-        setENS(false);
-        setError(true);
-        setChecksummedAddress(undefined);
-      }
-    };
-    resolveName();
+    if (provider.network.ensAddress) {
+      const resolveName = async () => {
+        const resolvedAddress = await provider.resolveName(addressOrName);
+        if (resolvedAddress !== null) {
+          setENS(true);
+          setError(false);
+          setChecksummedAddress(resolvedAddress);
+        } else {
+          setENS(false);
+          setError(true);
+          setChecksummedAddress(undefined);
+        }
+      };
+      resolveName();
+    } else {
+      setENS(false);
+      setError(true);
+      setChecksummedAddress(undefined);
+    }
   }, [provider, addressOrName, urlFixer]);
 
   return [checksummedAddress, isENS, error];

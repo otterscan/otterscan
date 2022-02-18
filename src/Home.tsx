@@ -39,7 +39,9 @@ const Home: React.FC = () => {
             className="w-full border-l border-t border-b rounded-l focus:outline-none px-2 py-1"
             type="text"
             size={50}
-            placeholder="Search by address / txn hash / block number / ENS name"
+            placeholder={`Search by address / txn hash / block number${
+              provider?.network.ensAddress ? " / ENS name" : ""
+            }`}
             onChange={handleChange}
             ref={searchRef}
             autoFocus
