@@ -39,10 +39,8 @@ export const readBlock = async (
 ) => {
   let blockPromise: Promise<any>;
   if (isHexString(blockNumberOrHash, 32)) {
-    // TODO: fix
-    blockPromise = provider.send("eth_getBlockByHash", [
+    blockPromise = provider.send("ots_getBlockDetailsByHash", [
       blockNumberOrHash,
-      false,
     ]);
   } else {
     blockPromise = provider.send("ots_getBlockDetails", [blockNumberOrHash]);
