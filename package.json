@@ -16,7 +16,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
-    "@headlessui/react": "^1.4.3",
+    "@headlessui/react": "^1.5.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
