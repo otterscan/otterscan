@@ -75,6 +75,9 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
           return _blocks;
         }
+        if (extBlock === null) {
+          return _blocks;
+        }
 
         // Leave the last block because of transition animation
         const newBlocks = [extBlock, ..._blocks].slice(

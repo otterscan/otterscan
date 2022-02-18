@@ -36,7 +36,7 @@ export interface ExtendedBlock extends Block {
 export const readBlock = async (
   provider: JsonRpcProvider,
   blockNumberOrHash: string
-) => {
+): Promise<ExtendedBlock | null> => {
   let blockPromise: Promise<any>;
   if (isHexString(blockNumberOrHash, 32)) {
     blockPromise = provider.send("ots_getBlockDetailsByHash", [
@@ -47,6 +47,9 @@ export const readBlock = async (
   }
 
   const _rawBlock = await blockPromise;
+  if (_rawBlock === null) {
+    return null;
+  }
   const _block = provider.formatter.block(_rawBlock.block);
   const _rawIssuance = _rawBlock.issuance;
 
@@ -160,11 +163,11 @@ export const useBlockTransactions = (
 export const useBlockData = (
   provider: JsonRpcProvider | undefined,
   blockNumberOrHash: string
-) => {
-  const [block, setBlock] = useState<ExtendedBlock>();
+): ExtendedBlock | null | undefined => {
+  const [block, setBlock] = useState<ExtendedBlock | null | undefined>();
   useEffect(() => {
     if (!provider) {
-      return;
+      return undefined;
     }
 
     const _readBlock = async () => {
@@ -199,7 +202,7 @@ export const useTxData = (
           return;
         }
 
-        let _block: ExtendedBlock | undefined;
+        let _block: ExtendedBlock | null | undefined;
         if (_response.blockNumber) {
           _block = await readBlock(provider, _response.blockNumber.toString());
         }

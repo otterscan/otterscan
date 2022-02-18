@@ -25,6 +25,7 @@ import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
+import BlockNotFound from "./components/BlockNotFound";
 
 const Block: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -35,10 +36,10 @@ const Block: React.FC = () => {
 
   const block = useBlockData(provider, blockNumberOrHash);
   useEffect(() => {
-    if (block) {
-      document.title = `Block #${block.number} | Otterscan`;
+    if (block !== undefined) {
+      document.title = `Block #${blockNumberOrHash} | Otterscan`;
     }
-  }, [block]);
+  }, [blockNumberOrHash, block]);
 
   const extraStr = useMemo(() => {
     try {
@@ -71,6 +72,9 @@ const Block: React.FC = () => {
           )}
         </div>
       </StandardSubtitle>
+      {block === null && (
+        <BlockNotFound blockNumberOrHash={blockNumberOrHash} />
+      )}
       {block && (
         <ContentFrame>
           <InfoRow title="Block Height">
