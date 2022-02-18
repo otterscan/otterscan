@@ -43,7 +43,11 @@ export const readBlock = async (
       blockNumberOrHash,
     ]);
   } else {
-    blockPromise = provider.send("ots_getBlockDetails", [blockNumberOrHash]);
+    const blockNumber = parseInt(blockNumberOrHash);
+    if (isNaN(blockNumber) || blockNumber < 0) {
+      return null;
+    }
+    blockPromise = provider.send("ots_getBlockDetails", [blockNumber]);
   }
 
   const _rawBlock = await blockPromise;
