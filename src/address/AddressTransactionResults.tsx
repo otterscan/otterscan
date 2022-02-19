@@ -131,17 +131,19 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
       <SelectionContext.Provider value={selectionCtx}>
         {balance && (
           <InfoRow title="Balance">
-            <FormattedBalance value={balance} /> Ether{" "}
+            <FormattedBalance value={balance} /> Ether
           </InfoRow>
         )}
         {creator && (
           <InfoRow title="Contract creator">
-            <div className="flex items-baseline space-x-2 -ml-1">
-              <TransactionAddress address={creator.creator} />
-              <Copy value={creator.creator} />
-              <span className="text-gray-400 text-xs">at</span>
-              <span>tx:</span>
-              <TransactionLink txHash={creator.hash} />
+            <div className="flex divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+                <TransactionAddress address={creator.creator} />
+                <Copy value={creator.creator} />
+              </div>
+              <div className="flex items-baseline pl-3">
+                <TransactionLink txHash={creator.hash} />
+              </div>
             </div>
           </InfoRow>
         )}
