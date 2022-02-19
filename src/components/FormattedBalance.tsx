@@ -7,6 +7,7 @@ type FormatterBalanceProps = {
   decimals?: number;
 };
 
+// TODO: remove duplication with TransactionValue component
 const FormattedBalance: React.FC<FormatterBalanceProps> = ({
   value,
   decimals = 18,

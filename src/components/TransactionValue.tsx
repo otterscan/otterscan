@@ -8,6 +8,16 @@ type TransactionValueProps = {
   hideUnit?: boolean;
 };
 
+/**
+ * Standard component for displaying balances. It:
+ *
+ * - Commify non-decimal parts, i.e., 1,000,000.00
+ * - Light gray absolute zero values
+ * - Cut out decimal part is it is 0 to reduce UI clutter, i.e., show
+ * 123 instead of 123.00
+ *
+ * TODO: remove duplication with FormattedBalance
+ */
 const TransactionValue: React.FC<TransactionValueProps> = ({
   value,
   decimals = 18,

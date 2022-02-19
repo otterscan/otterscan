@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
-import FormattedBalance from "../components/FormattedBalance";
+import TransactionValue from "../components/TransactionValue";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import TransactionLink from "../components/TransactionLink";
@@ -131,7 +131,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
       <SelectionContext.Provider value={selectionCtx}>
         {balance && (
           <InfoRow title="Balance">
-            <FormattedBalance value={balance} /> Ether
+            <TransactionValue value={balance} />
           </InfoRow>
         )}
         {creator && (
