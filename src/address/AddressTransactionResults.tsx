@@ -11,7 +11,7 @@ import { SelectionContext, useSelection } from "../useSelection";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ChecksummedAddress } from "../types";
+import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { useContractsMetadata } from "../hooks";
 
 type AddressTransactionResultsProps = {
@@ -120,23 +120,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
 
   return (
     <ContentFrame tabs>
-      <div className="flex justify-between items-baseline py-3">
-        <div className="text-sm text-gray-500">
-          {page === undefined ? (
-            <>Waiting for search results...</>
-          ) : (
-            <>{page.length} transactions on this page</>
-          )}
-        </div>
-        <UndefinedPageControl
-          address={address}
-          isFirst={controller?.isFirst}
-          isLast={controller?.isLast}
-          prevHash={page?.[0]?.hash ?? ""}
-          nextHash={page?.[page.length - 1]?.hash ?? ""}
-          disabled={controller === undefined}
-        />
-      </div>
+      <NavBar address={address} page={page} controller={controller} />
       <ResultHeader
         feeDisplay={feeDisplay}
         feeDisplayToggler={feeDisplayToggler}
@@ -153,23 +137,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
               metadatas={metadatas}
             />
           ))}
-          <div className="flex justify-between items-baseline py-3">
-            <div className="text-sm text-gray-500">
-              {page === undefined ? (
-                <>Waiting for search results...</>
-              ) : (
-                <>{page.length} transactions on this page</>
-              )}
-            </div>
-            <UndefinedPageControl
-              address={address}
-              isFirst={controller?.isFirst}
-              isLast={controller?.isLast}
-              prevHash={page?.[0]?.hash ?? ""}
-              nextHash={page?.[page.length - 1]?.hash ?? ""}
-              disabled={controller === undefined}
-            />
-          </div>
+          <NavBar address={address} page={page} controller={controller} />
         </SelectionContext.Provider>
       ) : (
         <PendingResults />
@@ -177,5 +145,31 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     </ContentFrame>
   );
 };
+
+type NavBarProps = {
+  address: ChecksummedAddress;
+  page: ProcessedTransaction[] | undefined;
+  controller: SearchController | undefined;
+};
+
+const NavBar: React.FC<NavBarProps> = ({ address, page, controller }) => (
+  <div className="flex justify-between items-baseline py-3">
+    <div className="text-sm text-gray-500">
+      {page === undefined ? (
+        <>Waiting for search results...</>
+      ) : (
+        <>{page.length} transactions on this page</>
+      )}
+    </div>
+    <UndefinedPageControl
+      address={address}
+      isFirst={controller?.isFirst}
+      isLast={controller?.isLast}
+      prevHash={page?.[0]?.hash ?? ""}
+      nextHash={page?.[page.length - 1]?.hash ?? ""}
+      disabled={controller === undefined}
+    />
+  </div>
+);
 
 export default AddressTransactionResults;
