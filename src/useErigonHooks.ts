@@ -605,3 +605,56 @@ export const useTransactionBySenderAndNonce = (
   }
   return data;
 };
+
+type ContractCreatorKey = {
+  type: "cc";
+  network: number;
+  address: ChecksummedAddress;
+};
+
+type ContractCreator = {
+  hash: string;
+  creator: ChecksummedAddress;
+};
+
+export const useContractCreator = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): ContractCreator | null | undefined => {
+  const { data, error } = useSWR<
+    ContractCreator | null | undefined,
+    any,
+    ContractCreatorKey | null
+  >(
+    provider && address
+      ? {
+          type: "cc",
+          network: provider.network.chainId,
+          address,
+        }
+      : null,
+    getContractCreatorFetcher(provider!)
+  );
+
+  if (error) {
+    return undefined;
+  }
+  return data as ContractCreator;
+};
+
+const getContractCreatorFetcher =
+  (provider: JsonRpcProvider) =>
+  async ({
+    network,
+    address,
+  }: ContractCreatorKey): Promise<ContractCreator | null | undefined> => {
+    const result = (await provider.send("ots_experimentalGetContractCreator", [
+      address,
+    ])) as ContractCreator;
+
+    // Empty or success
+    if (result) {
+      result.creator = provider.formatter.address(result.creator);
+    }
+    return result;
+  };

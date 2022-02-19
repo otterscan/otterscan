@@ -1,6 +1,10 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
+import InfoRow from "../components/InfoRow";
+import TransactionAddress from "../components/TransactionAddress";
+import Copy from "../components/Copy";
+import TransactionLink from "../components/TransactionLink";
 import PendingResults from "../search/PendingResults";
 import ResultHeader from "../search/ResultHeader";
 import { SearchController } from "../search/search";
@@ -13,6 +17,7 @@ import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { useContractsMetadata } from "../hooks";
+import { useContractCreator } from "../useErigonHooks";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -117,31 +122,46 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     return _addresses;
   }, [address, page]);
   const metadatas = useContractsMetadata(addresses, provider);
+  const creator = useContractCreator(provider, address);
 
   return (
     <ContentFrame tabs>
-      <NavBar address={address} page={page} controller={controller} />
-      <ResultHeader
-        feeDisplay={feeDisplay}
-        feeDisplayToggler={feeDisplayToggler}
-      />
-      {page ? (
-        <SelectionContext.Provider value={selectionCtx}>
-          {page.map((tx) => (
-            <TransactionItem
-              key={tx.hash}
-              tx={tx}
-              selectedAddress={address}
-              feeDisplay={feeDisplay}
-              priceMap={priceMap}
-              metadatas={metadatas}
-            />
-          ))}
-          <NavBar address={address} page={page} controller={controller} />
-        </SelectionContext.Provider>
-      ) : (
-        <PendingResults />
-      )}
+      <SelectionContext.Provider value={selectionCtx}>
+        <InfoRow title="Balance"></InfoRow>
+        {creator && (
+          <InfoRow title="Contract creator">
+            <div className="flex items-baseline space-x-2 -ml-1">
+              <TransactionAddress address={creator.creator} />
+              <Copy value={creator.creator} />
+              <span className="text-gray-400 text-xs">at</span>
+              <span>tx:</span>
+              <TransactionLink txHash={creator.hash} />
+            </div>
+          </InfoRow>
+        )}
+        <NavBar address={address} page={page} controller={controller} />
+        <ResultHeader
+          feeDisplay={feeDisplay}
+          feeDisplayToggler={feeDisplayToggler}
+        />
+        {page ? (
+          <>
+            {page.map((tx) => (
+              <TransactionItem
+                key={tx.hash}
+                tx={tx}
+                selectedAddress={address}
+                feeDisplay={feeDisplay}
+                priceMap={priceMap}
+                metadatas={metadatas}
+              />
+            ))}
+            <NavBar address={address} page={page} controller={controller} />
+          </>
+        ) : (
+          <PendingResults />
+        )}
+      </SelectionContext.Provider>
     </ContentFrame>
   );
 };
