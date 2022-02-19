@@ -3,6 +3,7 @@ import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import TransactionValue from "../components/TransactionValue";
+import ETH2USDValue from "../components/ETH2USDValue";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import TransactionLink from "../components/TransactionLink";
@@ -101,9 +102,12 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   // TODO: dedup blockTags
   const blockTags: BlockTag[] = useMemo(() => {
     if (!page) {
-      return [];
+      return ["latest"];
     }
-    return page.map((t) => t.blockNumber);
+
+    const blockTags: BlockTag[] = page.map((t) => t.blockNumber);
+    blockTags.push("latest");
+    return blockTags;
   }, [page]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
@@ -131,7 +135,17 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
       <SelectionContext.Provider value={selectionCtx}>
         {balance && (
           <InfoRow title="Balance">
-            <TransactionValue value={balance} />
+            <div className="space-x-2">
+              <TransactionValue value={balance} />
+              {!balance.isZero() && priceMap["latest"] !== undefined && (
+                <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
+                  <ETH2USDValue
+                    ethAmount={balance}
+                    eth2USDValue={priceMap["latest"]}
+                  />
+                </span>
+              )}
+            </div>
           </InfoRow>
         )}
         {creator && (

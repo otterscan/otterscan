@@ -7,6 +7,13 @@ type ETH2USDValueProps = {
   eth2USDValue: BigNumber;
 };
 
+/**
+ * Basic display of ETH -> USD values WITHOUT box decoration, only
+ * text formatting.
+ *
+ * USD amounts are displayed commified with 2 decimals places and $ prefix,
+ * i.e., "$1,000.00".
+ */
 const ETH2USDValue: React.FC<ETH2USDValueProps> = ({
   ethAmount,
   eth2USDValue,
