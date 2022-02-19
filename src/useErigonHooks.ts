@@ -658,3 +658,24 @@ const getContractCreatorFetcher =
     }
     return result;
   };
+
+export const useAddressBalance = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): BigNumber | null | undefined => {
+  const [balance, setBalance] = useState<BigNumber | undefined>();
+
+  useEffect(() => {
+    if (!provider || !address) {
+      return undefined;
+    }
+
+    const readBalance = async () => {
+      const _balance = await provider.getBalance(address);
+      setBalance(_balance);
+    };
+    readBalance();
+  }, [provider, address]);
+
+  return balance;
+};

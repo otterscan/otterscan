@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
+import FormattedBalance from "../components/FormattedBalance";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import TransactionLink from "../components/TransactionLink";
@@ -17,7 +18,7 @@ import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { useContractsMetadata } from "../hooks";
-import { useContractCreator } from "../useErigonHooks";
+import { useAddressBalance, useContractCreator } from "../useErigonHooks";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -122,12 +123,17 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     return _addresses;
   }, [address, page]);
   const metadatas = useContractsMetadata(addresses, provider);
+  const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
 
   return (
     <ContentFrame tabs>
       <SelectionContext.Provider value={selectionCtx}>
-        <InfoRow title="Balance"></InfoRow>
+        {balance && (
+          <InfoRow title="Balance">
+            <FormattedBalance value={balance} /> Ether{" "}
+          </InfoRow>
+        )}
         {creator && (
           <InfoRow title="Contract creator">
             <div className="flex items-baseline space-x-2 -ml-1">
