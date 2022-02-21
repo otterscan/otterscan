@@ -648,7 +648,7 @@ const getContractCreatorFetcher =
     network,
     address,
   }: ContractCreatorKey): Promise<ContractCreator | null | undefined> => {
-    const result = (await provider.send("ots_experimentalGetContractCreator", [
+    const result = (await provider.send("ots_getContractCreator", [
       address,
     ])) as ContractCreator;
 
