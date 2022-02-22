@@ -10,6 +10,7 @@ import { useLatestBlock } from "./useLatestBlock";
 
 const ETH_FEED_DECIMALS = 8;
 
+// TODO: reduce duplication with useETHUSDOracle
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const latestBlock = useLatestBlock(provider);

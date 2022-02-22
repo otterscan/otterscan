@@ -22,7 +22,7 @@ const Copy: React.FC<CopyProps> = ({ value, rounded }) => {
 
   return (
     <button
-      className={`text-gray-500 focus:outline-none ${
+      className={`self-center flex flex-no-wrap justify-center items-center space-x-1 text-gray-500 focus:outline-none ${
         rounded
           ? "transition-colors transition-shadows bg-gray-200 hover:bg-gray-500 hover:text-gray-200 hover:shadow w-7 h-7 rounded-full text-xs"
           : "text-sm"
@@ -34,10 +34,10 @@ const Copy: React.FC<CopyProps> = ({ value, rounded }) => {
         rounded ? (
           <FontAwesomeIcon icon={faCheck} size="1x" />
         ) : (
-          <div className="space-x-1">
+          <>
             <FontAwesomeIcon icon={faCheckCircle} size="1x" />
-            {!rounded && <span>Copied</span>}
-          </div>
+            <span className="self-baseline">Copied</span>
+          </>
         )
       ) : (
         <FontAwesomeIcon icon={faCopy} size="1x" />
