@@ -78,6 +78,7 @@ All methods are prefixed with the `ots_` namespace in order to make it clear it 
 | `ots_getBlockTransactions`  | Get paginated transactions for a certain block. Also remove some verbose fields like logs. | As block size increases, getting all transactions from a block at once doesn't scale, so the first point here is to add pagination support. The second point is that receipts may have big, unnecessary information, like logs. So we cap all of them to save network bandwidth. |
 | `ots_searchTransactionsBefore` and `ots_searchTransactionsAfter` | Gets paginated inbound/outbound transaction calls for a certain address. | There is no native support for any kind of transaction search in the standard JSON-RPC API. We don't want to introduce an additional indexer middleware in Otterscan, so we implemented in-node search. |
 | `ots_getTransactionBySenderAndNonce` | Gets the transaction hash for a certain sender address, given its nonce. | There is no native support for this search in the standard JSON-RPC API. Otterscan needs it to allow user navigation between nonces from the same sender address. |
+| `ots_getContractCreator` | Gets the transaction hash and the address who created a contract. | No way to get this info from the standard JSON-RPC API. |
 
 ## Method details
 
@@ -334,5 +335,42 @@ Response:
   "jsonrpc": "2.0",
   "id": 1,
   "result": "0x021304206b2517c3f8f2df07014a55b79aac2ae097488fa807cc88eccd851a50"
+}
+```
+
+### `ots_getContractCreator`
+
+Given an ETH contract address, returns the tx hash and the direct address who created the contract.
+
+If the address is an EOA or a destroyed contract, it returns `null`.
+
+Parameters:
+
+1. `address` - The ETH address that may contain a contract.
+
+Returns:
+
+- `object` containing the following attributes, or `null` if the address does not contain a contract.
+  - `hash` - The tx hash of the transaction who created the contract.
+  - `creator` - The address who directly created the contract. Note that for simple transactions that directly deploy a contract this corresponds to the EOA in the `from` field of the transaction. For deployer contracts, i.e., the contract is created as a result of a method call, this corresponds to the address of the contract who created it.
+
+Example: get who created the Uniswap V3 Router contract.
+
+Request:
+
+```
+$ curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0", "id": 1, "method":"ots_getContractCreator","params":["0xE592427A0AEce92De3Edee1F18E0157C05861564"]}' http://127.0.0.1:8545
+```
+
+Response:
+
+```
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "hash": "0xe881c43cd88063e84a1d0283f41ee5348239b259c0d17a7e2e4552da3f4b2bc7",
+    "creator": "0x6c9fc64a53c1b71fb3f9af64d1ae3a4931a5f4e9"
+  }
 }
 ```
