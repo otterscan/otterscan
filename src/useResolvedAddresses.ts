@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { BaseProvider } from "@ethersproject/providers";
 import { getAddress, isAddress } from "@ethersproject/address";
 import useSWRImmutable from "swr/immutable";
-import { mainResolver } from "./api/address-resolver";
+import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
 import { RuntimeContext } from "./useRuntime";
 import { ChecksummedAddress } from "./types";
@@ -48,19 +48,25 @@ export const useAddressOrENS = (
     if (!provider) {
       return;
     }
-    const resolveName = async () => {
-      const resolvedAddress = await provider.resolveName(addressOrName);
-      if (resolvedAddress !== null) {
-        setENS(true);
-        setError(false);
-        setChecksummedAddress(resolvedAddress);
-      } else {
-        setENS(false);
-        setError(true);
-        setChecksummedAddress(undefined);
-      }
-    };
-    resolveName();
+    if (provider.network.ensAddress) {
+      const resolveName = async () => {
+        const resolvedAddress = await provider.resolveName(addressOrName);
+        if (resolvedAddress !== null) {
+          setENS(true);
+          setError(false);
+          setChecksummedAddress(resolvedAddress);
+        } else {
+          setENS(false);
+          setError(true);
+          setChecksummedAddress(undefined);
+        }
+      };
+      resolveName();
+    } else {
+      setENS(false);
+      setError(true);
+      setChecksummedAddress(undefined);
+    }
   }, [provider, addressOrName, urlFixer]);
 
   return [checksummedAddress, isENS, error];
@@ -76,7 +82,8 @@ export const useResolvedAddress = (
     if (!provider) {
       return undefined;
     }
-    return mainResolver.resolveAddress(provider, address);
+    const resolver = getResolver(provider.network.chainId);
+    return resolver.resolveAddress(provider, address);
   };
 
   const { data, error } = useSWRImmutable(address, fetcher);

@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
+import InfoRow from "../components/InfoRow";
+import TransactionValue from "../components/TransactionValue";
+import ETH2USDValue from "../components/ETH2USDValue";
+import TransactionAddress from "../components/TransactionAddress";
+import Copy from "../components/Copy";
+import TransactionLink from "../components/TransactionLink";
 import PendingResults from "../search/PendingResults";
 import ResultHeader from "../search/ResultHeader";
 import { SearchController } from "../search/search";
@@ -11,8 +17,9 @@ import { SelectionContext, useSelection } from "../useSelection";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ChecksummedAddress } from "../types";
+import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { useContractsMetadata } from "../hooks";
+import { useAddressBalance, useContractCreator } from "../useErigonHooks";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -95,9 +102,12 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   // TODO: dedup blockTags
   const blockTags: BlockTag[] = useMemo(() => {
     if (!page) {
-      return [];
+      return ["latest"];
     }
-    return page.map((t) => t.blockNumber);
+
+    const blockTags: BlockTag[] = page.map((t) => t.blockNumber);
+    blockTags.push("latest");
+    return blockTags;
   }, [page]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
@@ -117,65 +127,91 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
     return _addresses;
   }, [address, page]);
   const metadatas = useContractsMetadata(addresses, provider);
+  const balance = useAddressBalance(provider, address);
+  const creator = useContractCreator(provider, address);
 
   return (
     <ContentFrame tabs>
-      <div className="flex justify-between items-baseline py-3">
-        <div className="text-sm text-gray-500">
-          {page === undefined ? (
-            <>Waiting for search results...</>
-          ) : (
-            <>{page.length} transactions on this page</>
-          )}
-        </div>
-        <UndefinedPageControl
-          address={address}
-          isFirst={controller?.isFirst}
-          isLast={controller?.isLast}
-          prevHash={page?.[0]?.hash ?? ""}
-          nextHash={page?.[page.length - 1]?.hash ?? ""}
-          disabled={controller === undefined}
-        />
-      </div>
-      <ResultHeader
-        feeDisplay={feeDisplay}
-        feeDisplayToggler={feeDisplayToggler}
-      />
-      {page ? (
-        <SelectionContext.Provider value={selectionCtx}>
-          {page.map((tx) => (
-            <TransactionItem
-              key={tx.hash}
-              tx={tx}
-              selectedAddress={address}
-              feeDisplay={feeDisplay}
-              priceMap={priceMap}
-              metadatas={metadatas}
-            />
-          ))}
-          <div className="flex justify-between items-baseline py-3">
-            <div className="text-sm text-gray-500">
-              {page === undefined ? (
-                <>Waiting for search results...</>
-              ) : (
-                <>{page.length} transactions on this page</>
+      <SelectionContext.Provider value={selectionCtx}>
+        {balance && (
+          <InfoRow title="Balance">
+            <div className="space-x-2">
+              <TransactionValue value={balance} />
+              {!balance.isZero() && priceMap["latest"] !== undefined && (
+                <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
+                  <ETH2USDValue
+                    ethAmount={balance}
+                    eth2USDValue={priceMap["latest"]}
+                  />
+                </span>
               )}
             </div>
-            <UndefinedPageControl
-              address={address}
-              isFirst={controller?.isFirst}
-              isLast={controller?.isLast}
-              prevHash={page?.[0]?.hash ?? ""}
-              nextHash={page?.[page.length - 1]?.hash ?? ""}
-              disabled={controller === undefined}
-            />
-          </div>
-        </SelectionContext.Provider>
-      ) : (
-        <PendingResults />
-      )}
+          </InfoRow>
+        )}
+        {creator && (
+          <InfoRow title="Contract creator">
+            <div className="flex divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+                <TransactionAddress address={creator.creator} />
+                <Copy value={creator.creator} />
+              </div>
+              <div className="flex items-baseline pl-3">
+                <TransactionLink txHash={creator.hash} />
+              </div>
+            </div>
+          </InfoRow>
+        )}
+        <NavBar address={address} page={page} controller={controller} />
+        <ResultHeader
+          feeDisplay={feeDisplay}
+          feeDisplayToggler={feeDisplayToggler}
+        />
+        {page ? (
+          <>
+            {page.map((tx) => (
+              <TransactionItem
+                key={tx.hash}
+                tx={tx}
+                selectedAddress={address}
+                feeDisplay={feeDisplay}
+                priceMap={priceMap}
+                metadatas={metadatas}
+              />
+            ))}
+            <NavBar address={address} page={page} controller={controller} />
+          </>
+        ) : (
+          <PendingResults />
+        )}
+      </SelectionContext.Provider>
     </ContentFrame>
   );
 };
+
+type NavBarProps = {
+  address: ChecksummedAddress;
+  page: ProcessedTransaction[] | undefined;
+  controller: SearchController | undefined;
+};
+
+const NavBar: React.FC<NavBarProps> = ({ address, page, controller }) => (
+  <div className="flex justify-between items-baseline py-3">
+    <div className="text-sm text-gray-500">
+      {page === undefined ? (
+        <>Waiting for search results...</>
+      ) : (
+        <>{page.length} transactions on this page</>
+      )}
+    </div>
+    <UndefinedPageControl
+      address={address}
+      isFirst={controller?.isFirst}
+      isLast={controller?.isLast}
+      prevHash={page?.[0]?.hash ?? ""}
+      nextHash={page?.[page.length - 1]?.hash ?? ""}
+      disabled={controller === undefined}
+    />
+  </div>
+);
 
 export default AddressTransactionResults;

@@ -39,7 +39,9 @@ const Home: React.FC = () => {
             className="w-full border-l border-t border-b rounded-l focus:outline-none px-2 py-1"
             type="text"
             size={50}
-            placeholder="Search by address / txn hash / block number / ENS name"
+            placeholder={`Search by address / txn hash / block number${
+              provider?.network.ensAddress ? " / ENS name" : ""
+            }`}
             onChange={handleChange}
             ref={searchRef}
             autoFocus
@@ -62,17 +64,19 @@ const Home: React.FC = () => {
       </form>
       <div className="mx-auto h-32">
         <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
-          <NavLink to="/special/london">
-            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
-              <span>
-                <FontAwesomeIcon icon={faBurn} />
-              </span>
-              <span>Check out the special dashboard for EIP-1559</span>
-              <span>
-                <FontAwesomeIcon icon={faBurn} />
-              </span>
-            </div>
-          </NavLink>
+          {provider?.network.chainId !== 11155111 && (
+            <NavLink to="/special/london">
+              <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+                <span>
+                  <FontAwesomeIcon icon={faBurn} />
+                </span>
+                <span>Check out the special dashboard for EIP-1559</span>
+                <span>
+                  <FontAwesomeIcon icon={faBurn} />
+                </span>
+              </div>
+            </NavLink>
+          )}
         </div>
         {latestBlock && (
           <NavLink
