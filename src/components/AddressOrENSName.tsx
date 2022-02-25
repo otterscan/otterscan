@@ -20,7 +20,7 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
   const resolvedAddress = useResolvedAddress(provider, address);
   const linkable = address !== selectedAddress;
 
-  if (!resolvedAddress) {
+  if (!provider || !resolvedAddress) {
     return (
       <PlainAddress
         address={address}
@@ -42,7 +42,13 @@ const AddressOrENSName: React.FC<AddressOrENSNameProps> = ({
     );
   }
 
-  return renderer(address, resolvedName, linkable, !!dontOverrideColors);
+  return renderer(
+    provider.network.chainId,
+    address,
+    resolvedName,
+    linkable,
+    !!dontOverrideColors
+  );
 };
 
 export default AddressOrENSName;

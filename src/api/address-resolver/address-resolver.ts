@@ -9,6 +9,7 @@ export interface IAddressResolver<T> {
 }
 
 export type ResolvedAddressRenderer<T> = (
+  chainId: number,
   address: string,
   resolvedAddress: T,
   linkable: boolean,

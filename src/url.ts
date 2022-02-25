@@ -11,8 +11,9 @@ export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
 
 export const tokenLogoURL = (
   assetsURLPrefix: string,
+  chainId: number,
   address: string
-): string => `${assetsURLPrefix}/assets/${address}/logo.png`;
+): string => `${assetsURLPrefix}/assets/${chainId}/${address}/logo.png`;
 
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 

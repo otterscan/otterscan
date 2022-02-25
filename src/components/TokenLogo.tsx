@@ -7,16 +7,17 @@ import { RuntimeContext } from "../useRuntime";
 import { ChecksummedAddress } from "../types";
 
 type TokenLogoProps = {
+  chainId: number;
   address: ChecksummedAddress;
   name: string;
 };
 
-const TokenLogo: React.FC<TokenLogoProps> = ({ address, name }) => {
+const TokenLogo: React.FC<TokenLogoProps> = ({ chainId, address, name }) => {
   const { config } = useContext(RuntimeContext);
 
   const srcList: string[] = [];
   if (config) {
-    srcList.push(tokenLogoURL(config.assetsURLPrefix ?? "", address));
+    srcList.push(tokenLogoURL(config.assetsURLPrefix ?? "", chainId, address));
   }
   const { src, isLoading } = useImage({ srcList, useSuspense: false });
 
