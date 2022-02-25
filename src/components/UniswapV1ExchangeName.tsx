@@ -9,6 +9,7 @@ import {
 } from "../api/address-resolver/UniswapV1Resolver";
 
 type UniswapV1ExchangeNameProps = {
+  chainId: number;
   address: string;
   token: UniswapV1TokenMeta;
   linkable: boolean;
@@ -16,6 +17,7 @@ type UniswapV1ExchangeNameProps = {
 };
 
 const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
+  chainId,
   address,
   token,
   linkable,
@@ -32,10 +34,11 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
       >
         <span>Uniswap V1 LP:</span>
         <Content
-          linkable={true}
+          chainId={chainId}
           address={token.address}
           name={token.name}
           symbol={token.symbol}
+          linkable
         />
       </NavLink>
     );
@@ -48,7 +51,7 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
     >
       <span>Uniswap V1 LP:</span>
       <Content
-        linkable={false}
+        chainId={chainId}
         address={token.address}
         name={token.name}
         symbol={token.symbol}
@@ -58,13 +61,15 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
 };
 
 type ContentProps = {
-  linkable: boolean;
+  chainId: number;
   address: ChecksummedAddress;
   name: string;
   symbol: string;
+  linkable?: boolean;
 };
 
 const Content: React.FC<ContentProps> = ({
+  chainId,
   address,
   name,
   symbol,
@@ -74,20 +79,22 @@ const Content: React.FC<ContentProps> = ({
     <div
       className={`self-center w-5 h-5 ${linkable ? "" : "filter grayscale"}`}
     >
-      <TokenLogo address={address} name={name} />
+      <TokenLogo chainId={chainId} address={address} name={name} />
     </div>
     <span>{symbol}</span>
   </>
 );
 
-export const uniswapV1PairRenderer: ResolvedAddressRenderer<UniswapV1PairMeta> =
-  (address, tokenMeta, linkable, dontOverrideColors) => (
-    <UniswapV1ExchangeName
-      address={address}
-      token={tokenMeta.token}
-      linkable={linkable}
-      dontOverrideColors={dontOverrideColors}
-    />
-  );
+export const uniswapV1PairRenderer: ResolvedAddressRenderer<
+  UniswapV1PairMeta
+> = (chainId, address, tokenMeta, linkable, dontOverrideColors) => (
+  <UniswapV1ExchangeName
+    chainId={chainId}
+    address={address}
+    token={tokenMeta.token}
+    linkable={linkable}
+    dontOverrideColors={dontOverrideColors}
+  />
+);
 
 export default UniswapV1ExchangeName;

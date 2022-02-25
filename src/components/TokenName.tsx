@@ -5,6 +5,7 @@ import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolve
 import { TokenMeta } from "../types";
 
 type TokenNameProps = {
+  chainId: number;
   address: string;
   name: string;
   symbol: string;
@@ -13,6 +14,7 @@ type TokenNameProps = {
 };
 
 const TokenName: React.FC<TokenNameProps> = ({
+  chainId,
   address,
   name,
   symbol,
@@ -29,6 +31,7 @@ const TokenName: React.FC<TokenNameProps> = ({
         title={`${name} (${symbol}): ${address}`}
       >
         <Content
+          chainId={chainId}
           address={address}
           linkable={true}
           name={name}
@@ -43,12 +46,19 @@ const TokenName: React.FC<TokenNameProps> = ({
       className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
       title={`${name} (${symbol}): ${address}`}
     >
-      <Content address={address} linkable={false} name={name} symbol={symbol} />
+      <Content
+        chainId={chainId}
+        address={address}
+        linkable={false}
+        name={name}
+        symbol={symbol}
+      />
     </div>
   );
 };
 
 type ContentProps = {
+  chainId: number;
   address: string;
   name: string;
   symbol: string;
@@ -56,6 +66,7 @@ type ContentProps = {
 };
 
 const Content: React.FC<ContentProps> = ({
+  chainId,
   address,
   name,
   symbol,
@@ -65,7 +76,7 @@ const Content: React.FC<ContentProps> = ({
     <div
       className={`self-center w-5 h-5 ${linkable ? "" : "filter grayscale"}`}
     >
-      <TokenLogo address={address} name={name} />
+      <TokenLogo chainId={chainId} address={address} name={name} />
     </div>
     <span className="truncate">
       {name} ({symbol})
@@ -74,12 +85,14 @@ const Content: React.FC<ContentProps> = ({
 );
 
 export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
+  chainId,
   address,
   tokenMeta,
   linkable,
   dontOverrideColors
 ) => (
   <TokenName
+    chainId={chainId}
     address={address}
     name={tokenMeta.name}
     symbol={tokenMeta.symbol}

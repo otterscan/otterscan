@@ -9,6 +9,7 @@ import {
 import { ChecksummedAddress } from "../types";
 
 type UniswapV3PoolNameProps = {
+  chainId: number;
   address: string;
   token0: UniswapV3TokenMeta;
   token1: UniswapV3TokenMeta;
@@ -18,6 +19,7 @@ type UniswapV3PoolNameProps = {
 };
 
 const UniswapV3PairName: React.FC<UniswapV3PoolNameProps> = ({
+  chainId,
   address,
   token0,
   token1,
@@ -38,17 +40,19 @@ const UniswapV3PairName: React.FC<UniswapV3PoolNameProps> = ({
       >
         <span>Uniswap V3 LP:</span>
         <Content
-          linkable={true}
+          chainId={chainId}
           address={token0.address}
           name={token0.name}
           symbol={token0.symbol}
+          linkable
         />
         <span>/</span>
         <Content
-          linkable={true}
+          chainId={chainId}
           address={token1.address}
           name={token1.name}
           symbol={token1.symbol}
+          linkable
         />
         <span>/ {fee / 10000}%</span>
       </NavLink>
@@ -64,14 +68,14 @@ const UniswapV3PairName: React.FC<UniswapV3PoolNameProps> = ({
     >
       <span>Uniswap V3 LP:</span>
       <Content
-        linkable={false}
+        chainId={chainId}
         address={token0.address}
         name={token0.name}
         symbol={token0.symbol}
       />
       <span>/</span>
       <Content
-        linkable={false}
+        chainId={chainId}
         address={token1.address}
         name={token1.name}
         symbol={token1.symbol}
@@ -82,13 +86,15 @@ const UniswapV3PairName: React.FC<UniswapV3PoolNameProps> = ({
 };
 
 type ContentProps = {
-  linkable: boolean;
+  chainId: number;
   address: ChecksummedAddress;
   name: string;
   symbol: string;
+  linkable?: boolean;
 };
 
 const Content: React.FC<ContentProps> = ({
+  chainId,
   address,
   name,
   symbol,
@@ -98,22 +104,24 @@ const Content: React.FC<ContentProps> = ({
     <div
       className={`self-center w-5 h-5 ${linkable ? "" : "filter grayscale"}`}
     >
-      <TokenLogo address={address} name={name} />
+      <TokenLogo chainId={chainId} address={address} name={name} />
     </div>
     <span>{symbol}</span>
   </>
 );
 
-export const uniswapV3PairRenderer: ResolvedAddressRenderer<UniswapV3PairMeta> =
-  (address, tokenMeta, linkable, dontOverrideColors) => (
-    <UniswapV3PairName
-      address={address}
-      token0={tokenMeta.token0}
-      token1={tokenMeta.token1}
-      fee={tokenMeta.fee}
-      linkable={linkable}
-      dontOverrideColors={dontOverrideColors}
-    />
-  );
+export const uniswapV3PairRenderer: ResolvedAddressRenderer<
+  UniswapV3PairMeta
+> = (chainId, address, tokenMeta, linkable, dontOverrideColors) => (
+  <UniswapV3PairName
+    chainId={chainId}
+    address={address}
+    token0={tokenMeta.token0}
+    token1={tokenMeta.token1}
+    fee={tokenMeta.fee}
+    linkable={linkable}
+    dontOverrideColors={dontOverrideColors}
+  />
+);
 
 export default UniswapV3PairName;
