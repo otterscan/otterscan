@@ -10,7 +10,7 @@ RUN npm run build
 FROM alpine:3.14.0 AS logobuilder
 RUN apk add imagemagick parallel
 WORKDIR /assets
-COPY trustwallet/blockchains/ethereum/assets /assets/
+COPY trustwallet/blockchains/ethereum/assets /assets/1/
 RUN find . -name logo.png | parallel magick convert {} -filter Lanczos -resize 32x32 {}
 
 FROM alpine:3.14.0 AS fourbytesbuilder
