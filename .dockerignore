@@ -5,3 +5,5 @@ node_modules
 !4bytes/with_parameter_names
 trustwallet
 !trustwallet/blockchains/ethereum/assets
+!trustwallet/blockchains/polygon/assets
+!trustwallet/blockchains/smartchain/assets
