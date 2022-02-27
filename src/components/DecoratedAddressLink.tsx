@@ -13,13 +13,13 @@ import { Metadata } from "../sourcify/useSourcify";
 
 type DecoratedAddressLinkProps = {
   address: string;
-  selectedAddress?: string;
-  addressCtx?: AddressContext;
-  creation?: boolean;
-  miner?: boolean;
-  selfDestruct?: boolean;
-  txFrom?: boolean;
-  txTo?: boolean;
+  selectedAddress?: string | undefined;
+  addressCtx?: AddressContext | undefined;
+  creation?: boolean | undefined;
+  miner?: boolean | undefined;
+  selfDestruct?: boolean | undefined;
+  txFrom?: boolean | undefined;
+  txTo?: boolean | undefined;
   metadata?: Metadata | null | undefined;
 };
 
