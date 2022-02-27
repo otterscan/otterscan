@@ -24,6 +24,7 @@ type DecoratedAddressLinkProps = {
   txFrom?: boolean | undefined;
   txTo?: boolean | undefined;
   metadata?: Metadata | null | undefined;
+  eoa?: boolean | undefined;
 };
 
 const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
@@ -36,6 +37,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   txFrom,
   txTo,
   metadata,
+  eoa,
 }) => {
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -88,6 +90,22 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         selectedAddress={selectedAddress}
         dontOverrideColors={mint || burn}
       />
+      {eoa === true && (
+        <span
+          className="text-xs text-gray-400 text-opacity-70"
+          title="Externally owned account"
+        >
+          (EOA)
+        </span>
+      )}
+      {eoa === false && (
+        <span
+          className="text-xs text-gray-400 text-opacity-70"
+          title="Contract account"
+        >
+          (C)
+        </span>
+      )}
     </div>
   );
 };
