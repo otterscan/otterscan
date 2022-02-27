@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
@@ -6,14 +6,17 @@ import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
 import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons/faMoneyBillAlt";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
-import AddressOrENSName from "./AddressOrENSName";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
-import { AddressContext, ZERO_ADDRESS } from "../types";
+import PlainAddress from "./PlainAddress";
 import { Metadata } from "../sourcify/useSourcify";
+import { RuntimeContext } from "../useRuntime";
+import { useResolvedAddress } from "../useResolvedAddresses";
+import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
+import { resolverRendererRegistry } from "../api/address-resolver";
 
 type DecoratedAddressLinkProps = {
-  address: string;
-  selectedAddress?: string | undefined;
+  address: ChecksummedAddress;
+  selectedAddress?: ChecksummedAddress | undefined;
   addressCtx?: AddressContext | undefined;
   creation?: boolean | undefined;
   miner?: boolean | undefined;
@@ -80,12 +83,58 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
           <SourcifyLogo />
         </NavLink>
       )}
-      <AddressOrENSName
+      <ResolvedAddress
         address={address}
         selectedAddress={selectedAddress}
         dontOverrideColors={mint || burn}
       />
     </div>
+  );
+};
+
+type ResolvedAddressProps = {
+  address: ChecksummedAddress;
+  selectedAddress?: ChecksummedAddress | undefined;
+  dontOverrideColors?: boolean;
+};
+
+const ResolvedAddress: React.FC<ResolvedAddressProps> = ({
+  address,
+  selectedAddress,
+  dontOverrideColors,
+}) => {
+  const { provider } = useContext(RuntimeContext);
+  const resolvedAddress = useResolvedAddress(provider, address);
+  const linkable = address !== selectedAddress;
+
+  if (!provider || !resolvedAddress) {
+    return (
+      <PlainAddress
+        address={address}
+        linkable={linkable}
+        dontOverrideColors={dontOverrideColors}
+      />
+    );
+  }
+
+  const [resolver, resolvedName] = resolvedAddress;
+  const renderer = resolverRendererRegistry.get(resolver);
+  if (renderer === undefined) {
+    return (
+      <PlainAddress
+        address={address}
+        linkable={linkable}
+        dontOverrideColors={dontOverrideColors}
+      />
+    );
+  }
+
+  return renderer(
+    provider.network.chainId,
+    address,
+    resolvedName,
+    linkable,
+    !!dontOverrideColors
   );
 };
 
