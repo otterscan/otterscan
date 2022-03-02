@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { Block, BlockWithTransactions } from "@ethersproject/abstract-provider";
+import {
+  Block,
+  BlockWithTransactions,
+  BlockTag,
+} from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
@@ -678,4 +682,41 @@ export const useAddressBalance = (
   }, [provider, address]);
 
   return balance;
+};
+
+/**
+ * This is a generic fetch for SWR, where the key is an array, whose
+ * element 0 is the JSON-RPC method, and the remaining are the method
+ * arguments.
+ */
+export const providerFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (...key: any[]): Promise<any | undefined> => {
+    if (provider === undefined) {
+      return undefined;
+    }
+    for (const a of key) {
+      if (a === undefined) {
+        return undefined;
+      }
+    }
+
+    const method = key[0];
+    const args = key.slice(1);
+    const result = await provider.send(method, args);
+    // console.log(`providerFetcher: ${method} ${args} === ${result}`);
+    return result;
+  };
+
+export const useHasCode = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  blockTag: BlockTag = "latest"
+): boolean | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWR(["ots_hasCode", address, blockTag], fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data as boolean | undefined;
 };
