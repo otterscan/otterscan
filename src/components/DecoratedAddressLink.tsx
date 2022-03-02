@@ -91,20 +91,10 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         dontOverrideColors={mint || burn}
       />
       {eoa === true && (
-        <span
-          className="text-xs text-gray-400 text-opacity-70 not-italic"
-          title="Externally owned account"
-        >
-          (EOA)
-        </span>
+        <AddressLegend title="Externally owned account">(EOA)</AddressLegend>
       )}
       {eoa === false && (
-        <span
-          className="text-xs text-gray-400 text-opacity-70 not-italic"
-          title="Contract account"
-        >
-          (C)
-        </span>
+        <AddressLegend title="Contract account">(C)</AddressLegend>
       )}
     </div>
   );
@@ -155,5 +145,18 @@ const ResolvedAddress: React.FC<ResolvedAddressProps> = ({
     !!dontOverrideColors
   );
 };
+
+type AddressLegendProps = {
+  title: string;
+};
+
+const AddressLegend: React.FC<AddressLegendProps> = ({ title, children }) => (
+  <span
+    className="text-xs text-gray-400 text-opacity-70 not-italic"
+    title={title}
+  >
+    {children}
+  </span>
+);
 
 export default React.memo(DecoratedAddressLink);
