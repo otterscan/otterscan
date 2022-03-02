@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
 import TransactionAddress from "../components/TransactionAddress";
@@ -6,18 +6,21 @@ import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";
 import InputDecoder from "./decoder/InputDecoder";
 import ExpanderSwitch from "../components/ExpanderSwitch";
-import { TraceEntry } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import { TraceEntry, useHasCode } from "../useErigonHooks";
 import {
   extract4Bytes,
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
+import { TransactionData } from "../types";
 
 type TraceInputProps = {
   t: TraceEntry;
+  txData: TransactionData;
 };
 
-const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
+const TraceInput: React.FC<TraceInputProps> = ({ t, txData }) => {
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes);
   const sigText =
@@ -31,6 +34,15 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   );
 
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  const { provider } = useContext(RuntimeContext);
+  const toHasCode = useHasCode(
+    provider,
+    t.to,
+    txData.confirmedData !== undefined
+      ? txData.confirmedData.blockNumber - 1
+      : undefined
+  );
 
   return (
     <div
@@ -47,7 +59,10 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
         ) : (
           <>
             <span>
-              <TransactionAddress address={t.to} />
+              <TransactionAddress
+                address={t.to}
+                eoa={toHasCode === undefined ? undefined : !toHasCode}
+              />
             </span>
             {t.type !== "CREATE" && t.type !== "CREATE2" && (
               <>
