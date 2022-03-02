@@ -314,6 +314,7 @@ const Details: React.FC<DetailsProps> = ({
               t={t}
               tokenMeta={txData.tokenMetas[t.token]}
               metadatas={metadatas}
+              txData={txData}
             />
           ))}
         </InfoRow>
