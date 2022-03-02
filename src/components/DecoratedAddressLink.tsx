@@ -90,11 +90,17 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         selectedAddress={selectedAddress}
         dontOverrideColors={mint || burn}
       />
-      {eoa === true && (
-        <AddressLegend title="Externally owned account">(EOA)</AddressLegend>
-      )}
-      {eoa === false && (
-        <AddressLegend title="Contract account">(C)</AddressLegend>
+      {!mint && !burn && (
+        <>
+          {eoa === true && (
+            <AddressLegend title="Externally owned account">
+              (EOA)
+            </AddressLegend>
+          )}
+          {eoa === false && (
+            <AddressLegend title="Contract account">(C)</AddressLegend>
+          )}
+        </>
       )}
     </div>
   );
