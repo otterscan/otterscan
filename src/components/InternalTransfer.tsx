@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
+import { RuntimeContext } from "../useRuntime";
+import { useHasCode } from "../useErigonHooks";
 import { TransactionData, InternalOperation } from "../types";
 
 type InternalTransferProps = {
@@ -21,6 +23,18 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   const toMiner =
     txData.confirmedData?.miner !== undefined &&
     internalOp.to === txData.confirmedData.miner;
+
+  const { provider } = useContext(RuntimeContext);
+  const fromHasCode = useHasCode(
+    provider,
+    internalOp.from,
+    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
+  );
+  const toHasCode = useHasCode(
+    provider,
+    internalOp.to,
+    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
+  );
 
   return (
     <div className="flex items-baseline space-x-1 whitespace-nowrap">
@@ -41,6 +55,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               miner={fromMiner}
               txFrom={internalOp.from === txData.from}
               txTo={internalOp.from === txData.to}
+              eoa={fromHasCode === undefined ? undefined : !fromHasCode}
             />
           </div>
         </AddressHighlighter>
@@ -58,6 +73,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
               miner={toMiner}
               txFrom={internalOp.to === txData.from}
               txTo={internalOp.to === txData.to}
+              eoa={toHasCode === undefined ? undefined : !toHasCode}
             />
           </div>
         </AddressHighlighter>
