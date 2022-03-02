@@ -92,7 +92,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       />
       {eoa === true && (
         <span
-          className="text-xs text-gray-400 text-opacity-70"
+          className="text-xs text-gray-400 text-opacity-70 not-italic"
           title="Externally owned account"
         >
           (EOA)
@@ -100,7 +100,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       )}
       {eoa === false && (
         <span
-          className="text-xs text-gray-400 text-opacity-70"
+          className="text-xs text-gray-400 text-opacity-70 not-italic"
           title="Contract account"
         >
           (C)
