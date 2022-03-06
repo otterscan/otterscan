@@ -94,11 +94,11 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         <>
           {eoa === true && (
             <AddressLegend title="Externally owned account">
-              (EOA)
+              [EOA]
             </AddressLegend>
           )}
           {eoa === false && (
-            <AddressLegend title="Contract account">(C)</AddressLegend>
+            <AddressLegend title="Contract account">[C]</AddressLegend>
           )}
         </>
       )}
