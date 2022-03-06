@@ -11,6 +11,7 @@ import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import useSWR, { useSWRConfig } from "swr";
+import useSWRImmutable from "swr/immutable";
 import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
@@ -714,7 +715,10 @@ export const useHasCode = (
   blockTag: BlockTag = "latest"
 ): boolean | undefined => {
   const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(["ots_hasCode", address, blockTag], fetcher);
+  const { data, error } = useSWRImmutable(
+    ["ots_hasCode", address, blockTag],
+    fetcher
+  );
   if (error) {
     return undefined;
   }
