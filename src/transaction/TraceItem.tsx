@@ -5,13 +5,15 @@ import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare
 import { Switch } from "@headlessui/react";
 import { TraceGroup } from "../useErigonHooks";
 import TraceInput from "./TraceInput";
+import { TransactionData } from "../types";
 
 type TraceItemProps = {
   t: TraceGroup;
   last: boolean;
+  txData: TransactionData;
 };
 
-const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
+const TraceItem: React.FC<TraceItemProps> = ({ t, last, txData }) => {
   const [expanded, setExpanded] = useState<boolean>(true);
 
   return (
@@ -33,7 +35,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
             />
           </Switch>
         )}
-        <TraceInput t={t} />
+        <TraceInput t={t} txData={txData} />
       </div>
       {t.children && (
         <div
@@ -41,7 +43,7 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
             expanded ? "" : "hidden"
           }`}
         >
-          <TraceChildren c={t.children} />
+          <TraceChildren c={t.children} txData={txData} />
         </div>
       )}
     </>
@@ -50,16 +52,19 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
 
 type TraceChildrenProps = {
   c: TraceGroup[];
+  txData: TransactionData;
 };
 
-const TraceChildren: React.FC<TraceChildrenProps> = React.memo(({ c }) => {
-  return (
-    <>
-      {c.map((tc, i, a) => (
-        <TraceItem key={i} t={tc} last={i === a.length - 1} />
-      ))}
-    </>
-  );
-});
+const TraceChildren: React.FC<TraceChildrenProps> = React.memo(
+  ({ c, txData }) => {
+    return (
+      <>
+        {c.map((tc, i, a) => (
+          <TraceItem key={i} t={tc} last={i === a.length - 1} txData={txData} />
+        ))}
+      </>
+    );
+  }
+);
 
 export default TraceItem;

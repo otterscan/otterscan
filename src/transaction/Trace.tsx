@@ -24,7 +24,12 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
             </div>
             <div className="ml-5 space-y-3 self-stretch">
               {traces.map((t, i, a) => (
-                <TraceItem key={i} t={t} last={i === a.length - 1} />
+                <TraceItem
+                  key={i}
+                  t={t}
+                  last={i === a.length - 1}
+                  txData={txData}
+                />
               ))}
             </div>
           </>

@@ -9,12 +9,14 @@ type TransactionAddressProps = {
   address: string;
   addressCtx?: AddressContext | undefined;
   metadata?: Metadata | null | undefined;
+  eoa?: boolean | undefined;
 };
 
 const TransactionAddress: React.FC<TransactionAddressProps> = ({
   address,
   addressCtx,
   metadata,
+  eoa,
 }) => {
   const txData = useSelectedTransaction();
   // TODO: push down creation coloring logic into DecoratedAddressLink
@@ -30,6 +32,7 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
         txTo={address === txData?.to || creation}
         creation={creation}
         metadata={metadata}
+        eoa={eoa}
       />
     </AddressHighlighter>
   );

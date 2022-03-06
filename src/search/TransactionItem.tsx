@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +16,8 @@ import TransactionDirection, {
 import TransactionValue from "../components/TransactionValue";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
+import { RuntimeContext } from "../useRuntime";
+import { useHasCode } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
 import ETH2USDValue from "../components/ETH2USDValue";
 import { Metadata } from "../sourcify/useSourcify";
@@ -35,6 +37,13 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   priceMap,
   metadatas,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const toHasCode = useHasCode(
+    provider,
+    tx.to ?? undefined,
+    tx.blockNumber - 1
+  );
+
   let direction: Direction | undefined;
   if (selectedAddress) {
     if (tx.from === selectedAddress && tx.to === selectedAddress) {
@@ -107,6 +116,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
                 metadata={metadatas[tx.to]}
+                eoa={toHasCode === undefined ? undefined : !toHasCode}
               />
             </AddressHighlighter>
           ) : (
@@ -116,6 +126,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 selectedAddress={selectedAddress}
                 creation
                 metadata={metadatas[tx.createdContractAddress!]}
+                eoa={false}
               />
             </AddressHighlighter>
           )}
