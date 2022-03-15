@@ -39,7 +39,7 @@
     "react-image": "^4.0.3",
     "react-router-dom": "^6.2.2",
     "react-scripts": "4.0.3",
-    "react-syntax-highlighter": "^15.4.5",
+    "react-syntax-highlighter": "^15.5.0",
     "serve": "^13.0.2",
     "swr": "^1.2.2",
     "typescript": "^4.6.2",
