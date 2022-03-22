@@ -68,4 +68,4 @@ export const sourcifySourceFile = (
   )}/contracts/full_match/${chainId}/${address}/sources/${filepath}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
-  `https://remix.ethereum.org/#call=source-verification//fetchAndSave//${checksummedAddress}//${networkId}`;
+  `https://remix.ethereum.org/#activate=sourcify&call=sourcify//fetchAndSave//${checksummedAddress}//${networkId}`;
