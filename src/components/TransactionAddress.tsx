@@ -30,7 +30,11 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
   const toHasCode = useHasCode(
     provider,
     address,
-    blockNumber !== undefined ? blockNumber - 1 : undefined
+    blockNumber !== undefined
+      ? blockNumber === "latest"
+        ? "latest"
+        : blockNumber - 1
+      : undefined
   );
 
   return (
