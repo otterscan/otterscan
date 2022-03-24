@@ -45,7 +45,7 @@ import {
 import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
-import { useHasCode, useTransactionError } from "../useErigonHooks";
+import { useTransactionError } from "../useErigonHooks";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -117,12 +117,6 @@ const Details: React.FC<DetailsProps> = ({
     ? devDoc?.errors?.[errorDescription.signature]?.[0]
     : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
-
-  const toHasCode = useHasCode(
-    provider,
-    txData.to,
-    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
-  );
 
   return (
     <ContentFrame tabs>
@@ -270,7 +264,7 @@ const Details: React.FC<DetailsProps> = ({
             <TransactionAddress
               address={txData.to}
               metadata={metadatas?.[txData.to]}
-              eoa={toHasCode === undefined ? undefined : !toHasCode}
+              showCodeIndicator
             />
             <Copy value={txData.to} />
           </div>
@@ -314,7 +308,6 @@ const Details: React.FC<DetailsProps> = ({
               t={t}
               tokenMeta={txData.tokenMetas[t.token]}
               metadatas={metadatas}
-              txData={txData}
             />
           ))}
         </InfoRow>

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import TransactionAddress from "./components/TransactionAddress";
@@ -9,17 +9,13 @@ import {
   ChecksummedAddress,
   TokenMeta,
   TokenTransfer,
-  TransactionData,
 } from "./types";
-import { RuntimeContext } from "./useRuntime";
-import { useHasCode } from "./useErigonHooks";
 import { Metadata } from "./sourcify/useSourcify";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
   tokenMeta?: TokenMeta | null | undefined;
   metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
-  txData: TransactionData;
 };
 
 // TODO: handle partial
@@ -27,20 +23,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMeta,
   metadatas,
-  txData,
 }) => {
-  const { provider } = useContext(RuntimeContext);
-  const fromHasCode = useHasCode(
-    provider,
-    t.from,
-    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
-  );
-  const toHasCode = useHasCode(
-    provider,
-    t.to,
-    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
-  );
-
   return (
     <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
       <span className="text-gray-500">
@@ -53,7 +36,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             address={t.from}
             addressCtx={AddressContext.FROM}
             metadata={metadatas[t.from]}
-            eoa={fromHasCode === undefined ? undefined : !fromHasCode}
+            showCodeIndicator
           />
         </div>
         <div className="col-span-2 flex space-x-1">
@@ -62,7 +45,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             address={t.to}
             addressCtx={AddressContext.TO}
             metadata={metadatas[t.to]}
-            eoa={toHasCode === undefined ? undefined : !toHasCode}
+            showCodeIndicator
           />
         </div>
         <div className="col-span-3 flex space-x-1">

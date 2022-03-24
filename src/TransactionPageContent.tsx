@@ -9,6 +9,7 @@ import { RuntimeContext } from "./useRuntime";
 import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
+import { BlockNumberContext } from "./useBlockTagContext";
 import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
@@ -74,56 +75,60 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
 
   return (
     <SelectedTransactionContext.Provider value={txData}>
-      <StandardFrame>
-        <StandardSubtitle>Transaction Details</StandardSubtitle>
-        {txData === null && (
-          <ContentFrame>
-            <div className="py-4 text-sm">
-              Transaction <span className="font-hash">{txHash}</span> not found.
-            </div>
-          </ContentFrame>
-        )}
-        {txData && (
-          <SelectionContext.Provider value={selectionCtx}>
-            <Tab.Group>
-              <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
-                <NavTab href=".">Overview</NavTab>
-                {txData.confirmedData?.blockNumber !== undefined && (
-                  <NavTab href="logs">
-                    Logs
-                    {txData && ` (${txData.confirmedData?.logs?.length ?? 0})`}
-                  </NavTab>
-                )}
-                <NavTab href="trace">Trace</NavTab>
-              </Tab.List>
-            </Tab.Group>
-            <React.Suspense fallback={null}>
-              <Routes>
-                <Route
-                  index
-                  element={
-                    <Details
-                      txData={txData}
-                      txDesc={txDesc}
-                      toMetadata={metadata}
-                      userDoc={metadata?.output.userdoc}
-                      devDoc={metadata?.output.devdoc}
-                      internalOps={internalOps}
-                      sendsEthToMiner={sendsEthToMiner}
-                      ethUSDPrice={blockETHUSDPrice}
-                    />
-                  }
-                />
-                <Route
-                  path="logs"
-                  element={<Logs txData={txData} metadata={metadata} />}
-                />
-                <Route path="trace" element={<Trace txData={txData} />} />
-              </Routes>
-            </React.Suspense>
-          </SelectionContext.Provider>
-        )}
-      </StandardFrame>
+      <BlockNumberContext.Provider value={txData?.confirmedData?.blockNumber}>
+        <StandardFrame>
+          <StandardSubtitle>Transaction Details</StandardSubtitle>
+          {txData === null && (
+            <ContentFrame>
+              <div className="py-4 text-sm">
+                Transaction <span className="font-hash">{txHash}</span> not
+                found.
+              </div>
+            </ContentFrame>
+          )}
+          {txData && (
+            <SelectionContext.Provider value={selectionCtx}>
+              <Tab.Group>
+                <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+                  <NavTab href=".">Overview</NavTab>
+                  {txData.confirmedData?.blockNumber !== undefined && (
+                    <NavTab href="logs">
+                      Logs
+                      {txData &&
+                        ` (${txData.confirmedData?.logs?.length ?? 0})`}
+                    </NavTab>
+                  )}
+                  <NavTab href="trace">Trace</NavTab>
+                </Tab.List>
+              </Tab.Group>
+              <React.Suspense fallback={null}>
+                <Routes>
+                  <Route
+                    index
+                    element={
+                      <Details
+                        txData={txData}
+                        txDesc={txDesc}
+                        toMetadata={metadata}
+                        userDoc={metadata?.output.userdoc}
+                        devDoc={metadata?.output.devdoc}
+                        internalOps={internalOps}
+                        sendsEthToMiner={sendsEthToMiner}
+                        ethUSDPrice={blockETHUSDPrice}
+                      />
+                    }
+                  />
+                  <Route
+                    path="logs"
+                    element={<Logs txData={txData} metadata={metadata} />}
+                  />
+                  <Route path="trace" element={<Trace txData={txData} />} />
+                </Routes>
+              </React.Suspense>
+            </SelectionContext.Provider>
+          )}
+        </StandardFrame>
+      </BlockNumberContext.Provider>
     </SelectedTransactionContext.Provider>
   );
 };
