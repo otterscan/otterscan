@@ -48,7 +48,7 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
         creation={creation}
         metadata={metadata}
         eoa={
-          showCodeIndicator !== undefined && blockNumber !== undefined
+          showCodeIndicator && blockNumber !== undefined
             ? !toHasCode
             : undefined
         }
