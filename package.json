@@ -42,7 +42,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "serve": "^13.0.2",
     "swr": "^1.2.2",
-    "typescript": "^4.6.2",
+    "typescript": "^4.6.3",
     "use-keyboard-shortcut": "^1.1.4",
     "web-vitals": "^1.0.1"
   },
