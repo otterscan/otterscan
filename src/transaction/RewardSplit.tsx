@@ -3,14 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import FormattedBalance from "../components/FormattedBalance";
-import { TransactionData } from "../types";
 import PercentageGauge from "../components/PercentageGauge";
+import { TransactionData } from "../types";
+import { useChainInfo } from "../useChainInfo";
 
 type RewardSplitProps = {
   txData: TransactionData;
 };
 
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
+  const { nativeSymbol } = useChainInfo();
   const paidFees = txData.gasPrice.mul(txData.confirmedData!.gasUsed);
   const burntFees = txData.confirmedData!.blockBaseFeePerGas!.mul(
     txData.confirmedData!.gasUsed
@@ -39,7 +41,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <span className="line-through">
                 <FormattedBalance value={burntFees} />
               </span>{" "}
-              Ether
+              {nativeSymbol}
             </span>
           </span>
         </div>
@@ -55,7 +57,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>
-              <FormattedBalance value={minerReward} /> Ether
+              <FormattedBalance value={minerReward} /> {nativeSymbol}
             </span>
           </span>
         </div>

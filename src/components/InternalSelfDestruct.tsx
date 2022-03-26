@@ -4,8 +4,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
-import { TransactionData, InternalOperation } from "../types";
 import TransactionAddress from "./TransactionAddress";
+import { useChainInfo } from "../useChainInfo";
+import { TransactionData, InternalOperation } from "../types";
 
 type InternalSelfDestructProps = {
   txData: TransactionData;
@@ -16,6 +17,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   txData,
   internalOp,
 }) => {
+  const { nativeSymbol } = useChainInfo();
   const toMiner =
     txData.confirmedData?.miner !== undefined &&
     internalOp.to === txData.confirmedData.miner;
@@ -43,7 +45,9 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
           <span className="text-gray-500">
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
           </span>
-          <span>{formatEther(internalOp.value)} Ether</span>
+          <span>
+            {formatEther(internalOp.value)} {nativeSymbol}
+          </span>
           <div className="flex items-baseline">
             <span className="text-gray-500">To</span>
             <AddressHighlighter address={internalOp.to}>

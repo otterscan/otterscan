@@ -9,6 +9,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";
 import ContentFrame from "./ContentFrame";
+import BlockNotFound from "./components/BlockNotFound";
 import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import GasValue from "./components/GasValue";
@@ -25,7 +26,7 @@ import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
 import { useETHUSDOracle } from "./usePriceOracle";
-import BlockNotFound from "./components/BlockNotFound";
+import { useChainInfo } from "./useChainInfo";
 
 const Block: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -33,6 +34,7 @@ const Block: React.FC = () => {
   if (blockNumberOrHash === undefined) {
     throw new Error("blockNumberOrHash couldn't be undefined here");
   }
+  const { nativeName, nativeSymbol } = useChainInfo();
 
   const block = useBlockData(provider, blockNumberOrHash);
   useEffect(() => {
@@ -144,7 +146,7 @@ const Block: React.FC = () => {
                     <span className="line-through">
                       <FormattedBalance value={burntFees} />
                     </span>{" "}
-                    Ether
+                    {nativeSymbol}
                   </span>
                 </span>
               </div>
@@ -163,7 +165,7 @@ const Block: React.FC = () => {
             {extraStr} (Hex:{" "}
             <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
-          <InfoRow title="Ether Price">
+          <InfoRow title={`${nativeName} Price`}>
             <USDValue value={blockETHUSDPrice} />
           </InfoRow>
           <InfoRow title="Difficult">

@@ -46,6 +46,7 @@ import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
 import { useTransactionError } from "../useErigonHooks";
+import { useChainInfo } from "../useChainInfo";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -86,6 +87,7 @@ const Details: React.FC<DetailsProps> = ({
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
   const { provider } = useContext(RuntimeContext);
+  const { nativeName, nativeSymbol } = useChainInfo();
   const addresses = useMemo(() => {
     const _addresses: ChecksummedAddress[] = [];
     if (txData.to) {
@@ -313,7 +315,7 @@ const Details: React.FC<DetailsProps> = ({
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <FormattedBalance value={txData.value} /> Ether{" "}
+        <FormattedBalance value={txData.value} /> {nativeSymbol}{" "}
         {!txData.value.isZero() && ethUSDPrice && (
           <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
             <ETH2USDValue ethAmount={txData.value} eth2USDValue={ethUSDPrice} />
@@ -336,7 +338,8 @@ const Details: React.FC<DetailsProps> = ({
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
-            <FormattedBalance value={txData.maxPriorityFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxPriorityFeePerGas!} />{" "}
+            {nativeSymbol} (
             <FormattedBalance
               value={txData.maxPriorityFeePerGas!}
               decimals={9}
@@ -344,7 +347,7 @@ const Details: React.FC<DetailsProps> = ({
             Gwei)
           </InfoRow>
           <InfoRow title="Max Fee Per Gas">
-            <FormattedBalance value={txData.maxFeePerGas!} /> Ether (
+            <FormattedBalance value={txData.maxFeePerGas!} /> {nativeSymbol} (
             <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
           </InfoRow>
         </>
@@ -353,7 +356,7 @@ const Details: React.FC<DetailsProps> = ({
         <InfoRow title="Gas Price">
           <div className="flex items-baseline space-x-1">
             <span>
-              <FormattedBalance value={txData.gasPrice} /> Ether (
+              <FormattedBalance value={txData.gasPrice} /> {nativeSymbol} (
               <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
             </span>
             {sendsEthToMiner && (
@@ -404,7 +407,8 @@ const Details: React.FC<DetailsProps> = ({
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <FormattedBalance value={txData.confirmedData.fee} /> Ether{" "}
+                <FormattedBalance value={txData.confirmedData.fee} />{" "}
+                {nativeSymbol}{" "}
                 {ethUSDPrice && (
                   <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
                     <ETH2USDValue
@@ -417,7 +421,7 @@ const Details: React.FC<DetailsProps> = ({
               {hasEIP1559 && <RewardSplit txData={txData} />}
             </div>
           </InfoRow>
-          <InfoRow title="Ether Price">
+          <InfoRow title={`${nativeName} Price`}>
             <USDValue value={ethUSDPrice} />
           </InfoRow>
         </>

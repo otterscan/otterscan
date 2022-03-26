@@ -7,6 +7,7 @@ import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
+import { ChainInfoContext, defaultChainInfo } from "./useChainInfo";
 
 const Block = React.lazy(
   () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
@@ -50,29 +51,34 @@ const App = () => {
         />
       ) : (
         <RuntimeContext.Provider value={runtime}>
-          <div className="h-screen flex flex-col">
-            <WarningHeader />
-            <Router>
-              <Routes>
-                <Route index element={<Home />} />
-                <Route path="/special/london" element={<London />} />
-                <Route path="*" element={<Main />}>
-                  <Route path="block/:blockNumberOrHash" element={<Block />} />
-                  <Route
-                    path="block/:blockNumber/txs"
-                    element={<BlockTransactions />}
-                  />
-                  <Route path="tx/:txhash/*" element={<Transaction />} />
-                  <Route
-                    path="address/:addressOrName/*"
-                    element={<Address />}
-                  />
-                  <Route path="*" element={<PageNotFound />} />
-                </Route>
-              </Routes>
-            </Router>
-            <Footer />
-          </div>
+          <ChainInfoContext.Provider value={defaultChainInfo}>
+            <div className="h-screen flex flex-col">
+              <WarningHeader />
+              <Router>
+                <Routes>
+                  <Route index element={<Home />} />
+                  <Route path="/special/london" element={<London />} />
+                  <Route path="*" element={<Main />}>
+                    <Route
+                      path="block/:blockNumberOrHash"
+                      element={<Block />}
+                    />
+                    <Route
+                      path="block/:blockNumber/txs"
+                      element={<BlockTransactions />}
+                    />
+                    <Route path="tx/:txhash/*" element={<Transaction />} />
+                    <Route
+                      path="address/:addressOrName/*"
+                      element={<Address />}
+                    />
+                    <Route path="*" element={<PageNotFound />} />
+                  </Route>
+                </Routes>
+              </Router>
+              <Footer />
+            </div>
+          </ChainInfoContext.Provider>
         </RuntimeContext.Provider>
       )}
     </Suspense>

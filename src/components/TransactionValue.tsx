@@ -1,12 +1,11 @@
 import React from "react";
 import { BigNumber } from "@ethersproject/bignumber";
+import { useChainInfo } from "../useChainInfo";
 import { formatValue } from "./formatter";
 
 type TransactionValueProps = {
   value: BigNumber;
-  decimals?: number;
   hideUnit?: boolean;
-  unitName?: string;
 };
 
 /**
@@ -21,19 +20,18 @@ type TransactionValueProps = {
  */
 const TransactionValue: React.FC<TransactionValueProps> = ({
   value,
-  decimals = 18,
   hideUnit,
-  unitName = "ETH",
 }) => {
-  const formattedValue = formatValue(value, decimals);
+  const { nativeSymbol, nativeDecimals } = useChainInfo();
+  const formattedValue = formatValue(value, nativeDecimals);
 
   return (
     <span
       className={`text-sm ${value.isZero() ? "text-gray-400" : ""}`}
-      title={`${formattedValue} ${unitName}`}
+      title={`${formattedValue} ${nativeSymbol}`}
     >
       <span className={`font-balance`}>{formattedValue}</span>
-      {!hideUnit && ` ${unitName}`}
+      {!hideUnit && ` ${nativeSymbol}`}
     </span>
   );
 };
