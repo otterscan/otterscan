@@ -10,3 +10,7 @@
 	path = topic0
 	url = https://github.com/wmitsuda/topic0.git
 	ignore = dirty
+[submodule "chains"]
+	path = chains
+	url = https://github.com/ethereum-lists/chains.git
+	ignore = dirty
