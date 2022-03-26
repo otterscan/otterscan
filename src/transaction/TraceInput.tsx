@@ -13,14 +13,12 @@ import {
   useTransactionDescription,
 } from "../use4Bytes";
 import { useChainInfo } from "../useChainInfo";
-import { TransactionData } from "../types";
 
 type TraceInputProps = {
   t: TraceEntry;
-  txData: TransactionData;
 };
 
-const TraceInput: React.FC<TraceInputProps> = ({ t, txData }) => {
+const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const { nativeSymbol } = useChainInfo();
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes);
