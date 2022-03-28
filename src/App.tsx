@@ -7,7 +7,7 @@ import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
-import { ChainInfoContext, defaultChainInfo } from "./useChainInfo";
+import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
 
 const Block = React.lazy(
   () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
@@ -41,17 +41,19 @@ const PageNotFound = React.lazy(
 
 const App = () => {
   const runtime = useRuntime();
+  const chainInfo = useChainInfoFromMetadataFile(runtime);
 
   return (
     <Suspense fallback={null}>
-      {runtime.connStatus !== ConnectionStatus.CONNECTED ? (
+      {runtime.connStatus !== ConnectionStatus.CONNECTED ||
+      chainInfo === undefined ? (
         <ConnectionErrorPanel
           connStatus={runtime.connStatus}
           config={runtime.config}
         />
       ) : (
         <RuntimeContext.Provider value={runtime}>
-          <ChainInfoContext.Provider value={defaultChainInfo}>
+          <ChainInfoContext.Provider value={chainInfo}>
             <div className="h-screen flex flex-col">
               <WarningHeader />
               <Router>
