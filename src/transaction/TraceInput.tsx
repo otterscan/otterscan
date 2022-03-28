@@ -12,14 +12,14 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { TransactionData } from "../types";
+import { useChainInfo } from "../useChainInfo";
 
 type TraceInputProps = {
   t: TraceEntry;
-  txData: TransactionData;
 };
 
-const TraceInput: React.FC<TraceInputProps> = ({ t, txData }) => {
+const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
+  const { nativeSymbol } = useChainInfo();
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes);
   const sigText =
@@ -57,7 +57,9 @@ const TraceInput: React.FC<TraceInputProps> = ({ t, txData }) => {
                 <FunctionSignature callType={t.type} sig={sigText} />
                 {t.value && !t.value.isZero() && (
                   <span className="text-red-700 whitespace-nowrap">
-                    {"{"}value: <FormattedBalance value={t.value} /> ETH{"}"}
+                    {"{"}value: <FormattedBalance value={t.value} />{" "}
+                    {nativeSymbol}
+                    {"}"}
                   </span>
                 )}
                 <span className="whitespace-nowrap">

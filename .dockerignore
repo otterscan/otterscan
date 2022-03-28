@@ -7,3 +7,5 @@ trustwallet
 !trustwallet/blockchains/ethereum/assets
 !trustwallet/blockchains/polygon/assets
 !trustwallet/blockchains/smartchain/assets
+chains
+!chains/_data/chains

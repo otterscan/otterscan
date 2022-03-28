@@ -24,6 +24,10 @@ FROM alpine:3.15.0 AS topic0builder
 WORKDIR /topic0
 COPY topic0/with_parameter_names /topic0/
 
+FROM alpine:3.15.0 AS chainsbuilder
+WORKDIR /chains
+COPY chains/_data/chains /chains/
+
 # Add brotli module to official nginx image
 # Based on: https://github.com/nginxinc/docker-nginx/tree/master/modules
 FROM nginx:1.21.3-alpine as nginxbuilder
@@ -87,6 +91,7 @@ RUN set -ex \
        done \
     && rm -rf /tmp/packages
 RUN apk update && apk add jq
+COPY --from=chainsbuilder /chains /usr/share/nginx/html/chains/
 COPY --from=topic0builder /topic0 /usr/share/nginx/html/topic0/
 COPY --from=fourbytesbuilder /signatures /usr/share/nginx/html/signatures/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/

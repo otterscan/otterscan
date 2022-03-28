@@ -6,6 +6,7 @@ import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import { RuntimeContext } from "../useRuntime";
 import { useHasCode } from "../useErigonHooks";
+import { useChainInfo } from "../useChainInfo";
 import { TransactionData, InternalOperation } from "../types";
 
 type InternalTransferProps = {
@@ -17,6 +18,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {
+  const { nativeSymbol } = useChainInfo();
   const fromMiner =
     txData.confirmedData?.miner !== undefined &&
     internalOp.from === txData.confirmedData.miner;
@@ -41,7 +43,9 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
       <span className="text-gray-500">
         <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
       </span>
-      <span>{formatEther(internalOp.value)} Ether</span>
+      <span>
+        {formatEther(internalOp.value)} {nativeSymbol}
+      </span>
       <div className="flex items-baseline">
         <span className="text-gray-500">From</span>
         <AddressHighlighter address={internalOp.from}>
