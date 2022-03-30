@@ -22,7 +22,8 @@ const InternalCreate: React.FC<InternalCreateProps> = ({ internalOp }) => (
       </AddressHighlighter>
     </div>
     <span className="flex items-baseline text-gray-400">
-      (Creator: <TransactionAddress address={internalOp.from} />)
+      (Creator:{" "}
+      <TransactionAddress address={internalOp.from} showCodeIndicator />)
     </span>
   </div>
 );

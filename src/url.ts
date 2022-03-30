@@ -11,8 +11,14 @@ export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
 
 export const tokenLogoURL = (
   assetsURLPrefix: string,
+  chainId: number,
   address: string
-): string => `${assetsURLPrefix}/assets/${address}/logo.png`;
+): string => `${assetsURLPrefix}/assets/${chainId}/${address}/logo.png`;
+
+export const chainInfoURL = (
+  assetsURLPrefix: string,
+  chainId: number
+): string => `${assetsURLPrefix}/chains/eip155-${chainId}.json`;
 
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
@@ -67,4 +73,4 @@ export const sourcifySourceFile = (
   )}/contracts/full_match/${chainId}/${address}/sources/${filepath}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
-  `https://remix.ethereum.org/#call=source-verification//fetchAndSave//${checksummedAddress}//${networkId}`;
+  `https://remix.ethereum.org/#activate=sourcify&call=sourcify//fetchAndSave//${checksummedAddress}//${networkId}`;

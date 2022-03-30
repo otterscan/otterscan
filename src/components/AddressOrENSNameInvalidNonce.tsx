@@ -1,7 +1,7 @@
 import React from "react";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
-import AddressOrENSName from "./AddressOrENSName";
+import DecoratedAddressLink from "./DecoratedAddressLink";
 
 type AddressOrENSNameInvalidNonceProps = {
   addressOrENSName: string;
@@ -15,7 +15,7 @@ const AddressOrENSNameInvalidNonce: React.FC<
     <StandardSubtitle>Transaction Details</StandardSubtitle>
     <ContentFrame>
       <div className="flex py-4 text-sm">
-        <AddressOrENSName address={addressOrENSName} />
+        <DecoratedAddressLink address={addressOrENSName} />
         <span>: no transaction found for nonce="{nonce}".</span>
       </div>
     </ContentFrame>

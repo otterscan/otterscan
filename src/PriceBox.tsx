@@ -7,12 +7,14 @@ import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Int
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
 import { useLatestBlock } from "./useLatestBlock";
+import { useChainInfo } from "./useChainInfo";
 
 const ETH_FEED_DECIMALS = 8;
 
 // TODO: reduce duplication with useETHUSDOracle
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
+  const { nativeSymbol } = useChainInfo();
   const latestBlock = useLatestBlock(provider);
 
   const maybeOutdated: boolean =
@@ -80,9 +82,9 @@ const PriceBox: React.FC = () => {
           } font-sans text-xs text-gray-800`}
         >
           <span
-            title={`ETH/USD last updated at: ${latestPriceTimestamp?.toString()}`}
+            title={`${nativeSymbol}/USD last updated at: ${latestPriceTimestamp?.toString()}`}
           >
-            Eth: $<span className="font-balance">{latestPrice}</span>
+            {nativeSymbol}: $<span className="font-balance">{latestPrice}</span>
           </span>
           {latestGasData && (
             <>

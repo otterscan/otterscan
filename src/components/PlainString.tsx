@@ -37,6 +37,7 @@ const PlainString: React.FC<PlainStringProps> = ({
 };
 
 export const plainStringRenderer: ResolvedAddressRenderer<string> = (
+  chainId,
   address,
   resolvedAddress,
   linkable,

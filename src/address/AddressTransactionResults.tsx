@@ -20,6 +20,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { useContractsMetadata } from "../hooks";
 import { useAddressBalance, useContractCreator } from "../useErigonHooks";
+import { BlockNumberContext } from "../useBlockTagContext";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -133,34 +134,39 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   return (
     <ContentFrame tabs>
       <SelectionContext.Provider value={selectionCtx}>
-        {balance && (
-          <InfoRow title="Balance">
-            <div className="space-x-2">
-              <TransactionValue value={balance} />
-              {!balance.isZero() && priceMap["latest"] !== undefined && (
-                <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
-                  <ETH2USDValue
-                    ethAmount={balance}
-                    eth2USDValue={priceMap["latest"]}
+        <BlockNumberContext.Provider value="latest">
+          {balance && (
+            <InfoRow title="Balance">
+              <div className="space-x-2">
+                <TransactionValue value={balance} />
+                {!balance.isZero() && priceMap["latest"] !== undefined && (
+                  <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
+                    <ETH2USDValue
+                      ethAmount={balance}
+                      eth2USDValue={priceMap["latest"]}
+                    />
+                  </span>
+                )}
+              </div>
+            </InfoRow>
+          )}
+          {creator && (
+            <InfoRow title="Contract creator">
+              <div className="flex divide-x-2 divide-dotted divide-gray-300">
+                <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+                  <TransactionAddress
+                    address={creator.creator}
+                    showCodeIndicator
                   />
-                </span>
-              )}
-            </div>
-          </InfoRow>
-        )}
-        {creator && (
-          <InfoRow title="Contract creator">
-            <div className="flex divide-x-2 divide-dotted divide-gray-300">
-              <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-                <TransactionAddress address={creator.creator} />
-                <Copy value={creator.creator} />
+                  <Copy value={creator.creator} />
+                </div>
+                <div className="flex items-baseline pl-3">
+                  <TransactionLink txHash={creator.hash} />
+                </div>
               </div>
-              <div className="flex items-baseline pl-3">
-                <TransactionLink txHash={creator.hash} />
-              </div>
-            </div>
-          </InfoRow>
-        )}
+            </InfoRow>
+          )}
+        </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
         <ResultHeader
           feeDisplay={feeDisplay}

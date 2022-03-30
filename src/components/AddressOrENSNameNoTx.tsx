@@ -1,7 +1,7 @@
 import React from "react";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
-import AddressOrENSName from "./AddressOrENSName";
+import DecoratedAddressLink from "./DecoratedAddressLink";
 
 type AddressOrENSNameNoTxProps = {
   addressOrENSName: string;
@@ -14,7 +14,7 @@ const AddressOrENSNameNoTx: React.FC<AddressOrENSNameNoTxProps> = ({
     <StandardSubtitle>Transaction Details</StandardSubtitle>
     <ContentFrame>
       <div className="flex py-4 text-sm">
-        <AddressOrENSName address={addressOrENSName} />
+        <DecoratedAddressLink address={addressOrENSName} />
         <span>: no outbound transactions found.</span>
       </div>
     </ContentFrame>

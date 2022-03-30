@@ -59,6 +59,7 @@ const Content: React.FC<ContentProps> = ({ linkable, name }) => (
 );
 
 export const ensRenderer: ResolvedAddressRenderer<string> = (
+  chainId,
   address,
   resolvedAddress,
   linkable,
