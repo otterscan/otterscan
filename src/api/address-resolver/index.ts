@@ -45,11 +45,11 @@ const resolvers: Record<number, IAddressResolver<SelectedResolvedName<any>>> = {
 export const getResolver = (
   chainId: number
 ): IAddressResolver<SelectedResolvedName<any>> => {
-  const resolver = resolvers[chainId];
-  if (resolver === undefined) {
-    return resolver[0]; // default MAGIC NUMBER
+  const res = resolvers[chainId];
+  if (res === undefined) {
+    return resolvers[0]; // default MAGIC NUMBER
   }
-  return resolver;
+  return res;
 };
 
 export const resolverRendererRegistry = new Map<
