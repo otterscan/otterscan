@@ -17,7 +17,9 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   txData,
   internalOp,
 }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const toMiner =
     txData.confirmedData?.miner !== undefined &&
     internalOp.to === txData.confirmedData.miner;
@@ -46,7 +48,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
           </span>
           <span>
-            {formatEther(internalOp.value)} {nativeSymbol}
+            {formatEther(internalOp.value)} {symbol}
           </span>
           <div className="flex items-baseline">
             <span className="text-gray-500">To</span>

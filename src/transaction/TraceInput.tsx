@@ -19,7 +19,9 @@ type TraceInputProps = {
 };
 
 const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes);
   const sigText =
@@ -57,8 +59,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
                 <FunctionSignature callType={t.type} sig={sigText} />
                 {t.value && !t.value.isZero() && (
                   <span className="text-red-700 whitespace-nowrap">
-                    {"{"}value: <FormattedBalance value={t.value} />{" "}
-                    {nativeSymbol}
+                    {"{"}value: <FormattedBalance value={t.value} /> {symbol}
                     {"}"}
                   </span>
                 )}

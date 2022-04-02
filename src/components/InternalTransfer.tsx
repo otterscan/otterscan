@@ -18,7 +18,9 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const fromMiner =
     txData.confirmedData?.miner !== undefined &&
     internalOp.from === txData.confirmedData.miner;
@@ -44,7 +46,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
         <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
       </span>
       <span>
-        {formatEther(internalOp.value)} {nativeSymbol}
+        {formatEther(internalOp.value)} {symbol}
       </span>
       <div className="flex items-baseline">
         <span className="text-gray-500">From</span>
