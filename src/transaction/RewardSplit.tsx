@@ -12,7 +12,9 @@ type RewardSplitProps = {
 };
 
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const paidFees = txData.gasPrice.mul(txData.confirmedData!.gasUsed);
   const burntFees = txData.confirmedData!.blockBaseFeePerGas!.mul(
     txData.confirmedData!.gasUsed
@@ -41,7 +43,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <span className="line-through">
                 <FormattedBalance value={burntFees} />
               </span>{" "}
-              {nativeSymbol}
+              {symbol}
             </span>
           </span>
         </div>
@@ -57,7 +59,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>
-              <FormattedBalance value={minerReward} /> {nativeSymbol}
+              <FormattedBalance value={minerReward} /> {symbol}
             </span>
           </span>
         </div>

@@ -15,6 +15,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import Copy from "./components/Copy";
+import Faucet from "./components/Faucet";
 import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
@@ -25,6 +26,7 @@ import { useAddressOrENS } from "./useResolvedAddresses";
 import { useMultipleMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
+import { useChainInfo } from "./useChainInfo";
 
 const AddressTransactionByNonce = React.lazy(
   () =>
@@ -86,6 +88,8 @@ const Address: React.FC = () => {
       ? metadatas[checksummedAddress]
       : undefined;
 
+  const { faucets } = useChainInfo();
+
   // Search address by nonce === transaction @ nonce
   const rawNonce = searchParams.get("nonce");
   if (rawNonce !== null) {
@@ -119,6 +123,10 @@ const Address: React.FC = () => {
                   {checksummedAddress}
                 </span>
                 <Copy value={checksummedAddress} rounded />
+                {/* Only display faucets for testnets who actually have any */}
+                {faucets && faucets.length > 0 && (
+                  <Faucet address={checksummedAddress} rounded />
+                )}
                 {isENS && (
                   <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
                     ENS: {addressOrName}

@@ -34,7 +34,9 @@ const Block: React.FC = () => {
   if (blockNumberOrHash === undefined) {
     throw new Error("blockNumberOrHash couldn't be undefined here");
   }
-  const { nativeName, nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { name, symbol },
+  } = useChainInfo();
 
   const block = useBlockData(provider, blockNumberOrHash);
   useEffect(() => {
@@ -146,7 +148,7 @@ const Block: React.FC = () => {
                     <span className="line-through">
                       <FormattedBalance value={burntFees} />
                     </span>{" "}
-                    {nativeSymbol}
+                    {symbol}
                   </span>
                 </span>
               </div>
@@ -165,7 +167,7 @@ const Block: React.FC = () => {
             {extraStr} (Hex:{" "}
             <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
-          <InfoRow title={`${nativeName} Price`}>
+          <InfoRow title={`${name} Price`}>
             <USDValue value={blockETHUSDPrice} />
           </InfoRow>
           <InfoRow title="Difficult">

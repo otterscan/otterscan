@@ -22,16 +22,18 @@ const TransactionValue: React.FC<TransactionValueProps> = ({
   value,
   hideUnit,
 }) => {
-  const { nativeSymbol, nativeDecimals } = useChainInfo();
-  const formattedValue = formatValue(value, nativeDecimals);
+  const {
+    nativeCurrency: { symbol, decimals },
+  } = useChainInfo();
+  const formattedValue = formatValue(value, decimals);
 
   return (
     <span
       className={`text-sm ${value.isZero() ? "text-gray-400" : ""}`}
-      title={`${formattedValue} ${nativeSymbol}`}
+      title={`${formattedValue} ${symbol}`}
     >
       <span className={`font-balance`}>{formattedValue}</span>
-      {!hideUnit && ` ${nativeSymbol}`}
+      {!hideUnit && ` ${symbol}`}
     </span>
   );
 };
