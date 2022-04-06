@@ -16,6 +16,7 @@ const Faucets: React.FC = () => {
     const address = s.get("address");
 
     const _urls = faucets.map((u) =>
+      // eslint-disable-next-line no-template-curly-in-string
       address !== null ? u.replaceAll("${ADDRESS}", address) : u
     );
 
