@@ -3,6 +3,7 @@ import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
 
 export type ChainInfo = {
+  faucets: string[];
   nativeCurrency: {
     name: string;
     symbol: string;
@@ -11,6 +12,7 @@ export type ChainInfo = {
 };
 
 export const defaultChainInfo: ChainInfo = {
+  faucets: [],
   nativeCurrency: {
     name: "Ether",
     symbol: "ETH",
@@ -41,15 +43,9 @@ export const useChainInfoFromMetadataFile = (
           setChainInfo(defaultChainInfo);
           return;
         }
-        const info = await res.json();
 
-        setChainInfo({
-          nativeCurrency: {
-            name: info.nativeCurrency.name,
-            decimals: info.nativeCurrency.decimals,
-            symbol: info.nativeCurrency.symbol,
-          },
-        });
+        const info: ChainInfo = await res.json();
+        setChainInfo(info);
       } catch (err) {
         // ignore
         setChainInfo(defaultChainInfo);
