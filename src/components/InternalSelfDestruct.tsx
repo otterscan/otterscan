@@ -30,7 +30,6 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
         <span className="text-gray-500">
           <FontAwesomeIcon icon={faAngleRight} size="1x" /> SELF DESTRUCT
         </span>
-        <span>Contract</span>
         <div className="flex items-baseline">
           <AddressHighlighter address={internalOp.from}>
             <DecoratedAddressLink address={internalOp.from} selfDestruct />
