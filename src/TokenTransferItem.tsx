@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import { faSackDollar } from "@fortawesome/free-solid-svg-icons/faSackDollar";
 import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
+import USDAmount from "./components/USDAmount";
 import {
   AddressContext,
   ChecksummedAddress,
   TokenMeta,
   TokenTransfer,
 } from "./types";
+import { RuntimeContext } from "./useRuntime";
+import { useBlockNumberContext } from "./useBlockTagContext";
 import { Metadata } from "./sourcify/useSourcify";
+import { useTokenUSDOracle } from "./usePriceOracle";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
@@ -25,6 +29,10 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   tokenMeta,
   metadatas,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const blockNumber = useBlockNumberContext();
+  const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
+
   return (
     <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
       <div className="grid grid-cols-4 gap-x-1 w-full items-baseline">
@@ -60,6 +68,16 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
             </ValueHighlighter>
           </span>
           <TransactionAddress address={t.token} metadata={metadatas[t.token]} />
+          {tokenMeta && quote !== undefined && decimals !== undefined && (
+            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
+              <USDAmount
+                amount={t.value}
+                amountDecimals={tokenMeta.decimals}
+                quote={quote}
+                quoteDecimals={decimals}
+              />
+            </span>
+          )}
         </div>
       </div>
     </div>
