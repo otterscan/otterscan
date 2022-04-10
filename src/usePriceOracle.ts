@@ -4,6 +4,7 @@ import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
+import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress } from "./types";
 
 const FEED_REGISTRY_MAINNET: ChecksummedAddress =
@@ -12,75 +13,62 @@ const FEED_REGISTRY_MAINNET: ChecksummedAddress =
 // The USD "token" address for Chainlink feed registry's purposes
 const USD = "0x0000000000000000000000000000000000000348";
 
+const feedRegistryFetcherKey = (
+  tokenAddress: ChecksummedAddress,
+  blockTag: BlockTag | undefined
+): [ChecksummedAddress, BlockTag] | null => {
+  if (blockTag === undefined) {
+    return null;
+  }
+  return [tokenAddress, blockTag];
+};
+
+const feedRegistryFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (
+    tokenAddress: ChecksummedAddress,
+    blockTag: BlockTag
+  ): Promise<[BigNumber | undefined, number | undefined]> => {
+    // It work works on ethereum mainnet and kovan, see:
+    // https://docs.chain.link/docs/feed-registry/
+    if (!provider || provider.network.chainId !== 1) {
+      return [undefined, undefined];
+    }
+
+    try {
+      const feedRegistry = new Contract(
+        FEED_REGISTRY_MAINNET,
+        FeedRegistryInterface,
+        provider
+      );
+      const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
+        blockTag,
+      });
+      const quote = BigNumber.from(priceData.answer);
+      const decimals = await feedRegistry.decimals(tokenAddress, USD, {
+        blockTag,
+      });
+      return [quote, decimals];
+    } catch (err) {
+      console.error(err);
+      return [undefined, undefined];
+    }
+  };
+
 export const useTokenUSDOracle = (
   provider: JsonRpcProvider | undefined,
   blockTag: BlockTag | undefined,
   tokenAddress: ChecksummedAddress
 ): [BigNumber | undefined, number | undefined] => {
-  const feedRegistry = useMemo(() => {
-    // It work works on ethereum mainnet and kovan, see:
-    // https://docs.chain.link/docs/feed-registry/
-    if (!provider || provider.network.chainId !== 1) {
-      return undefined;
-    }
-
-    try {
-      return new Contract(
-        FEED_REGISTRY_MAINNET,
-        FeedRegistryInterface,
-        provider
-      );
-    } catch (err) {
-      console.error(err);
-      return undefined;
-    }
-  }, [provider]);
-
-  const [decimals, setDecimals] = useState<number | undefined>();
-  useEffect(() => {
-    if (!feedRegistry || blockTag === undefined) {
-      return;
-    }
-
-    const readData = async () => {
-      try {
-        const _decimals = await feedRegistry.decimals(tokenAddress, USD, {
-          blockTag,
-        });
-        setDecimals(_decimals);
-      } catch (err) {
-        // Silently ignore on purpose; it means the network or block number does
-        // not contain the chainlink feed contract
-        return undefined;
-      }
-    };
-    readData();
-  }, [feedRegistry, blockTag, tokenAddress]);
-
-  const [latestPriceData, setLatestPriceData] = useState<BigNumber>();
-  useEffect(() => {
-    if (!feedRegistry || blockTag === undefined) {
-      return;
-    }
-
-    const readData = async () => {
-      try {
-        const priceData = await feedRegistry.latestRoundData(
-          tokenAddress,
-          USD,
-          { blockTag }
-        );
-        setLatestPriceData(BigNumber.from(priceData.answer));
-      } catch (err) {
-        // Silently ignore on purpose; it means the network or block number does
-        // not contain the chainlink feed contract
-        return undefined;
-      }
-    };
-    readData();
-  }, [feedRegistry, blockTag, tokenAddress]);
-
-  return [latestPriceData, decimals];
+  const fetcher = feedRegistryFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    feedRegistryFetcherKey(tokenAddress, blockTag),
+    fetcher
+  );
+  if (error) {
+    return [undefined, undefined];
+  }
+  return data ?? [undefined, undefined];
 };
 
 export const useETHUSDOracle = (
