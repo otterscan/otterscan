@@ -4,6 +4,7 @@ import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress } from "./types";
 
@@ -13,10 +14,13 @@ const FEED_REGISTRY_MAINNET: ChecksummedAddress =
 // The USD "token" address for Chainlink feed registry's purposes
 const USD = "0x0000000000000000000000000000000000000348";
 
+type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
+type FeedRegistryFetcherData = [BigNumber | undefined, number | undefined];
+
 const feedRegistryFetcherKey = (
   tokenAddress: ChecksummedAddress,
   blockTag: BlockTag | undefined
-): [ChecksummedAddress, BlockTag] | null => {
+): FeedRegistryFetcherKey | null => {
   if (blockTag === undefined) {
     return null;
   }
@@ -24,35 +28,30 @@ const feedRegistryFetcherKey = (
 };
 
 const feedRegistryFetcher =
-  (provider: JsonRpcProvider | undefined) =>
-  async (
-    tokenAddress: ChecksummedAddress,
-    blockTag: BlockTag
-  ): Promise<[BigNumber | undefined, number | undefined]> => {
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
+  async (tokenAddress, blockTag) => {
     // It work works on ethereum mainnet and kovan, see:
     // https://docs.chain.link/docs/feed-registry/
-    if (!provider || provider.network.chainId !== 1) {
-      return [undefined, undefined];
+    if (provider!.network.chainId !== 1) {
+      throw new Error("FeedRegistry is supported only on mainnet");
     }
 
-    try {
-      const feedRegistry = new Contract(
-        FEED_REGISTRY_MAINNET,
-        FeedRegistryInterface,
-        provider
-      );
-      const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
-        blockTag,
-      });
-      const quote = BigNumber.from(priceData.answer);
-      const decimals = await feedRegistry.decimals(tokenAddress, USD, {
-        blockTag,
-      });
-      return [quote, decimals];
-    } catch (err) {
-      console.error(err);
-      return [undefined, undefined];
-    }
+    // Let SWR handle error
+    const feedRegistry = new Contract(
+      FEED_REGISTRY_MAINNET,
+      FeedRegistryInterface,
+      provider
+    );
+    const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
+      blockTag,
+    });
+    const quote = BigNumber.from(priceData.answer);
+    const decimals = await feedRegistry.decimals(tokenAddress, USD, {
+      blockTag,
+    });
+    return [quote, decimals];
   };
 
 export const useTokenUSDOracle = (
