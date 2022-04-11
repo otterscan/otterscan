@@ -1,7 +1,6 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { TransactionDescription } from "@ethersproject/abi";
-import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -47,6 +46,7 @@ import { RuntimeContext } from "../useRuntime";
 import { useContractsMetadata } from "../hooks";
 import { useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -56,7 +56,6 @@ type DetailsProps = {
   devDoc?: DevDoc | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
-  ethUSDPrice: BigNumber | undefined;
 };
 
 const Details: React.FC<DetailsProps> = ({
@@ -67,7 +66,6 @@ const Details: React.FC<DetailsProps> = ({
   devDoc,
   internalOps,
   sendsEthToMiner,
-  ethUSDPrice,
 }) => {
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
@@ -90,6 +88,12 @@ const Details: React.FC<DetailsProps> = ({
   const {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
+
+  const blockETHUSDPrice = useETHUSDOracle(
+    provider,
+    txData?.confirmedData?.blockNumber
+  );
+
   const addresses = useMemo(() => {
     const _addresses: ChecksummedAddress[] = [];
     if (txData.to) {
@@ -318,9 +322,12 @@ const Details: React.FC<DetailsProps> = ({
       )}
       <InfoRow title="Value">
         <FormattedBalance value={txData.value} /> {symbol}{" "}
-        {!txData.value.isZero() && ethUSDPrice && (
+        {!txData.value.isZero() && blockETHUSDPrice && (
           <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-            <ETH2USDValue ethAmount={txData.value} eth2USDValue={ethUSDPrice} />
+            <ETH2USDValue
+              ethAmount={txData.value}
+              eth2USDValue={blockETHUSDPrice}
+            />
           </span>
         )}
       </InfoRow>
@@ -409,11 +416,11 @@ const Details: React.FC<DetailsProps> = ({
             <div className="space-y-3">
               <div>
                 <FormattedBalance value={txData.confirmedData.fee} /> {symbol}{" "}
-                {ethUSDPrice && (
+                {blockETHUSDPrice && (
                   <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
                     <ETH2USDValue
                       ethAmount={txData.confirmedData.fee}
-                      eth2USDValue={ethUSDPrice}
+                      eth2USDValue={blockETHUSDPrice}
                     />
                   </span>
                 )}
@@ -422,7 +429,7 @@ const Details: React.FC<DetailsProps> = ({
             </div>
           </InfoRow>
           <InfoRow title={`${name} Price`}>
-            <USDValue value={ethUSDPrice} />
+            <USDValue value={blockETHUSDPrice} />
           </InfoRow>
         </>
       )}
