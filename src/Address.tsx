@@ -88,7 +88,7 @@ const Address: React.FC = () => {
       ? metadatas[checksummedAddress]
       : undefined;
 
-  const { faucets } = useChainInfo();
+  const { network, faucets } = useChainInfo();
 
   // Search address by nonce === transaction @ nonce
   const rawNonce = searchParams.get("nonce");
@@ -124,7 +124,7 @@ const Address: React.FC = () => {
                 </span>
                 <Copy value={checksummedAddress} rounded />
                 {/* Only display faucets for testnets who actually have any */}
-                {faucets && faucets.length > 0 && (
+                {network === "testnet" && faucets && faucets.length > 0 && (
                   <Faucet address={checksummedAddress} rounded />
                 )}
                 {isENS && (

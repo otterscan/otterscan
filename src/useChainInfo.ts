@@ -3,6 +3,7 @@ import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
 
 export type ChainInfo = {
+  network: string | undefined;
   faucets: string[];
   nativeCurrency: {
     name: string;
@@ -12,6 +13,7 @@ export type ChainInfo = {
 };
 
 export const defaultChainInfo: ChainInfo = {
+  network: undefined,
   faucets: [],
   nativeCurrency: {
     name: "Ether",
