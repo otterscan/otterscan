@@ -10,7 +10,6 @@ import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
-import { useETHUSDOracle } from "./usePriceOracle";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
 
@@ -59,11 +58,6 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
   }, [txData, internalOps]);
 
   const selectionCtx = useSelection();
-
-  const blockETHUSDPrice = useETHUSDOracle(
-    provider,
-    txData?.confirmedData?.blockNumber
-  );
 
   const { sourcifySource } = useAppConfigContext();
   const metadata = useSourcify(
@@ -114,7 +108,6 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
                         devDoc={metadata?.output.devdoc}
                         internalOps={internalOps}
                         sendsEthToMiner={sendsEthToMiner}
-                        ethUSDPrice={blockETHUSDPrice}
                       />
                     }
                   />
