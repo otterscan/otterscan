@@ -14,7 +14,9 @@ const ETH_FEED_DECIMALS = 8;
 // TODO: reduce duplication with useETHUSDOracle
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const latestBlock = useLatestBlock(provider);
 
   const maybeOutdated: boolean =
@@ -82,9 +84,9 @@ const PriceBox: React.FC = () => {
           } font-sans text-xs text-gray-800`}
         >
           <span
-            title={`${nativeSymbol}/USD last updated at: ${latestPriceTimestamp?.toString()}`}
+            title={`${symbol}/USD last updated at: ${latestPriceTimestamp?.toString()}`}
           >
-            {nativeSymbol}: $<span className="font-balance">{latestPrice}</span>
+            {symbol}: $<span className="font-balance">{latestPrice}</span>
           </span>
           {latestGasData && (
             <>

@@ -10,7 +10,9 @@ type USDValueProps = {
 };
 
 const USDValue: React.FC<USDValueProps> = ({ value }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
 
   return (
     <span className="text-sm">
@@ -24,7 +26,7 @@ const USDValue: React.FC<USDValueProps> = ({ value }) => {
                 .toString()
             )}
           </span>{" "}
-          <span className="text-xs text-gray-500">/ {nativeSymbol}</span>
+          <span className="text-xs text-gray-500">/ {symbol}</span>
         </>
       ) : (
         "N/A"

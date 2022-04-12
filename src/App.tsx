@@ -27,10 +27,10 @@ const Transaction = React.lazy(
     import(/* webpackChunkName: "tx", webpackPrefetch: true */ "./Transaction")
 );
 const London = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "london", webpackPrefetch: true */ "./special/london/London"
-    )
+  () => import(/* webpackChunkName: "london" */ "./special/london/London")
+);
+const Faucets = React.lazy(
+  () => import(/* webpackChunkName: "faucets" */ "./Faucets")
 );
 const PageNotFound = React.lazy(
   () =>
@@ -74,6 +74,7 @@ const App = () => {
                       path="address/:addressOrName/*"
                       element={<Address />}
                     />
+                    <Route path="faucets/*" element={<Faucets />} />
                     <Route path="*" element={<PageNotFound />} />
                   </Route>
                 </Routes>

@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
 import TransactionAddress from "./TransactionAddress";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
@@ -15,16 +16,17 @@ const InternalCreate: React.FC<InternalCreateProps> = ({ internalOp }) => (
     <span className="text-gray-500">
       <FontAwesomeIcon icon={faAngleRight} size="1x" /> CREATE
     </span>
-    <span>Contract</span>
+    <span className="flex items-baseline text-gray-400">
+      <TransactionAddress address={internalOp.from} showCodeIndicator />
+    </span>
+    <span className="text-gray-500">
+      <FontAwesomeIcon icon={faCaretRight} size="1x" />
+    </span>
     <div className="flex items-baseline">
       <AddressHighlighter address={internalOp.to}>
         <DecoratedAddressLink address={internalOp.to} creation />
       </AddressHighlighter>
     </div>
-    <span className="flex items-baseline text-gray-400">
-      (Creator:{" "}
-      <TransactionAddress address={internalOp.from} showCodeIndicator />)
-    </span>
   </div>
 );
 

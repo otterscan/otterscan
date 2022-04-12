@@ -3,15 +3,23 @@ import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
 
 export type ChainInfo = {
-  nativeName: string;
-  nativeSymbol: string;
-  nativeDecimals: number;
+  network: string | undefined;
+  faucets: string[];
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
 };
 
 export const defaultChainInfo: ChainInfo = {
-  nativeName: "Ether",
-  nativeSymbol: "ETH",
-  nativeDecimals: 18,
+  network: undefined,
+  faucets: [],
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
 };
 
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
@@ -25,24 +33,26 @@ export const useChainInfoFromMetadataFile = (
   const [chainInfo, setChainInfo] = useState<ChainInfo | undefined>(undefined);
 
   useEffect(() => {
-    if (chainId === undefined) {
+    if (assetsURLPrefix === undefined || chainId === undefined) {
       setChainInfo(undefined);
       return;
     }
 
     const readChainInfo = async () => {
-      const res = await fetch(chainInfoURL(assetsURLPrefix!, chainId));
-      if (!res.ok) {
+      try {
+        const res = await fetch(chainInfoURL(assetsURLPrefix, chainId));
+        if (!res.ok) {
+          setChainInfo(defaultChainInfo);
+          return;
+        }
+
+        const info: ChainInfo = await res.json();
+        setChainInfo(info);
+      } catch (err) {
+        // ignore
         setChainInfo(defaultChainInfo);
         return;
       }
-      const info = await res.json();
-
-      setChainInfo({
-        nativeName: info.nativeCurrency.name,
-        nativeDecimals: info.nativeCurrency.decimals,
-        nativeSymbol: info.nativeCurrency.symbol,
-      });
     };
     readChainInfo();
   }, [assetsURLPrefix, chainId]);

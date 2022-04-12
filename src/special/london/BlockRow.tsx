@@ -16,7 +16,9 @@ type BlockRowProps = {
 };
 
 const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
-  const { nativeSymbol } = useChainInfo();
+  const {
+    nativeCurrency: { symbol },
+  } = useChainInfo();
   const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
@@ -55,11 +57,10 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         </div>
       </div>
       <div className="text-right col-span-2">
-        {commify(formatEther(totalReward))} {nativeSymbol}
+        {commify(formatEther(totalReward))} {symbol}
       </div>
       <div className="text-right col-span-2 line-through text-orange-500">
-        {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))}{" "}
-        {nativeSymbol}
+        {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} {symbol}
       </div>
       <div className="text-right text-gray-400">
         <TimestampAge now={now / 1000} timestamp={block.timestamp} />
