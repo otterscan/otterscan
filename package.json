@@ -6,7 +6,7 @@
   "dependencies": {
     "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@chainlink/contracts": "^0.4.1",
-    "@craco/craco": "^6.4.4",
+    "@craco/craco": "^6.4.5",
     "@fontsource/fira-code": "^4.5.10",
     "@fontsource/roboto": "^4.5.7",
     "@fontsource/roboto-mono": "^4.5.7",
