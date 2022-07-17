@@ -1,5 +1,7 @@
 import React, { useContext, useMemo } from "react";
 import ContentFrame from "../ContentFrame";
+import PendingApprovals from "./PendingApprovals";
+import AllowanceAmount from "../components/AllowanceAmount";
 import TransactionAddress from "../components/TransactionAddress";
 import { SelectionContext, useSelection } from "../useSelection";
 import { useMultipleETHUSDOracle } from "../usePriceOracle";
@@ -8,7 +10,6 @@ import { ChecksummedAddress } from "../types";
 import { useContractsMetadata } from "../hooks";
 import { useAllowances, useApprovals } from "../useErigonHooks";
 import { BlockNumberContext } from "../useBlockTagContext";
-import PendingApprovals from "./PendingApprovals";
 
 type AddressTransactionResultsProps = {
   address: ChecksummedAddress;
@@ -59,10 +60,12 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
                   <span className="col-span-5 flex items-baseline">
                     <TransactionAddress address={a.spender} showCodeIndicator />
                   </span>
-                  <span className="col-span-5 flex items-baseline">
-                    {allowances?.[a.token]?.[a.spender].toString()}
-                    <TransactionAddress address={a.token} />
-                  </span>
+                  {allowances?.[a.token]?.[a.spender] && (
+                    <span className="col-span-5 flex items-baseline">
+                      <AllowanceAmount value={allowances[a.token][a.spender]} />
+                      <TransactionAddress address={a.token} />
+                    </span>
+                  )}
                   <span className="col-span-2 flex items-baseline">Revoke</span>
                 </div>
               ))}
