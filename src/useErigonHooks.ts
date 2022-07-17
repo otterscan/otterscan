@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Block,
   BlockWithTransactions,
@@ -723,4 +723,96 @@ export const useHasCode = (
     return undefined;
   }
   return data as boolean | undefined;
+};
+
+type _Approval = {
+  token: string | undefined;
+  spender: string | undefined;
+};
+
+export type Approval = {
+  token: ChecksummedAddress;
+  spender: ChecksummedAddress;
+};
+
+// token -> spender -> allowance
+export type Allowances = Record<
+  ChecksummedAddress,
+  Record<ChecksummedAddress, BigNumber>
+>;
+
+export const useApprovals = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): Approval[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["ots_getApprovals", address],
+    fetcher
+  );
+
+  const approvals = useMemo(() => {
+    if (error) {
+      return undefined;
+    }
+    if (data === undefined) {
+      return undefined;
+    }
+
+    const _approvals: Approval[] = [];
+    for (const a of data as _Approval[]) {
+      if (a.token && a.spender) {
+        _approvals.push(a as Approval);
+      }
+    }
+    return _approvals;
+  }, [data, error]);
+  return approvals;
+};
+
+export const useAllowances = (
+  provider: JsonRpcProvider | undefined,
+  owner: ChecksummedAddress,
+  approvals: Approval[] | undefined
+): Allowances | undefined => {
+  const [allowances, setAllowances] = useState<Allowances | undefined>();
+
+  useEffect(() => {
+    setAllowances(undefined);
+    if (!provider || !approvals) {
+      return;
+    }
+
+    const read = async () => {
+      const promises: Promise<BigNumber>[] = [];
+      for (const a of approvals) {
+        const contract = new Contract(
+          a.token,
+          [
+            "function allowance(address owner, address spender) external view returns (uint256)",
+          ],
+          provider
+        );
+        promises.push(contract.allowance(owner, a.spender));
+      }
+
+      const results = await Promise.all(promises);
+      const _allowances: Allowances = {};
+      for (let i = 0; i < approvals.length; i++) {
+        const a = approvals[i];
+
+        let tokenMap = _allowances[a.token];
+        if (tokenMap === undefined) {
+          tokenMap = {};
+          _allowances[a.token] = tokenMap;
+        }
+
+        tokenMap[a.spender] = results[i];
+      }
+      setAllowances(_allowances);
+    };
+    read();
+  }, [provider, owner, approvals]);
+
+  return allowances;
 };

@@ -20,6 +20,7 @@ import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
+import AddressApprovals from "./address/AddressApprovals";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressOrENS } from "./useResolvedAddresses";
@@ -161,6 +162,9 @@ const Address: React.FC = () => {
                     </span>
                   </NavTab>
                 )}
+                <NavTab href={`/address/${addressOrName}/approvals`}>
+                  Token Approvals
+                </NavTab>
               </Tab.List>
               <Tab.Panels>
                 <Routes>
@@ -189,6 +193,10 @@ const Address: React.FC = () => {
                         }
                       />
                     }
+                  />
+                  <Route
+                    path="approvals"
+                    element={<AddressApprovals address={checksummedAddress} />}
                   />
                 </Routes>
               </Tab.Panels>

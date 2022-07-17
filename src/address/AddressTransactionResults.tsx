@@ -33,6 +33,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
+  // TODO: unnecessary?
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
