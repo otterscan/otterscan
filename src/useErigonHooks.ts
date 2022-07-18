@@ -796,7 +796,7 @@ export const useAllowances = (
         promises.push(contract.allowance(owner, a.spender));
       }
 
-      const results = await Promise.all(promises);
+      const results = await Promise.allSettled(promises);
       const _allowances: Allowances = {};
       for (let i = 0; i < approvals.length; i++) {
         const a = approvals[i];
@@ -807,7 +807,11 @@ export const useAllowances = (
           _allowances[a.token] = tokenMap;
         }
 
-        tokenMap[a.spender] = results[i];
+        if (results[i].status === "fulfilled") {
+          tokenMap[a.spender] = (
+            results[i] as PromiseFulfilledResult<BigNumber>
+          ).value;
+        }
       }
       setAllowances(_allowances);
     };

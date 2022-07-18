@@ -60,12 +60,21 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
                   <span className="col-span-5 flex items-baseline">
                     <TransactionAddress address={a.spender} showCodeIndicator />
                   </span>
-                  {allowances?.[a.token]?.[a.spender] && (
-                    <span className="col-span-5 flex items-baseline">
-                      <AllowanceAmount value={allowances[a.token][a.spender]} />
-                      <TransactionAddress address={a.token} />
-                    </span>
-                  )}
+                  <span className="col-span-5 flex items-baseline">
+                    {allowances?.[a.token]?.[a.spender] ? (
+                      <>
+                        <AllowanceAmount
+                          value={allowances[a.token][a.spender]}
+                        />
+                        <TransactionAddress address={a.token} />
+                      </>
+                    ) : (
+                      <>
+                        ?
+                        <TransactionAddress address={a.token} />
+                      </>
+                    )}
+                  </span>
                   <span className="col-span-2 flex items-baseline">Revoke</span>
                 </div>
               ))}
