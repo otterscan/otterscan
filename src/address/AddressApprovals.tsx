@@ -62,12 +62,10 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
                   </span>
                   <span className="col-span-5 flex items-baseline">
                     {allowances?.[a.token]?.[a.spender] ? (
-                      <>
-                        <AllowanceAmount
-                          value={allowances[a.token][a.spender]}
-                        />
-                        <TransactionAddress address={a.token} />
-                      </>
+                      <AllowanceAmount
+                        value={allowances[a.token][a.spender]}
+                        token={a.token}
+                      />
                     ) : (
                       <>
                         ?
