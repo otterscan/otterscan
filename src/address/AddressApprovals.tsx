@@ -4,10 +4,8 @@ import PendingApprovals from "./PendingApprovals";
 import AllowanceAmount from "../components/AllowanceAmount";
 import TransactionAddress from "../components/TransactionAddress";
 import { SelectionContext, useSelection } from "../useSelection";
-import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { ChecksummedAddress } from "../types";
-import { useContractsMetadata } from "../hooks";
 import { useAllowances, useApprovals } from "../useErigonHooks";
 import { BlockNumberContext } from "../useBlockTagContext";
 
@@ -23,23 +21,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
 
   const approvals = useApprovals(provider, address);
   const allowances = useAllowances(provider, address, approvals);
-  console.log(approvals);
-  console.log(address);
-
-  const priceMap = useMultipleETHUSDOracle(provider, ["latest"]);
-
-  // Calculate Sourcify metadata for all addresses that appear on this page results
-  const addresses = useMemo(() => {
-    const _addresses = [address];
-    if (approvals) {
-      for (const t of approvals) {
-        _addresses.push(t.token);
-        _addresses.push(t.spender);
-      }
-    }
-    return _addresses;
-  }, [address, approvals]);
-  const metadatas = useContractsMetadata(addresses, provider);
 
   return (
     <ContentFrame tabs>

@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Block,
   BlockWithTransactions,
   BlockTag,
+  Log,
 } from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
@@ -704,8 +705,32 @@ export const providerFetcher =
 
     const method = key[0];
     const args = key.slice(1);
-    const result = await provider.send(method, args);
-    // console.log(`providerFetcher: ${method} ${args} === ${result}`);
+    return await provider.send(method, args);
+  };
+
+/**
+ * This is a generic fetch for SWR, where the key is an array, whose
+ * element 0 is the JSON-RPC method, and the remaining are the method
+ * arguments.
+ */
+export const logTopicFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (method: string, ...key: any[]): Promise<Log[] | undefined> => {
+    if (provider === undefined) {
+      return undefined;
+    }
+    for (const a of key) {
+      if (a === undefined) {
+        return undefined;
+      }
+    }
+
+    const topic = key[0];
+    const args = key.slice(1);
+    const result = await provider.getLogs({
+      fromBlock: 0,
+      topics: [topic, ...args],
+    });
     return result;
   };
 
@@ -725,11 +750,6 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
-type _Approval = {
-  token: string | undefined;
-  spender: string | undefined;
-};
-
 export type Approval = {
   token: ChecksummedAddress;
   spender: ChecksummedAddress;
@@ -741,13 +761,20 @@ export type Allowances = Record<
   Record<ChecksummedAddress, BigNumber>
 >;
 
+const APPROVAL_TOPIC =
+  "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925";
+
 export const useApprovals = (
   provider: JsonRpcProvider | undefined,
   address: ChecksummedAddress | undefined
 ): Approval[] | undefined => {
-  const fetcher = providerFetcher(provider);
+  const fetcher = useMemo(() => logTopicFetcher(provider), [provider]);
   const { data, error } = useSWRImmutable(
-    ["ots_getApprovals", address],
+    [
+      "log_approvals",
+      APPROVAL_TOPIC,
+      address ? "0x" + "00".repeat(12) + address.substring(2) : undefined,
+    ],
     fetcher
   );
 
@@ -759,11 +786,23 @@ export const useApprovals = (
       return undefined;
     }
 
-    const _approvals: Approval[] = [];
-    for (const a of data as _Approval[]) {
-      if (a.token && a.spender) {
-        _approvals.push(a as Approval);
+    // Dedup token+spender by flattening them into strings and
+    // inserting into a Set
+    const dedupedApprovals = new Set<string>();
+    for (const l of data) {
+      if (!l.topics[2].startsWith("0x" + "00".repeat(12))) {
+        console.warn("expected address: " + l.topics[2]);
+        continue;
       }
+      dedupedApprovals.add(l.address + "0x" + l.topics[2].substring(26));
+    }
+
+    const _approvals: Approval[] = [];
+    for (const a of dedupedApprovals) {
+      _approvals.push({
+        token: a.substring(0, 42),
+        spender: a.substring(42),
+      });
     }
     return _approvals;
   }, [data, error]);
