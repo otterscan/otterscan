@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Block,
   BlockWithTransactions,
@@ -858,4 +858,43 @@ export const useAllowances = (
   }, [provider, owner, approvals]);
 
   return allowances;
+};
+
+const BALANCE_OF =
+  "function balanceOf(address _owner) public view returns (uint256 balance)";
+
+export const tokenBalanceFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (method: string, ...key: any[]): Promise<BigNumber | undefined> => {
+    if (provider === undefined) {
+      return undefined;
+    }
+    for (const a of key) {
+      if (a === undefined) {
+        return undefined;
+      }
+    }
+
+    const [address, token] = key;
+    const c = new Contract(token, [BALANCE_OF], provider);
+    console.log("FETCH")
+    const b = await c.balanceOf(address);
+    return b;
+  };
+
+export const useTokenBalance = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress,
+  token: ChecksummedAddress
+): BigNumber | undefined => {
+  const fetcher = tokenBalanceFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["erc20_balance", address, token],
+    fetcher
+  );
+  if (error) {
+    console.error(error)
+    return undefined;
+  }
+  return data;
 };

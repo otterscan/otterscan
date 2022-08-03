@@ -8,9 +8,7 @@ import { useBlockNumberContext } from "../useBlockTagContext";
 import { useTokenUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { ChecksummedAddress } from "../types";
-
-// INFINITE === > 1 trillion
-const MIN_INFINITE = BigNumber.from("1000000000000000000000000000000");
+import { ALLOWANCE_MIN_INFINITE } from "../params";
 
 type AllowanceAmountProps = {
   value: BigNumber;
@@ -18,12 +16,13 @@ type AllowanceAmountProps = {
 };
 
 const AllowanceAmount: React.FC<AllowanceAmountProps> = ({ value, token }) => {
-  const isInfinite = value.gte(MIN_INFINITE);
+  const isInfinite = value.gte(ALLOWANCE_MIN_INFINITE);
 
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
   const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, token);
 
+  // TODO: show proper token decimals
   return (
     <>
       <span>
