@@ -15,6 +15,7 @@ import useSWR, { useSWRConfig } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getInternalOperations } from "./nodeFunctions";
 import {
+  TokenMeta,
   TokenMetas,
   TokenTransfer,
   TransactionData,
@@ -863,6 +864,46 @@ export const useAllowances = (
 const BALANCE_OF =
   "function balanceOf(address _owner) public view returns (uint256 balance)";
 
+export const tokenMetadataFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (method: string, ...key: any[]): Promise<TokenMeta | undefined> => {
+    if (provider === undefined) {
+      return undefined;
+    }
+    for (const a of key) {
+      if (a === undefined) {
+        return undefined;
+      }
+    }
+
+    const [token] = key;
+    const c = new Contract(token, erc20, provider);
+    const [name, symbol, decimals] = await Promise.all([
+      c.name(),
+      c.symbol(),
+      c.decimals(),
+    ]);
+
+    return {
+      name,
+      symbol,
+      decimals,
+    };
+  };
+
+export const useTokenMetadata = (
+  provider: JsonRpcProvider | undefined,
+  token: ChecksummedAddress
+): TokenMeta | undefined => {
+  const fetcher = tokenMetadataFetcher(provider);
+  const { data, error } = useSWRImmutable(["erc20_metadata", token], fetcher);
+  if (error) {
+    console.error(error);
+    return undefined;
+  }
+  return data;
+};
+
 export const tokenBalanceFetcher =
   (provider: JsonRpcProvider | undefined) =>
   async (method: string, ...key: any[]): Promise<BigNumber | undefined> => {
@@ -877,7 +918,6 @@ export const tokenBalanceFetcher =
 
     const [address, token] = key;
     const c = new Contract(token, [BALANCE_OF], provider);
-    console.log("FETCH")
     const b = await c.balanceOf(address);
     return b;
   };
@@ -893,7 +933,7 @@ export const useTokenBalance = (
     fetcher
   );
   if (error) {
-    console.error(error)
+    console.error(error);
     return undefined;
   }
   return data;
