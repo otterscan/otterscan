@@ -9,35 +9,13 @@ import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
 
-const Block = React.lazy(
-  () => import(/* webpackChunkName: "block", webpackPrefetch: true */ "./Block")
-);
-const BlockTransactions = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "blocktxs", webpackPrefetch: true */ "./BlockTransactions"
-    )
-);
-const Address = React.lazy(
-  () =>
-    import(/* webpackChunkName: "address", webpackPrefetch: true */ "./Address")
-);
-const Transaction = React.lazy(
-  () =>
-    import(/* webpackChunkName: "tx", webpackPrefetch: true */ "./Transaction")
-);
-const London = React.lazy(
-  () => import(/* webpackChunkName: "london" */ "./special/london/London")
-);
-const Faucets = React.lazy(
-  () => import(/* webpackChunkName: "faucets" */ "./Faucets")
-);
-const PageNotFound = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "notfound", webpackPrefetch: true */ "./PageNotFound"
-    )
-);
+const Block = React.lazy(() => import("./Block"));
+const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
+const Address = React.lazy(() => import("./Address"));
+const Transaction = React.lazy(() => import("./Transaction"));
+const London = React.lazy(() => import("./special/london/London"));
+const Faucets = React.lazy(() => import("./Faucets"));
+const PageNotFound = React.lazy(() => import("./PageNotFound"));
 
 const App = () => {
   const runtime = useRuntime();

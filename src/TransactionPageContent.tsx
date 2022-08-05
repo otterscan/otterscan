@@ -13,25 +13,9 @@ import { BlockNumberContext } from "./useBlockTagContext";
 import { useAppConfigContext } from "./useAppConfig";
 import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
 
-const Details = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "txdetails", webpackPrefetch: true */
-      "./transaction/Details"
-    )
-);
-const Logs = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "txlogs", webpackPrefetch: true */ "./transaction/Logs"
-    )
-);
-const Trace = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "txtrace", webpackPrefetch: true */ "./transaction/Trace"
-    )
-);
+const Details = React.lazy(() => import("./transaction/Details"));
+const Logs = React.lazy(() => import("./transaction/Logs"));
+const Trace = React.lazy(() => import("./transaction/Trace"));
 
 type TransactionPageContentProps = {
   txHash: string;
