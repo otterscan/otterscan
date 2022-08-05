@@ -77,10 +77,10 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^2.0.0",
     "autoprefixer": "^9.8.8",
-    "compress-create-react-app": "^1.2.1",
     "postcss": "^7.0.39",
     "source-map-explorer": "^2.5.2",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.6",
-    "vite": "^3.0.4"
+    "vite": "^3.0.4",
+    "vite-plugin-compression": "^0.5.1"
   }
 }
