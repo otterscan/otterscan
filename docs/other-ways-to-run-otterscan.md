@@ -16,7 +16,7 @@ Clone Otterscan repo and its submodules. Checkout the tag corresponding to your 
 git clone --recurse-submodules https://github.com/wmitsuda/otterscan.git
 cd otterscan
 git checkout <version-tag-otterscan>
-DOCKER_BUILDKIT=1 docker build -t otterscan -f Dockerfile .
+docker buildx build -t otterscan .
 ```
 
 This will run the entire build process inside a build container, merge the production build of the React app with the 4bytes and trustwallet assets into the same image format it is published in Docker Hub, but locally under the name `otterscan`.
@@ -40,7 +40,7 @@ First, a brief explanation about the app:
 
 These instructions are subjected to changes in future for the sake of simplification.
 
-Make sure you have a working node 14/npm 7 installation.
+Make sure you have a working node 16/npm 8 installation.
 
 By default, it assumes your Erigon `rpcdaemon` processs is serving requests at `http://localhost:8545`. You can customize this URL by changing the `public/config.json` file.
 
