@@ -2,7 +2,7 @@ FROM node:16.16.0-alpine3.15 AS builder
 WORKDIR /otterscan-build
 COPY ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm install
-COPY ["run-nginx.sh", "tsconfig.json", "craco.config.js", "tailwind.config.js", "/otterscan-build/"]
+COPY ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "postcss.config.js", "tailwind.config.js", "vite.config.ts", "index.html", "/otterscan-build/"]
 COPY ["public", "/otterscan-build/public/"]
 COPY ["src", "/otterscan-build/src/"]
 RUN npm run build
@@ -97,7 +97,7 @@ COPY --from=fourbytesbuilder /signatures /usr/share/nginx/html/signatures/
 COPY --from=logobuilder /assets /usr/share/nginx/html/assets/
 COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /otterscan-build/build /usr/share/nginx/html/
+COPY --from=builder /otterscan-build/dist /usr/share/nginx/html/
 COPY --from=builder /otterscan-build/run-nginx.sh /
 WORKDIR /
 

@@ -29,10 +29,7 @@ import { useAddressesWithCode } from "./useErigonHooks";
 import { useChainInfo } from "./useChainInfo";
 
 const AddressTransactionByNonce = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "addresstxbynonce", webpackPrefetch: true */ "./AddressTransactionByNonce"
-    )
+  () => import("./AddressTransactionByNonce")
 );
 
 const Address: React.FC = () => {
