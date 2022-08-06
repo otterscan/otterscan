@@ -4,7 +4,6 @@
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@blackbox-vision/react-qr-reader": "^5.0.0",
     "@chainlink/contracts": "^0.4.2",
     "@fontsource/fira-code": "^4.5.10",
     "@fontsource/roboto": "^4.5.7",
@@ -16,6 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.6.6",
+    "@otterscan/react-qr-reader": "^5.2.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
