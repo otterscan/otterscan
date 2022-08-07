@@ -1,3 +1,4 @@
+import { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 import { ChecksummedAddress } from "../types";
 import { addressByNonceURL } from "../url";
@@ -9,7 +10,7 @@ type NavButtonProps = {
   disabled?: boolean;
 };
 
-const NavButton: React.FC<NavButtonProps> = ({
+const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
   sender,
   nonce,
   disabled,

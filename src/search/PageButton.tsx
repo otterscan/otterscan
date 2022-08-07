@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type PageButtonProps = {
@@ -6,7 +6,7 @@ type PageButtonProps = {
   disabled?: boolean;
 };
 
-const PageButton: React.FC<PageButtonProps> = ({
+const PageButton: React.FC<PropsWithChildren<PageButtonProps>> = ({
   goToPage,
   disabled,
   children,

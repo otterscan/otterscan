@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type UndefinedPageButtonProps = {
@@ -8,13 +8,9 @@ type UndefinedPageButtonProps = {
   disabled?: boolean;
 };
 
-const UndefinedPageButton: React.FC<UndefinedPageButtonProps> = ({
-  address,
-  direction,
-  hash,
-  disabled,
-  children,
-}) => {
+const UndefinedPageButton: React.FC<
+  PropsWithChildren<UndefinedPageButtonProps>
+> = ({ address, direction, hash, disabled, children }) => {
   if (disabled) {
     return (
       <span className="bg-link-blue bg-opacity-10 text-gray-400 rounded-lg px-3 py-2 text-xs">
