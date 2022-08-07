@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -90,28 +90,30 @@ type StepProps = {
   msg: string;
 };
 
-const Step: React.FC<StepProps> = React.memo(({ type, msg, children }) => (
-  <>
-    <div className="flex space-x-2">
-      {type === "wait" && (
-        <span className="text-gray-600">
-          <FontAwesomeIcon icon={faClock} size="1x" />
-        </span>
-      )}
-      {type === "ok" && (
-        <span className="text-green-600">
-          <FontAwesomeIcon icon={faCheckCircle} size="1x" />
-        </span>
-      )}
-      {type === "error" && (
-        <span className="text-red-600">
-          <FontAwesomeIcon icon={faTimesCircle} size="1x" />
-        </span>
-      )}
-      <span>{msg}</span>
-    </div>
-    {children && <div className="ml-7 mt-4 text-sm">{children}</div>}
-  </>
-));
+const Step: React.FC<PropsWithChildren<StepProps>> = React.memo(
+  ({ type, msg, children }) => (
+    <>
+      <div className="flex space-x-2">
+        {type === "wait" && (
+          <span className="text-gray-600">
+            <FontAwesomeIcon icon={faClock} size="1x" />
+          </span>
+        )}
+        {type === "ok" && (
+          <span className="text-green-600">
+            <FontAwesomeIcon icon={faCheckCircle} size="1x" />
+          </span>
+        )}
+        {type === "error" && (
+          <span className="text-red-600">
+            <FontAwesomeIcon icon={faTimesCircle} size="1x" />
+          </span>
+        )}
+        <span>{msg}</span>
+      </div>
+      {children && <div className="ml-7 mt-4 text-sm">{children}</div>}
+    </>
+  )
+);
 
 export default React.memo(ConnectionErrorPanel);

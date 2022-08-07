@@ -1,11 +1,14 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Tab } from "@headlessui/react";
 
 type ModeTabProps = {
   disabled?: boolean | undefined;
 };
 
-const ModeTab: React.FC<ModeTabProps> = ({ disabled, children }) => (
+const ModeTab: React.FC<PropsWithChildren<ModeTabProps>> = ({
+  disabled,
+  children,
+}) => (
   <Tab
     className={({ selected }) =>
       `border rounded-lg px-2 py-1 bg-gray-100 ${

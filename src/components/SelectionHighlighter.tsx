@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { PropsWithChildren, useMemo } from "react";
 import {
   useSelectionContext,
   OptionalSelection,
@@ -62,8 +62,8 @@ type HighlighterBoxProps = {
   deselect: () => void;
 };
 
-const HighlighterBox: React.FC<HighlighterBoxProps> = React.memo(
-  ({ selected, select, deselect, children }) => (
+const HighlighterBox: React.FC<PropsWithChildren<HighlighterBoxProps>> =
+  React.memo(({ selected, select, deselect, children }) => (
     <div
       className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
         selected ? "border-orange-400 bg-yellow-100" : "border-transparent"
@@ -73,7 +73,6 @@ const HighlighterBox: React.FC<HighlighterBoxProps> = React.memo(
     >
       {children}
     </div>
-  )
-);
+  ));
 
 export default SelectionHighlighter;

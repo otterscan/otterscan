@@ -1,10 +1,13 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 type ContentFrameProps = {
   tabs?: boolean;
 };
 
-const ContentFrame: React.FC<ContentFrameProps> = ({ tabs, children }) => {
+const ContentFrame: React.FC<PropsWithChildren<ContentFrameProps>> = ({
+  tabs,
+  children,
+}) => {
   return tabs ? (
     <div className="divide-y border rounded-b-lg px-3 bg-white">{children}</div>
   ) : (

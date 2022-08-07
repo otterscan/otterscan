@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { PropsWithChildren, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
@@ -156,7 +156,10 @@ type AddressLegendProps = {
   title: string;
 };
 
-const AddressLegend: React.FC<AddressLegendProps> = ({ title, children }) => (
+const AddressLegend: React.FC<PropsWithChildren<AddressLegendProps>> = ({
+  title,
+  children,
+}) => (
   <span
     className="text-xs text-gray-400 text-opacity-70 not-italic"
     title={title}
