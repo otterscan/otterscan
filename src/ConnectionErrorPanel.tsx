@@ -100,7 +100,7 @@ const Step: React.FC<PropsWithChildren<StepProps>> = React.memo(
           </span>
         )}
         {type === "ok" && (
-          <span className="text-green-600">
+          <span className="text-emerald-600">
             <FontAwesomeIcon icon={faCheckCircle} size="1x" />
           </span>
         )}

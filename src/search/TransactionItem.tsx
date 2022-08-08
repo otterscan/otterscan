@@ -65,9 +65,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   return (
     <div
       className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
-        flash
-          ? "bg-yellow-100 hover:bg-yellow-200"
-          : "hover:bg-skin-table-hover"
+        flash ? "bg-amber-100 hover:bg-amber-200" : "hover:bg-skin-table-hover"
       } px-2 py-3`}
     >
       <div className="col-span-2 flex space-x-1 items-baseline">

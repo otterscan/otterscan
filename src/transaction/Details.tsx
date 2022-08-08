@@ -138,7 +138,7 @@ const Details: React.FC<DetailsProps> = ({
         {txData.confirmedData === undefined ? (
           <span className="italic text-gray-400">Pending</span>
         ) : txData.confirmedData.status ? (
-          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
+          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-emerald-50 text-emerald-500 text-xs">
             <FontAwesomeIcon
               className="self-center"
               icon={faCheckCircle}
@@ -369,7 +369,7 @@ const Details: React.FC<DetailsProps> = ({
               <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
             </span>
             {sendsEthToMiner && (
-              <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
+              <span className="rounded text-amber-500 bg-amber-100 text-xs px-2 py-1">
                 Flashbots
               </span>
             )}

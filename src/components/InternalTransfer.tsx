@@ -58,7 +58,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
             <AddressHighlighter address={internalOp.from}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  fromMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
+                  fromMiner ? "rounded px-2 py-1 bg-amber-100" : ""
                 }`}
               >
                 <DecoratedAddressLink
@@ -79,7 +79,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
           <AddressHighlighter address={internalOp.to}>
             <div
               className={`flex items-baseline space-x-1 ${
-                toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
+                toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
               }`}
             >
               <DecoratedAddressLink

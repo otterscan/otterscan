@@ -23,9 +23,9 @@ const Home: React.FC = () => {
   document.title = "Home | Otterscan";
 
   return (
-    <div className="mx-auto flex flex-col flex-grow pb-5">
+    <div className="mx-auto flex flex-col grow pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="m-5 mb-10 flex items-end flex-grow max-h-64">
+      <div className="m-5 mb-10 flex items-end grow max-h-64">
         <Logo />
       </div>
       <form

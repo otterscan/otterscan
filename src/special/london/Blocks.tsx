@@ -124,7 +124,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   );
 
   return (
-    <div className="w-full flex-grow">
+    <div className="w-full grow">
       <div className="px-9 pt-3 pb-12 divide-y-2">
         <div className="relative">
           <div className="flex justify-center items-baseline space-x-2 px-3 pb-2 text-lg text-orange-500 ">
@@ -161,7 +161,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           <div className="text-right">Gas target</div>
           <div className="text-right">Base fee</div>
           <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
-            <span className="text-yellow-400">
+            <span className="text-amber-400">
               <FontAwesomeIcon icon={faCoins} />
             </span>
             <span>Rewards</span>
@@ -184,10 +184,10 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             key={b.hash}
             show={i < MAX_BLOCK_HISTORY}
             appear
-            enter="transition transform ease-out duration-500"
+            enter="transition ease-out duration-500"
             enterFrom="opacity-0 -translate-y-10"
             enterTo="opacity-100 translate-y-0"
-            leave="transition transform ease-out duration-1000"
+            leave="transition ease-out duration-1000"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >

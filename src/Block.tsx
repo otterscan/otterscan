@@ -89,7 +89,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Transactions">
             <NavLink
-              className="bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white rounded-lg px-2 py-1 text-xs"
+              className="bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white rounded-lg px-2 py-1 text-xs"
               to={blockTxsURL(block.number)}
             >
               {block.transactionCount} transactions
@@ -111,7 +111,7 @@ const Block: React.FC = () => {
             {blockETHUSDPrice && (
               <>
                 {" "}
-                <span className="px-2 border-yellow-200 border rounded-lg bg-yellow-100 text-yellow-600">
+                <span className="px-2 border-amber-200 border rounded-lg bg-amber-100 text-amber-600">
                   <ETH2USDValue
                     ethAmount={block.blockReward.add(netFeeReward)}
                     eth2USDValue={blockETHUSDPrice}

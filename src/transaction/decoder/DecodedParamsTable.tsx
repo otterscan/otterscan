@@ -27,7 +27,7 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
         <th className="col-span-8 pr-1">value</th>
       </tr>
       {!hasParamNames && (
-        <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-yellow-100 text-red-700">
+        <tr className="grid grid-cols-12 text-left gap-x-2 py-2 bg-amber-100 text-red-700">
           <th className="col-span-12 px-1">
             {paramTypes.length > 0 && paramTypes[0].name !== null
               ? "Parameter names are estimated."

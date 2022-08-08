@@ -10,8 +10,7 @@ function withOpacity(variableName) {
 }
 
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: {
     extend: {
       colors: {
@@ -51,13 +50,6 @@ module.exports = {
           "table-hover": withOpacity("--color-table-row-hover"),
         },
       },
-    },
-  },
-  variants: {
-    extend: {
-      cursor: ["disabled"],
-      backgroundColor: ["disabled"],
-      textColor: ["disabled"],
     },
   },
   plugins: [],

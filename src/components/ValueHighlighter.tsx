@@ -25,7 +25,7 @@ const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
         selection !== null &&
         selection.type === "value" &&
         selection.content === value.toString()
-          ? "border-orange-400 bg-yellow-100"
+          ? "border-orange-400 bg-amber-100"
           : "border-transparent"
       }`}
       onMouseEnter={select}

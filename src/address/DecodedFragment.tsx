@@ -28,14 +28,14 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
     fragmentType = "function";
     sig = intf.getSighash(fragment);
     letter = "F";
-    letterBg = "bg-purple-500";
-    hashBg = "bg-purple-50";
+    letterBg = "bg-violet-500";
+    hashBg = "bg-violet-50";
   } else if (EventFragment.isEventFragment(fragment)) {
     fragmentType = "event";
     sig = intf.getEventTopic(fragment);
     letter = "E";
-    letterBg = "bg-green-300";
-    hashBg = "bg-green-50";
+    letterBg = "bg-emerald-300";
+    hashBg = "bg-emerald-50";
   } else if (ConstructorFragment.isConstructorFragment(fragment)) {
     fragmentType = "constructor";
     letter = "C";
@@ -49,7 +49,7 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
       </span>
       {letter && (
         <span
-          className={`flex-shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}
+          className={`shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}
         >
           {letter}
         </span>

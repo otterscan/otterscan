@@ -47,7 +47,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc, metadatas }) => {
   return (
     <div className="flex space-x-10 py-5">
       <div>
-        <span className="rounded-full w-12 h-12 flex items-center justify-center bg-green-50 text-green-500">
+        <span className="rounded-full w-12 h-12 flex items-center justify-center bg-emerald-50 text-emerald-500">
           {log.logIndex}
         </span>
       </div>
