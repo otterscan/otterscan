@@ -160,10 +160,7 @@ const AddressLegend: React.FC<PropsWithChildren<AddressLegendProps>> = ({
   title,
   children,
 }) => (
-  <span
-    className="text-xs text-gray-400 text-opacity-70 not-italic"
-    title={title}
-  >
+  <span className="text-xs text-gray-400/70 not-italic" title={title}>
     {children}
   </span>
 );
