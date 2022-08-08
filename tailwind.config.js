@@ -17,7 +17,6 @@ module.exports = {
       colors: {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
-        orange: colors.orange,
       },
       fontFamily: {
         sans: ["Roboto"],
