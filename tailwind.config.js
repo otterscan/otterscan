@@ -9,6 +9,7 @@ function withOpacity(variableName) {
   };
 }
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: {
@@ -16,7 +17,6 @@ module.exports = {
       colors: {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
-        orange: colors.orange,
       },
       fontFamily: {
         sans: ["Roboto"],
