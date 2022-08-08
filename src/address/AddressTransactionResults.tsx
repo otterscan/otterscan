@@ -140,7 +140,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
               <div className="space-x-2">
                 <TransactionValue value={balance} />
                 {!balance.isZero() && priceMap["latest"] !== undefined && (
-                  <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
+                  <span className="px-2 border-emerald-200 border rounded-lg bg-emerald-100 text-emerald-600">
                     <ETH2USDValue
                       ethAmount={balance}
                       eth2USDValue={priceMap["latest"]}

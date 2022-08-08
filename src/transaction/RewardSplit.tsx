@@ -49,13 +49,13 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
         </div>
         <PercentageGauge
           perc={minerPerc}
-          bgColor="bg-yellow-100"
-          bgColorPerc="bg-yellow-300"
-          textColor="text-yellow-700"
+          bgColor="bg-amber-100"
+          bgColorPerc="bg-amber-300"
+          textColor="text-amber-700"
         />
         <div className="flex items-baseline space-x-1">
           <span className="flex space-x-1">
-            <span className="text-yellow-300" title="Miner fees">
+            <span className="text-amber-300" title="Miner fees">
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>

@@ -44,8 +44,8 @@ const Contracts: React.FC<ContractsProps> = ({
           <InfoRow title="Optimizer Enabled">
             {optimizer?.enabled ? (
               <span>
-                <span className="font-bold text-green-600">Yes</span> with{" "}
-                <span className="font-bold text-green-600">
+                <span className="font-bold text-emerald-600">Yes</span> with{" "}
+                <span className="font-bold text-emerald-600">
                   {commify(optimizer?.runs)}
                 </span>{" "}
                 runs

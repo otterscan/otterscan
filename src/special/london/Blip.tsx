@@ -20,7 +20,7 @@ const Blip: React.FC<BlipProps> = ({ value }) => {
       {show && value !== 0 && (
         <div
           className={`absolute bottom-0 font-bold ${
-            value > 0 ? "text-green-500" : "text-red-500"
+            value > 0 ? "text-emerald-500" : "text-red-500"
           } text-3xl`}
         >
           {value > 0 ? `+${value}` : `${value}`}

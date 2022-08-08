@@ -28,14 +28,14 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
     fragmentType = "function";
     sig = intf.getSighash(fragment);
     letter = "F";
-    letterBg = "bg-purple-500";
-    hashBg = "bg-purple-50";
+    letterBg = "bg-violet-500";
+    hashBg = "bg-violet-50";
   } else if (EventFragment.isEventFragment(fragment)) {
     fragmentType = "event";
     sig = intf.getEventTopic(fragment);
     letter = "E";
-    letterBg = "bg-green-300";
-    hashBg = "bg-green-50";
+    letterBg = "bg-emerald-300";
+    hashBg = "bg-emerald-50";
   } else if (ConstructorFragment.isConstructorFragment(fragment)) {
     fragmentType = "constructor";
     letter = "C";

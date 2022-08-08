@@ -161,7 +161,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           <div className="text-right">Gas target</div>
           <div className="text-right">Base fee</div>
           <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
-            <span className="text-yellow-400">
+            <span className="text-amber-400">
               <FontAwesomeIcon icon={faCoins} />
             </span>
             <span>Rewards</span>

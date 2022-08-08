@@ -39,7 +39,7 @@ const Faucets: React.FC = () => {
       <ContentFrame>
         <div className="py-4 space-y-3">
           {urls.length > 0 && (
-            <div className="flex space-x-2 items-baseline rounded bg-yellow-200 text-red-800 font-bold underline px-2 py-1">
+            <div className="flex space-x-2 items-baseline rounded bg-amber-200 text-red-800 font-bold underline px-2 py-1">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}
@@ -54,7 +54,7 @@ const Faucets: React.FC = () => {
           )}
           {/* Display the shuffling notice only if there are 1+ faucets */}
           {urls.length > 1 && (
-            <div className="flex space-x-2 items-baseline rounded bg-yellow-200 text-yellow-700 px-2 py-1">
+            <div className="flex space-x-2 items-baseline rounded bg-amber-200 text-amber-700 px-2 py-1">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}

@@ -111,7 +111,7 @@ const Block: React.FC = () => {
             {blockETHUSDPrice && (
               <>
                 {" "}
-                <span className="px-2 border-yellow-200 border rounded-lg bg-yellow-100 text-yellow-600">
+                <span className="px-2 border-amber-200 border rounded-lg bg-amber-100 text-amber-600">
                   <ETH2USDValue
                     ethAmount={block.blockReward.add(netFeeReward)}
                     eth2USDValue={blockETHUSDPrice}

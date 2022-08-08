@@ -23,15 +23,15 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
   direction,
   flags,
 }) => {
-  let bgColor = "bg-green-50";
-  let fgColor = "text-green-500";
+  let bgColor = "bg-emerald-50";
+  let fgColor = "text-emerald-500";
   let msg: string | null = null;
 
   if (direction === Direction.IN) {
     msg = "IN";
   } else if (direction === Direction.OUT) {
-    bgColor = "bg-yellow-100";
-    fgColor = "text-yellow-600";
+    bgColor = "bg-amber-100";
+    fgColor = "text-amber-600";
     msg = "OUT";
   } else if (direction === Direction.SELF) {
     bgColor = "bg-gray-200";
@@ -39,12 +39,12 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
     msg = "SELF";
   } else if (direction === Direction.INTERNAL) {
     msg = "INT";
-    bgColor = "bg-green-100";
+    bgColor = "bg-emerald-100";
   }
 
   if (flags === Flags.MINER) {
-    bgColor = "bg-yellow-50";
-    fgColor = "text-yellow-400";
+    bgColor = "bg-amber-50";
+    fgColor = "text-amber-400";
   }
 
   return (
