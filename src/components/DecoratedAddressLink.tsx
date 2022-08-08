@@ -79,7 +79,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       )}
       {metadata && (
         <NavLink
-          className="self-center flex-shrink-0 flex items-center"
+          className="self-center shrink-0 flex items-center"
           to={`/address/${address}/contract`}
         >
           <SourcifyLogo />

@@ -9,7 +9,7 @@ const London: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const block = useLatestBlock(provider);
   if (!provider || !block) {
-    return <div className="flex-grow"></div>;
+    return <div className="grow"></div>;
   }
 
   // Display countdown

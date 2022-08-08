@@ -49,7 +49,7 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
       </span>
       {letter && (
         <span
-          className={`flex-shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}
+          className={`shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}
         >
           {letter}
         </span>
