@@ -48,7 +48,7 @@ type ContentProps = {
 const Content: React.FC<ContentProps> = ({ linkable, name }) => (
   <>
     <img
-      className={`self-center ${linkable ? "" : "filter grayscale"}`}
+      className={`self-center ${linkable ? "" : "grayscale"}`}
       src={ENSLogo}
       alt="ENS Logo"
       width={12}

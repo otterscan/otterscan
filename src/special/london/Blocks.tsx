@@ -184,10 +184,10 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             key={b.hash}
             show={i < MAX_BLOCK_HISTORY}
             appear
-            enter="transition transform ease-out duration-500"
+            enter="transition ease-out duration-500"
             enterFrom="opacity-0 -translate-y-10"
             enterTo="opacity-100 translate-y-0"
-            leave="transition transform ease-out duration-1000"
+            leave="transition ease-out duration-1000"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-10"
           >

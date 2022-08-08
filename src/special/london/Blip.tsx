@@ -12,7 +12,7 @@ const Blip: React.FC<BlipProps> = ({ value }) => {
     <Transition
       show
       appear
-      enter="transition transform ease-in duration-1000 translate-x-full pl-3"
+      enter="transition ease-in duration-1000 translate-x-full pl-3"
       enterFrom="opacity-100 translate-y-0"
       enterTo="opacity-0 -translate-y-5"
       afterEnter={() => setShow(false)}
