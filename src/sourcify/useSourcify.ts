@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
 import { ErrorDescription } from "@ethersproject/abi/lib/interface";
+import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
@@ -102,38 +103,22 @@ const fetchSourcifyMetadata = async (
   }
 };
 
-// TODO: replace every occurrence with the multiple version one
-export const useSourcify = (
+export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: number | undefined,
   source: SourcifySource
 ): Metadata | null | undefined => {
-  const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
-
-  useEffect(() => {
-    if (!address || chainId === undefined) {
-      return;
-    }
-    setRawMetadata(undefined);
-
-    const abortController = new AbortController();
-    const fetchMetadata = async () => {
-      const _metadata = await fetchSourcifyMetadata(
-        address,
-        chainId,
-        source,
-        abortController
-      );
-      setRawMetadata(_metadata);
-    };
-    fetchMetadata();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [address, chainId, source]);
-
-  return rawMetadata;
+  const metadataURL = () =>
+    address === undefined || chainId === undefined
+      ? null
+      : sourcifyMetadata(address, chainId, source);
+  const { data, error } = useSWRImmutable<Metadata>(metadataURL, (url) =>
+    fetch(url).then((res) => res.json())
+  );
+  if (error) {
+    return null;
+  }
+  return data;
 };
 
 export const useMultipleMetadata = (

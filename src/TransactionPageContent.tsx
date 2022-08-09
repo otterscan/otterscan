@@ -11,7 +11,10 @@ import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
 import { useAppConfigContext } from "./useAppConfig";
-import { useSourcify, useTransactionDescription } from "./sourcify/useSourcify";
+import {
+  useSourcifyMetadata,
+  useTransactionDescription,
+} from "./sourcify/useSourcify";
 
 const Details = React.lazy(() => import("./transaction/Details"));
 const Logs = React.lazy(() => import("./transaction/Logs"));
@@ -44,7 +47,7 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
   const selectionCtx = useSelection();
 
   const { sourcifySource } = useAppConfigContext();
-  const metadata = useSourcify(
+  const metadata = useSourcifyMetadata(
     txData?.to,
     provider?.network.chainId,
     sourcifySource
