@@ -14,10 +14,9 @@ import { Metadata } from "../sourcify/useSourcify";
 type LogEntryProps = {
   log: Log;
   logDesc: LogDescription | null | undefined;
-  metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
-const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc, metadatas }) => {
+const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc }) => {
   const rawTopic0 = log.topics[0];
   const topic0 = useTopic0(rawTopic0);
 
@@ -56,10 +55,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc, metadatas }) => {
           <div className="font-bold text-right">Address</div>
           <div className="col-span-11 mr-auto">
             <div className="flex items-baseline space-x-2 -ml-1 mr-3">
-              <TransactionAddress
-                address={log.address}
-                metadata={metadatas[log.address]}
-              />
+              <TransactionAddress address={log.address} />
               <Copy value={log.address} />
             </div>
           </div>

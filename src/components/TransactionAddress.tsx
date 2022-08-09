@@ -5,20 +5,17 @@ import { useSelectedTransaction } from "../useSelectedTransaction";
 import { useBlockNumberContext } from "../useBlockTagContext";
 import { RuntimeContext } from "../useRuntime";
 import { useHasCode } from "../useErigonHooks";
-import { Metadata } from "../sourcify/useSourcify";
 import { AddressContext, ChecksummedAddress } from "../types";
 
 type TransactionAddressProps = {
   address: ChecksummedAddress;
   addressCtx?: AddressContext | undefined;
-  metadata?: Metadata | null | undefined;
   showCodeIndicator?: boolean;
 };
 
 const TransactionAddress: React.FC<TransactionAddressProps> = ({
   address,
   addressCtx,
-  metadata,
   showCodeIndicator = false,
 }) => {
   const txData = useSelectedTransaction();
@@ -46,7 +43,6 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
         txFrom={address === txData?.from}
         txTo={address === txData?.to || creation}
         creation={creation}
-        metadata={metadata}
         eoa={
           showCodeIndicator && blockNumber !== undefined
             ? !toHasCode

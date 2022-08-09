@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { TransactionDescription } from "@ethersproject/abi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,11 +25,7 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import {
-  TransactionData,
-  InternalOperation,
-  ChecksummedAddress,
-} from "../types";
+import { TransactionData, InternalOperation } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -43,7 +39,6 @@ import {
 } from "../use4Bytes";
 import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useContractsMetadata } from "../hooks";
 import { useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
@@ -94,22 +89,6 @@ const Details: React.FC<DetailsProps> = ({
     txData?.confirmedData?.blockNumber
   );
 
-  const addresses = useMemo(() => {
-    const _addresses: ChecksummedAddress[] = [];
-    if (txData.to) {
-      _addresses.push(txData.to);
-    }
-    if (txData.confirmedData?.createdContractAddress) {
-      _addresses.push(txData.confirmedData.createdContractAddress);
-    }
-    for (const t of txData.tokenTransfers) {
-      _addresses.push(t.from);
-      _addresses.push(t.to);
-      _addresses.push(t.token);
-    }
-    return _addresses;
-  }, [txData]);
-  const metadatas = useContractsMetadata(addresses, provider);
   const [errorMsg, outputData, isCustomError] = useTransactionError(
     provider,
     txData.transactionHash
@@ -269,11 +248,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <TransactionAddress
-              address={txData.to}
-              metadata={metadatas?.[txData.to]}
-              showCodeIndicator
-            />
+            <TransactionAddress address={txData.to} showCodeIndicator />
             <Copy value={txData.to} />
           </div>
         ) : txData.confirmedData === undefined ? (
@@ -284,9 +259,6 @@ const Details: React.FC<DetailsProps> = ({
           <div className="flex items-baseline space-x-2 -ml-1">
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-              metadata={
-                metadatas?.[txData.confirmedData?.createdContractAddress!]
-              }
             />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
@@ -316,7 +288,6 @@ const Details: React.FC<DetailsProps> = ({
               key={i}
               t={t}
               tokenMeta={txData.tokenMetas[t.token]}
-              metadatas={metadatas}
             />
           ))}
         </InfoRow>

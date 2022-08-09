@@ -18,7 +18,6 @@ import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
-import { useContractsMetadata } from "../hooks";
 import { useAddressBalance, useContractCreator } from "../useErigonHooks";
 import { BlockNumberContext } from "../useBlockTagContext";
 
@@ -112,22 +111,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   }, [page]);
   const priceMap = useMultipleETHUSDOracle(provider, blockTags);
 
-  // Calculate Sourcify metadata for all addresses that appear on this page results
-  const addresses = useMemo(() => {
-    const _addresses = [address];
-    if (page) {
-      for (const t of page) {
-        if (t.to) {
-          _addresses.push(t.to);
-        }
-        if (t.createdContractAddress) {
-          _addresses.push(t.createdContractAddress);
-        }
-      }
-    }
-    return _addresses;
-  }, [address, page]);
-  const metadatas = useContractsMetadata(addresses, provider);
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
 
@@ -181,7 +164,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
                 selectedAddress={address}
                 feeDisplay={feeDisplay}
                 priceMap={priceMap}
-                metadatas={metadatas}
               />
             ))}
             <NavBar address={address} page={page} controller={controller} />
