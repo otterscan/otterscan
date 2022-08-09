@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@chainlink/contracts": "^0.4.2",
-    "@fontsource/fira-code": "^4.5.10",
+    "@fontsource/fira-code": "^4.5.11",
     "@fontsource/roboto": "^4.5.8",
     "@fontsource/roboto-mono": "^4.5.7",
     "@fontsource/space-grotesk": "^4.5.9",
