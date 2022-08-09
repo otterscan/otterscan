@@ -5,7 +5,7 @@ import { Metadata, useMultipleMetadata } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressesWithCode } from "./useErigonHooks";
 
-export const useDedupedAddresses = (
+const useDedupedAddresses = (
   addresses: ChecksummedAddress[]
 ): ChecksummedAddress[] => {
   return useMemo(() => {
