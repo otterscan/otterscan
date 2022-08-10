@@ -102,7 +102,7 @@ const Contracts: React.FC<ContractsProps> = ({
                           className={`flex text-sm px-2 py-1 ${
                             selected === k
                               ? "font-bold bg-gray-200 text-gray-500"
-                              : "hover:border-orange-200 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75"
+                              : "hover:text-gray-500 text-gray-400 transition-colors duration-75"
                           }`}
                           onClick={() => setSelected(k)}
                         >
