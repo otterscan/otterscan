@@ -81,24 +81,17 @@ export type Metadata = {
   };
 };
 
-const fetchSourcifyMetadata = async (
-  address: ChecksummedAddress,
-  chainId: number,
-  source: SourcifySource,
-  abortController: AbortController
-): Promise<Metadata | null> => {
+const sourcifyFetcher = async (url: string) => {
   try {
-    const metadataURL = sourcifyMetadata(address, chainId, source);
-    const result = await fetch(metadataURL, {
-      signal: abortController.signal,
-    });
-    if (result.ok) {
-      return await result.json();
+    const res = await fetch(url);
+    if (res.ok) {
+      return res.json();
     }
-
     return null;
   } catch (err) {
-    console.error(err);
+    console.warn(
+      `error while getting Sourcify metadata: url=${url} err=${err}`
+    );
     return null;
   }
 };
@@ -112,8 +105,9 @@ export const useSourcifyMetadata = (
     address === undefined || chainId === undefined
       ? null
       : sourcifyMetadata(address, chainId, source);
-  const { data, error } = useSWRImmutable<Metadata>(metadataURL, (url) =>
-    fetch(url).then((res) => res.json())
+  const { data, error } = useSWRImmutable<Metadata>(
+    metadataURL,
+    sourcifyFetcher
   );
   if (error) {
     return null;
