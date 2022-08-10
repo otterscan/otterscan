@@ -23,7 +23,7 @@ import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressOrENS } from "./useResolvedAddresses";
-import { useMultipleMetadata } from "./sourcify/useSourcify";
+import { useSourcifyMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 import { useAddressesWithCode } from "./useErigonHooks";
 import { useChainInfo } from "./useChainInfo";
@@ -65,7 +65,6 @@ const Address: React.FC = () => {
     }
   }, [addressOrName, checksummedAddress, isENS]);
 
-  const { sourcifySource } = useAppConfigContext();
   const checksummedAddressAsArray = useMemo(
     () => (checksummedAddress !== undefined ? [checksummedAddress] : []),
     [checksummedAddress]
@@ -74,16 +73,13 @@ const Address: React.FC = () => {
     provider,
     checksummedAddressAsArray
   );
-  const metadatas = useMultipleMetadata(
-    undefined,
-    contractAddresses,
+  // TODO: restore filter to only check Sourcify metadata if the address is a contract (hasCode)
+  const { sourcifySource } = useAppConfigContext();
+  const addressMetadata = useSourcifyMetadata(
+    checksummedAddress,
     provider?.network.chainId,
     sourcifySource
   );
-  const addressMetadata =
-    checksummedAddress !== undefined
-      ? metadatas[checksummedAddress]
-      : undefined;
 
   const { network, faucets } = useChainInfo();
 

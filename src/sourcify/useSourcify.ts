@@ -121,55 +121,6 @@ export const useSourcifyMetadata = (
   return data;
 };
 
-export const useMultipleMetadata = (
-  baseMetadatas: Record<string, Metadata | null> | undefined,
-  addresses: ChecksummedAddress[] | undefined,
-  chainId: number | undefined,
-  source: SourcifySource
-): Record<ChecksummedAddress, Metadata | null | undefined> => {
-  const [rawMetadata, setRawMetadata] = useState<
-    Record<string, Metadata | null | undefined>
-  >({});
-  useEffect(() => {
-    if (addresses === undefined || chainId === undefined) {
-      return;
-    }
-    setRawMetadata({});
-
-    const abortController = new AbortController();
-    const fetchMetadata = async (_addresses: string[]) => {
-      const fetchers: Promise<Metadata | null>[] = [];
-      for (const address of _addresses) {
-        fetchers.push(
-          fetchSourcifyMetadata(address, chainId, source, abortController)
-        );
-      }
-
-      const results = await Promise.all(fetchers);
-      if (abortController.signal.aborted) {
-        return;
-      }
-      let metadatas: Record<string, Metadata | null> = {};
-      if (baseMetadatas) {
-        metadatas = { ...baseMetadatas };
-      }
-      for (let i = 0; i < results.length; i++) {
-        metadatas[_addresses[i]] = results[i];
-      }
-      setRawMetadata(metadatas);
-    };
-
-    const filtered = addresses.filter((a) => baseMetadatas?.[a] === undefined);
-    fetchMetadata(filtered);
-
-    return () => {
-      abortController.abort();
-    };
-  }, [baseMetadatas, addresses, chainId, source]);
-
-  return rawMetadata;
-};
-
 export const useContract = (
   checksummedAddress: string,
   networkId: number,

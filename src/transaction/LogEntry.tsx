@@ -1,6 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { Log } from "@ethersproject/abstract-provider";
-import { Fragment, Interface, LogDescription } from "@ethersproject/abi";
+import { Fragment, Interface } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
@@ -8,15 +8,41 @@ import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { useTopic0 } from "../useTopic0";
-import { ChecksummedAddress } from "../types";
-import { Metadata } from "../sourcify/useSourcify";
+import { RuntimeContext } from "../useRuntime";
+import { useAppConfigContext } from "../useAppConfig";
+import { useSourcifyMetadata } from "../sourcify/useSourcify";
 
 type LogEntryProps = {
   log: Log;
-  logDesc: LogDescription | null | undefined;
 };
 
-const LogEntry: React.FC<LogEntryProps> = ({ log, logDesc }) => {
+const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
+  const { provider } = useContext(RuntimeContext);
+  const { sourcifySource } = useAppConfigContext();
+  const metadata = useSourcifyMetadata(
+    log.address,
+    provider?.network.chainId,
+    sourcifySource
+  );
+
+  const logDesc = useMemo(() => {
+    if (!metadata) {
+      return metadata;
+    }
+
+    const abi = metadata.output.abi;
+    const intf = new Interface(abi as any);
+    try {
+      return intf.parseLog({
+        topics: log.topics,
+        data: log.data,
+      });
+    } catch (err) {
+      console.warn("Couldn't find function signature", err);
+      return null;
+    }
+  }, [log, metadata]);
+
   const rawTopic0 = log.topics[0];
   const topic0 = useTopic0(rawTopic0);
 

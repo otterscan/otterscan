@@ -98,10 +98,7 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
                       />
                     }
                   />
-                  <Route
-                    path="logs"
-                    element={<Logs txData={txData} metadata={metadata} />}
-                  />
+                  <Route path="logs" element={<Logs txData={txData} />} />
                   <Route path="trace" element={<Trace txData={txData} />} />
                 </Routes>
               </React.Suspense>
