@@ -115,43 +115,33 @@ export const useSourcifyMetadata = (
   return data;
 };
 
+const contractFetcher = async (url: string): Promise<string | null> => {
+  const res = await fetch(url);
+  if (res.ok) {
+    return await res.text();
+  }
+  return null;
+};
+
 export const useContract = (
   checksummedAddress: string,
   networkId: number,
   filename: string,
-  source: any,
   sourcifySource: SourcifySource
 ) => {
-  const [content, setContent] = useState<string>(source.content);
+  const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
+  const url = sourcifySourceFile(
+    checksummedAddress,
+    networkId,
+    normalizedFilename,
+    sourcifySource
+  );
 
-  useEffect(() => {
-    if (source.content) {
-      return;
-    }
-
-    const abortController = new AbortController();
-    const readContent = async () => {
-      const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
-      const url = sourcifySourceFile(
-        checksummedAddress,
-        networkId,
-        normalizedFilename,
-        sourcifySource
-      );
-      const res = await fetch(url, { signal: abortController.signal });
-      if (res.ok) {
-        const _content = await res.text();
-        setContent(_content);
-      }
-    };
-    readContent();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [checksummedAddress, networkId, filename, source.content, sourcifySource]);
-
-  return content;
+  const { data, error } = useSWRImmutable(url, contractFetcher);
+  if (error) {
+    return undefined;
+  }
+  return data;
 };
 
 export const useTransactionDescription = (
