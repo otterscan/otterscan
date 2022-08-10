@@ -582,7 +582,6 @@ export const prefetchTransactionBySenderAndNonce = (
     }
     return getTransactionBySenderAndNonceFetcher(provider)(key);
   });
-  // }
 };
 
 export const useTransactionBySenderAndNonce = (
@@ -705,7 +704,6 @@ export const providerFetcher =
     const method = key[0];
     const args = key.slice(1);
     const result = await provider.send(method, args);
-    // console.log(`providerFetcher: ${method} ${args} === ${result}`);
     return result;
   };
 
