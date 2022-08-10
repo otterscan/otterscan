@@ -10,11 +10,6 @@ import { useInternalOperations, useTxData } from "./useErigonHooks";
 import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
-import { useAppConfigContext } from "./useAppConfig";
-import {
-  useSourcifyMetadata,
-  useTransactionDescription,
-} from "./sourcify/useSourcify";
 
 const Details = React.lazy(() => import("./transaction/Details"));
 const Logs = React.lazy(() => import("./transaction/Logs"));
@@ -45,14 +40,6 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
   }, [txData, internalOps]);
 
   const selectionCtx = useSelection();
-
-  const { sourcifySource } = useAppConfigContext();
-  const metadata = useSourcifyMetadata(
-    txData?.to,
-    provider?.network.chainId,
-    sourcifySource
-  );
-  const txDesc = useTransactionDescription(metadata, txData);
 
   return (
     <SelectedTransactionContext.Provider value={txData}>
@@ -89,10 +76,6 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
                     element={
                       <Details
                         txData={txData}
-                        txDesc={txDesc}
-                        toMetadata={metadata}
-                        userDoc={metadata?.output.userdoc}
-                        devDoc={metadata?.output.devdoc}
                         internalOps={internalOps}
                         sendsEthToMiner={sendsEthToMiner}
                       />

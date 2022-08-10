@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
-import { TransactionDescription } from "@ethersproject/abi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -37,7 +36,12 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
+import { useAppConfigContext } from "../useAppConfig";
+import {
+  useError,
+  useSourcifyMetadata,
+  useTransactionDescription as useSourcifyTransactionDescription,
+} from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
 import { useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
@@ -45,20 +49,12 @@ import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
-  txDesc: TransactionDescription | null | undefined;
-  toMetadata: Metadata | null | undefined;
-  userDoc?: UserDoc | undefined;
-  devDoc?: DevDoc | undefined;
   internalOps?: InternalOperation[];
   sendsEthToMiner: boolean;
 };
 
 const Details: React.FC<DetailsProps> = ({
   txData,
-  txDesc,
-  toMetadata,
-  userDoc,
-  devDoc,
   internalOps,
   sendsEthToMiner,
 }) => {
@@ -75,11 +71,21 @@ const Details: React.FC<DetailsProps> = ({
     txData.value
   );
 
+  const { provider } = useContext(RuntimeContext);
+  const { sourcifySource } = useAppConfigContext();
+  const metadata = useSourcifyMetadata(
+    txData?.to,
+    provider?.network.chainId,
+    sourcifySource
+  );
+
+  const txDesc = useSourcifyTransactionDescription(metadata, txData);
+  const userDoc = metadata?.output.userdoc;
+  const devDoc = metadata?.output.devdoc;
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
-  const { provider } = useContext(RuntimeContext);
   const {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
@@ -94,7 +100,7 @@ const Details: React.FC<DetailsProps> = ({
     txData.transactionHash
   );
   const errorDescription = useError(
-    toMetadata,
+    metadata,
     isCustomError ? outputData : undefined
   );
   const userError = errorDescription
