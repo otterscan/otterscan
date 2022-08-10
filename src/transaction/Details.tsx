@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -24,7 +24,7 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import { TransactionData, InternalOperation } from "../types";
+import { TransactionData } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -43,21 +43,17 @@ import {
   useTransactionDescription as useSourcifyTransactionDescription,
 } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useTransactionError } from "../useErigonHooks";
+import { useInternalOperations, useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
-  internalOps?: InternalOperation[];
-  sendsEthToMiner: boolean;
 };
 
-const Details: React.FC<DetailsProps> = ({
-  txData,
-  internalOps,
-  sendsEthToMiner,
-}) => {
+const Details: React.FC<DetailsProps> = ({ txData }) => {
+  const { provider } = useContext(RuntimeContext);
+
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
@@ -71,7 +67,20 @@ const Details: React.FC<DetailsProps> = ({
     txData.value
   );
 
-  const { provider } = useContext(RuntimeContext);
+  const internalOps = useInternalOperations(provider, txData);
+  const sendsEthToMiner = useMemo(() => {
+    if (!txData || !internalOps) {
+      return false;
+    }
+
+    for (const t of internalOps) {
+      if (t.to === txData.confirmedData?.miner) {
+        return true;
+      }
+    }
+    return false;
+  }, [txData, internalOps]);
+
   const { sourcifySource } = useAppConfigContext();
   const metadata = useSourcifyMetadata(
     txData?.to,

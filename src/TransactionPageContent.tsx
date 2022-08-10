@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
@@ -6,7 +6,7 @@ import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
 import NavTab from "./components/NavTab";
 import { RuntimeContext } from "./useRuntime";
-import { useInternalOperations, useTxData } from "./useErigonHooks";
+import { useTxData } from "./useErigonHooks";
 import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
@@ -25,19 +25,6 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
   const { provider } = useContext(RuntimeContext);
 
   const txData = useTxData(provider, txHash);
-  const internalOps = useInternalOperations(provider, txData);
-  const sendsEthToMiner = useMemo(() => {
-    if (!txData || !internalOps) {
-      return false;
-    }
-
-    for (const t of internalOps) {
-      if (t.to === txData.confirmedData?.miner) {
-        return true;
-      }
-    }
-    return false;
-  }, [txData, internalOps]);
 
   const selectionCtx = useSelection();
 
@@ -71,16 +58,7 @@ const TransactionPageContent: React.FC<TransactionPageContentProps> = ({
               </Tab.Group>
               <React.Suspense fallback={null}>
                 <Routes>
-                  <Route
-                    index
-                    element={
-                      <Details
-                        txData={txData}
-                        internalOps={internalOps}
-                        sendsEthToMiner={sendsEthToMiner}
-                      />
-                    }
-                  />
+                  <Route index element={<Details txData={txData} />} />
                   <Route path="logs" element={<Logs txData={txData} />} />
                   <Route path="trace" element={<Trace txData={txData} />} />
                 </Routes>
