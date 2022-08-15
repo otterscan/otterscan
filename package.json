@@ -74,7 +74,7 @@
     ]
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^2.0.0",
+    "@vitejs/plugin-react": "^2.0.1",
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.16",
     "source-map-explorer": "^2.5.2",
