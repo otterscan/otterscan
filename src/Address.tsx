@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback, useMemo } from "react";
+import React, { useEffect, useContext, useCallback } from "react";
 import {
   useParams,
   useNavigate,
@@ -23,9 +23,9 @@ import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useAppConfigContext } from "./useAppConfig";
 import { useAddressOrENS } from "./useResolvedAddresses";
-import { useMultipleMetadata } from "./sourcify/useSourcify";
+import { useSourcifyMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
-import { useAddressesWithCode } from "./useErigonHooks";
+import { useHasCode } from "./useErigonHooks";
 import { useChainInfo } from "./useChainInfo";
 
 const AddressTransactionByNonce = React.lazy(
@@ -65,25 +65,13 @@ const Address: React.FC = () => {
     }
   }, [addressOrName, checksummedAddress, isENS]);
 
+  const hasCode = useHasCode(provider, checksummedAddress, "latest");
   const { sourcifySource } = useAppConfigContext();
-  const checksummedAddressAsArray = useMemo(
-    () => (checksummedAddress !== undefined ? [checksummedAddress] : []),
-    [checksummedAddress]
-  );
-  const contractAddresses = useAddressesWithCode(
-    provider,
-    checksummedAddressAsArray
-  );
-  const metadatas = useMultipleMetadata(
-    undefined,
-    contractAddresses,
+  const addressMetadata = useSourcifyMetadata(
+    hasCode ? checksummedAddress : undefined,
     provider?.network.chainId,
     sourcifySource
   );
-  const addressMetadata =
-    checksummedAddress !== undefined
-      ? metadatas[checksummedAddress]
-      : undefined;
 
   const { network, faucets } = useChainInfo();
 
@@ -134,7 +122,7 @@ const Address: React.FC = () => {
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
-                {(contractAddresses?.length ?? 0) > 0 && (
+                {hasCode && (
                   <NavTab href={`/address/${addressOrName}/contract`}>
                     <span
                       className={`flex items-baseline space-x-2 ${
@@ -181,12 +169,7 @@ const Address: React.FC = () => {
                     element={
                       <Contracts
                         checksummedAddress={checksummedAddress}
-                        rawMetadata={
-                          contractAddresses !== undefined &&
-                          contractAddresses.length === 0
-                            ? null
-                            : addressMetadata
-                        }
+                        rawMetadata={addressMetadata}
                       />
                     }
                   />

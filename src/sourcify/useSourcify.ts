@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
 import { ErrorDescription } from "@ethersproject/abi/lib/interface";
+import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 
@@ -80,148 +81,67 @@ export type Metadata = {
   };
 };
 
-const fetchSourcifyMetadata = async (
-  address: ChecksummedAddress,
-  chainId: number,
-  source: SourcifySource,
-  abortController: AbortController
-): Promise<Metadata | null> => {
+const sourcifyFetcher = async (url: string) => {
   try {
-    const metadataURL = sourcifyMetadata(address, chainId, source);
-    const result = await fetch(metadataURL, {
-      signal: abortController.signal,
-    });
-    if (result.ok) {
-      return await result.json();
+    const res = await fetch(url);
+    if (res.ok) {
+      return res.json();
     }
-
     return null;
   } catch (err) {
-    console.error(err);
+    console.warn(
+      `error while getting Sourcify metadata: url=${url} err=${err}`
+    );
     return null;
   }
 };
 
-// TODO: replace every occurrence with the multiple version one
-export const useSourcify = (
+export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: number | undefined,
   source: SourcifySource
 ): Metadata | null | undefined => {
-  const [rawMetadata, setRawMetadata] = useState<Metadata | null | undefined>();
-
-  useEffect(() => {
-    if (!address || chainId === undefined) {
-      return;
-    }
-    setRawMetadata(undefined);
-
-    const abortController = new AbortController();
-    const fetchMetadata = async () => {
-      const _metadata = await fetchSourcifyMetadata(
-        address,
-        chainId,
-        source,
-        abortController
-      );
-      setRawMetadata(_metadata);
-    };
-    fetchMetadata();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [address, chainId, source]);
-
-  return rawMetadata;
+  const metadataURL = () =>
+    address === undefined || chainId === undefined
+      ? null
+      : sourcifyMetadata(address, chainId, source);
+  const { data, error } = useSWRImmutable<Metadata>(
+    metadataURL,
+    sourcifyFetcher
+  );
+  if (error) {
+    return null;
+  }
+  return data;
 };
 
-export const useMultipleMetadata = (
-  baseMetadatas: Record<string, Metadata | null> | undefined,
-  addresses: ChecksummedAddress[] | undefined,
-  chainId: number | undefined,
-  source: SourcifySource
-): Record<ChecksummedAddress, Metadata | null | undefined> => {
-  const [rawMetadata, setRawMetadata] = useState<
-    Record<string, Metadata | null | undefined>
-  >({});
-  useEffect(() => {
-    if (addresses === undefined || chainId === undefined) {
-      return;
-    }
-    setRawMetadata({});
-
-    const abortController = new AbortController();
-    const fetchMetadata = async (_addresses: string[]) => {
-      const fetchers: Promise<Metadata | null>[] = [];
-      for (const address of _addresses) {
-        fetchers.push(
-          fetchSourcifyMetadata(address, chainId, source, abortController)
-        );
-      }
-
-      const results = await Promise.all(fetchers);
-      if (abortController.signal.aborted) {
-        return;
-      }
-      let metadatas: Record<string, Metadata | null> = {};
-      if (baseMetadatas) {
-        metadatas = { ...baseMetadatas };
-      }
-      for (let i = 0; i < results.length; i++) {
-        metadatas[_addresses[i]] = results[i];
-      }
-      setRawMetadata(metadatas);
-    };
-
-    const filtered = addresses.filter((a) => baseMetadatas?.[a] === undefined);
-    fetchMetadata(filtered);
-
-    return () => {
-      abortController.abort();
-    };
-  }, [baseMetadatas, addresses, chainId, source]);
-
-  return rawMetadata;
+const contractFetcher = async (url: string): Promise<string | null> => {
+  const res = await fetch(url);
+  if (res.ok) {
+    return await res.text();
+  }
+  return null;
 };
 
 export const useContract = (
   checksummedAddress: string,
   networkId: number,
   filename: string,
-  source: any,
   sourcifySource: SourcifySource
 ) => {
-  const [content, setContent] = useState<string>(source.content);
+  const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
+  const url = sourcifySourceFile(
+    checksummedAddress,
+    networkId,
+    normalizedFilename,
+    sourcifySource
+  );
 
-  useEffect(() => {
-    if (source.content) {
-      return;
-    }
-
-    const abortController = new AbortController();
-    const readContent = async () => {
-      const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
-      const url = sourcifySourceFile(
-        checksummedAddress,
-        networkId,
-        normalizedFilename,
-        sourcifySource
-      );
-      const res = await fetch(url, { signal: abortController.signal });
-      if (res.ok) {
-        const _content = await res.text();
-        setContent(_content);
-      }
-    };
-    readContent();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [checksummedAddress, networkId, filename, source.content, sourcifySource]);
-
-  return content;
+  const { data, error } = useSWRImmutable(url, contractFetcher);
+  if (error) {
+    return undefined;
+  }
+  return data;
 };
 
 export const useTransactionDescription = (

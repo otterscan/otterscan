@@ -6,28 +6,20 @@ import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
 import USDAmount from "./components/USDAmount";
-import {
-  AddressContext,
-  ChecksummedAddress,
-  TokenMeta,
-  TokenTransfer,
-} from "./types";
+import { AddressContext, TokenMeta, TokenTransfer } from "./types";
 import { RuntimeContext } from "./useRuntime";
 import { useBlockNumberContext } from "./useBlockTagContext";
-import { Metadata } from "./sourcify/useSourcify";
 import { useTokenUSDOracle } from "./usePriceOracle";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
   tokenMeta?: TokenMeta | null | undefined;
-  metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
 // TODO: handle partial
 const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
   t,
   tokenMeta,
-  metadatas,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
@@ -40,7 +32,6 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <TransactionAddress
             address={t.from}
             addressCtx={AddressContext.FROM}
-            metadata={metadatas[t.from]}
             showCodeIndicator
           />
         </div>
@@ -51,7 +42,6 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
           <TransactionAddress
             address={t.to}
             addressCtx={AddressContext.TO}
-            metadata={metadatas[t.to]}
             showCodeIndicator
           />
         </div>
@@ -67,7 +57,7 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
               />
             </ValueHighlighter>
           </span>
-          <TransactionAddress address={t.token} metadata={metadatas[t.token]} />
+          <TransactionAddress address={t.token} />
           {tokenMeta && quote !== undefined && decimals !== undefined && (
             <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
               <USDAmount

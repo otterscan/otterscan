@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { commify } from "@ethersproject/units";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,6 +6,7 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons/faChevronDown";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
+import ContractFromRepo from "./ContractFromRepo";
 import { RuntimeContext } from "../useRuntime";
 import { Metadata } from "../sourcify/useSourcify";
 import ExternalLink from "../components/ExternalLink";
@@ -101,7 +102,7 @@ const Contracts: React.FC<ContractsProps> = ({
                           className={`flex text-sm px-2 py-1 ${
                             selected === k
                               ? "font-bold bg-gray-200 text-gray-500"
-                              : "hover:border-orange-200 hover:text-gray-500 text-gray-400 transition-transform transition-colors duration-75"
+                              : "hover:text-gray-500 text-gray-400 transition-colors duration-75"
                           }`}
                           onClick={() => setSelected(k)}
                         >
@@ -113,12 +114,17 @@ const Contracts: React.FC<ContractsProps> = ({
                 </div>
               </Menu>
               {selected && (
-                <Contract
-                  checksummedAddress={checksummedAddress}
-                  networkId={provider!.network.chainId}
-                  filename={selected}
-                  source={rawMetadata.sources[selected]}
-                />
+                <>
+                  {rawMetadata.sources[selected].content ? (
+                    <Contract content={rawMetadata.sources[selected].content} />
+                  ) : (
+                    <ContractFromRepo
+                      checksummedAddress={checksummedAddress}
+                      networkId={provider!.network.chainId}
+                      filename={selected}
+                    />
+                  )}
+                </>
               )}
             </div>
           </>

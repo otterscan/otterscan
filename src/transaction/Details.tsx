@@ -1,6 +1,5 @@
 import React, { useContext, useMemo, useState } from "react";
 import { Tab } from "@headlessui/react";
-import { TransactionDescription } from "@ethersproject/abi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -25,11 +24,7 @@ import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
 import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import {
-  TransactionData,
-  InternalOperation,
-  ChecksummedAddress,
-} from "../types";
+import { TransactionData } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -41,32 +36,24 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
+import { useAppConfigContext } from "../useAppConfig";
+import {
+  useError,
+  useSourcifyMetadata,
+  useTransactionDescription as useSourcifyTransactionDescription,
+} from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useContractsMetadata } from "../hooks";
-import { useTransactionError } from "../useErigonHooks";
+import { useInternalOperations, useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
-  txDesc: TransactionDescription | null | undefined;
-  toMetadata: Metadata | null | undefined;
-  userDoc?: UserDoc | undefined;
-  devDoc?: DevDoc | undefined;
-  internalOps?: InternalOperation[];
-  sendsEthToMiner: boolean;
 };
 
-const Details: React.FC<DetailsProps> = ({
-  txData,
-  txDesc,
-  toMetadata,
-  userDoc,
-  devDoc,
-  internalOps,
-  sendsEthToMiner,
-}) => {
+const Details: React.FC<DetailsProps> = ({ txData }) => {
+  const { provider } = useContext(RuntimeContext);
+
   const hasEIP1559 =
     txData.confirmedData?.blockBaseFeePerGas !== undefined &&
     txData.confirmedData?.blockBaseFeePerGas !== null;
@@ -80,11 +67,34 @@ const Details: React.FC<DetailsProps> = ({
     txData.value
   );
 
+  const internalOps = useInternalOperations(provider, txData);
+  const sendsEthToMiner = useMemo(() => {
+    if (!txData || !internalOps) {
+      return false;
+    }
+
+    for (const t of internalOps) {
+      if (t.to === txData.confirmedData?.miner) {
+        return true;
+      }
+    }
+    return false;
+  }, [txData, internalOps]);
+
+  const { sourcifySource } = useAppConfigContext();
+  const metadata = useSourcifyMetadata(
+    txData?.to,
+    provider?.network.chainId,
+    sourcifySource
+  );
+
+  const txDesc = useSourcifyTransactionDescription(metadata, txData);
+  const userDoc = metadata?.output.userdoc;
+  const devDoc = metadata?.output.devdoc;
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
-  const { provider } = useContext(RuntimeContext);
   const {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
@@ -94,28 +104,12 @@ const Details: React.FC<DetailsProps> = ({
     txData?.confirmedData?.blockNumber
   );
 
-  const addresses = useMemo(() => {
-    const _addresses: ChecksummedAddress[] = [];
-    if (txData.to) {
-      _addresses.push(txData.to);
-    }
-    if (txData.confirmedData?.createdContractAddress) {
-      _addresses.push(txData.confirmedData.createdContractAddress);
-    }
-    for (const t of txData.tokenTransfers) {
-      _addresses.push(t.from);
-      _addresses.push(t.to);
-      _addresses.push(t.token);
-    }
-    return _addresses;
-  }, [txData]);
-  const metadatas = useContractsMetadata(addresses, provider);
   const [errorMsg, outputData, isCustomError] = useTransactionError(
     provider,
     txData.transactionHash
   );
   const errorDescription = useError(
-    toMetadata,
+    metadata,
     isCustomError ? outputData : undefined
   );
   const userError = errorDescription
@@ -269,11 +263,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <TransactionAddress
-              address={txData.to}
-              metadata={metadatas?.[txData.to]}
-              showCodeIndicator
-            />
+            <TransactionAddress address={txData.to} showCodeIndicator />
             <Copy value={txData.to} />
           </div>
         ) : txData.confirmedData === undefined ? (
@@ -284,9 +274,6 @@ const Details: React.FC<DetailsProps> = ({
           <div className="flex items-baseline space-x-2 -ml-1">
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-              metadata={
-                metadatas?.[txData.confirmedData?.createdContractAddress!]
-              }
             />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
@@ -316,7 +303,6 @@ const Details: React.FC<DetailsProps> = ({
               key={i}
               t={t}
               tokenMeta={txData.tokenMetas[t.token]}
-              metadatas={metadatas}
             />
           ))}
         </InfoRow>

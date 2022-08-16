@@ -427,44 +427,6 @@ export const useTraceTransaction = (
   return traceGroups;
 };
 
-const hasCode = async (
-  provider: JsonRpcProvider,
-  address: ChecksummedAddress
-): Promise<boolean> => {
-  const result = await provider.send("ots_hasCode", [address, "latest"]);
-  return result as boolean;
-};
-
-export const useAddressesWithCode = (
-  provider: JsonRpcProvider | undefined,
-  addresses: ChecksummedAddress[]
-): ChecksummedAddress[] | undefined => {
-  const [results, setResults] = useState<ChecksummedAddress[] | undefined>();
-
-  useEffect(() => {
-    // Reset
-    setResults(undefined);
-
-    if (provider === undefined) {
-      return;
-    }
-
-    const readCodes = async () => {
-      const checkers: Promise<boolean>[] = [];
-      for (const a of addresses) {
-        checkers.push(hasCode(provider, a));
-      }
-
-      const result = await Promise.all(checkers);
-      const filtered = addresses.filter((_, i) => result[i]);
-      setResults(filtered);
-    };
-    readCodes();
-  }, [provider, addresses]);
-
-  return results;
-};
-
 // Error(string)
 const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
 
@@ -582,7 +544,6 @@ export const prefetchTransactionBySenderAndNonce = (
     }
     return getTransactionBySenderAndNonceFetcher(provider)(key);
   });
-  // }
 };
 
 export const useTransactionBySenderAndNonce = (
@@ -705,7 +666,6 @@ export const providerFetcher =
     const method = key[0];
     const args = key.slice(1);
     const result = await provider.send(method, args);
-    // console.log(`providerFetcher: ${method} ${args} === ${result}`);
     return result;
   };
 

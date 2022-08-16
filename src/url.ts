@@ -53,6 +53,10 @@ const resolveSourcifySource = (source: SourcifySource) => {
   throw new Error(`Unknown Sourcify integration source code: ${source}`);
 };
 
+/**
+ * Builds a complete Sourcify metadata.json URL given the contract address
+ * and chain.
+ */
 export const sourcifyMetadata = (
   address: ChecksummedAddress,
   chainId: number,
