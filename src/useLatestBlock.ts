@@ -10,6 +10,7 @@ export const useLatestBlock = (provider?: JsonRpcProvider) => {
       return;
     }
 
+    // TODO: remove duplicated code
     const readLatestBlock = async () => {
       const blockNum = await provider.getBlockNumber();
       const _raw = await provider.send("erigon_getHeaderByNumber", [blockNum]);
