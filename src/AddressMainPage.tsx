@@ -30,8 +30,6 @@ import { ChecksummedAddress } from "./types";
 type AddressMainPageProps = {};
 
 const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
-  const { provider } = useContext(RuntimeContext);
-
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
@@ -55,6 +53,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
     urlFixer
   );
 
+  const { provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress, "latest");
   const addressMetadata = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,

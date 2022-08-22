@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
+import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
 import AddressOrENSNameNoTx from "./components/AddressOrENSNameNoTx";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
@@ -36,7 +37,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     },
     [navigate, direction, searchParams]
   );
-  const [checksummedAddress, isENS, error] = useAddressOrENS(
+  const [checksummedAddress, , ensError] = useAddressOrENS(
     addressOrName,
     urlFixer
   );
@@ -77,12 +78,20 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     nonce !== undefined && isNaN(nonce) ? undefined : nonce
   );
 
+  // Invalid ENS
+  if (ensError) {
+    return (
+      <StandardFrame>
+        <AddressOrENSNameNotFound
+          addressOrENSName={addressOrName}
+          supportsENS={provider?.network.ensAddress !== undefined}
+        />
+      </StandardFrame>
+    );
+  }
+
   // Loading...
-  if (
-    checksummedAddress === undefined ||
-    nonce === undefined ||
-    txHash === undefined
-  ) {
+  if (checksummedAddress === undefined || nonce === undefined) {
     return <StandardFrame />;
   }
 
@@ -105,6 +114,11 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
         />
       </StandardFrame>
     );
+  }
+
+  // Valid nonce, waiting tx load
+  if (txHash === undefined) {
+    return <StandardFrame />;
   }
 
   // Valid nonce, but no tx found
