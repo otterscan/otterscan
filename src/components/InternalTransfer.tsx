@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
@@ -11,19 +10,17 @@ import USDAmount from "./USDAmount";
 import { RuntimeContext } from "../useRuntime";
 import { useHasCode } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { useETHUSDOracle } from "../usePriceOracle";
 import { TransactionData, InternalOperation } from "../types";
 
 type InternalTransferProps = {
   txData: TransactionData;
   internalOp: InternalOperation;
-  // TODO: migrate all this logic to SWR
-  ethUSDPrice: BigNumber | undefined;
 };
 
 const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
-  ethUSDPrice,
 }) => {
   const {
     nativeCurrency: { symbol, decimals },
@@ -36,6 +33,10 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
     internalOp.to === txData.confirmedData.miner;
 
   const { provider } = useContext(RuntimeContext);
+  const blockETHUSDPrice = useETHUSDOracle(
+    provider,
+    txData.confirmedData?.blockNumber
+  );
   const fromHasCode = useHasCode(
     provider,
     internalOp.from,
@@ -99,12 +100,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
           <span>
             {formatEther(internalOp.value)} {symbol}
           </span>
-          {ethUSDPrice && (
+          {blockETHUSDPrice && (
             <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
               <USDAmount
                 amount={internalOp.value}
                 amountDecimals={decimals}
-                quote={ethUSDPrice}
+                quote={blockETHUSDPrice}
                 // TODO: migrate to SWR and standardize this magic number
                 quoteDecimals={8}
               />

@@ -286,7 +286,6 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
                 key={i}
                 txData={txData}
                 internalOp={op}
-                ethUSDPrice={blockETHUSDPrice}
               />
             ))}
           </div>
