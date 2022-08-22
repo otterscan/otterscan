@@ -1,23 +1,45 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useCallback, useContext, useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import StandardFrame from "./StandardFrame";
 import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
 import AddressOrENSNameNoTx from "./components/AddressOrENSNameNoTx";
-import { ChecksummedAddress } from "./types";
-import { transactionURL } from "./url";
 import { useTransactionBySenderAndNonce } from "./useErigonHooks";
 import { RuntimeContext } from "./useRuntime";
+import { useAddressOrENS } from "./useResolvedAddresses";
+import { ChecksummedAddress } from "./types";
+import { transactionURL } from "./url";
 
 type AddressTransactionByNonceProps = {
-  checksummedAddress: ChecksummedAddress | undefined;
   rawNonce: string;
 };
 
 const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
-  checksummedAddress,
   rawNonce,
 }) => {
   const { provider } = useContext(RuntimeContext);
+
+  const { addressOrName, direction } = useParams();
+  if (addressOrName === undefined) {
+    throw new Error("addressOrName couldn't be undefined here");
+  }
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlFixer = useCallback(
+    (address: ChecksummedAddress) => {
+      navigate(
+        `/address/${address}${
+          direction ? "/" + direction : ""
+        }?${searchParams.toString()}`,
+        { replace: true }
+      );
+    },
+    [navigate, direction, searchParams]
+  );
+  const [checksummedAddress, isENS, error] = useAddressOrENS(
+    addressOrName,
+    urlFixer
+  );
 
   // Calculate txCount ONLY when asked for latest nonce
   const [txCount, setTxCount] = useState<number | undefined>();
@@ -54,7 +76,6 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     checksummedAddress,
     nonce !== undefined && isNaN(nonce) ? undefined : nonce
   );
-  const navigate = useNavigate();
 
   // Loading...
   if (
