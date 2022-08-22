@@ -10,7 +10,7 @@ import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getInternalOperations } from "./nodeFunctions";
 import {
@@ -526,25 +526,6 @@ const getTransactionBySenderAndNonceFetcher =
     // Empty or success
     return result;
   };
-
-export const prefetchTransactionBySenderAndNonce = (
-  { mutate }: ReturnType<typeof useSWRConfig>,
-  provider: JsonRpcProvider,
-  sender: ChecksummedAddress,
-  nonce: number
-) => {
-  const key: TransactionBySenderAndNonceKey = {
-    network: provider.network.chainId,
-    sender,
-    nonce,
-  };
-  mutate(key, (curr: any) => {
-    if (curr) {
-      return curr;
-    }
-    return getTransactionBySenderAndNonceFetcher(provider)(key);
-  });
-};
 
 export const useTransactionBySenderAndNonce = (
   provider: JsonRpcProvider | undefined,

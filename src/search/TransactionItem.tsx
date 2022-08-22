@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { BlockTag } from "@ethersproject/abstract-provider";
-import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import MethodName from "../components/MethodName";
@@ -14,25 +12,23 @@ import TransactionDirection, {
   Flags,
 } from "../components/TransactionDirection";
 import TransactionValue from "../components/TransactionValue";
+import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { useHasCode } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
-import ETH2USDValue from "../components/ETH2USDValue";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
-  priceMap: Record<BlockTag, BigNumber>;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
   selectedAddress,
   feeDisplay,
-  priceMap,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const toHasCode = useHasCode(
@@ -130,15 +126,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <span className="font-balance text-xs text-gray-500 truncate">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
-        {feeDisplay === FeeDisplay.TX_FEE_USD &&
-          (priceMap[tx.blockNumber] ? (
-            <ETH2USDValue
-              ethAmount={tx.fee}
-              eth2USDValue={priceMap[tx.blockNumber]}
-            />
-          ) : (
-            "N/A"
-          ))}
+        {feeDisplay === FeeDisplay.TX_FEE_USD && (
+          <TransactionItemFiatFee blockTag={tx.blockNumber} fee={tx.fee} />
+        )}
         {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(tx.gasPrice, 9)}
       </span>
     </div>

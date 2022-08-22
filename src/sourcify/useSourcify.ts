@@ -4,6 +4,7 @@ import { ErrorDescription } from "@ethersproject/abi/lib/interface";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
+import { useAppConfigContext } from "../useAppConfig";
 
 export type UserMethod = {
   notice?: string | undefined;
@@ -98,13 +99,13 @@ const sourcifyFetcher = async (url: string) => {
 
 export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
-  chainId: number | undefined,
-  source: SourcifySource
+  chainId: number | undefined
 ): Metadata | null | undefined => {
+  const { sourcifySource } = useAppConfigContext();
   const metadataURL = () =>
     address === undefined || chainId === undefined
       ? null
-      : sourcifyMetadata(address, chainId, source);
+      : sourcifyMetadata(address, chainId, sourcifySource);
   const { data, error } = useSWRImmutable<Metadata>(
     metadataURL,
     sourcifyFetcher

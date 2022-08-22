@@ -6,7 +6,7 @@ import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
-import { useLatestBlock } from "./useLatestBlock";
+import { useLatestBlockHeader } from "./useLatestBlock";
 import { useChainInfo } from "./useChainInfo";
 
 const ETH_FEED_DECIMALS = 8;
@@ -17,7 +17,7 @@ const PriceBox: React.FC = () => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const latestBlock = useLatestBlock(provider);
+  const latestBlock = useLatestBlockHeader(provider);
 
   const maybeOutdated: boolean =
     latestBlock !== undefined &&

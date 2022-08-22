@@ -9,7 +9,6 @@ import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { useTopic0 } from "../useTopic0";
 import { RuntimeContext } from "../useRuntime";
-import { useAppConfigContext } from "../useAppConfig";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 
 type LogEntryProps = {
@@ -18,12 +17,7 @@ type LogEntryProps = {
 
 const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
-  const { sourcifySource } = useAppConfigContext();
-  const metadata = useSourcifyMetadata(
-    log.address,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadata = useSourcifyMetadata(log.address, provider?.network.chainId);
 
   const logDesc = useMemo(() => {
     if (!metadata) {

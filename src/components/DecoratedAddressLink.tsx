@@ -9,7 +9,6 @@ import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import PlainAddress from "./PlainAddress";
 import { RuntimeContext } from "../useRuntime";
-import { useAppConfigContext } from "../useAppConfig";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useResolvedAddress } from "../useResolvedAddresses";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
@@ -39,12 +38,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   eoa,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const { sourcifySource } = useAppConfigContext();
-  const metadata = useSourcifyMetadata(
-    address,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadata = useSourcifyMetadata(address, provider?.network.chainId);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;

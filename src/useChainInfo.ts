@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
 
@@ -24,40 +25,33 @@ export const defaultChainInfo: ChainInfo = {
 
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
+const chainInfoFetcher = async (assetsURLPrefix: string, chainId: number) => {
+  const url = chainInfoURL(assetsURLPrefix, chainId);
+  const res = await fetch(url);
+  if (!res.ok) {
+    return defaultChainInfo;
+  }
+
+  const info: ChainInfo = await res.json();
+  return info;
+};
+
 export const useChainInfoFromMetadataFile = (
   runtime: OtterscanRuntime | undefined
 ): ChainInfo | undefined => {
   const assetsURLPrefix = runtime?.config?.assetsURLPrefix;
   const chainId = runtime?.provider?.network.chainId;
 
-  const [chainInfo, setChainInfo] = useState<ChainInfo | undefined>(undefined);
-
-  useEffect(() => {
-    if (assetsURLPrefix === undefined || chainId === undefined) {
-      setChainInfo(undefined);
-      return;
-    }
-
-    const readChainInfo = async () => {
-      try {
-        const res = await fetch(chainInfoURL(assetsURLPrefix, chainId));
-        if (!res.ok) {
-          setChainInfo(defaultChainInfo);
-          return;
-        }
-
-        const info: ChainInfo = await res.json();
-        setChainInfo(info);
-      } catch (err) {
-        // ignore
-        setChainInfo(defaultChainInfo);
-        return;
-      }
-    };
-    readChainInfo();
-  }, [assetsURLPrefix, chainId]);
-
-  return chainInfo;
+  const { data, error } = useSWRImmutable(
+    assetsURLPrefix !== undefined && chainId !== undefined
+      ? [assetsURLPrefix, chainId]
+      : null,
+    chainInfoFetcher
+  );
+  if (error) {
+    return defaultChainInfo;
+  }
+  return data;
 };
 
 export const useChainInfo = (): ChainInfo => {
