@@ -7,7 +7,7 @@ import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
-import { useLatestBlock } from "./useLatestBlock";
+import { useLatestBlockHeader } from "./useLatestBlock";
 import { blockURL } from "./url";
 import { useGenericSearch } from "./search/search";
 
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
-  const latestBlock = useLatestBlock(provider);
+  const latestBlock = useLatestBlockHeader(provider);
   const [isScanning, setScanning] = useState<boolean>(false);
 
   document.title = "Home | Otterscan";

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useLatestBlock } from "../../useLatestBlock";
+import { useLatestBlockHeader } from "../../useLatestBlock";
 import { RuntimeContext } from "../../useRuntime";
 import Countdown from "./Countdown";
 import Blocks from "./Blocks";
@@ -7,7 +7,7 @@ import { londonBlockNumber } from "./params";
 
 const London: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const block = useLatestBlock(provider);
+  const block = useLatestBlockHeader(provider);
   if (!provider || !block) {
     return <div className="grow"></div>;
   }
