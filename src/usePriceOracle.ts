@@ -70,17 +70,36 @@ export const useTokenUSDOracle = (
   return data ?? [undefined, undefined];
 };
 
+const ethUSDFetcherKey = (blockTag: BlockTag | undefined) => {
+  if (blockTag === undefined) {
+    return null;
+  }
+  return ["ethusd", blockTag];
+};
+
+const ethUSDFetcher =
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<BigNumber | undefined, ["ethusd", BlockTag | undefined]> =>
+  async (_, blockTag) => {
+    if (provider?.network.chainId !== 1) {
+      return undefined;
+    }
+    const c = new Contract("eth-usd.data.eth", AggregatorV3Interface, provider);
+    const priceData = await c.latestRoundData({ blockTag });
+    return BigNumber.from(priceData.answer);
+  };
+
 export const useETHUSDOracle = (
   provider: JsonRpcProvider | undefined,
   blockTag: BlockTag | undefined
-) => {
-  const blockTags = useMemo(() => [blockTag], [blockTag]);
-  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
-
-  if (blockTag === undefined) {
+): BigNumber | undefined => {
+  const fetcher = ethUSDFetcher(provider);
+  const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
+  if (error) {
     return undefined;
   }
-  return priceMap[blockTag];
+  return data;
 };
 
 export const useMultipleETHUSDOracle = (
