@@ -36,6 +36,11 @@ export const useLatestBlock = (provider?: JsonRpcProvider) => {
   return latestBlock;
 };
 
+/**
+ * Returns the latest block number AND hook an internal listener
+ * that'll update and trigger a component render as a side effect
+ * every time it is notified of a new block by the web3 provider.
+ */
 export const useLatestBlockNumber = (provider?: JsonRpcProvider) => {
   const [latestBlock, setLatestBlock] = useState<number>();
 
@@ -44,12 +49,15 @@ export const useLatestBlockNumber = (provider?: JsonRpcProvider) => {
       return;
     }
 
+    // Immediately read and set the latest block number
     const readLatestBlock = async () => {
       const blockNum = await provider.getBlockNumber();
       setLatestBlock(blockNum);
     };
     readLatestBlock();
 
+    // Hook a listener that'll update the latest block number
+    // every time it is notified of a new block
     const listener = async (blockNumber: number) => {
       setLatestBlock(blockNumber);
     };
