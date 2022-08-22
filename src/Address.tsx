@@ -21,7 +21,6 @@ import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
-import { useAppConfigContext } from "./useAppConfig";
 import { useAddressOrENS } from "./useResolvedAddresses";
 import { useSourcifyMetadata } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
@@ -66,11 +65,9 @@ const Address: React.FC = () => {
   }, [addressOrName, checksummedAddress, isENS]);
 
   const hasCode = useHasCode(provider, checksummedAddress, "latest");
-  const { sourcifySource } = useAppConfigContext();
   const addressMetadata = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?.network.chainId,
-    sourcifySource
+    provider?.network.chainId
   );
 
   const { network, faucets } = useChainInfo();

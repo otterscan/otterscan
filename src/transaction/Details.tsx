@@ -37,7 +37,6 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { useAppConfigContext } from "../useAppConfig";
 import {
   useError,
   useSourcifyMetadata,
@@ -82,12 +81,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
     return false;
   }, [txData, internalOps]);
 
-  const { sourcifySource } = useAppConfigContext();
-  const metadata = useSourcifyMetadata(
-    txData?.to,
-    provider?.network.chainId,
-    sourcifySource
-  );
+  const metadata = useSourcifyMetadata(txData?.to, provider?.network.chainId);
 
   const txDesc = useSourcifyTransactionDescription(metadata, txData);
   const userDoc = metadata?.output.userdoc;
