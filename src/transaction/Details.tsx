@@ -17,12 +17,13 @@ import NavNonce from "./NavNonce";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
+import TransactionDetailsValue from "../components/TransactionDetailsValue";
 import TransactionType from "../components/TransactionType";
+import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
 import GasValue from "../components/GasValue";
 import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
-import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData } from "../types";
 import PercentageBar from "../components/PercentageBar";
@@ -308,15 +309,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <FormattedBalance value={txData.value} /> {symbol}{" "}
-        {!txData.value.isZero() && blockETHUSDPrice && (
-          <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-            <ETH2USDValue
-              ethAmount={txData.value}
-              eth2USDValue={blockETHUSDPrice}
-            />
-          </span>
-        )}
+        <TransactionDetailsValue
+          blockTag={txData.confirmedData?.blockNumber}
+          value={txData.value}
+        />
       </InfoRow>
       <InfoRow
         title={
@@ -402,15 +398,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <FormattedBalance value={txData.confirmedData.fee} /> {symbol}{" "}
-                {blockETHUSDPrice && (
-                  <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-                    <ETH2USDValue
-                      ethAmount={txData.confirmedData.fee}
-                      eth2USDValue={blockETHUSDPrice}
-                    />
-                  </span>
-                )}
+                <TransactionFee confirmedData={txData.confirmedData} />
               </div>
               {hasEIP1559 && <RewardSplit txData={txData} />}
             </div>
