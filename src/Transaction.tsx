@@ -46,8 +46,7 @@ const Transaction: React.FC = () => {
                   {txData.confirmedData?.blockNumber !== undefined && (
                     <NavTab href="logs">
                       Logs
-                      {txData &&
-                        ` (${txData.confirmedData?.logs?.length ?? 0})`}
+                      {` (${txData.confirmedData?.logs?.length ?? 0})`}
                     </NavTab>
                   )}
                   <NavTab href="trace">Trace</NavTab>
