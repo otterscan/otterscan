@@ -285,11 +285,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       {txData.tokenTransfers.length > 0 && (
         <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
           {txData.tokenTransfers.map((t, i) => (
-            <TokenTransferItem
-              key={i}
-              t={t}
-              tokenMeta={txData.tokenMetas[t.token]}
-            />
+            <TokenTransferItem key={i} t={t} />
           ))}
         </InfoRow>
       )}

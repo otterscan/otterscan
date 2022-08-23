@@ -37,7 +37,6 @@ export type TransactionData = {
   to?: string;
   value: BigNumber;
   tokenTransfers: TokenTransfer[];
-  tokenMetas: TokenMetas;
   type: number;
   maxFeePerGas?: BigNumber | undefined;
   maxPriorityFeePerGas?: BigNumber | undefined;

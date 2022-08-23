@@ -13,13 +13,13 @@ import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import {
-  TokenMetas,
   TokenTransfer,
   TransactionData,
   InternalOperation,
   ProcessedTransaction,
   OperationType,
   ChecksummedAddress,
+  TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
 
@@ -216,40 +216,12 @@ export const useTxData = (
           }
         }
 
-        // Extract token meta
-        const tokenMetas: TokenMetas = {};
-        for (const t of tokenTransfers) {
-          if (tokenMetas[t.token] !== undefined) {
-            continue;
-          }
-          const erc20Contract = new Contract(t.token, erc20, provider);
-          try {
-            const [name, symbol, decimals] = await Promise.all([
-              erc20Contract.name(),
-              erc20Contract.symbol(),
-              erc20Contract.decimals(),
-            ]);
-            tokenMetas[t.token] = {
-              name,
-              symbol,
-              decimals,
-            };
-          } catch (err) {
-            tokenMetas[t.token] = null;
-            console.warn(
-              `Couldn't get token ${t.token} metadata; ignoring`,
-              err
-            );
-          }
-        }
-
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
           to: _response.to,
           value: _response.value,
           tokenTransfers,
-          tokenMetas,
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
@@ -664,4 +636,56 @@ export const useHasCode = (
     return undefined;
   }
   return data as boolean | undefined;
+};
+
+const tokenMetadataFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (
+    _: "tokenmeta",
+    address: ChecksummedAddress
+  ): Promise<TokenMeta | null> => {
+    const erc20Contract = new Contract(address, erc20, provider);
+    try {
+      const name = (await erc20Contract.name()) as string;
+      if (!name.trim()) {
+        return null;
+      }
+
+      const [symbol, decimals] = (await Promise.all([
+        erc20Contract.symbol(),
+        erc20Contract.decimals(),
+      ])) as [string, number];
+
+      // Prevent faulty tokens with empty name/symbol
+      if (!symbol.trim()) {
+        return null;
+      }
+
+      return {
+        name,
+        symbol,
+        decimals,
+      };
+    } catch (err) {
+      // Ignore on purpose; this indicates the probe failed and the address
+      // is not a token
+      return null;
+    }
+  };
+
+export const useTokenMetadata = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): TokenMeta | null | undefined => {
+  const fetcher = tokenMetadataFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && address !== undefined
+      ? ["tokenmeta", address]
+      : null,
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
 };
