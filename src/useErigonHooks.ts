@@ -198,31 +198,11 @@ export const useTxData = (
 
         document.title = `Transaction ${_response.hash} | Otterscan`;
 
-        // Extract token transfers
-        const tokenTransfers: TokenTransfer[] = [];
-        if (_receipt) {
-          for (const l of _receipt.logs) {
-            if (l.topics.length !== 3) {
-              continue;
-            }
-            if (l.topics[0] !== TRANSFER_TOPIC) {
-              continue;
-            }
-            tokenTransfers.push({
-              token: l.address,
-              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-              value: BigNumber.from(l.data),
-            });
-          }
-        }
-
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
           to: _response.to,
           value: _response.value,
-          tokenTransfers,
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
@@ -258,6 +238,35 @@ export const useTxData = (
   }, [provider, txhash]);
 
   return txData;
+};
+
+export const useTokenTransfers = (
+  txData: TransactionData
+): TokenTransfer[] | undefined => {
+  const transfers = useMemo(() => {
+    if (!txData.confirmedData) {
+      return undefined;
+    }
+
+    const _transfers: TokenTransfer[] = [];
+    for (const l of txData.confirmedData.logs) {
+      if (l.topics.length !== 3) {
+        continue;
+      }
+      if (l.topics[0] !== TRANSFER_TOPIC) {
+        continue;
+      }
+      _transfers.push({
+        token: l.address,
+        from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+        to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+        value: BigNumber.from(l.data),
+      });
+    }
+    return _transfers;
+  }, [txData]);
+
+  return transfers;
 };
 
 export const useInternalOperations = (

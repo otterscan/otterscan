@@ -43,7 +43,11 @@ import {
   useTransactionDescription as useSourcifyTransactionDescription,
 } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useSendsToMiner, useTransactionError } from "../useErigonHooks";
+import {
+  useSendsToMiner,
+  useTokenTransfers,
+  useTransactionError,
+} from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
@@ -72,6 +76,8 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
     txData.confirmedData ? txData.transactionHash : undefined,
     txData.confirmedData?.miner
   );
+
+  const tokenTransfers = useTokenTransfers(txData);
 
   const metadata = useSourcifyMetadata(txData?.to, provider?.network.chainId);
 
@@ -282,9 +288,9 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <MethodName data={txData.data} />
         </InfoRow>
       )}
-      {txData.tokenTransfers.length > 0 && (
-        <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-          {txData.tokenTransfers.map((t, i) => (
+      {tokenTransfers && tokenTransfers.length > 0 && (
+        <InfoRow title={`Tokens Transferred (${tokenTransfers.length})`}>
+          {tokenTransfers.map((t, i) => (
             <TokenTransferItem key={i} t={t} />
           ))}
         </InfoRow>
