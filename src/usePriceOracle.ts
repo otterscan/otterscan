@@ -79,14 +79,14 @@ const ethUSDFetcherKey = (blockTag: BlockTag | undefined) => {
 const ethUSDFetcher =
   (
     provider: JsonRpcProvider | undefined
-  ): Fetcher<BigNumber | undefined, ["ethusd", BlockTag | undefined]> =>
+  ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
   async (_, blockTag) => {
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
     const c = new Contract("eth-usd.data.eth", AggregatorV3Interface, provider);
     const priceData = await c.latestRoundData({ blockTag });
-    return BigNumber.from(priceData.answer);
+    return priceData;
   };
 
 export const useETHUSDOracle = (
@@ -95,6 +95,54 @@ export const useETHUSDOracle = (
 ): BigNumber | undefined => {
   const fetcher = ethUSDFetcher(provider);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data !== undefined ? BigNumber.from(data.answer) : undefined;
+};
+
+export const useETHUSDRawOracle = (
+  provider: JsonRpcProvider | undefined,
+  blockTag: BlockTag | undefined
+): any | undefined => {
+  const fetcher = ethUSDFetcher(provider);
+  const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
+
+const fastGasFetcherKey = (blockTag: BlockTag | undefined) => {
+  if (blockTag === undefined) {
+    return null;
+  }
+  return ["gasgwei", blockTag];
+};
+
+const fastGasFetcher =
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<any | undefined, ["gasgwei", BlockTag | undefined]> =>
+  async (_, blockTag) => {
+    if (provider?.network.chainId !== 1) {
+      return undefined;
+    }
+    const c = new Contract(
+      "fast-gas-gwei.data.eth",
+      AggregatorV3Interface,
+      provider
+    );
+    const priceData = await c.latestRoundData({ blockTag });
+    return priceData;
+  };
+
+export const useFastGasRawOracle = (
+  provider: JsonRpcProvider | undefined,
+  blockTag: BlockTag | undefined
+): any | undefined => {
+  const fetcher = fastGasFetcher(provider);
+  const { data, error } = useSWRImmutable(fastGasFetcherKey(blockTag), fetcher);
   if (error) {
     return undefined;
   }
