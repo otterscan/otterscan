@@ -1,6 +1,7 @@
 import { JsonRpcProvider, BlockTag } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
+import { AddressZero } from "@ethersproject/constants";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
 import { Fetcher } from "swr";
@@ -26,11 +27,20 @@ const feedRegistryFetcherKey = (
   return [tokenAddress, blockTag];
 };
 
+const FEED_REGISTRY_MAINNET_PROTOTYPE = new Contract(
+  FEED_REGISTRY_MAINNET,
+  FeedRegistryInterface
+);
+
 const feedRegistryFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
   async (tokenAddress, blockTag) => {
+    if (provider === undefined) {
+      return [undefined, undefined];
+    }
+
     // It work works on ethereum mainnet and kovan, see:
     // https://docs.chain.link/docs/feed-registry/
     if (provider!.network.chainId !== 1) {
@@ -38,11 +48,7 @@ const feedRegistryFetcher =
     }
 
     // Let SWR handle error
-    const feedRegistry = new Contract(
-      FEED_REGISTRY_MAINNET,
-      FeedRegistryInterface,
-      provider
-    );
+    const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(provider);
     const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
       blockTag,
     });
@@ -76,6 +82,8 @@ const ethUSDFetcherKey = (blockTag: BlockTag | undefined) => {
   return ["ethusd", blockTag];
 };
 
+const ETH_USD_FEED_PROTOTYPE = new Contract(AddressZero, AggregatorV3Interface);
+
 const ethUSDFetcher =
   (
     provider: JsonRpcProvider | undefined
@@ -84,7 +92,9 @@ const ethUSDFetcher =
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
-    const c = new Contract("eth-usd.data.eth", AggregatorV3Interface, provider);
+
+    const c =
+      ETH_USD_FEED_PROTOTYPE.connect(provider).attach("eth-usd.data.eth");
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
   };
@@ -120,6 +130,11 @@ const fastGasFetcherKey = (blockTag: BlockTag | undefined) => {
   return ["gasgwei", blockTag];
 };
 
+const FAST_GAS_FEED_PROTOTYPE = new Contract(
+  AddressZero,
+  AggregatorV3Interface
+);
+
 const fastGasFetcher =
   (
     provider: JsonRpcProvider | undefined
@@ -128,10 +143,8 @@ const fastGasFetcher =
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
-    const c = new Contract(
-      "fast-gas-gwei.data.eth",
-      AggregatorV3Interface,
-      provider
+    const c = FAST_GAS_FEED_PROTOTYPE.connect(provider).attach(
+      "fast-gas-gwei.data.eth"
     );
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;

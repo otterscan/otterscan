@@ -10,6 +10,7 @@ import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
+import { AddressZero } from "@ethersproject/constants";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import {
@@ -638,13 +639,19 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
+const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+
 const tokenMetadataFetcher =
   (provider: JsonRpcProvider | undefined) =>
   async (
     _: "tokenmeta",
     address: ChecksummedAddress
   ): Promise<TokenMeta | null> => {
-    const erc20Contract = new Contract(address, erc20, provider);
+    if (provider === undefined) {
+      return null;
+    }
+
+    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address);
     try {
       const name = (await erc20Contract.name()) as string;
       if (!name.trim()) {
