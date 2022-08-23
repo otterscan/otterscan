@@ -18,7 +18,6 @@ export type ProcessedTransaction = {
   from?: string;
   to: string | null;
   createdContractAddress?: string;
-  internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
   gasPrice: BigNumber;

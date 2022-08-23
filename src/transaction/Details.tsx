@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -43,7 +43,7 @@ import {
   useTransactionDescription as useSourcifyTransactionDescription,
 } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useInternalOperations, useTransactionError } from "../useErigonHooks";
+import { useSendsToMiner, useTransactionError } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
@@ -67,19 +67,11 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
     txData.value
   );
 
-  const internalOps = useInternalOperations(provider, txData);
-  const sendsEthToMiner = useMemo(() => {
-    if (!txData || !internalOps) {
-      return false;
-    }
-
-    for (const t of internalOps) {
-      if (t.to === txData.confirmedData?.miner) {
-        return true;
-      }
-    }
-    return false;
-  }, [txData, internalOps]);
+  const [sendsEthToMiner, internalOps] = useSendsToMiner(
+    provider,
+    txData.confirmedData ? txData.transactionHash : undefined,
+    txData.confirmedData?.miner
+  );
 
   const metadata = useSourcifyMetadata(txData?.to, provider?.network.chainId);
 

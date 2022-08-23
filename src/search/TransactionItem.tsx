@@ -16,7 +16,7 @@ import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
+import { useHasCode, useSendsToMiner } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
 
 type TransactionItemProps = {
@@ -36,6 +36,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     tx.to ?? undefined,
     tx.blockNumber - 1
   );
+  const [sendsToMiner] = useSendsToMiner(provider, tx.hash, tx.miner);
 
   let direction: Direction | undefined;
   if (selectedAddress) {
@@ -53,7 +54,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
+  const flash = tx.gasPrice.isZero() && sendsToMiner;
 
   return (
     <div
@@ -91,7 +92,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span>
           <TransactionDirection
             direction={direction}
-            flags={tx.internalMinerInteraction ? Flags.MINER : undefined}
+            flags={sendsToMiner ? Flags.MINER : undefined}
           />
         </span>
       </span>

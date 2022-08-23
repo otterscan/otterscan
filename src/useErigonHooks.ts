@@ -140,27 +140,6 @@ export const useBlockTransactions = (
         .reverse();
       setTxs(rawTxs);
       setTotalTxs(result.fullblock.transactionCount);
-
-      const checkTouchMinerAddr = await Promise.all(
-        rawTxs.map(async (res) => {
-          const ops = await getInternalOperations(provider, res.hash);
-          return (
-            ops.findIndex(
-              (op) =>
-                op.type === OperationType.TRANSFER &&
-                res.miner !== undefined &&
-                res.miner === getAddress(op.to)
-            ) !== -1
-          );
-        })
-      );
-      const processedTxs = rawTxs.map(
-        (r, i): ProcessedTransaction => ({
-          ...r,
-          internalMinerInteraction: checkTouchMinerAddr[i],
-        })
-      );
-      setTxs(processedTxs);
     };
     readBlock();
   }, [provider, blockNumber, pageNumber, pageSize]);
@@ -308,34 +287,13 @@ export const useTxData = (
   return txData;
 };
 
-// TODO: convert caller to hooks and remove this function
-const getInternalOperations = async (
-  provider: JsonRpcProvider,
-  txHash: string
-) => {
-  const rawTransfers = await provider.send("ots_getInternalOperations", [
-    txHash,
-  ]);
-
-  const _transfers: InternalOperation[] = [];
-  for (const t of rawTransfers) {
-    _transfers.push({
-      type: t.type,
-      from: getAddress(t.from),
-      to: getAddress(t.to),
-      value: t.value,
-    });
-  }
-  return _transfers;
-};
-
 export const useInternalOperations = (
   provider: JsonRpcProvider | undefined,
-  txData: TransactionData | undefined | null
+  txHash: string | undefined
 ): InternalOperation[] | undefined => {
   const { data, error } = useSWRImmutable(
-    provider !== undefined && txData?.confirmedData
-      ? ["ots_getInternalOperations", txData.transactionHash]
+    provider !== undefined && txHash !== undefined
+      ? ["ots_getInternalOperations", txHash]
       : null,
     providerFetcher(provider)
   );
@@ -357,6 +315,26 @@ export const useInternalOperations = (
     return _t;
   }, [provider, data]);
   return _transfers;
+};
+
+export const useSendsToMiner = (
+  provider: JsonRpcProvider | undefined,
+  txHash: string | undefined,
+  miner: string | undefined
+): [boolean, InternalOperation[]] | [undefined, undefined] => {
+  const ops = useInternalOperations(provider, txHash);
+  if (ops === undefined) {
+    return [undefined, undefined];
+  }
+
+  const send =
+    ops.findIndex(
+      (op) =>
+        op.type === OperationType.TRANSFER &&
+        miner !== undefined &&
+        miner === getAddress(op.to)
+    ) !== -1;
+  return [send, ops];
 };
 
 export type TraceEntry = {
