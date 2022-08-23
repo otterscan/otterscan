@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Block,
   BlockWithTransactions,
@@ -12,7 +12,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { getInternalOperations } from "./nodeFunctions";
 import {
   TokenMetas,
   TokenTransfer,
@@ -169,24 +168,25 @@ export const useBlockTransactions = (
   return [totalTxs, txs];
 };
 
+const blockDataFetcher = async (
+  provider: JsonRpcProvider,
+  blockNumberOrHash: string
+) => {
+  return await readBlock(provider, blockNumberOrHash);
+};
+
 export const useBlockData = (
   provider: JsonRpcProvider | undefined,
   blockNumberOrHash: string
 ): ExtendedBlock | null | undefined => {
-  const [block, setBlock] = useState<ExtendedBlock | null | undefined>();
-  useEffect(() => {
-    if (!provider) {
-      return undefined;
-    }
-
-    const _readBlock = async () => {
-      const extBlock = await readBlock(provider, blockNumberOrHash);
-      setBlock(extBlock);
-    };
-    _readBlock();
-  }, [provider, blockNumberOrHash]);
-
-  return block;
+  const { data, error } = useSWRImmutable(
+    provider !== undefined ? [provider, blockNumberOrHash] : null,
+    blockDataFetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
 };
 
 export const useTxData = (
@@ -308,33 +308,55 @@ export const useTxData = (
   return txData;
 };
 
+// TODO: convert caller to hooks and remove this function
+const getInternalOperations = async (
+  provider: JsonRpcProvider,
+  txHash: string
+) => {
+  const rawTransfers = await provider.send("ots_getInternalOperations", [
+    txHash,
+  ]);
+
+  const _transfers: InternalOperation[] = [];
+  for (const t of rawTransfers) {
+    _transfers.push({
+      type: t.type,
+      from: getAddress(t.from),
+      to: getAddress(t.to),
+      value: t.value,
+    });
+  }
+  return _transfers;
+};
+
 export const useInternalOperations = (
   provider: JsonRpcProvider | undefined,
   txData: TransactionData | undefined | null
 ): InternalOperation[] | undefined => {
-  const [intTransfers, setIntTransfers] = useState<InternalOperation[]>();
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && txData?.confirmedData
+      ? ["ots_getInternalOperations", txData.transactionHash]
+      : null,
+    providerFetcher(provider)
+  );
 
-  useEffect(() => {
-    const traceTransfers = async () => {
-      if (!provider || !txData || !txData.confirmedData) {
-        return;
-      }
+  const _transfers = useMemo(() => {
+    if (provider === undefined || error || data === undefined) {
+      return undefined;
+    }
 
-      const _transfers = await getInternalOperations(
-        provider,
-        txData.transactionHash
-      );
-      for (const t of _transfers) {
-        t.from = provider.formatter.address(t.from);
-        t.to = provider.formatter.address(t.to);
-        t.value = provider.formatter.bigNumber(t.value);
-      }
-      setIntTransfers(_transfers);
-    };
-    traceTransfers();
-  }, [provider, txData]);
-
-  return intTransfers;
+    const _t: InternalOperation[] = [];
+    for (const t of data) {
+      _t.push({
+        type: t.type,
+        from: provider.formatter.address(getAddress(t.from)),
+        to: provider.formatter.address(getAddress(t.to)),
+        value: provider.formatter.bigNumber(t.value),
+      });
+    }
+    return _t;
+  }, [provider, data]);
+  return _transfers;
 };
 
 export type TraceEntry = {
