@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
@@ -43,7 +43,12 @@ import {
   useTransactionDescription as useSourcifyTransactionDescription,
 } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useInternalOperations, useTransactionError } from "../useErigonHooks";
+import {
+  useBlockDataFromTransaction,
+  useSendsToMiner,
+  useTokenTransfers,
+  useTransactionError,
+} from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
@@ -53,10 +58,10 @@ type DetailsProps = {
 
 const Details: React.FC<DetailsProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
 
   const hasEIP1559 =
-    txData.confirmedData?.blockBaseFeePerGas !== undefined &&
-    txData.confirmedData?.blockBaseFeePerGas !== null;
+    block?.baseFeePerGas !== undefined && block?.baseFeePerGas !== null;
 
   const fourBytes =
     txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
@@ -67,19 +72,13 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
     txData.value
   );
 
-  const internalOps = useInternalOperations(provider, txData);
-  const sendsEthToMiner = useMemo(() => {
-    if (!txData || !internalOps) {
-      return false;
-    }
+  const [sendsEthToMiner, internalOps] = useSendsToMiner(
+    provider,
+    txData.confirmedData ? txData.transactionHash : undefined,
+    block?.miner
+  );
 
-    for (const t of internalOps) {
-      if (t.to === txData.confirmedData?.miner) {
-        return true;
-      }
-    }
-    return false;
-  }, [txData, internalOps]);
+  const tokenTransfers = useTokenTransfers(txData);
 
   const metadata = useSourcifyMetadata(txData?.to, provider?.network.chainId);
 
@@ -224,22 +223,24 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
                   confirmations={txData.confirmedData.confirmations}
                 />
               </div>
-              <div className="flex space-x-2 items-baseline pl-3">
-                <RelativePosition
-                  pos={txData.confirmedData.transactionIndex}
-                  total={txData.confirmedData.blockTransactionCount - 1}
-                />
-                <PercentagePosition
-                  perc={
-                    txData.confirmedData.transactionIndex /
-                    (txData.confirmedData.blockTransactionCount - 1)
-                  }
-                />
-              </div>
+              {block && (
+                <div className="flex space-x-2 items-baseline pl-3">
+                  <RelativePosition
+                    pos={txData.confirmedData.transactionIndex}
+                    total={block.transactionCount - 1}
+                  />
+                  <PercentagePosition
+                    perc={
+                      txData.confirmedData.transactionIndex /
+                      (block.transactionCount - 1)
+                    }
+                  />
+                </div>
+              )}
             </div>
           </InfoRow>
           <InfoRow title="Timestamp">
-            <Timestamp value={txData.confirmedData.timestamp} />
+            {block && <Timestamp value={block.timestamp} />}
           </InfoRow>
         </>
       )}
@@ -290,14 +291,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <MethodName data={txData.data} />
         </InfoRow>
       )}
-      {txData.tokenTransfers.length > 0 && (
-        <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-          {txData.tokenTransfers.map((t, i) => (
-            <TokenTransferItem
-              key={i}
-              t={t}
-              tokenMeta={txData.tokenMetas[t.token]}
-            />
+      {tokenTransfers && tokenTransfers.length > 0 && (
+        <InfoRow title={`Tokens Transferred (${tokenTransfers.length})`}>
+          {tokenTransfers.map((t, i) => (
+            <TokenTransferItem key={i} t={t} />
           ))}
         </InfoRow>
       )}
@@ -372,18 +369,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           </div>
         </InfoRow>
       )}
-      {txData.confirmedData && hasEIP1559 && (
+      {block && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={9}
-          />{" "}
-          Gwei (
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={0}
-          />{" "}
-          wei)
+          <FormattedBalance value={block.baseFeePerGas!} decimals={9} /> Gwei (
+          <FormattedBalance value={block.baseFeePerGas!} decimals={0} /> wei)
         </InfoRow>
       )}
       {txData.confirmedData && (

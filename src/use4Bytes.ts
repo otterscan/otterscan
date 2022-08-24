@@ -53,23 +53,29 @@ const fourBytesFetcher =
     const fourBytes = key.slice(2);
     const signatureURL = fourBytesURL(assetsURLPrefix, fourBytes);
 
-    const res = await fetch(signatureURL);
-    if (!res.ok) {
-      console.warn(`Signature does not exist in 4bytes DB: ${fourBytes}`);
+    try {
+      const res = await fetch(signatureURL);
+      if (!res.ok) {
+        console.warn(`Signature does not exist in 4bytes DB: ${fourBytes}`);
+        return null;
+      }
+
+      // Get only the first occurrence, for now ignore alternative param names
+      const sigs = await res.text();
+      const sig = sigs.split(";")[0];
+      const cut = sig.indexOf("(");
+      const method = sig.slice(0, cut);
+
+      const entry: FourBytesEntry = {
+        name: method,
+        signature: sig,
+      };
+      return entry;
+    } catch (err) {
+      // Network error or something wrong with URL config;
+      // silence and don't try it again
       return null;
     }
-
-    // Get only the first occurrence, for now ignore alternative param names
-    const sigs = await res.text();
-    const sig = sigs.split(";")[0];
-    const cut = sig.indexOf("(");
-    const method = sig.slice(0, cut);
-
-    const entry: FourBytesEntry = {
-      name: method,
-      signature: sig,
-    };
-    return entry;
   };
 
 /**

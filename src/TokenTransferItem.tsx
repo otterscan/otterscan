@@ -6,24 +6,21 @@ import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
 import USDAmount from "./components/USDAmount";
-import { AddressContext, TokenMeta, TokenTransfer } from "./types";
 import { RuntimeContext } from "./useRuntime";
 import { useBlockNumberContext } from "./useBlockTagContext";
+import { useTokenMetadata } from "./useErigonHooks";
 import { useTokenUSDOracle } from "./usePriceOracle";
+import { AddressContext, TokenTransfer } from "./types";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
-  tokenMeta?: TokenMeta | null | undefined;
 };
 
-// TODO: handle partial
-const TokenTransferItem: React.FC<TokenTransferItemProps> = ({
-  t,
-  tokenMeta,
-}) => {
+const TokenTransferItem: React.FC<TokenTransferItemProps> = ({ t }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
   const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
+  const tokenMeta = useTokenMetadata(provider, t.token);
 
   return (
     <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">

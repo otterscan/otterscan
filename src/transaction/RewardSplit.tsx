@@ -1,24 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
+import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import FormattedBalance from "../components/FormattedBalance";
 import PercentageGauge from "../components/PercentageGauge";
-import { TransactionData } from "../types";
+import { RuntimeContext } from "../useRuntime";
+import { useBlockDataFromTransaction } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { TransactionData } from "../types";
 
 type RewardSplitProps = {
   txData: TransactionData;
 };
 
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
+  const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
+
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
   const paidFees = txData.gasPrice.mul(txData.confirmedData!.gasUsed);
-  const burntFees = txData.confirmedData!.blockBaseFeePerGas!.mul(
-    txData.confirmedData!.gasUsed
-  );
+  const burntFees = block
+    ? block.baseFeePerGas!.mul(txData.confirmedData!.gasUsed)
+    : BigNumber.from(0);
 
   const minerReward = paidFees.sub(burntFees);
   const burntPerc =

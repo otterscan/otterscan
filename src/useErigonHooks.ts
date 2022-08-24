@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Block,
   BlockWithTransactions,
@@ -10,17 +10,17 @@ import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
+import { AddressZero } from "@ethersproject/constants";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { getInternalOperations } from "./nodeFunctions";
 import {
-  TokenMetas,
   TokenTransfer,
   TransactionData,
   InternalOperation,
   ProcessedTransaction,
   OperationType,
   ChecksummedAddress,
+  TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
 
@@ -141,27 +141,6 @@ export const useBlockTransactions = (
         .reverse();
       setTxs(rawTxs);
       setTotalTxs(result.fullblock.transactionCount);
-
-      const checkTouchMinerAddr = await Promise.all(
-        rawTxs.map(async (res) => {
-          const ops = await getInternalOperations(provider, res.hash);
-          return (
-            ops.findIndex(
-              (op) =>
-                op.type === OperationType.TRANSFER &&
-                res.miner !== undefined &&
-                res.miner === getAddress(op.to)
-            ) !== -1
-          );
-        })
-      );
-      const processedTxs = rawTxs.map(
-        (r, i): ProcessedTransaction => ({
-          ...r,
-          internalMinerInteraction: checkTouchMinerAddr[i],
-        })
-      );
-      setTxs(processedTxs);
     };
     readBlock();
   }, [provider, blockNumber, pageNumber, pageSize]);
@@ -169,23 +148,40 @@ export const useBlockTransactions = (
   return [totalTxs, txs];
 };
 
+const blockDataFetcher = async (
+  provider: JsonRpcProvider,
+  blockNumberOrHash: string
+) => {
+  return await readBlock(provider, blockNumberOrHash);
+};
+
+// TODO: some callers may use only block headers?
 export const useBlockData = (
   provider: JsonRpcProvider | undefined,
-  blockNumberOrHash: string
+  blockNumberOrHash: string | undefined
 ): ExtendedBlock | null | undefined => {
-  const [block, setBlock] = useState<ExtendedBlock | null | undefined>();
-  useEffect(() => {
-    if (!provider) {
-      return undefined;
-    }
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && blockNumberOrHash !== undefined
+      ? [provider, blockNumberOrHash]
+      : null,
+    blockDataFetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
 
-    const _readBlock = async () => {
-      const extBlock = await readBlock(provider, blockNumberOrHash);
-      setBlock(extBlock);
-    };
-    _readBlock();
-  }, [provider, blockNumberOrHash]);
-
+export const useBlockDataFromTransaction = (
+  provider: JsonRpcProvider | undefined,
+  txData: TransactionData | null | undefined
+): ExtendedBlock | null | undefined => {
+  const block = useBlockData(
+    provider,
+    txData?.confirmedData
+      ? txData.confirmedData.blockNumber.toString()
+      : undefined
+  );
   return block;
 };
 
@@ -211,66 +207,11 @@ export const useTxData = (
           return;
         }
 
-        let _block: ExtendedBlock | null | undefined;
-        if (_response.blockNumber) {
-          _block = await readBlock(provider, _response.blockNumber.toString());
-        }
-
-        document.title = `Transaction ${_response.hash} | Otterscan`;
-
-        // Extract token transfers
-        const tokenTransfers: TokenTransfer[] = [];
-        if (_receipt) {
-          for (const l of _receipt.logs) {
-            if (l.topics.length !== 3) {
-              continue;
-            }
-            if (l.topics[0] !== TRANSFER_TOPIC) {
-              continue;
-            }
-            tokenTransfers.push({
-              token: l.address,
-              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-              value: BigNumber.from(l.data),
-            });
-          }
-        }
-
-        // Extract token meta
-        const tokenMetas: TokenMetas = {};
-        for (const t of tokenTransfers) {
-          if (tokenMetas[t.token] !== undefined) {
-            continue;
-          }
-          const erc20Contract = new Contract(t.token, erc20, provider);
-          try {
-            const [name, symbol, decimals] = await Promise.all([
-              erc20Contract.name(),
-              erc20Contract.symbol(),
-              erc20Contract.decimals(),
-            ]);
-            tokenMetas[t.token] = {
-              name,
-              symbol,
-              decimals,
-            };
-          } catch (err) {
-            tokenMetas[t.token] = null;
-            console.warn(
-              `Couldn't get token ${t.token} metadata; ignoring`,
-              err
-            );
-          }
-        }
-
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
           to: _response.to,
           value: _response.value,
-          tokenTransfers,
-          tokenMetas,
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
@@ -285,11 +226,7 @@ export const useTxData = (
                   status: _receipt.status === 1,
                   blockNumber: _receipt.blockNumber,
                   transactionIndex: _receipt.transactionIndex,
-                  blockBaseFeePerGas: _block!.baseFeePerGas,
-                  blockTransactionCount: _block!.transactionCount,
                   confirmations: _receipt.confirmations,
-                  timestamp: _block!.timestamp,
-                  miner: _block!.miner,
                   createdContractAddress: _receipt.contractAddress,
                   fee: _response.gasPrice!.mul(_receipt.gasUsed),
                   gasUsed: _receipt.gasUsed,
@@ -308,33 +245,75 @@ export const useTxData = (
   return txData;
 };
 
+export const useTokenTransfers = (
+  txData: TransactionData
+): TokenTransfer[] | undefined => {
+  const transfers = useMemo(() => {
+    if (!txData.confirmedData) {
+      return undefined;
+    }
+
+    return txData.confirmedData.logs
+      .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
+      .map((l) => ({
+        token: l.address,
+        from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+        to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+        value: BigNumber.from(l.data),
+      }));
+  }, [txData]);
+
+  return transfers;
+};
+
 export const useInternalOperations = (
   provider: JsonRpcProvider | undefined,
-  txData: TransactionData | undefined | null
+  txHash: string | undefined
 ): InternalOperation[] | undefined => {
-  const [intTransfers, setIntTransfers] = useState<InternalOperation[]>();
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && txHash !== undefined
+      ? ["ots_getInternalOperations", txHash]
+      : null,
+    providerFetcher(provider)
+  );
 
-  useEffect(() => {
-    const traceTransfers = async () => {
-      if (!provider || !txData || !txData.confirmedData) {
-        return;
-      }
+  const _transfers = useMemo(() => {
+    if (provider === undefined || error || data === undefined) {
+      return undefined;
+    }
 
-      const _transfers = await getInternalOperations(
-        provider,
-        txData.transactionHash
-      );
-      for (const t of _transfers) {
-        t.from = provider.formatter.address(t.from);
-        t.to = provider.formatter.address(t.to);
-        t.value = provider.formatter.bigNumber(t.value);
-      }
-      setIntTransfers(_transfers);
-    };
-    traceTransfers();
-  }, [provider, txData]);
+    const _t: InternalOperation[] = [];
+    for (const t of data) {
+      _t.push({
+        type: t.type,
+        from: provider.formatter.address(getAddress(t.from)),
+        to: provider.formatter.address(getAddress(t.to)),
+        value: provider.formatter.bigNumber(t.value),
+      });
+    }
+    return _t;
+  }, [provider, data]);
+  return _transfers;
+};
 
-  return intTransfers;
+export const useSendsToMiner = (
+  provider: JsonRpcProvider | undefined,
+  txHash: string | undefined,
+  miner: string | undefined
+): [boolean, InternalOperation[]] | [undefined, undefined] => {
+  const ops = useInternalOperations(provider, txHash);
+  if (ops === undefined) {
+    return [undefined, undefined];
+  }
+
+  const send =
+    ops.findIndex(
+      (op) =>
+        op.type === OperationType.TRANSFER &&
+        miner !== undefined &&
+        miner === getAddress(op.to)
+    ) !== -1;
+  return [send, ops];
 };
 
 export type TraceEntry = {
@@ -664,4 +643,62 @@ export const useHasCode = (
     return undefined;
   }
   return data as boolean | undefined;
+};
+
+const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+
+const tokenMetadataFetcher =
+  (provider: JsonRpcProvider | undefined) =>
+  async (
+    _: "tokenmeta",
+    address: ChecksummedAddress
+  ): Promise<TokenMeta | null> => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address);
+    try {
+      const name = (await erc20Contract.name()) as string;
+      if (!name.trim()) {
+        return null;
+      }
+
+      const [symbol, decimals] = (await Promise.all([
+        erc20Contract.symbol(),
+        erc20Contract.decimals(),
+      ])) as [string, number];
+
+      // Prevent faulty tokens with empty name/symbol
+      if (!symbol.trim()) {
+        return null;
+      }
+
+      return {
+        name,
+        symbol,
+        decimals,
+      };
+    } catch (err) {
+      // Ignore on purpose; this indicates the probe failed and the address
+      // is not a token
+      return null;
+    }
+  };
+
+export const useTokenMetadata = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): TokenMeta | null | undefined => {
+  const fetcher = tokenMetadataFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && address !== undefined
+      ? ["tokenmeta", address]
+      : null,
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
 };

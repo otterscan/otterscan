@@ -11,6 +11,7 @@ export enum Direction {
 }
 
 export enum Flags {
+  // Means the transaction internal sends ETH to the miner, e.g. flashbots
   MINER,
 }
 

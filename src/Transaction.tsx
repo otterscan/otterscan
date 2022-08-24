@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams, Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
@@ -25,6 +25,12 @@ const Transaction: React.FC = () => {
   const txData = useTxData(provider, txHash);
   const selectionCtx = useSelection();
 
+  useEffect(() => {
+    if (txData) {
+      document.title = `Transaction ${txData.transactionHash} | Otterscan`;
+    }
+  }, [txData]);
+
   return (
     <SelectedTransactionContext.Provider value={txData}>
       <BlockNumberContext.Provider value={txData?.confirmedData?.blockNumber}>
@@ -46,8 +52,7 @@ const Transaction: React.FC = () => {
                   {txData.confirmedData?.blockNumber !== undefined && (
                     <NavTab href="logs">
                       Logs
-                      {txData &&
-                        ` (${txData.confirmedData?.logs?.length ?? 0})`}
+                      {` (${txData.confirmedData?.logs?.length ?? 0})`}
                     </NavTab>
                   )}
                   <NavTab href="trace">Trace</NavTab>
