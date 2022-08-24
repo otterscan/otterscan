@@ -255,22 +255,14 @@ export const useTokenTransfers = (
       return undefined;
     }
 
-    const _transfers: TokenTransfer[] = [];
-    for (const l of txData.confirmedData.logs) {
-      if (l.topics.length !== 3) {
-        continue;
-      }
-      if (l.topics[0] !== TRANSFER_TOPIC) {
-        continue;
-      }
-      _transfers.push({
+    return txData.confirmedData.logs
+      .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
+      .map((l) => ({
         token: l.address,
         from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
         to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
         value: BigNumber.from(l.data),
-      });
-    }
-    return _transfers;
+      }));
   }, [txData]);
 
   return transfers;
