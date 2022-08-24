@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useParams, Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
@@ -24,6 +24,12 @@ const Transaction: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const txData = useTxData(provider, txHash);
   const selectionCtx = useSelection();
+
+  useEffect(() => {
+    if (txData) {
+      document.title = `Transaction ${txData.transactionHash} | Otterscan`;
+    }
+  }, [txData]);
 
   return (
     <SelectedTransactionContext.Provider value={txData}>

@@ -207,8 +207,6 @@ export const useTxData = (
           return;
         }
 
-        document.title = `Transaction ${_response.hash} | Otterscan`;
-
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
