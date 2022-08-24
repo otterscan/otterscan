@@ -8,7 +8,7 @@ import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import USDAmount from "./USDAmount";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
+import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 import { TransactionData, InternalOperation } from "../types";
@@ -22,17 +22,16 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
+
   const {
     nativeCurrency: { symbol, decimals },
   } = useChainInfo();
   const fromMiner =
-    txData.confirmedData?.miner !== undefined &&
-    internalOp.from === txData.confirmedData.miner;
-  const toMiner =
-    txData.confirmedData?.miner !== undefined &&
-    internalOp.to === txData.confirmedData.miner;
+    block?.miner !== undefined && internalOp.from === block.miner;
+  const toMiner = block?.miner !== undefined && internalOp.to === block.miner;
 
-  const { provider } = useContext(RuntimeContext);
   const blockETHUSDPrice = useETHUSDOracle(
     provider,
     txData.confirmedData?.blockNumber

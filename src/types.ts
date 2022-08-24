@@ -50,11 +50,7 @@ export type ConfirmedTransactionData = {
   status: boolean;
   blockNumber: number;
   transactionIndex: number;
-  blockBaseFeePerGas?: BigNumber | undefined | null;
-  blockTransactionCount: number;
   confirmations: number;
-  timestamp: number;
-  miner: string;
   createdContractAddress?: string;
   fee: BigNumber;
   gasUsed: BigNumber;

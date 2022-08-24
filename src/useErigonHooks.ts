@@ -155,18 +155,34 @@ const blockDataFetcher = async (
   return await readBlock(provider, blockNumberOrHash);
 };
 
+// TODO: some callers may use only block headers?
 export const useBlockData = (
   provider: JsonRpcProvider | undefined,
-  blockNumberOrHash: string
+  blockNumberOrHash: string | undefined
 ): ExtendedBlock | null | undefined => {
   const { data, error } = useSWRImmutable(
-    provider !== undefined ? [provider, blockNumberOrHash] : null,
+    provider !== undefined && blockNumberOrHash !== undefined
+      ? [provider, blockNumberOrHash]
+      : null,
     blockDataFetcher
   );
   if (error) {
     return undefined;
   }
   return data;
+};
+
+export const useBlockDataFromTransaction = (
+  provider: JsonRpcProvider | undefined,
+  txData: TransactionData | null | undefined
+): ExtendedBlock | null | undefined => {
+  const block = useBlockData(
+    provider,
+    txData?.confirmedData
+      ? txData.confirmedData.blockNumber.toString()
+      : undefined
+  );
+  return block;
 };
 
 export const useTxData = (
@@ -191,11 +207,6 @@ export const useTxData = (
           return;
         }
 
-        let _block: ExtendedBlock | null | undefined;
-        if (_response.blockNumber) {
-          _block = await readBlock(provider, _response.blockNumber.toString());
-        }
-
         document.title = `Transaction ${_response.hash} | Otterscan`;
 
         setTxData({
@@ -217,11 +228,7 @@ export const useTxData = (
                   status: _receipt.status === 1,
                   blockNumber: _receipt.blockNumber,
                   transactionIndex: _receipt.transactionIndex,
-                  blockBaseFeePerGas: _block!.baseFeePerGas,
-                  blockTransactionCount: _block!.transactionCount,
                   confirmations: _receipt.confirmations,
-                  timestamp: _block!.timestamp,
-                  miner: _block!.miner,
                   createdContractAddress: _receipt.contractAddress,
                   fee: _response.gasPrice!.mul(_receipt.gasUsed),
                   gasUsed: _receipt.gasUsed,

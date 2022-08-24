@@ -44,6 +44,7 @@ import {
 } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
 import {
+  useBlockDataFromTransaction,
   useSendsToMiner,
   useTokenTransfers,
   useTransactionError,
@@ -57,10 +58,10 @@ type DetailsProps = {
 
 const Details: React.FC<DetailsProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
 
   const hasEIP1559 =
-    txData.confirmedData?.blockBaseFeePerGas !== undefined &&
-    txData.confirmedData?.blockBaseFeePerGas !== null;
+    block?.baseFeePerGas !== undefined && block?.baseFeePerGas !== null;
 
   const fourBytes =
     txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
@@ -74,7 +75,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
   const [sendsEthToMiner, internalOps] = useSendsToMiner(
     provider,
     txData.confirmedData ? txData.transactionHash : undefined,
-    txData.confirmedData?.miner
+    block?.miner
   );
 
   const tokenTransfers = useTokenTransfers(txData);
@@ -222,22 +223,24 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
                   confirmations={txData.confirmedData.confirmations}
                 />
               </div>
-              <div className="flex space-x-2 items-baseline pl-3">
-                <RelativePosition
-                  pos={txData.confirmedData.transactionIndex}
-                  total={txData.confirmedData.blockTransactionCount - 1}
-                />
-                <PercentagePosition
-                  perc={
-                    txData.confirmedData.transactionIndex /
-                    (txData.confirmedData.blockTransactionCount - 1)
-                  }
-                />
-              </div>
+              {block && (
+                <div className="flex space-x-2 items-baseline pl-3">
+                  <RelativePosition
+                    pos={txData.confirmedData.transactionIndex}
+                    total={block.transactionCount - 1}
+                  />
+                  <PercentagePosition
+                    perc={
+                      txData.confirmedData.transactionIndex /
+                      (block.transactionCount - 1)
+                    }
+                  />
+                </div>
+              )}
             </div>
           </InfoRow>
           <InfoRow title="Timestamp">
-            <Timestamp value={txData.confirmedData.timestamp} />
+            {block && <Timestamp value={block.timestamp} />}
           </InfoRow>
         </>
       )}
@@ -366,18 +369,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           </div>
         </InfoRow>
       )}
-      {txData.confirmedData && hasEIP1559 && (
+      {block && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={9}
-          />{" "}
-          Gwei (
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={0}
-          />{" "}
-          wei)
+          <FormattedBalance value={block.baseFeePerGas!} decimals={9} /> Gwei (
+          <FormattedBalance value={block.baseFeePerGas!} decimals={0} /> wei)
         </InfoRow>
       )}
       {txData.confirmedData && (
