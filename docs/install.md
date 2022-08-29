@@ -56,6 +56,22 @@ docker run --rm -p 5100:80 --name otterscan -d --env ERIGON_URL="<your-erigon-no
 
 This is the preferred way to run Otterscan. You can read about other ways [here](./other-ways-to-run-otterscan.md).
 
+## (Optional) Enable integration with beacon chain
+
+You can optionally enable displaying extra info from the beacon chain by providing the public URL of your beacon node API.
+
+Enabling the beacon chain API depends on which CL implementation you are using.
+
+> As an example, for Prysm you need to enable CORS and possibly bind the address to the correct network interface with `--grpc-gateway-host="0.0.0.0" --grpc-gateway-corsdomain='*'` and by default it binds it to the port 3500.
+
+When starting the Otterscan process via Docker, you need to add an extra env variable called `BEACON_API_URL` pointing to your beacon node API URL.
+
+Prysm example:
+
+```
+docker run --rm -p 5100:80 --name otterscan -d --env BEACON_API_URL="<your-beacon-node-api-url>" otterscan/otterscan:<versiontag>
+```
+
 ## Validating the installation (all methods)
 
 You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.
