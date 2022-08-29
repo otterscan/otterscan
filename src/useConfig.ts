@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 export type OtterscanConfig = {
   erigonURL?: string;
+  beaconAPI?: string;
   assetsURLPrefix?: string;
 };
 
