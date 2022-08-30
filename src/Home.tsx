@@ -26,13 +26,13 @@ const Home: React.FC = () => {
   document.title = "Home | Otterscan";
 
   return (
-    <div className="mx-auto flex flex-col grow pb-5">
+    <div className="flex flex-col items-center grow pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="m-5 mb-10 flex items-end grow max-h-64">
+      <div className="grow mt-5 mb-10 max-h-64 flex items-end">
         <Logo />
       </div>
       <form
-        className="flex flex-col"
+        className="flex flex-col w-1/3"
         onSubmit={handleSubmit}
         autoComplete="off"
         spellCheck={false}
@@ -65,46 +65,44 @@ const Home: React.FC = () => {
           Search
         </button>
       </form>
-      <div className="mx-auto h-32">
-        <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
-          {provider?.network.chainId !== 11155111 && (
-            <NavLink to="/special/london">
-              <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
-                <span>
-                  <FontAwesomeIcon icon={faBurn} />
-                </span>
-                <span>Check out the special dashboard for EIP-1559</span>
-                <span>
-                  <FontAwesomeIcon icon={faBurn} />
-                </span>
-              </div>
-            </NavLink>
-          )}
-        </div>
-        {latestBlock && (
-          <NavLink
-            className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
-            to={blockURL(latestBlock.number)}
-          >
-            <div>Latest block: {commify(latestBlock.number)}</div>
-            <Timestamp value={latestBlock.timestamp} />
-          </NavLink>
-        )}
-        {beaconData && (
-          <div className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500">
-            <div>
-              Finalized slot: {commify(beaconData.data.header.message.slot)}
-            </div>
-            {slotTime && <Timestamp value={slotTime} />}
-            <div>
-              State root:{" "}
-              <span className="font-hash">
-                {beaconData.data.header.message.state_root}
+      <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
+        {provider?.network.chainId !== 11155111 && (
+          <NavLink to="/special/london">
+            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
+              </span>
+              <span>Check out the special dashboard for EIP-1559</span>
+              <span>
+                <FontAwesomeIcon icon={faBurn} />
               </span>
             </div>
-          </div>
+          </NavLink>
         )}
       </div>
+      {latestBlock && (
+        <NavLink
+          className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+          to={blockURL(latestBlock.number)}
+        >
+          <div>Latest block: {commify(latestBlock.number)}</div>
+          <Timestamp value={latestBlock.timestamp} />
+        </NavLink>
+      )}
+      {beaconData && (
+        <div className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500">
+          <div>
+            Finalized slot: {commify(beaconData.data.header.message.slot)}
+          </div>
+          {slotTime && <Timestamp value={slotTime} />}
+          <div>
+            State root:{" "}
+            <span className="font-hash">
+              {beaconData.data.header.message.state_root}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
