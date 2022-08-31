@@ -55,7 +55,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
 
   const { provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress, "latest");
-  const addressMetadata = useSourcifyMetadata(
+  const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
     provider?.network.chainId
   );
@@ -110,18 +110,18 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
                   <NavTab href={`/address/${addressOrName}/contract`}>
                     <span
                       className={`flex items-baseline space-x-2 ${
-                        addressMetadata === undefined ? "italic opacity-50" : ""
+                        match === undefined ? "italic opacity-50" : ""
                       }`}
                     >
                       <span>Contract</span>
-                      {addressMetadata === undefined ? (
+                      {match === undefined ? (
                         <span className="self-center">
                           <FontAwesomeIcon
                             className="animate-spin"
                             icon={faCircleNotch}
                           />
                         </span>
-                      ) : addressMetadata === null ? (
+                      ) : match === null ? (
                         <span className="self-center text-red-500">
                           <FontAwesomeIcon icon={faQuestionCircle} />
                         </span>
@@ -153,7 +153,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
                     element={
                       <Contracts
                         checksummedAddress={checksummedAddress}
-                        rawMetadata={addressMetadata}
+                        match={match}
                       />
                     }
                   />

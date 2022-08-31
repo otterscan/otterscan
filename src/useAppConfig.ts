@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { SourcifySource } from "./url";
+import { SourcifySource } from "./sourcify/useSourcify";
 
 export type AppConfig = {
   sourcifySource: SourcifySource;

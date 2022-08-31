@@ -3,7 +3,6 @@ import { Interface } from "@ethersproject/abi";
 import { ErrorDescription } from "@ethersproject/abi/lib/interface";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
-import { sourcifyMetadata, SourcifySource, sourcifySourceFile } from "../url";
 import { useAppConfigContext } from "../useAppConfig";
 
 export type UserMethod = {
@@ -82,16 +81,111 @@ export type Metadata = {
   };
 };
 
-const sourcifyFetcher = async (url: string) => {
+export enum SourcifySource {
+  // Resolve trusted IPNS for root IPFS
+  IPFS_IPNS,
+
+  // Centralized Sourcify servers
+  CENTRAL_SERVER,
+}
+
+const sourcifyIPNS =
+  "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
+const defaultIpfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
+const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
+
+const resolveSourcifySource = (source: SourcifySource) => {
+  if (source === SourcifySource.IPFS_IPNS) {
+    return defaultIpfsGatewayPrefix;
+  }
+  if (source === SourcifySource.CENTRAL_SERVER) {
+    return sourcifyHttpRepoPrefix;
+  }
+
+  throw new Error(`Unknown Sourcify integration source code: ${source}`);
+};
+
+/**
+ * Builds a complete Sourcify metadata.json URL given the contract address
+ * and chain.
+ */
+export const sourcifyMetadata = (
+  address: ChecksummedAddress,
+  chainId: number,
+  source: SourcifySource,
+  type: MatchType
+) =>
+  `${resolveSourcifySource(source)}/contracts/${
+    type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
+  }/${chainId}/${address}/metadata.json`;
+
+export const sourcifySourceFile = (
+  address: ChecksummedAddress,
+  chainId: number,
+  filepath: string,
+  source: SourcifySource,
+  type: MatchType
+) =>
+  `${resolveSourcifySource(source)}/contracts/${
+    type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
+  }/${chainId}/${address}/sources/${filepath}`;
+
+export enum MatchType {
+  FULL_MATCH,
+  PARTIAL_MATCH,
+}
+
+export type Match = {
+  type: MatchType;
+  metadata: Metadata;
+};
+
+const sourcifyFetcher = async (
+  _: "sourcify",
+  address: ChecksummedAddress,
+  chainId: number,
+  sourcifySource: SourcifySource
+): Promise<Match | null | undefined> => {
+  // Try full match
   try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySource,
+      MatchType.FULL_MATCH
+    );
     const res = await fetch(url);
     if (res.ok) {
-      return res.json();
+      return {
+        type: MatchType.FULL_MATCH,
+        metadata: await res.json(),
+      };
+    }
+  } catch (err) {
+    console.info(
+      `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`
+    );
+  }
+
+  // Fallback to try partial match
+  try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySource,
+      MatchType.PARTIAL_MATCH
+    );
+    const res = await fetch(url);
+    if (res.ok) {
+      return {
+        type: MatchType.PARTIAL_MATCH,
+        metadata: await res.json(),
+      };
     }
     return null;
   } catch (err) {
     console.warn(
-      `error while getting Sourcify metadata: url=${url} err=${err}`
+      `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`
     );
     return null;
   }
@@ -100,13 +194,13 @@ const sourcifyFetcher = async (url: string) => {
 export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: number | undefined
-): Metadata | null | undefined => {
+): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
   const metadataURL = () =>
     address === undefined || chainId === undefined
       ? null
-      : sourcifyMetadata(address, chainId, sourcifySource);
-  const { data, error } = useSWRImmutable<Metadata>(
+      : ["sourcify", address, chainId, sourcifySource];
+  const { data, error } = useSWRImmutable<Match | null | undefined>(
     metadataURL,
     sourcifyFetcher
   );
@@ -128,14 +222,16 @@ export const useContract = (
   checksummedAddress: string,
   networkId: number,
   filename: string,
-  sourcifySource: SourcifySource
+  sourcifySource: SourcifySource,
+  type: MatchType
 ) => {
   const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,
     normalizedFilename,
-    sourcifySource
+    sourcifySource,
+    type
   );
 
   const { data, error } = useSWRImmutable(url, contractFetcher);

@@ -80,7 +80,8 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
 
   const tokenTransfers = useTokenTransfers(txData);
 
-  const metadata = useSourcifyMetadata(txData?.to, provider?.network.chainId);
+  const match = useSourcifyMetadata(txData?.to, provider?.network.chainId);
+  const metadata = match?.metadata;
 
   const txDesc = useSourcifyTransactionDescription(metadata, txData);
   const userDoc = metadata?.output.userdoc;
