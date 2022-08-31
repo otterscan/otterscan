@@ -8,39 +8,39 @@ import InfoRow from "../components/InfoRow";
 import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
 import { RuntimeContext } from "../useRuntime";
-import { Metadata } from "../sourcify/useSourcify";
+import { Match, MatchType } from "../sourcify/useSourcify";
 import ExternalLink from "../components/ExternalLink";
 import { openInRemixURL } from "../url";
 import ContractABI from "./ContractABI";
 
 type ContractsProps = {
   checksummedAddress: string;
-  rawMetadata: Metadata | null | undefined;
+  match: Match | null | undefined;
 };
 
-const Contracts: React.FC<ContractsProps> = ({
-  checksummedAddress,
-  rawMetadata,
-}) => {
+const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
-    if (rawMetadata) {
-      setSelected(Object.keys(rawMetadata.sources)[0]);
+    if (match) {
+      setSelected(Object.keys(match.metadata.sources)[0]);
     }
-  }, [rawMetadata]);
-  const optimizer = rawMetadata?.settings?.optimizer;
+  }, [match]);
+  const optimizer = match?.metadata.settings?.optimizer;
 
   return (
     <ContentFrame tabs>
-      {rawMetadata && (
+      {match && (
         <>
+          <InfoRow title="Match">
+            {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
+          </InfoRow>
           <InfoRow title="Language">
-            <span>{rawMetadata.language}</span>
+            <span>{match.metadata.language}</span>
           </InfoRow>
           <InfoRow title="Compiler">
-            <span>{rawMetadata.compiler.version}</span>
+            <span>{match.metadata.compiler.version}</span>
           </InfoRow>
           <InfoRow title="Optimizer Enabled">
             {optimizer?.enabled ? (
@@ -58,19 +58,19 @@ const Contracts: React.FC<ContractsProps> = ({
         </>
       )}
       <div className="py-5">
-        {rawMetadata === undefined && (
+        {match === undefined && (
           <span>Getting data from Sourcify repository...</span>
         )}
-        {rawMetadata === null && (
+        {match === null && (
           <span>
             Address is not a contract or couldn't find contract metadata in
             Sourcify repository.
           </span>
         )}
-        {rawMetadata !== undefined && rawMetadata !== null && (
+        {match !== undefined && match !== null && (
           <>
-            {rawMetadata.output.abi && (
-              <ContractABI abi={rawMetadata.output.abi} />
+            {match.metadata.output.abi && (
+              <ContractABI abi={match.metadata.output.abi} />
             )}
             <div>
               <Menu>
@@ -96,7 +96,7 @@ const Contracts: React.FC<ContractsProps> = ({
                 </div>
                 <div className="relative">
                   <Menu.Items className="absolute border p-1 rounded-b bg-white flex flex-col">
-                    {Object.entries(rawMetadata.sources).map(([k]) => (
+                    {Object.entries(match.metadata.sources).map(([k]) => (
                       <Menu.Item key={k}>
                         <button
                           className={`flex text-sm px-2 py-1 ${
@@ -115,13 +115,16 @@ const Contracts: React.FC<ContractsProps> = ({
               </Menu>
               {selected && (
                 <>
-                  {rawMetadata.sources[selected].content ? (
-                    <Contract content={rawMetadata.sources[selected].content} />
+                  {match.metadata.sources[selected].content ? (
+                    <Contract
+                      content={match.metadata.sources[selected].content}
+                    />
                   ) : (
                     <ContractFromRepo
                       checksummedAddress={checksummedAddress}
                       networkId={provider!.network.chainId}
                       filename={selected}
+                      type={match.type}
                     />
                   )}
                 </>

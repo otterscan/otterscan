@@ -38,7 +38,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   eoa,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const metadata = useSourcifyMetadata(address, provider?.network.chainId);
+  const match = useSourcifyMetadata(address, provider?.network.chainId);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -78,7 +78,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
       )}
-      {metadata && (
+      {match && (
         <NavLink
           className="self-center shrink-0 flex items-center"
           to={`/address/${address}/contract`}

@@ -17,14 +17,14 @@ type LogEntryProps = {
 
 const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
-  const metadata = useSourcifyMetadata(log.address, provider?.network.chainId);
+  const match = useSourcifyMetadata(log.address, provider?.network.chainId);
 
   const logDesc = useMemo(() => {
-    if (!metadata) {
-      return metadata;
+    if (!match) {
+      return match;
     }
 
-    const abi = metadata.output.abi;
+    const abi = match.metadata.output.abi;
     const intf = new Interface(abi as any);
     try {
       return intf.parseLog({
@@ -35,7 +35,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
       console.warn("Couldn't find function signature", err);
       return null;
     }
-  }, [log, metadata]);
+  }, [log, match]);
 
   const rawTopic0 = log.topics[0];
   const topic0 = useTopic0(rawTopic0);

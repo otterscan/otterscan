@@ -1,4 +1,5 @@
 import { BlockTag } from "@ethersproject/abstract-provider";
+import { MatchType } from "./sourcify/useSourcify";
 import { ChecksummedAddress } from "./types";
 
 export const fourBytesURL = (
@@ -60,21 +61,23 @@ const resolveSourcifySource = (source: SourcifySource) => {
 export const sourcifyMetadata = (
   address: ChecksummedAddress,
   chainId: number,
-  source: SourcifySource
+  source: SourcifySource,
+  type: MatchType
 ) =>
-  `${resolveSourcifySource(
-    source
-  )}/contracts/full_match/${chainId}/${address}/metadata.json`;
+  `${resolveSourcifySource(source)}/contracts/${
+    type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
+  }/${chainId}/${address}/metadata.json`;
 
 export const sourcifySourceFile = (
   address: ChecksummedAddress,
   chainId: number,
   filepath: string,
-  source: SourcifySource
+  source: SourcifySource,
+  type: MatchType
 ) =>
-  `${resolveSourcifySource(
-    source
-  )}/contracts/full_match/${chainId}/${address}/sources/${filepath}`;
+  `${resolveSourcifySource(source)}/contracts/${
+    type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
+  }/${chainId}/${address}/sources/${filepath}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: number) =>
   `https://remix.ethereum.org/#activate=sourcify&call=sourcify//fetchAndSave//${checksummedAddress}//${networkId}`;
