@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import TransactionAddress from "./TransactionAddress";
+import { RuntimeContext } from "../useRuntime";
+import { useBlockDataFromTransaction } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { TransactionData, InternalOperation } from "../types";
 
@@ -17,12 +19,12 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
   txData,
   internalOp,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const toMiner =
-    txData.confirmedData?.miner !== undefined &&
-    internalOp.to === txData.confirmedData.miner;
+  const toMiner = block?.miner !== undefined && internalOp.to === block.miner;
 
   return (
     <>
@@ -54,7 +56,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
             <AddressHighlighter address={internalOp.to}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
+                  toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
                 }`}
               >
                 <DecoratedAddressLink address={internalOp.to} miner={toMiner} />

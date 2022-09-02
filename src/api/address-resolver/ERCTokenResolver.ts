@@ -1,18 +1,18 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
-import { Interface } from "@ethersproject/abi";
+import { AddressZero } from "@ethersproject/constants";
 import { IAddressResolver } from "./address-resolver";
 import erc20 from "../../erc20.json";
 import { TokenMeta } from "../../types";
 
-const erc20Interface = new Interface(erc20);
+const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
 
 export class ERCTokenResolver implements IAddressResolver<TokenMeta> {
   async resolveAddress(
     provider: BaseProvider,
     address: string
   ): Promise<TokenMeta | undefined> {
-    const erc20Contract = new Contract(address, erc20Interface, provider);
+    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address);
     try {
       const name = (await erc20Contract.name()) as string;
       if (!name.trim()) {

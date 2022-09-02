@@ -1,58 +1,28 @@
-import React, { useState, useEffect, useMemo, useContext } from "react";
-import { Contract } from "@ethersproject/contracts";
+import React, { useMemo, useContext } from "react";
 import { commify, formatUnits } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
-import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
-import { useLatestBlock } from "./useLatestBlock";
+import { useLatestBlockHeader } from "./useLatestBlock";
 import { useChainInfo } from "./useChainInfo";
+import { useETHUSDRawOracle, useFastGasRawOracle } from "./usePriceOracle";
 
+// TODO: encapsulate this magic number
 const ETH_FEED_DECIMALS = 8;
 
-// TODO: reduce duplication with useETHUSDOracle
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const latestBlock = useLatestBlock(provider);
+  const latestBlock = useLatestBlockHeader(provider);
 
   const maybeOutdated: boolean =
     latestBlock !== undefined &&
     Date.now() / 1000 - latestBlock.timestamp > 3600;
-  const ethFeed = useMemo(
-    () =>
-      provider &&
-      new Contract("eth-usd.data.eth", AggregatorV3Interface, provider),
-    [provider]
-  );
-  const gasFeed = useMemo(
-    () =>
-      provider &&
-      new Contract("fast-gas-gwei.data.eth", AggregatorV3Interface, provider),
-    [provider]
-  );
 
-  const [latestPriceData, setLatestPriceData] = useState<any>();
-  const [latestGasData, setLatestGasData] = useState<any>();
-  useEffect(() => {
-    if (!ethFeed || !gasFeed) {
-      return;
-    }
-
-    const readData = async () => {
-      const [priceData, gasData] = await Promise.all([
-        ethFeed.latestRoundData(),
-        await gasFeed.latestRoundData(),
-      ]);
-      setLatestPriceData(priceData);
-      setLatestGasData(gasData);
-    };
-    readData();
-  }, [ethFeed, gasFeed]);
-
+  const latestPriceData = useETHUSDRawOracle(provider, "latest");
   const [latestPrice, latestPriceTimestamp] = useMemo(() => {
     if (!latestPriceData) {
       return [undefined, undefined];
@@ -65,6 +35,7 @@ const PriceBox: React.FC = () => {
     return [formattedPrice, timestamp];
   }, [latestPriceData]);
 
+  const latestGasData = useFastGasRawOracle(provider, "latest");
   const [latestGasPrice, latestGasPriceTimestamp] = useMemo(() => {
     if (!latestGasData) {
       return [undefined, undefined];

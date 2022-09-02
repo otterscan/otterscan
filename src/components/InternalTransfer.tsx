@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
@@ -9,33 +8,34 @@ import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import USDAmount from "./USDAmount";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
+import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { useETHUSDOracle } from "../usePriceOracle";
 import { TransactionData, InternalOperation } from "../types";
 
 type InternalTransferProps = {
   txData: TransactionData;
   internalOp: InternalOperation;
-  // TODO: migrate all this logic to SWR
-  ethUSDPrice: BigNumber | undefined;
 };
 
 const InternalTransfer: React.FC<InternalTransferProps> = ({
   txData,
   internalOp,
-  ethUSDPrice,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
+
   const {
     nativeCurrency: { symbol, decimals },
   } = useChainInfo();
   const fromMiner =
-    txData.confirmedData?.miner !== undefined &&
-    internalOp.from === txData.confirmedData.miner;
-  const toMiner =
-    txData.confirmedData?.miner !== undefined &&
-    internalOp.to === txData.confirmedData.miner;
+    block?.miner !== undefined && internalOp.from === block.miner;
+  const toMiner = block?.miner !== undefined && internalOp.to === block.miner;
 
-  const { provider } = useContext(RuntimeContext);
+  const blockETHUSDPrice = useETHUSDOracle(
+    provider,
+    txData.confirmedData?.blockNumber
+  );
   const fromHasCode = useHasCode(
     provider,
     internalOp.from,
@@ -58,7 +58,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
             <AddressHighlighter address={internalOp.from}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  fromMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
+                  fromMiner ? "rounded px-2 py-1 bg-amber-100" : ""
                 }`}
               >
                 <DecoratedAddressLink
@@ -79,7 +79,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
           <AddressHighlighter address={internalOp.to}>
             <div
               className={`flex items-baseline space-x-1 ${
-                toMiner ? "rounded px-2 py-1 bg-yellow-100" : ""
+                toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
               }`}
             >
               <DecoratedAddressLink
@@ -99,12 +99,12 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
           <span>
             {formatEther(internalOp.value)} {symbol}
           </span>
-          {ethUSDPrice && (
+          {blockETHUSDPrice && (
             <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
               <USDAmount
                 amount={internalOp.value}
                 amountDecimals={decimals}
-                quote={ethUSDPrice}
+                quote={blockETHUSDPrice}
                 // TODO: migrate to SWR and standardize this magic number
                 quoteDecimals={8}
               />

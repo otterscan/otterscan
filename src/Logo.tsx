@@ -2,7 +2,7 @@ import React from "react";
 import Otter from "./otter.jpg";
 
 const Logo: React.FC = () => (
-  <div className="mx-auto text-6xl text-link-blue font-title font-bold cursor-default flex items-center space-x-4">
+  <div className="text-6xl text-link-blue font-title font-bold cursor-default flex items-center justify-center space-x-4">
     <img
       className="rounded-full"
       src={Otter}

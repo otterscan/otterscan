@@ -12,6 +12,11 @@ const UNISWAP_V1_FACTORY_ABI = [
 
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
+const UNISWAP_V1_FACTORY_PROTOTYPE = new Contract(
+  UNISWAP_V1_FACTORY,
+  UNISWAP_V1_FACTORY_ABI
+);
+
 export type UniswapV1TokenMeta = {
   address: ChecksummedAddress;
 } & TokenMeta;
@@ -28,11 +33,7 @@ export class UniswapV1Resolver implements IAddressResolver<UniswapV1PairMeta> {
     provider: BaseProvider,
     address: string
   ): Promise<UniswapV1PairMeta | undefined> {
-    const factoryContract = new Contract(
-      UNISWAP_V1_FACTORY,
-      UNISWAP_V1_FACTORY_ABI,
-      provider
-    );
+    const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(provider);
 
     try {
       // First, probe the getToken() function; if it responds with an UniswapV1 exchange

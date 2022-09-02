@@ -102,7 +102,7 @@ const Content: React.FC<ContentProps> = ({
 }) => (
   <>
     <div
-      className={`self-center w-5 h-5 ${linkable ? "" : "filter grayscale"}`}
+      className={`self-center w-5 h-5 ${linkable ? "" : "grayscale"}`}
     >
       <TokenLogo chainId={chainId} address={address} name={name} />
     </div>

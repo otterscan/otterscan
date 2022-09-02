@@ -18,7 +18,6 @@ export type ProcessedTransaction = {
   from?: string;
   to: string | null;
   createdContractAddress?: string;
-  internalMinerInteraction?: boolean;
   value: BigNumber;
   fee: BigNumber;
   gasPrice: BigNumber;
@@ -37,8 +36,6 @@ export type TransactionData = {
   from: string;
   to?: string;
   value: BigNumber;
-  tokenTransfers: TokenTransfer[];
-  tokenMetas: TokenMetas;
   type: number;
   maxFeePerGas?: BigNumber | undefined;
   maxPriorityFeePerGas?: BigNumber | undefined;
@@ -53,11 +50,7 @@ export type ConfirmedTransactionData = {
   status: boolean;
   blockNumber: number;
   transactionIndex: number;
-  blockBaseFeePerGas?: BigNumber | undefined | null;
-  blockTransactionCount: number;
   confirmations: number;
-  timestamp: number;
-  miner: string;
   createdContractAddress?: string;
   fee: BigNumber;
   gasUsed: BigNumber;

@@ -5,6 +5,7 @@ import {
   TransactionDescription,
 } from "@ethersproject/abi";
 import { BigNumberish } from "@ethersproject/bignumber";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { fourBytesURL } from "./url";
@@ -29,35 +30,53 @@ export const extract4Bytes = (rawInput: string): string | null => {
   return rawInput.slice(0, 10);
 };
 
-const fetch4Bytes = async (
-  assetsURLPrefix: string,
-  fourBytes: string
-): Promise<FourBytesEntry | null> => {
-  const signatureURL = fourBytesURL(assetsURLPrefix, fourBytes);
+type FourBytesKey = [id: "4bytes", fourBytes: string];
+type FourBytesFetcher = Fetcher<
+  FourBytesEntry | null | undefined,
+  FourBytesKey
+>;
 
-  try {
-    const res = await fetch(signatureURL);
-    if (!res.ok) {
-      console.error(`Signature does not exist in 4bytes DB: ${fourBytes}`);
-      return null;
+const fourBytesFetcher =
+  (assetsURLPrefix: string): FourBytesFetcher =>
+  async (_, key) => {
+    if (key === null || key === "0x") {
+      return undefined;
     }
 
-    // Get only the first occurrence, for now ignore alternative param names
-    const sigs = await res.text();
-    const sig = sigs.split(";")[0];
-    const cut = sig.indexOf("(");
-    const method = sig.slice(0, cut);
+    // Handle simple transfers with invalid selector like tx:
+    // 0x8bcbdcc1589b5c34c1e55909c8269a411f0267a4fed59a73dd4348cc71addbb9,
+    // which contains 0x00 as data
+    if (key.length !== 10) {
+      return undefined;
+    }
 
-    const entry: FourBytesEntry = {
-      name: method,
-      signature: sig,
-    };
-    return entry;
-  } catch (err) {
-    console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
-    return null;
-  }
-};
+    const fourBytes = key.slice(2);
+    const signatureURL = fourBytesURL(assetsURLPrefix, fourBytes);
+
+    try {
+      const res = await fetch(signatureURL);
+      if (!res.ok) {
+        console.warn(`Signature does not exist in 4bytes DB: ${fourBytes}`);
+        return null;
+      }
+
+      // Get only the first occurrence, for now ignore alternative param names
+      const sigs = await res.text();
+      const sig = sigs.split(";")[0];
+      const cut = sig.indexOf("(");
+      const method = sig.slice(0, cut);
+
+      const entry: FourBytesEntry = {
+        name: method,
+        signature: sig,
+      };
+      return entry;
+    } catch (err) {
+      // Network error or something wrong with URL config;
+      // silence and don't try it again
+      return null;
+    }
+  };
 
 /**
  * Extract 4bytes DB info
@@ -75,26 +94,10 @@ export const use4Bytes = (
 
   const { config } = useContext(RuntimeContext);
   const assetsURLPrefix = config?.assetsURLPrefix;
+  const fourBytesKey = assetsURLPrefix !== undefined ? rawFourBytes : null;
 
-  const fourBytesFetcher = (key: string | null) => {
-    if (key === null || key === "0x") {
-      return undefined;
-    }
-
-    // Handle simple transfers with invalid selector like tx:
-    // 0x8bcbdcc1589b5c34c1e55909c8269a411f0267a4fed59a73dd4348cc71addbb9,
-    // which contains 0x00 as data
-    if (key.length !== 10) {
-      return undefined;
-    }
-
-    return fetch4Bytes(assetsURLPrefix!, key.slice(2));
-  };
-
-  const { data, error } = useSWRImmutable<FourBytesEntry | null | undefined>(
-    assetsURLPrefix !== undefined ? rawFourBytes : null,
-    fourBytesFetcher
-  );
+  const fetcher = fourBytesFetcher(assetsURLPrefix!);
+  const { data, error } = useSWRImmutable(["4bytes", fourBytesKey], fetcher);
   return error ? undefined : data;
 };
 

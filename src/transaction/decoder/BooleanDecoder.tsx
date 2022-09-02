@@ -5,7 +5,7 @@ type BooleanDecoderProps = {
 };
 
 const BooleanDecoder: React.FC<BooleanDecoderProps> = ({ r }) => (
-  <span className={`${r ? "text-green-700" : "text-red-700"}`}>
+  <span className={`${r ? "text-emerald-700" : "text-red-700"}`}>
     {r.toString()}
   </span>
 );

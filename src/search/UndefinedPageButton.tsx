@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type UndefinedPageButtonProps = {
@@ -8,16 +8,12 @@ type UndefinedPageButtonProps = {
   disabled?: boolean;
 };
 
-const UndefinedPageButton: React.FC<UndefinedPageButtonProps> = ({
-  address,
-  direction,
-  hash,
-  disabled,
-  children,
-}) => {
+const UndefinedPageButton: React.FC<
+  PropsWithChildren<UndefinedPageButtonProps>
+> = ({ address, direction, hash, disabled, children }) => {
   if (disabled) {
     return (
-      <span className="bg-link-blue bg-opacity-10 text-gray-400 rounded-lg px-3 py-2 text-xs">
+      <span className="bg-link-blue/10 text-gray-400 rounded-lg px-3 py-2 text-xs">
         {children}
       </span>
     );
@@ -25,7 +21,7 @@ const UndefinedPageButton: React.FC<UndefinedPageButtonProps> = ({
 
   return (
     <NavLink
-      className="transition-colors bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded-lg px-3 py-2 text-xs"
+      className="transition-colors bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded-lg px-3 py-2 text-xs"
       to={`/address/${address}/txs/${direction}${
         direction === "prev" || direction === "next" ? `?h=${hash}` : ""
       }`}

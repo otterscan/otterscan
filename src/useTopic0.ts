@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
+import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { topic0URL } from "./url";
 
@@ -6,7 +7,28 @@ export type Topic0Entry = {
   signatures: string[] | undefined;
 };
 
-const fullCache = new Map<string, Topic0Entry | null>();
+const topic0Fetcher = async (
+  signatureURL: string
+): Promise<Topic0Entry | null | undefined> => {
+  try {
+    const res = await fetch(signatureURL);
+    if (!res.ok) {
+      console.error(`Signature does not exist in topic0 DB: ${signatureURL}`);
+      return null;
+    }
+
+    // Get only the first occurrence, for now ignore alternative param names
+    const sig = await res.text();
+    const sigs = sig.split(";");
+    const entry: Topic0Entry = {
+      signatures: sigs,
+    };
+    return entry;
+  } catch (err) {
+    console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
+    return null;
+  }
+};
 
 /**
  * Extract topic0 DB info
@@ -26,52 +48,11 @@ export const useTopic0 = (
   const assetsURLPrefix = runtime.config?.assetsURLPrefix;
 
   const topic0 = rawTopic0.slice(2);
-  const [entry, setEntry] = useState<Topic0Entry | null | undefined>(
-    fullCache.get(topic0)
-  );
-  useEffect(() => {
-    if (assetsURLPrefix === undefined) {
-      return;
-    }
-
-    const signatureURL = topic0URL(assetsURLPrefix, topic0);
-    fetch(signatureURL)
-      .then(async (res) => {
-        if (!res.ok) {
-          console.error(`Signature does not exist in topic0 DB: ${topic0}`);
-          fullCache.set(topic0, null);
-          setEntry(null);
-          return;
-        }
-
-        // Get only the first occurrence, for now ignore alternative param names
-        const sig = await res.text();
-        const sigs = sig.split(";");
-        const entry: Topic0Entry = {
-          signatures: sigs,
-        };
-        setEntry(entry);
-        fullCache.set(topic0, entry);
-      })
-      .catch((err) => {
-        console.error(`Couldn't fetch signature URL ${signatureURL}`, err);
-        setEntry(null);
-        fullCache.set(topic0, null);
-      });
-  }, [topic0, assetsURLPrefix]);
-
-  if (assetsURLPrefix === undefined) {
-    return undefined;
+  const signatureURL = () =>
+    assetsURLPrefix === undefined ? null : topic0URL(assetsURLPrefix, topic0);
+  const { data, error } = useSWRImmutable(signatureURL, topic0Fetcher);
+  if (error) {
+    return null;
   }
-
-  // Try to resolve topic0 name
-  if (entry === null || entry === undefined) {
-    return entry;
-  }
-
-  // Simulates LRU
-  // TODO: implement LRU purging
-  fullCache.delete(topic0);
-  fullCache.set(topic0, entry);
-  return entry;
+  return data;
 };

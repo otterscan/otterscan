@@ -9,15 +9,14 @@ function withOpacity(variableName) {
   };
 }
 
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: {
     extend: {
       colors: {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
-        orange: colors.orange,
       },
       fontFamily: {
         sans: ["Roboto"],
@@ -51,13 +50,6 @@ module.exports = {
           "table-hover": withOpacity("--color-table-row-hover"),
         },
       },
-    },
-  },
-  variants: {
-    extend: {
-      cursor: ["disabled"],
-      backgroundColor: ["disabled"],
-      textColor: ["disabled"],
     },
   },
   plugins: [],

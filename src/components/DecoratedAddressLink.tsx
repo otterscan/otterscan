@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { PropsWithChildren, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
@@ -8,8 +8,8 @@ import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
 import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import PlainAddress from "./PlainAddress";
-import { Metadata } from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
+import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useResolvedAddress } from "../useResolvedAddresses";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
 import { resolverRendererRegistry } from "../api/address-resolver";
@@ -23,7 +23,6 @@ type DecoratedAddressLinkProps = {
   selfDestruct?: boolean | undefined;
   txFrom?: boolean | undefined;
   txTo?: boolean | undefined;
-  metadata?: Metadata | null | undefined;
   eoa?: boolean | undefined;
 };
 
@@ -36,9 +35,11 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   selfDestruct,
   txFrom,
   txTo,
-  metadata,
   eoa,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const match = useSourcifyMetadata(address, provider?.network.chainId);
+
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
 
@@ -47,13 +48,13 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       className={`flex items-baseline space-x-1 ${
         txFrom ? "bg-skin-from" : ""
       } ${txTo ? "bg-skin-to" : ""} ${
-        mint ? "italic text-green-500 hover:text-green-700" : ""
+        mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
       } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""} ${
         selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
       }`}
     >
       {creation && (
-        <span className="text-yellow-300" title="Contract creation">
+        <span className="text-amber-300" title="Contract creation">
           <FontAwesomeIcon icon={faStar} size="1x" />
         </span>
       )}
@@ -63,7 +64,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         </span>
       )}
       {mint && (
-        <span className="text-green-500" title="Mint address">
+        <span className="text-emerald-500" title="Mint address">
           <FontAwesomeIcon icon={faMoneyBillAlt} size="1x" />
         </span>
       )}
@@ -73,13 +74,13 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         </span>
       )}
       {miner && (
-        <span className="text-yellow-400" title="Miner address">
+        <span className="text-amber-400" title="Miner address">
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
       )}
-      {metadata && (
+      {match && (
         <NavLink
-          className="self-center flex-shrink-0 flex items-center"
+          className="self-center shrink-0 flex items-center"
           to={`/address/${address}/contract`}
         >
           <SourcifyLogo />
@@ -156,11 +157,11 @@ type AddressLegendProps = {
   title: string;
 };
 
-const AddressLegend: React.FC<AddressLegendProps> = ({ title, children }) => (
-  <span
-    className="text-xs text-gray-400 text-opacity-70 not-italic"
-    title={title}
-  >
+const AddressLegend: React.FC<PropsWithChildren<AddressLegendProps>> = ({
+  title,
+  children,
+}) => (
+  <span className="text-xs text-gray-400/70 not-italic" title={title}>
     {children}
   </span>
 );

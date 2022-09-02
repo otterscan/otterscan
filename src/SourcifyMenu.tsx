@@ -1,9 +1,9 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons/faBars";
-import { SourcifySource } from "./url";
 import { useAppConfigContext } from "./useAppConfig";
+import { SourcifySource } from "./sourcify/useSourcify";
 
 const SourcifyMenu: React.FC = () => {
   const { sourcifySource, setSourcifySource } = useAppConfigContext();
@@ -41,7 +41,7 @@ type SourcifyMenuItemProps = {
   onClick: () => void;
 };
 
-const SourcifyMenuItem: React.FC<SourcifyMenuItemProps> = ({
+const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
   checked = false,
   onClick,
   children,

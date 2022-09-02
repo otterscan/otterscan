@@ -33,7 +33,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
       <div
         className={`text-right ${
           block.gasUsed.gt(gasTarget)
-            ? "text-green-500"
+            ? "text-emerald-500"
             : block.gasUsed.lt(gasTarget)
             ? "text-red-500"
             : ""

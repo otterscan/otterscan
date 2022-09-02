@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,13 +11,13 @@ import ContentFrame from "./ContentFrame";
 import BlockNotFound from "./components/BlockNotFound";
 import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
+import BlockReward from "./BlockReward";
 import GasValue from "./components/GasValue";
 import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
 import FormattedBalance from "./components/FormattedBalance";
-import ETH2USDValue from "./components/ETH2USDValue";
 import USDValue from "./components/USDValue";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
@@ -55,7 +54,6 @@ const Block: React.FC = () => {
   }, [block]);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
-  const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const gasUsedPerc =
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
@@ -89,7 +87,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Transactions">
             <NavLink
-              className="bg-link-blue bg-opacity-10 text-link-blue hover:bg-opacity-100 hover:text-white rounded-lg px-2 py-1 text-xs"
+              className="bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white rounded-lg px-2 py-1 text-xs"
               to={blockTxsURL(block.number)}
             >
               {block.transactionCount} transactions
@@ -100,25 +98,7 @@ const Block: React.FC = () => {
             <DecoratedAddressLink address={block.miner} miner />
           </InfoRow>
           <InfoRow title="Block Reward">
-            <TransactionValue value={block.blockReward.add(netFeeReward)} />
-            {!netFeeReward.isZero() && (
-              <>
-                {" "}
-                (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-                <TransactionValue value={netFeeReward} hideUnit />)
-              </>
-            )}
-            {blockETHUSDPrice && (
-              <>
-                {" "}
-                <span className="px-2 border-yellow-200 border rounded-lg bg-yellow-100 text-yellow-600">
-                  <ETH2USDValue
-                    ethAmount={block.blockReward.add(netFeeReward)}
-                    eth2USDValue={blockETHUSDPrice}
-                  />
-                </span>
-              </>
-            )}
+            <BlockReward block={block} />
           </InfoRow>
           <InfoRow title="Uncles Reward">
             <TransactionValue value={block.unclesReward} />

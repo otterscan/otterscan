@@ -1,6 +1,5 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
-import { TransactionDescription } from "@ethersproject/abi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
@@ -18,18 +17,15 @@ import NavNonce from "./NavNonce";
 import Timestamp from "../components/Timestamp";
 import InternalTransactionOperation from "../components/InternalTransactionOperation";
 import MethodName from "../components/MethodName";
+import TransactionDetailsValue from "../components/TransactionDetailsValue";
 import TransactionType from "../components/TransactionType";
+import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
 import GasValue from "../components/GasValue";
 import USDValue from "../components/USDValue";
 import FormattedBalance from "../components/FormattedBalance";
-import ETH2USDValue from "../components/ETH2USDValue";
 import TokenTransferItem from "../TokenTransferItem";
-import {
-  TransactionData,
-  InternalOperation,
-  ChecksummedAddress,
-} from "../types";
+import { TransactionData } from "../types";
 import PercentageBar from "../components/PercentageBar";
 import ExternalLink from "../components/ExternalLink";
 import RelativePosition from "../components/RelativePosition";
@@ -41,35 +37,31 @@ import {
   use4Bytes,
   useTransactionDescription,
 } from "../use4Bytes";
-import { DevDoc, Metadata, useError, UserDoc } from "../sourcify/useSourcify";
+import {
+  useError,
+  useSourcifyMetadata,
+  useTransactionDescription as useSourcifyTransactionDescription,
+} from "../sourcify/useSourcify";
 import { RuntimeContext } from "../useRuntime";
-import { useContractsMetadata } from "../hooks";
-import { useTransactionError } from "../useErigonHooks";
+import {
+  useBlockDataFromTransaction,
+  useSendsToMiner,
+  useTokenTransfers,
+  useTransactionError,
+} from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
-  txDesc: TransactionDescription | null | undefined;
-  toMetadata: Metadata | null | undefined;
-  userDoc?: UserDoc | undefined;
-  devDoc?: DevDoc | undefined;
-  internalOps?: InternalOperation[];
-  sendsEthToMiner: boolean;
 };
 
-const Details: React.FC<DetailsProps> = ({
-  txData,
-  txDesc,
-  toMetadata,
-  userDoc,
-  devDoc,
-  internalOps,
-  sendsEthToMiner,
-}) => {
+const Details: React.FC<DetailsProps> = ({ txData }) => {
+  const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
+
   const hasEIP1559 =
-    txData.confirmedData?.blockBaseFeePerGas !== undefined &&
-    txData.confirmedData?.blockBaseFeePerGas !== null;
+    block?.baseFeePerGas !== undefined && block?.baseFeePerGas !== null;
 
   const fourBytes =
     txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
@@ -80,11 +72,24 @@ const Details: React.FC<DetailsProps> = ({
     txData.value
   );
 
+  const [sendsEthToMiner, internalOps] = useSendsToMiner(
+    provider,
+    txData.confirmedData ? txData.transactionHash : undefined,
+    block?.miner
+  );
+
+  const tokenTransfers = useTokenTransfers(txData);
+
+  const match = useSourcifyMetadata(txData?.to, provider?.network.chainId);
+  const metadata = match?.metadata;
+
+  const txDesc = useSourcifyTransactionDescription(metadata, txData);
+  const userDoc = metadata?.output.userdoc;
+  const devDoc = metadata?.output.devdoc;
   const resolvedTxDesc = txDesc ?? fourBytesTxDesc;
   const userMethod = txDesc ? userDoc?.methods[txDesc.signature] : undefined;
   const devMethod = txDesc ? devDoc?.methods[txDesc.signature] : undefined;
 
-  const { provider } = useContext(RuntimeContext);
   const {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
@@ -94,28 +99,12 @@ const Details: React.FC<DetailsProps> = ({
     txData?.confirmedData?.blockNumber
   );
 
-  const addresses = useMemo(() => {
-    const _addresses: ChecksummedAddress[] = [];
-    if (txData.to) {
-      _addresses.push(txData.to);
-    }
-    if (txData.confirmedData?.createdContractAddress) {
-      _addresses.push(txData.confirmedData.createdContractAddress);
-    }
-    for (const t of txData.tokenTransfers) {
-      _addresses.push(t.from);
-      _addresses.push(t.to);
-      _addresses.push(t.token);
-    }
-    return _addresses;
-  }, [txData]);
-  const metadatas = useContractsMetadata(addresses, provider);
   const [errorMsg, outputData, isCustomError] = useTransactionError(
     provider,
     txData.transactionHash
   );
   const errorDescription = useError(
-    toMetadata,
+    metadata,
     isCustomError ? outputData : undefined
   );
   const userError = errorDescription
@@ -138,7 +127,7 @@ const Details: React.FC<DetailsProps> = ({
         {txData.confirmedData === undefined ? (
           <span className="italic text-gray-400">Pending</span>
         ) : txData.confirmedData.status ? (
-          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-green-50 text-green-500 text-xs">
+          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-emerald-50 text-emerald-500 text-xs">
             <FontAwesomeIcon
               className="self-center"
               icon={faCheckCircle}
@@ -235,22 +224,24 @@ const Details: React.FC<DetailsProps> = ({
                   confirmations={txData.confirmedData.confirmations}
                 />
               </div>
-              <div className="flex space-x-2 items-baseline pl-3">
-                <RelativePosition
-                  pos={txData.confirmedData.transactionIndex}
-                  total={txData.confirmedData.blockTransactionCount - 1}
-                />
-                <PercentagePosition
-                  perc={
-                    txData.confirmedData.transactionIndex /
-                    (txData.confirmedData.blockTransactionCount - 1)
-                  }
-                />
-              </div>
+              {block && (
+                <div className="flex space-x-2 items-baseline pl-3">
+                  <RelativePosition
+                    pos={txData.confirmedData.transactionIndex}
+                    total={block.transactionCount - 1}
+                  />
+                  <PercentagePosition
+                    perc={
+                      txData.confirmedData.transactionIndex /
+                      (block.transactionCount - 1)
+                    }
+                  />
+                </div>
+              )}
             </div>
           </InfoRow>
           <InfoRow title="Timestamp">
-            <Timestamp value={txData.confirmedData.timestamp} />
+            {block && <Timestamp value={block.timestamp} />}
           </InfoRow>
         </>
       )}
@@ -269,11 +260,7 @@ const Details: React.FC<DetailsProps> = ({
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
           <div className="flex items-baseline space-x-2 -ml-1">
-            <TransactionAddress
-              address={txData.to}
-              metadata={metadatas?.[txData.to]}
-              showCodeIndicator
-            />
+            <TransactionAddress address={txData.to} showCodeIndicator />
             <Copy value={txData.to} />
           </div>
         ) : txData.confirmedData === undefined ? (
@@ -284,9 +271,6 @@ const Details: React.FC<DetailsProps> = ({
           <div className="flex items-baseline space-x-2 -ml-1">
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
-              metadata={
-                metadatas?.[txData.confirmedData?.createdContractAddress!]
-              }
             />
             <Copy value={txData.confirmedData.createdContractAddress!} />
           </div>
@@ -298,7 +282,6 @@ const Details: React.FC<DetailsProps> = ({
                 key={i}
                 txData={txData}
                 internalOp={op}
-                ethUSDPrice={blockETHUSDPrice}
               />
             ))}
           </div>
@@ -309,28 +292,18 @@ const Details: React.FC<DetailsProps> = ({
           <MethodName data={txData.data} />
         </InfoRow>
       )}
-      {txData.tokenTransfers.length > 0 && (
-        <InfoRow title={`Tokens Transferred (${txData.tokenTransfers.length})`}>
-          {txData.tokenTransfers.map((t, i) => (
-            <TokenTransferItem
-              key={i}
-              t={t}
-              tokenMeta={txData.tokenMetas[t.token]}
-              metadatas={metadatas}
-            />
+      {tokenTransfers && tokenTransfers.length > 0 && (
+        <InfoRow title={`Tokens Transferred (${tokenTransfers.length})`}>
+          {tokenTransfers.map((t, i) => (
+            <TokenTransferItem key={i} t={t} />
           ))}
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <FormattedBalance value={txData.value} /> {symbol}{" "}
-        {!txData.value.isZero() && blockETHUSDPrice && (
-          <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-            <ETH2USDValue
-              ethAmount={txData.value}
-              eth2USDValue={blockETHUSDPrice}
-            />
-          </span>
-        )}
+        <TransactionDetailsValue
+          blockTag={txData.confirmedData?.blockNumber}
+          value={txData.value}
+        />
       </InfoRow>
       <InfoRow
         title={
@@ -369,7 +342,7 @@ const Details: React.FC<DetailsProps> = ({
               <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
             </span>
             {sendsEthToMiner && (
-              <span className="rounded text-yellow-500 bg-yellow-100 text-xs px-2 py-1">
+              <span className="rounded text-amber-500 bg-amber-100 text-xs px-2 py-1">
                 Flashbots
               </span>
             )}
@@ -397,18 +370,10 @@ const Details: React.FC<DetailsProps> = ({
           </div>
         </InfoRow>
       )}
-      {txData.confirmedData && hasEIP1559 && (
+      {block && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={9}
-          />{" "}
-          Gwei (
-          <FormattedBalance
-            value={txData.confirmedData.blockBaseFeePerGas!}
-            decimals={0}
-          />{" "}
-          wei)
+          <FormattedBalance value={block.baseFeePerGas!} decimals={9} /> Gwei (
+          <FormattedBalance value={block.baseFeePerGas!} decimals={0} /> wei)
         </InfoRow>
       )}
       {txData.confirmedData && (
@@ -416,15 +381,7 @@ const Details: React.FC<DetailsProps> = ({
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <FormattedBalance value={txData.confirmedData.fee} /> {symbol}{" "}
-                {blockETHUSDPrice && (
-                  <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-                    <ETH2USDValue
-                      ethAmount={txData.confirmedData.fee}
-                      eth2USDValue={blockETHUSDPrice}
-                    />
-                  </span>
-                )}
+                <TransactionFee confirmedData={txData.confirmedData} />
               </div>
               {hasEIP1559 && <RewardSplit txData={txData} />}
             </div>

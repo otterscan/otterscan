@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { BlockTag } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
-import TransactionValue from "../components/TransactionValue";
-import ETH2USDValue from "../components/ETH2USDValue";
+import AddressBalance from "./AddressBalance";
 import TransactionAddress from "../components/TransactionAddress";
 import Copy from "../components/Copy";
 import TransactionLink from "../components/TransactionLink";
@@ -14,11 +12,9 @@ import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { SelectionContext, useSelection } from "../useSelection";
-import { useMultipleETHUSDOracle } from "../usePriceOracle";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
-import { useContractsMetadata } from "../hooks";
 import { useAddressBalance, useContractCreator } from "../useErigonHooks";
 import { BlockNumberContext } from "../useBlockTagContext";
 
@@ -99,35 +95,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
 
   const page = useMemo(() => controller?.getPage(), [controller]);
 
-  // Extract block number from all txs on current page
-  // TODO: dedup blockTags
-  const blockTags: BlockTag[] = useMemo(() => {
-    if (!page) {
-      return ["latest"];
-    }
-
-    const blockTags: BlockTag[] = page.map((t) => t.blockNumber);
-    blockTags.push("latest");
-    return blockTags;
-  }, [page]);
-  const priceMap = useMultipleETHUSDOracle(provider, blockTags);
-
-  // Calculate Sourcify metadata for all addresses that appear on this page results
-  const addresses = useMemo(() => {
-    const _addresses = [address];
-    if (page) {
-      for (const t of page) {
-        if (t.to) {
-          _addresses.push(t.to);
-        }
-        if (t.createdContractAddress) {
-          _addresses.push(t.createdContractAddress);
-        }
-      }
-    }
-    return _addresses;
-  }, [address, page]);
-  const metadatas = useContractsMetadata(addresses, provider);
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
 
@@ -138,15 +105,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
           {balance && (
             <InfoRow title="Balance">
               <div className="space-x-2">
-                <TransactionValue value={balance} />
-                {!balance.isZero() && priceMap["latest"] !== undefined && (
-                  <span className="px-2 border-green-200 border rounded-lg bg-green-100 text-green-600">
-                    <ETH2USDValue
-                      ethAmount={balance}
-                      eth2USDValue={priceMap["latest"]}
-                    />
-                  </span>
-                )}
+                <AddressBalance balance={balance} />
               </div>
             </InfoRow>
           )}
@@ -180,8 +139,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
                 tx={tx}
                 selectedAddress={address}
                 feeDisplay={feeDisplay}
-                priceMap={priceMap}
-                metadatas={metadatas}
               />
             ))}
             <NavBar address={address} page={page} controller={controller} />

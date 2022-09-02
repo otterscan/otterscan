@@ -1,5 +1,6 @@
 import { BaseProvider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
+import { AddressZero } from "@ethersproject/constants";
 import { IAddressResolver } from "./address-resolver";
 import { ChecksummedAddress, TokenMeta } from "../../types";
 import { ERCTokenResolver } from "./ERCTokenResolver";
@@ -16,6 +17,16 @@ const UNISWAP_V3_PAIR_ABI = [
   "function token1() external view returns (address)",
   "function fee() external view returns (uint24)",
 ];
+
+const UNISWAP_V3_FACTORY_PROTOTYPE = new Contract(
+  UNISWAP_V3_FACTORY,
+  UNISWAP_V3_FACTORY_ABI
+);
+
+const UNISWAP_V3_PAIR_PROTOTYPE = new Contract(
+  AddressZero,
+  UNISWAP_V3_PAIR_ABI
+);
 
 export type UniswapV3TokenMeta = {
   address: ChecksummedAddress;
@@ -35,12 +46,9 @@ export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
     provider: BaseProvider,
     address: string
   ): Promise<UniswapV3PairMeta | undefined> {
-    const poolContract = new Contract(address, UNISWAP_V3_PAIR_ABI, provider);
-    const factoryContract = new Contract(
-      UNISWAP_V3_FACTORY,
-      UNISWAP_V3_FACTORY_ABI,
-      provider
-    );
+    const poolContract =
+      UNISWAP_V3_PAIR_PROTOTYPE.connect(provider).attach(address);
+    const factoryContract = UNISWAP_V3_FACTORY_PROTOTYPE.connect(provider);
 
     try {
       // First, probe the factory() function; if it responds with UniswapV2 factory

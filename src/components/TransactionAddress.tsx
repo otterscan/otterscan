@@ -4,21 +4,18 @@ import DecoratedAddressLink from "./DecoratedAddressLink";
 import { useSelectedTransaction } from "../useSelectedTransaction";
 import { useBlockNumberContext } from "../useBlockTagContext";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
-import { Metadata } from "../sourcify/useSourcify";
+import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
 import { AddressContext, ChecksummedAddress } from "../types";
 
 type TransactionAddressProps = {
   address: ChecksummedAddress;
   addressCtx?: AddressContext | undefined;
-  metadata?: Metadata | null | undefined;
   showCodeIndicator?: boolean;
 };
 
 const TransactionAddress: React.FC<TransactionAddressProps> = ({
   address,
   addressCtx,
-  metadata,
   showCodeIndicator = false,
 }) => {
   const txData = useSelectedTransaction();
@@ -26,6 +23,8 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
   const creation = address === txData?.confirmedData?.createdContractAddress;
 
   const { provider } = useContext(RuntimeContext);
+  const block = useBlockDataFromTransaction(provider, txData);
+
   const blockNumber = useBlockNumberContext();
   const toHasCode = useHasCode(
     provider,
@@ -42,11 +41,10 @@ const TransactionAddress: React.FC<TransactionAddressProps> = ({
       <DecoratedAddressLink
         address={address}
         addressCtx={addressCtx}
-        miner={address === txData?.confirmedData?.miner}
+        miner={address === block?.miner}
         txFrom={address === txData?.from}
         txTo={address === txData?.to || creation}
         creation={creation}
-        metadata={metadata}
         eoa={
           showCodeIndicator && blockNumber !== undefined
             ? !toHasCode

@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { BlockTag } from "@ethersproject/abstract-provider";
-import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
 import MethodName from "../components/MethodName";
@@ -14,28 +12,23 @@ import TransactionDirection, {
   Flags,
 } from "../components/TransactionDirection";
 import TransactionValue from "../components/TransactionValue";
-import { ChecksummedAddress, ProcessedTransaction } from "../types";
+import TransactionItemFiatFee from "./TransactionItemFiatFee";
+import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
+import { useHasCode, useSendsToMiner } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
-import ETH2USDValue from "../components/ETH2USDValue";
-import { Metadata } from "../sourcify/useSourcify";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
-  priceMap: Record<BlockTag, BigNumber>;
-  metadatas: Record<ChecksummedAddress, Metadata | null | undefined>;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
   selectedAddress,
   feeDisplay,
-  priceMap,
-  metadatas,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const toHasCode = useHasCode(
@@ -43,6 +36,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     tx.to ?? undefined,
     tx.blockNumber - 1
   );
+  const [sendsToMiner] = useSendsToMiner(provider, tx.hash, tx.miner);
 
   let direction: Direction | undefined;
   if (selectedAddress) {
@@ -60,14 +54,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  const flash = tx.gasPrice.isZero() && tx.internalMinerInteraction;
+  const flash = tx.gasPrice.isZero() && sendsToMiner;
 
   return (
     <div
       className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
-        flash
-          ? "bg-yellow-100 hover:bg-yellow-200"
-          : "hover:bg-skin-table-hover"
+        flash ? "bg-amber-100 hover:bg-amber-200" : "hover:bg-skin-table-hover"
       } px-2 py-3`}
     >
       <div className="col-span-2 flex space-x-1 items-baseline">
@@ -100,7 +92,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span>
           <TransactionDirection
             direction={direction}
-            flags={tx.internalMinerInteraction ? Flags.MINER : undefined}
+            flags={sendsToMiner ? Flags.MINER : undefined}
           />
         </span>
       </span>
@@ -115,7 +107,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 address={tx.to}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
-                metadata={metadatas[tx.to]}
                 eoa={toHasCode === undefined ? undefined : !toHasCode}
               />
             </AddressHighlighter>
@@ -125,7 +116,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
                 address={tx.createdContractAddress!}
                 selectedAddress={selectedAddress}
                 creation
-                metadata={metadatas[tx.createdContractAddress!]}
                 eoa={false}
               />
             </AddressHighlighter>
@@ -137,15 +127,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       </span>
       <span className="font-balance text-xs text-gray-500 truncate">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
-        {feeDisplay === FeeDisplay.TX_FEE_USD &&
-          (priceMap[tx.blockNumber] ? (
-            <ETH2USDValue
-              ethAmount={tx.fee}
-              eth2USDValue={priceMap[tx.blockNumber]}
-            />
-          ) : (
-            "N/A"
-          ))}
+        {feeDisplay === FeeDisplay.TX_FEE_USD && (
+          <TransactionItemFiatFee blockTag={tx.blockNumber} fee={tx.fee} />
+        )}
         {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(tx.gasPrice, 9)}
       </span>
     </div>
