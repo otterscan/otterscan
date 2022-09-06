@@ -41,7 +41,7 @@
     "swr": "^1.3.0",
     "typescript": "^4.8.2",
     "use-keyboard-shortcut": "^1.1.4",
-    "web-vitals": "^1.0.1"
+    "web-vitals": "^3.0.1"
   },
   "scripts": {
     "start": "vite",
