@@ -104,11 +104,15 @@ The Otterscan patches for Erigon are LGPL-3 as required by Geth (since Erigon is
 
 ### Erigon Discord server
 
-Otterscan has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server).
+Our Discord server: https://discord.gg/5xM2q2eqDz
+
+Otterscan also has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server) (invite should be requested).
 
 ### Twitter
 
-Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmitsuda)).
+Official Twitter account: ([@otterscan](https://twitter.com/otterscan)).
+
+Follow the creator on Twitter for more updates ([@wmitsuda](https://twitter.com/wmitsuda)).
 
 ### Donation address
 
