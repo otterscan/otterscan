@@ -28,7 +28,12 @@ func main() {
 			defer borDb.Close()
 		}
 		r := chi.NewRouter()
-		RouteServer(r, *cfg)
+		// route the server
+
+		if !cfg.OtsServerDisable {
+			RouteServer(r, *cfg)
+		}
+
 		apiList := mycmds.APIList(db, borDb, backend, txPool, mining, ff, stateCache, blockReader, agg, *cfg)
 		if err := cli.StartRpcServer(ctx, r, *cfg, apiList); err != nil {
 			log.Error(err.Error())

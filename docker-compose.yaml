@@ -16,4 +16,4 @@ services:
       --metrics --metrics.addr=0.0.0.0 --metrics.port=6064
       --pprof --pprof.addr=0.0.0.0 --pprof.port=6000
     ports:
-     - 3000:8545
+     - 3001:8545

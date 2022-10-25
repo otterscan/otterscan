@@ -5,7 +5,7 @@ go 1.19
 replace github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.12
 
 require (
-	gfx.cafe/open/4bytes v0.0.0-20221025085909-a307043c1e5e
+	gfx.cafe/open/4bytes v0.0.0-20221025122240-de8bf0bf48d0
 	github.com/RoaringBitmap/roaring v1.2.1
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d

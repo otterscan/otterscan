@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"gfx.cafe/open/4bytes/sigs"
+	"gfx.cafe/open/4bytes/topics"
+	"gfx.cafe/open/4bytes/triemap"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/wmitsuda/otterscan/cmd/otter/cli/httpcfg"
@@ -16,7 +18,8 @@ func RouteServer(r chi.Router, cfg httpcfg.HttpCfg) {
 		filesDir := http.Dir(cfg.OtsStaticDir)
 		r.Use(middleware.Logger)
 		r.Use(middleware.Recoverer)
-		r.Handle("/signatures/{hash}", &sigs.HttpServer{})
+		r.HandleFunc("/signatures/{hash}", triemap.HttpHandler(sigs.Both))
+		r.HandleFunc("/topic0/{hash}", triemap.HttpHandler(topics.Both))
 		r.HandleFunc("/config.json", func(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]any{
 				"erigonURL":       cfg.OtsRpcDaemonUrl,

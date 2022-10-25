@@ -8,6 +8,12 @@ crawshaw.io/sqlite v0.3.3-0.20210127221821-98b1f83c5508/go.mod h1:igAO5JulrQ1Dbd
 filippo.io/edwards25519 v1.0.0-rc.1 h1:m0VOOB23frXZvAOK44usCgLWvtsxIoMCTBGJZlpmGfU=
 gfx.cafe/open/4bytes v0.0.0-20221025085909-a307043c1e5e h1:Fl+QPNlTOVAxKqSEdut5fH+/To4TPE8kg8weQ3LGzUY=
 gfx.cafe/open/4bytes v0.0.0-20221025085909-a307043c1e5e/go.mod h1:C0vwSYhh1b/ckPTkpq0kDXk32vU4DT5QuQwYLxO6W2c=
+gfx.cafe/open/4bytes v0.0.0-20221025114135-d7c548af19db h1:M34YDF/XRgqMSV9YAamH8u599fd67SJ95v6PQxP/96o=
+gfx.cafe/open/4bytes v0.0.0-20221025114135-d7c548af19db/go.mod h1:C0vwSYhh1b/ckPTkpq0kDXk32vU4DT5QuQwYLxO6W2c=
+gfx.cafe/open/4bytes v0.0.0-20221025121800-1d49c2434a12 h1:DpJNnzuMmIyIB1NTNJKybdYkR4gjIV7q/WzNQMS5/J0=
+gfx.cafe/open/4bytes v0.0.0-20221025121800-1d49c2434a12/go.mod h1:C0vwSYhh1b/ckPTkpq0kDXk32vU4DT5QuQwYLxO6W2c=
+gfx.cafe/open/4bytes v0.0.0-20221025122240-de8bf0bf48d0 h1:LOv6iGWTv80aSGw9zb7P8varDijsj/G2s7pr32VH1d0=
+gfx.cafe/open/4bytes v0.0.0-20221025122240-de8bf0bf48d0/go.mod h1:C0vwSYhh1b/ckPTkpq0kDXk32vU4DT5QuQwYLxO6W2c=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
