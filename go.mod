@@ -5,6 +5,7 @@ go 1.19
 replace github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.12
 
 require (
+	gfx.cafe/open/4bytes v0.0.0-20221025085909-a307043c1e5e
 	github.com/RoaringBitmap/roaring v1.2.1
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
@@ -20,7 +21,6 @@ require (
 
 require (
 	crawshaw.io/sqlite v0.3.3-0.20210127221821-98b1f83c5508 // indirect
-	gfx.cafe/open/4bytes v0.0.0-20221025060640-c4301cc087ee // indirect
 	github.com/VictoriaMetrics/fastcache v1.12.0 // indirect
 	github.com/VictoriaMetrics/metrics v1.22.2 // indirect
 	github.com/ajwerner/btree v0.0.0-20211221152037-f427b3e689c0 // indirect

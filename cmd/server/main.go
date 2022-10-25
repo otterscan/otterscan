@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 	"time"
 
@@ -34,20 +33,7 @@ func main() {
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
 
-	r.HandleFunc("/signatures/{hash}", func(w http.ResponseWriter, r *http.Request) {
-		lookup := path.Base(r.URL.Path)
-		if len(lookup) > 8 {
-			http.Error(w, "bad path", 400)
-			return
-		}
-		sig := sigs.Hex(lookup)
-		if sig == "" {
-			http.Error(w, "not found", 404)
-			return
-		}
-		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(sig))
-	})
+	r.Handle("/signatures/{hash}", &sigs.HttpServer{})
 
 	FileServer(r, "/", filesDir)
 
