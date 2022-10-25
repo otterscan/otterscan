@@ -2,11 +2,11 @@ version: '3.9'
 
 
 services:
-  rpcdaemon:
+  otterscan:
     build:
       context: .
     command: |
-      rpcdaemon
+      otter
       --http.addr=0.0.0.0 --http.vhosts=* --http.corsdomain=* --ws
       --http.api=eth,erigon,web3,net,trace,debug,txpool,ots
       --metrics --metrics.addr=0.0.0.0 --metrics.port=6064
@@ -14,11 +14,4 @@ services:
       --private.api.addr=172.105.22.234:9191
       ##--datadir=/erigon
     ports:
-     - 8545:8545
-  server:
-    build:
-      context: .
-    command: |
-      server
-    ports:
-      - 3001:3001
+     - 3000:8545

@@ -10,7 +10,7 @@ import (
 	"github.com/ledgerwatch/erigon/turbo/rpchelper"
 	"github.com/ledgerwatch/erigon/turbo/services"
 
-	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/cli/httpcfg"
+	"github.com/wmitsuda/otterscan/cmd/otter/cli/httpcfg"
 
 	erigonHttpcfg "github.com/ledgerwatch/erigon/cmd/rpcdaemon/cli/httpcfg"
 )
@@ -127,30 +127,6 @@ func APIList(db kv.RoDB, borDb kv.RoDB, eth rpchelper.ApiBackend, txPool txpool.
 			})
 		}
 	}
-
-	return list
-}
-
-func AuthAPIList(db kv.RoDB, eth rpchelper.ApiBackend, txPool txpool.TxpoolClient, mining txpool.MiningClient,
-	filters *rpchelper.Filters, stateCache kvcache.Cache, blockReader services.FullBlockReader,
-	agg *libstate.Aggregator22,
-	cfg httpcfg.HttpCfg) (list []rpc.API) {
-	base := commands.NewBaseApi(filters, stateCache, blockReader, agg, cfg.WithDatadir, cfg.EvmCallTimeout)
-
-	ethImpl := commands.NewEthAPI(base, db, eth, txPool, mining, cfg.Gascap)
-	engineImpl := commands.NewEngineAPI(base, db, eth)
-
-	list = append(list, rpc.API{
-		Namespace: "eth",
-		Public:    true,
-		Service:   commands.EthAPI(ethImpl),
-		Version:   "1.0",
-	}, rpc.API{
-		Namespace: "engine",
-		Public:    true,
-		Service:   commands.EngineAPI(engineImpl),
-		Version:   "1.0",
-	})
 
 	return list
 }

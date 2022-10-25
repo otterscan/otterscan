@@ -2,17 +2,15 @@ package cli
 
 import (
 	"context"
-	"crypto/rand"
 	"encoding/binary"
-	"errors"
 	"fmt"
 	"net"
 	"net/http"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/ledgerwatch/erigon-lib/common/dir"
 	libstate "github.com/ledgerwatch/erigon-lib/state"
 	"github.com/ledgerwatch/erigon/eth/ethconfig"
@@ -20,9 +18,9 @@ import (
 
 	"github.com/ledgerwatch/erigon/turbo/debug"
 	"github.com/ledgerwatch/erigon/turbo/logging"
-	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/cli/httpcfg"
-	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/health"
-	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/rpcservices"
+	"github.com/wmitsuda/otterscan/cmd/otter/cli/httpcfg"
+	"github.com/wmitsuda/otterscan/cmd/otter/health"
+	"github.com/wmitsuda/otterscan/cmd/otter/rpcservices"
 
 	"github.com/ledgerwatch/erigon-lib/direct"
 	"github.com/ledgerwatch/erigon-lib/gointerfaces"
@@ -35,8 +33,6 @@ import (
 	"github.com/ledgerwatch/erigon-lib/kv/remotedb"
 	"github.com/ledgerwatch/erigon-lib/kv/remotedbserver"
 	"github.com/ledgerwatch/erigon/cmd/utils"
-	"github.com/ledgerwatch/erigon/common"
-	"github.com/ledgerwatch/erigon/common/hexutil"
 	"github.com/ledgerwatch/erigon/common/paths"
 	"github.com/ledgerwatch/erigon/core/rawdb"
 	"github.com/ledgerwatch/erigon/node"
@@ -57,14 +53,17 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "rpcdaemon",
-	Short: "rpcdaemon is JSON RPC server that connects to Erigon node for remote DB access",
+	Use:   "otter",
+	Short: "otterscan is a chain explorer that can also host a custom JSON RPC server that connects to an Erigon node",
 }
 
 func RootCommand() (*cobra.Command, *httpcfg.HttpCfg) {
 	utils.CobraFlags(rootCmd, debug.Flags, utils.MetricFlags, logging.Flags)
 
-	cfg := &httpcfg.HttpCfg{Enabled: true, StateCache: kvcache.DefaultCoherentConfig}
+	cfg := &httpcfg.HttpCfg{}
+	cfg.Enabled = true
+	cfg.StateCache = kvcache.DefaultCoherentConfig
+
 	rootCmd.PersistentFlags().StringVar(&cfg.PrivateApiAddr, "private.api.addr", "127.0.0.1:9090", "private api network address, for example: 127.0.0.1:9090")
 	rootCmd.PersistentFlags().StringVar(&cfg.DataDir, "datadir", "", "path to Erigon working directory")
 	rootCmd.PersistentFlags().StringVar(&cfg.HttpListenAddress, "http.addr", nodecfg.DefaultHTTPHost, "HTTP-RPC server listening interface")
@@ -104,6 +103,16 @@ func RootCommand() (*cobra.Command, *httpcfg.HttpCfg) {
 	if err := rootCmd.MarkPersistentFlagDirname("datadir"); err != nil {
 		panic(err)
 	}
+
+	// otterscan server setting
+
+	rootCmd.PersistentFlags().BoolVar(&cfg.OtsServerDisable, "ots.server.addr", false, "disable ots server to run rpc daemon only")
+	rootCmd.PersistentFlags().StringVar(&cfg.OtsStaticDir, "ots.static.dir", "./dist", "dir to serve static files from")
+	rootCmd.PersistentFlags().BoolVar(&cfg.DisableRpcDaemon, "disable.rpc.daemon", false, "dont run rpc daemon, for use when specifying external rtpc daemon")
+
+	rootCmd.PersistentFlags().StringVar(&cfg.OtsBeaconApiUrl, "ots.beaconapi.url", "http://localhost:3500", "where the website will make request for beacon api")
+	rootCmd.PersistentFlags().StringVar(&cfg.OtsRpcDaemonUrl, "ots.rpcdaemon.url", "/rpc", "where the website will make request for beacon api")
+	rootCmd.PersistentFlags().StringVar(&cfg.OtsExternalAssetUrl, "ots.externalasset.url", "/", "where website will make request for assets")
 
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if err := debug.SetupCobra(cmd); err != nil {
@@ -442,23 +451,14 @@ func RemoteServices(ctx context.Context, cfg httpcfg.HttpCfg, logger log.Logger,
 	return db, borDb, eth, txPool, mining, stateCache, blockReader, ff, agg, err
 }
 
-func StartRpcServer(ctx context.Context, cfg httpcfg.HttpCfg, rpcAPI []rpc.API, authAPI []rpc.API) error {
-	if len(authAPI) > 0 {
-		engineInfo, err := startAuthenticatedRpcServer(cfg, authAPI)
-		if err != nil {
-			return err
-		}
-		go stopAuthenticatedRpcServer(ctx, engineInfo)
-	}
-
+func StartRpcServer(ctx context.Context, r chi.Router, cfg httpcfg.HttpCfg, rpcAPI []rpc.API) error {
 	if cfg.Enabled {
-		return startRegularRpcServer(ctx, cfg, rpcAPI)
+		return startServer(ctx, r, cfg, rpcAPI)
 	}
-
 	return nil
 }
 
-func startRegularRpcServer(ctx context.Context, cfg httpcfg.HttpCfg, rpcAPI []rpc.API) error {
+func startServer(ctx context.Context, r chi.Router, cfg httpcfg.HttpCfg, rpcAPI []rpc.API) error {
 	// register apis and create handler stack
 	httpEndpoint := fmt.Sprintf("%s:%d", cfg.HttpListenAddress, cfg.HttpPort)
 
@@ -500,126 +500,60 @@ func startRegularRpcServer(ctx context.Context, cfg httpcfg.HttpCfg, rpcAPI []rp
 	if err != nil {
 		return err
 	}
-
-	listener, _, err := node.StartHTTPEndpoint(httpEndpoint, cfg.HTTPTimeouts, apiHandler)
+	r.Mount("/rpc", apiHandler)
+	listener, _, err := node.StartHTTPEndpoint(httpEndpoint, cfg.HTTPTimeouts, r)
 	if err != nil {
 		return fmt.Errorf("could not start RPC api: %w", err)
 	}
-	info := []interface{}{"url", httpEndpoint, "ws", cfg.WebsocketEnabled,
+	info := &[]interface{}{"url", httpEndpoint, "ws", cfg.WebsocketEnabled,
 		"ws.compression", cfg.WebsocketCompression, "grpc", cfg.GRPCServerEnabled}
-
-	var (
-		healthServer *grpcHealth.Server
-		grpcServer   *grpc.Server
-		grpcListener net.Listener
-		grpcEndpoint string
-	)
 	if cfg.GRPCServerEnabled {
-		grpcEndpoint = fmt.Sprintf("%s:%d", cfg.GRPCListenAddress, cfg.GRPCPort)
-		if grpcListener, err = net.Listen("tcp", grpcEndpoint); err != nil {
-			return fmt.Errorf("could not start GRPC listener: %w", err)
+		startGrpcServer(ctx, info, cfg)
+		if err != nil {
+			return fmt.Errorf("could not start GRPC api: %w", err)
 		}
-		grpcServer = grpc.NewServer()
-		if cfg.GRPCHealthCheckEnabled {
-			healthServer = grpcHealth.NewServer()
-			grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
-		}
-		go grpcServer.Serve(grpcListener)
-		info = append(info, "grpc.port", cfg.GRPCPort)
 	}
-
-	log.Info("HTTP endpoint opened", info...)
-
+	log.Info("HTTP endpoint opened", *info...)
 	defer func() {
 		srv.Stop()
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		_ = listener.Shutdown(shutdownCtx)
 		log.Info("HTTP endpoint closed", "url", httpEndpoint)
-
-		if cfg.GRPCServerEnabled {
-			if cfg.GRPCHealthCheckEnabled {
-				healthServer.Shutdown()
-			}
-			grpcServer.GracefulStop()
-			_ = grpcListener.Close()
-			log.Info("GRPC endpoint closed", "url", grpcEndpoint)
-		}
 	}()
 	<-ctx.Done()
 	log.Info("Exiting...")
 	return nil
 }
 
-type engineInfo struct {
-	Srv                *rpc.Server
-	EngineSrv          *rpc.Server
-	EngineListener     *http.Server
-	EngineHttpEndpoint string
-}
-
-func startAuthenticatedRpcServer(cfg httpcfg.HttpCfg, rpcAPI []rpc.API) (*engineInfo, error) {
-	log.Trace("TraceRequests = %t\n", cfg.TraceRequests)
-	srv := rpc.NewServer(cfg.RpcBatchConcurrency, cfg.TraceRequests, cfg.RpcStreamingDisable)
-
-	engineListener, engineSrv, engineHttpEndpoint, err := createEngineListener(cfg, rpcAPI)
-	if err != nil {
-		return nil, fmt.Errorf("could not start RPC api for engine: %w", err)
+func startGrpcServer(ctx context.Context, info *[]any, cfg httpcfg.HttpCfg) (err error) {
+	var (
+		healthServer *grpcHealth.Server
+		grpcServer   *grpc.Server
+		grpcListener net.Listener
+		grpcEndpoint string
+	)
+	grpcEndpoint = fmt.Sprintf("%s:%d", cfg.GRPCListenAddress, cfg.GRPCPort)
+	if grpcListener, err = net.Listen("tcp", grpcEndpoint); err != nil {
+		return fmt.Errorf("could not start GRPC listener: %w", err)
 	}
-	return &engineInfo{Srv: srv, EngineSrv: engineSrv, EngineListener: engineListener, EngineHttpEndpoint: engineHttpEndpoint}, nil
-}
+	grpcServer = grpc.NewServer()
+	if cfg.GRPCHealthCheckEnabled {
+		healthServer = grpcHealth.NewServer()
+		grpc_health_v1.RegisterHealthServer(grpcServer, healthServer)
+	}
+	go grpcServer.Serve(grpcListener)
+	*info = append(*info, "grpc.port", cfg.GRPCPort)
 
-func stopAuthenticatedRpcServer(ctx context.Context, engineInfo *engineInfo) {
 	defer func() {
-		engineInfo.Srv.Stop()
-		if engineInfo.EngineSrv != nil {
-			engineInfo.EngineSrv.Stop()
+		if cfg.GRPCHealthCheckEnabled {
+			healthServer.Shutdown()
 		}
-		shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
-
-		if engineInfo.EngineListener != nil {
-			_ = engineInfo.EngineListener.Shutdown(shutdownCtx)
-			log.Info("Engine HTTP endpoint close", "url", engineInfo.EngineHttpEndpoint)
-		}
+		grpcServer.GracefulStop()
+		_ = grpcListener.Close()
+		log.Info("GRPC endpoint closed", "url", grpcEndpoint)
 	}()
-	<-ctx.Done()
-	log.Info("Exiting Engine...")
-}
-
-// isWebsocket checks the header of a http request for a websocket upgrade request.
-func isWebsocket(r *http.Request) bool {
-	return strings.EqualFold(r.Header.Get("Upgrade"), "websocket") &&
-		strings.Contains(strings.ToLower(r.Header.Get("Connection")), "upgrade")
-}
-
-// obtainJWTSecret loads the jwt-secret, either from the provided config,
-// or from the default location. If neither of those are present, it generates
-// a new secret and stores to the default location.
-func obtainJWTSecret(cfg httpcfg.HttpCfg) ([]byte, error) {
-	// try reading from file
-	log.Info("Reading JWT secret", "path", cfg.JWTSecretPath)
-	// If we run the rpcdaemon and datadir is not specified we just use jwt.hex in current directory.
-	if len(cfg.JWTSecretPath) == 0 {
-		cfg.JWTSecretPath = "jwt.hex"
-	}
-	if data, err := os.ReadFile(cfg.JWTSecretPath); err == nil {
-		jwtSecret := common.FromHex(strings.TrimSpace(string(data)))
-		if len(jwtSecret) == 32 {
-			return jwtSecret, nil
-		}
-		log.Error("Invalid JWT secret", "path", cfg.JWTSecretPath, "length", len(jwtSecret))
-		return nil, errors.New("invalid JWT secret")
-	}
-	// Need to generate one
-	jwtSecret := make([]byte, 32)
-	rand.Read(jwtSecret)
-
-	if err := os.WriteFile(cfg.JWTSecretPath, []byte(hexutil.Encode(jwtSecret)), 0600); err != nil {
-		return nil, err
-	}
-	log.Info("Generated JWT secret", "path", cfg.JWTSecretPath)
-	return jwtSecret, nil
+	return nil
 }
 
 func createHandler(cfg httpcfg.HttpCfg, apiList []rpc.API, httpHandler http.Handler, wsHandler http.Handler, jwtSecret []byte) (http.Handler, error) {
@@ -643,36 +577,8 @@ func createHandler(cfg httpcfg.HttpCfg, apiList []rpc.API, httpHandler http.Hand
 	return handler, nil
 }
 
-func createEngineListener(cfg httpcfg.HttpCfg, engineApi []rpc.API) (*http.Server, *rpc.Server, string, error) {
-	engineHttpEndpoint := fmt.Sprintf("%s:%d", cfg.AuthRpcHTTPListenAddress, cfg.AuthRpcPort)
-
-	engineSrv := rpc.NewServer(cfg.RpcBatchConcurrency, cfg.TraceRequests, true)
-
-	if err := node.RegisterApisFromWhitelist(engineApi, nil, engineSrv, true); err != nil {
-		return nil, nil, "", fmt.Errorf("could not start register RPC engine api: %w", err)
-	}
-
-	jwtSecret, err := obtainJWTSecret(cfg)
-	if err != nil {
-		return nil, nil, "", err
-	}
-
-	wsHandler := engineSrv.WebsocketHandler([]string{"*"}, jwtSecret, cfg.WebsocketCompression)
-
-	engineHttpHandler := node.NewHTTPHandlerStack(engineSrv, nil /* authCors */, cfg.AuthRpcVirtualHost, cfg.HttpCompression)
-
-	engineApiHandler, err := createHandler(cfg, engineApi, engineHttpHandler, wsHandler, jwtSecret)
-	if err != nil {
-		return nil, nil, "", err
-	}
-
-	engineListener, _, err := node.StartHTTPEndpoint(engineHttpEndpoint, cfg.AuthRpcTimeouts, engineApiHandler)
-	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not start RPC api: %w", err)
-	}
-
-	engineInfo := []interface{}{"url", engineHttpEndpoint, "ws", true, "ws.compression", cfg.WebsocketCompression}
-	log.Info("HTTP endpoint opened for Engine API", engineInfo...)
-
-	return engineListener, engineSrv, engineHttpEndpoint, nil
+// isWebsocket checks the header of a http request for a websocket upgrade request.
+func isWebsocket(r *http.Request) bool {
+	return strings.EqualFold(r.Header.Get("Upgrade"), "websocket") &&
+		strings.Contains(strings.ToLower(r.Header.Get("Connection")), "upgrade")
 }

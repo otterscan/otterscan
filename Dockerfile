@@ -28,14 +28,12 @@ RUN apk add alpine-sdk
 WORKDIR /wd
 COPY ["go.mod","go.sum","/wd/"]
 COPY cmd cmd
-RUN go build -o rpcdaemon ./cmd/rpcdaemon
-RUN go build -o server ./cmd/server
+RUN go build -o otter ./cmd/otter
 
 FROM alpine:3.15.0
 RUN apk add alpine-sdk
 WORKDIR /wd
-COPY --from=gobuilder /wd/rpcdaemon /usr/bin/rpcdaemon
-COPY --from=gobuilder /wd/server /usr/bin/server
+COPY --from=gobuilder /wd/otter /usr/bin/otter
 COPY --from=builder /otterscan-build/dist /wd/dist
 COPY --from=logobuilder /assets /wd/dist
 
