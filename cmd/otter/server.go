@@ -21,7 +21,7 @@ func RouteServer(r chi.Router, cfg httpcfg.HttpCfg) {
 			json.NewEncoder(w).Encode(map[string]any{
 				"erigonURL":       cfg.OtsRpcDaemonUrl,
 				"beaconAPI":       cfg.OtsBeaconApiUrl,
-				"assetsURLPrefix": cfg.OtsBeaconApiUrl,
+				"assetsURLPrefix": cfg.OtsExternalAssetUrl,
 			})
 		})
 		FileServer(r, "/", filesDir)
