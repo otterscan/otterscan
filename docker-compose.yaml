@@ -6,12 +6,14 @@ services:
     build:
       context: .
     command: |
-      otter
-      --http.addr=0.0.0.0 --http.vhosts=* --http.corsdomain=* --ws
+      otter --http.addr=0.0.0.0 --http.vhosts=* --http.corsdomain=* --ws
       --http.api=eth,erigon,web3,net,trace,debug,txpool,ots
+      --ots.beaconapi.url="http://localhost:3500"
+      --ots.externalasset.url=""
+      --private.api.addr=erigon:9090
+      --txpool.api.addr=txpool:9094
+      --datadir=/home/erigon/.local/share/erigon
       --metrics --metrics.addr=0.0.0.0 --metrics.port=6064
       --pprof --pprof.addr=0.0.0.0 --pprof.port=6000
-      --private.api.addr=172.105.22.234:9191
-      ##--datadir=/erigon
     ports:
      - 3000:8545
