@@ -26,7 +26,6 @@ yarn-error.log*
 /.vscode
 .gitsigners
 
-4bytes/
 chains/
 topic0/
 

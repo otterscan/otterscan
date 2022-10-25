@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 
+	"gfx.cafe/open/4bytes/sigs"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -31,6 +33,21 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.SetHeader("Access-Control-Allow-Origin", "*"))
+
+	r.HandleFunc("/signatures/{hash}", func(w http.ResponseWriter, r *http.Request) {
+		lookup := path.Base(r.URL.Path)
+		if len(lookup) > 8 {
+			http.Error(w, "bad path", 400)
+			return
+		}
+		sig := sigs.Hex(lookup)
+		if sig == "" {
+			http.Error(w, "not found", 404)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(sig))
+	})
 
 	FileServer(r, "/", filesDir)
 

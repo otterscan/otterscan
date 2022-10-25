@@ -21,9 +21,11 @@ import (
 	"github.com/ledgerwatch/erigon/rpc"
 	"github.com/ledgerwatch/erigon/turbo/rpchelper"
 	"github.com/ledgerwatch/erigon/turbo/transactions"
+	"github.com/ledgerwatch/erigon/turbo/adapter/ethapi"
+
+
 	"github.com/ledgerwatch/log/v3"
 
-	"github.com/wmitsuda/otterscan/erigon_internal/ethapi"
 )
 
 // API_LEVEL Must be incremented every time new additions are made
@@ -370,7 +372,7 @@ func (api *OtterscanAPIImpl) delegateGetBlockByNumber(tx kv.Tx, b *types.Block, 
 	if err != nil {
 		return nil, err
 	}
-	response, err := ethapi.RPCMarshalBlock(b, inclTx, inclTx)
+	response, err := ethapi.RPCMarshalBlockDeprecated(b, inclTx, inclTx)
 	if !inclTx {
 		delete(response, "transactions") // workaround for https://github.com/ledgerwatch/erigon/issues/4989#issuecomment-1218415666
 	}

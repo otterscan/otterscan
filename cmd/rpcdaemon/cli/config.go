@@ -18,11 +18,11 @@ import (
 	"github.com/ledgerwatch/erigon/eth/ethconfig"
 	"github.com/ledgerwatch/erigon/rpc/rpccfg"
 
+	"github.com/ledgerwatch/erigon/turbo/debug"
+	"github.com/ledgerwatch/erigon/turbo/logging"
 	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/cli/httpcfg"
 	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/health"
 	"github.com/wmitsuda/otterscan/cmd/rpcdaemon/rpcservices"
-	"github.com/wmitsuda/otterscan/erigon_internal/debug"
-	"github.com/wmitsuda/otterscan/erigon_internal/logging"
 
 	"github.com/ledgerwatch/erigon-lib/direct"
 	"github.com/ledgerwatch/erigon-lib/gointerfaces"
