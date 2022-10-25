@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile-upstream:master-labs
 FROM node:16.16.0-alpine3.15 AS builder
-
 RUN apk add git subversion rsync
 WORKDIR /otterscan-build
 COPY ["package.json", "package-lock.json", "/otterscan-build/"]
@@ -20,15 +19,13 @@ RUN mv /trustwallet/blockchains/polygon/assets /assets/137/
 RUN mv /trustwallet/blockchains/smartchain/assets /assets/56/
 RUN find . -name logo.png | parallel magick convert {} -filter Lanczos -resize 32x32 {}; exit 0
 
-# Add brotli module to official nginx image
-# Based on: https://github.com/nginxinc/docker-nginx/tree/master/modules
 FROM golang:1.19-alpine as gobuilder
 RUN apk add alpine-sdk
-
 WORKDIR /wd
 COPY ["go.mod","go.sum","/wd/"]
 COPY cmd cmd
 RUN go build -o otter ./cmd/otter
+
 
 FROM alpine:3.15.0
 RUN apk add alpine-sdk
