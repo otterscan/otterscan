@@ -112,7 +112,7 @@ func RootCommand() (*cobra.Command, *httpcfg.HttpCfg) {
 
 	rootCmd.PersistentFlags().StringVar(&cfg.OtsBeaconApiUrl, "ots.beaconapi.url", "http://localhost:3500", "where the website will make request for beacon api")
 	rootCmd.PersistentFlags().StringVar(&cfg.OtsRpcDaemonUrl, "ots.rpcdaemon.url", "/rpc", "where the website will make request for beacon api")
-	rootCmd.PersistentFlags().StringVar(&cfg.OtsExternalAssetUrl, "ots.externalasset.url", "/", "where website will make request for assets")
+	rootCmd.PersistentFlags().StringVar(&cfg.OtsExternalAssetUrl, "ots.externalasset.url", "", "where website will make request for assets")
 
 	rootCmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		if err := debug.SetupCobra(cmd); err != nil {
