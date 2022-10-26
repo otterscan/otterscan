@@ -48,6 +48,7 @@
     "update-chains": "svn checkout https://github.com/ethereum-lists/chains/trunk/_data/chains lib/resources/chains",
     "update-tokens": "DOCKER_BUILDKIT=1 docker build -f tokens.Dockerfile -t local/otterscan-tokens . && docker run local/otterscan-tokens cat /tokens.zip > lib/resources/tokens.zip",
     "update-all":"npm run update-chains && npm run update-tokens",
+    "fullbuild": "npm run update-all && npm run build",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "source-map-explorer": "source-map-explorer build/static/js/*.js",
