@@ -5,7 +5,7 @@ go 1.19
 replace github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.12
 
 require (
-	gfx.cafe/open/4bytes v0.0.0-20221025122240-de8bf0bf48d0
+	gfx.cafe/open/4bytes v0.0.0-20221026030913-1f42cb43f802
 	github.com/RoaringBitmap/roaring v1.2.1
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d
@@ -13,6 +13,7 @@ require (
 	github.com/ledgerwatch/erigon v1.9.7-0.20221025025825-26fdf9169d27
 	github.com/ledgerwatch/erigon-lib v0.0.0-20221024025924-48ff56eead80
 	github.com/ledgerwatch/log/v3 v3.6.0
+	github.com/spf13/afero v1.9.2
 	github.com/spf13/cobra v1.5.0
 	golang.org/x/sync v0.1.0
 	google.golang.org/grpc v1.50.1

@@ -9,16 +9,17 @@ export const fourBytesURL = (
 export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
   `${assetsURLPrefix}/topic0/${topic0}`;
 
-export const tokenLogoURL = (
-  assetsURLPrefix: string,
-  chainId: number,
-  address: string
-): string => `${assetsURLPrefix}/assets/${chainId}/${address}/logo.png`;
-
 export const chainInfoURL = (
   assetsURLPrefix: string,
   chainId: number
 ): string => `${assetsURLPrefix}/chains/eip155-${chainId}.json`;
+
+export const tokenLogoURL = (
+  assetsURLPrefix: string,
+  chainId: number,
+  address: string
+): string => `${assetsURLPrefix}/tokens/${chainId}/${address}/logo.png`;
+
 
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 

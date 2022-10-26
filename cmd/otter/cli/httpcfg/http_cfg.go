@@ -11,8 +11,9 @@ type HttpCfg struct {
 
 	OtsServerDisable bool
 
-	OtsStaticDir        string
-	OtsExternalAssetUrl string
-	OtsRpcDaemonUrl     string
-	OtsBeaconApiUrl     string
+	OtsApiPath      string
+	OtsStaticDir    string
+	OtsAssetUrl     string
+	OtsRpcDaemonUrl string
+	OtsBeaconApiUrl string
 }
