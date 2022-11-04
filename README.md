@@ -98,7 +98,7 @@ Also there is room for many improvements that are not possible in the current ce
 
 This software itself is MIT licensed and redistributes MIT-compatible dependencies.
 
-The Otterscan patches for Erigon are LGPL-3 as required by Geth (since Erigon is a Geth derivative) and kept in a separate repository.
+The Otterscan API is implemented inside Erigon and follow its own license (LPGL-3).
 
 ## Getting in touch
 
