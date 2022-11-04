@@ -2,21 +2,7 @@
 
 This software is currently distributed as a docker image.
 
-It depends heavily on a working Erigon installation with Otterscan patches applied, so let's begin with it first.
-
-## Install Erigon
-
-You will need an Erigon executing node (`erigon`) with Otterscan patches. Since setting up an Erigon environment itself can take some work, make sure to follow their instructions and have a working archive node before continuing.
-
-My personal experience: at the moment of this writing (~block 15,000,000), setting up an archive node takes over 3-7 days (depending on your hardware) and ~1.6 TB of SSD.
-
-They have weekly alpha releases, make sure you are running one of them, not development ones.
-
-## Install Otterscan-patched erigon
-
-We rely on custom JSON-RPC APIs which are not available in a standard ETH node. We keep a separated repository containing an Erigon fork here: https://github.com/wmitsuda/erigon.
-
-Please follow the instructions in the repository `README` and replace the original Erigon `erigon` with our patched one.
+The only requirement is to have a working Erigon node >= v2.29.0. Make sure it is fully synced before continuing.
 
 ## Enable Otterscan namespace on erigon
 
