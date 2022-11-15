@@ -1,48 +1,36 @@
 package main
 
 import (
-	"os"
+	"fmt"
+	"log"
+	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/ledgerwatch/erigon-lib/common"
-	"github.com/ledgerwatch/log/v3"
-	"github.com/spf13/cobra"
-
-	"github.com/wmitsuda/otterscan/cmd/otter/cli"
-	mycmds "github.com/wmitsuda/otterscan/cmd/otter/commands"
+	"github.com/jessevdk/go-flags"
 )
 
+type config struct {
+	OtsPort         int    `short:"p" long:"port" default:"3333"`
+	OtsApiPath      string `long:"api_path" default:"/"`
+	OtsStaticDir    string `long:"static_dir" default:"dist"`
+	OtsAssetUrl     string `long:"assert_url" default:""`
+	OtsRpcDaemonUrl string `long:"rpc_daemon_url" default:"https://brilliant.staging.gfx.town"`
+	OtsBeaconApiUrl string `long:"beacon_api_url" default:"" `
+}
+
+var Conf config
+
+var parser = flags.NewParser(&Conf, flags.Default)
+
 func main() {
-	cmd, cfg := cli.RootCommand()
-	rootCtx, rootCancel := common.RootContext()
-	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		ctx := cmd.Context()
-		logger := log.New()
-		db, borDb, backend, txPool, mining, stateCache, blockReader, ff, agg, err := cli.RemoteServices(ctx, *cfg, logger, rootCancel)
-		if err != nil {
-			log.Error("Could not connect to DB", "err", err)
-			return nil
-		}
-		defer db.Close()
-		if borDb != nil {
-			defer borDb.Close()
-		}
-		r := chi.NewRouter()
-		// route the server
 
-		if !cfg.OtsServerDisable {
-			RouteServer(r, *cfg)
-		}
-
-		apiList := mycmds.APIList(db, borDb, backend, txPool, mining, ff, stateCache, blockReader, agg, *cfg)
-		if err := cli.StartRpcServer(ctx, r, *cfg, apiList); err != nil {
-			log.Error(err.Error())
-			return nil
-		}
-		return nil
-	}
-	if err := cmd.ExecuteContext(rootCtx); err != nil {
-		log.Error(err.Error())
-		os.Exit(1)
+	parser.Parse()
+	r := chi.NewRouter()
+	// route the server
+	RouteServer(r, Conf)
+	log.Printf("Running with config: %+v", Conf)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", Conf.OtsPort), r)
+	if err != nil {
+		log.Println(err)
 	}
 }

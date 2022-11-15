@@ -11,11 +11,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/ledgerwatch/erigon/common/debug"
-	"github.com/wmitsuda/otterscan/cmd/otter/cli/httpcfg"
 	"github.com/wmitsuda/otterscan/lib/resources"
 )
 
-func RouteServer(r chi.Router, cfg httpcfg.HttpCfg) {
+func RouteServer(r chi.Router, cfg config) {
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.Logger)
 		r.Use(middleware.Recoverer)
