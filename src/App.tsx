@@ -13,6 +13,9 @@ const Block = React.lazy(() => import("./Block"));
 const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
 const Address = React.lazy(() => import("./Address"));
 const Transaction = React.lazy(() => import("./Transaction"));
+const Epoch = React.lazy(() => import("./consensus/Epoch"));
+const Slot = React.lazy(() => import("./consensus/Slot"));
+const Validator = React.lazy(() => import("./consensus/Validator"));
 const London = React.lazy(() => import("./special/london/London"));
 const Faucets = React.lazy(() => import("./Faucets"));
 const PageNotFound = React.lazy(() => import("./PageNotFound"));
@@ -51,6 +54,12 @@ const App = () => {
                     <Route
                       path="address/:addressOrName/*"
                       element={<Address />}
+                    />
+                    <Route path="epoch/:epochNumber/*" element={<Epoch />} />
+                    <Route path="slot/:slotNumber/*" element={<Slot />} />
+                    <Route
+                      path="validator/:validatorIndex/*"
+                      element={<Validator />}
                     />
                     <Route path="faucets/*" element={<Faucets />} />
                     <Route path="*" element={<PageNotFound />} />

@@ -20,6 +20,13 @@ export const chainInfoURL = (
   chainId: number
 ): string => `${assetsURLPrefix}/chains/eip155-${chainId}.json`;
 
+export const epochURL = (epochNumber: number) => `/epoch/${epochNumber}`;
+
+export const slotURL = (slotNumber: number) => `/slot/${slotNumber}`;
+
+export const validatorURL = (validatorIndex: number) =>
+  `/validator/${validatorIndex}`;
+
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;

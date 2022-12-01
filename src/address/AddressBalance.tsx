@@ -17,6 +17,7 @@ const AddressBalance: React.FC<AddressBalanceProps> = ({ balance }) => {
       ? balance.mul(eth2USDValue).div(10 ** 8)
       : undefined;
 
+  // TODO: inline div with space-x-2 here; verify all users
   return (
     <>
       <TransactionValue value={balance} />

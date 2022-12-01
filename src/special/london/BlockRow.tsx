@@ -10,12 +10,11 @@ import { useChainInfo } from "../../useChainInfo";
 const ELASTICITY_MULTIPLIER = 2;
 
 type BlockRowProps = {
-  now: number;
   block: ExtendedBlock;
   baseFeeDelta: number;
 };
 
-const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
+const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
@@ -63,7 +62,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ now, block, baseFeeDelta }) => {
         {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} {symbol}
       </div>
       <div className="text-right text-gray-400">
-        <TimestampAge now={now / 1000} timestamp={block.timestamp} />
+        <TimestampAge timestamp={block.timestamp} />
       </div>
     </div>
   );
