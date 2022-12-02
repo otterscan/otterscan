@@ -50,7 +50,7 @@ const useBeaconBlockURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v2/beacon/blocks/${slotNumber}`;
 };
 
-const useBeaconBlockRootURL = (slotNumber: number) => {
+const useBlockRootURL = (slotNumber: number) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
@@ -58,12 +58,32 @@ const useBeaconBlockRootURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
 };
 
-const useBeaconValidatorURL = (validatorIndex: number) => {
+const useValidatorURL = (validatorIndex: number) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
   }
-  return `${config?.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
+  return `${config.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
+};
+
+const useEpochProposersURL = (epochNumber: number) => {
+  const { config } = useContext(RuntimeContext);
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`;
+};
+
+const useCommitteeURL = (
+  epochNumber: number,
+  slotNumber: number,
+  committeeIndex: number
+) => {
+  const { config } = useContext(RuntimeContext);
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`;
 };
 
 export const useSlot = (slotNumber: number) => {
@@ -85,7 +105,7 @@ export const useBlockRoot = (slotNumber: number) => {
   const headSlot = useHeadSlot();
   const headSlotAsNumber = parseInt(headSlot.data.header.message.slot);
 
-  const url = useBeaconBlockRootURL(slotNumber);
+  const url = useBlockRootURL(slotNumber);
   const { data, error } = useSWR(url, jsonFetcher, {
     revalidateOnFocus: false,
     refreshInterval: slotNumber > headSlotAsNumber ? 1000 : 0,
@@ -97,7 +117,7 @@ export const useBlockRoot = (slotNumber: number) => {
 };
 
 export const useValidator = (validatorIndex: number) => {
-  const url = useBeaconValidatorURL(validatorIndex);
+  const url = useValidatorURL(validatorIndex);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
     return undefined;
@@ -127,10 +147,7 @@ export const useSlotsFromEpoch = (epochNumber: number): number[] => {
 };
 
 export const useProposers = (epochNumber: number) => {
-  const { config } = useContext(RuntimeContext);
-  const url = config?.beaconAPI
-    ? `${config?.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`
-    : null;
+  const url = useEpochProposersURL(epochNumber);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
     return undefined;
@@ -189,10 +206,7 @@ export const useSlotTimestamp = (slot: any) => {
 
 export const useCommittee = (slotNumber: number, committeeIndex: number) => {
   const epochNumber = Math.trunc(slotNumber / SLOTS_PER_EPOCH);
-  const { config } = useContext(RuntimeContext);
-  const url = config?.beaconAPI
-    ? `${config?.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`
-    : null;
+  const url = useCommitteeURL(epochNumber, slotNumber, committeeIndex);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
     return undefined;
