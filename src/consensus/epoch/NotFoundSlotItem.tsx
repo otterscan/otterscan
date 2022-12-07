@@ -5,19 +5,28 @@ import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
-type ScheduledSlotItemProps = {
+type NotFoundSlotItemProps = {
   slotNumber: number;
+  missed?: boolean;
+  scheduled?: boolean;
 };
 
-const ScheduledSlotItem: FC<ScheduledSlotItemProps> = ({ slotNumber }) => {
+const NotFoundSlotItem: FC<NotFoundSlotItemProps> = ({
+  slotNumber,
+  missed,
+  scheduled,
+}) => {
   const epochNumber = slot2Epoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
 
   return (
     <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-skin-table-hover px-2 py-3">
-      <SlotLink slotNumber={slotNumber} scheduled />
-      <div>Scheduled</div>
+      <SlotLink slotNumber={slotNumber} missed={missed} scheduled={scheduled} />
+      <div>
+        {missed && "Missed"}
+        {scheduled && "Scheduled"}
+      </div>
       <div className="truncate">
         <SlotTimestamp slotNumber={slotNumber} />
       </div>
@@ -40,4 +49,4 @@ const ScheduledSlotItem: FC<ScheduledSlotItemProps> = ({ slotNumber }) => {
   );
 };
 
-export default ScheduledSlotItem;
+export default NotFoundSlotItem;

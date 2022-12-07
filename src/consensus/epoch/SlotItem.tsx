@@ -1,14 +1,13 @@
 import { FC, memo } from "react";
 import { commify } from "@ethersproject/units";
 import SuspendedSlotItem from "./SuspendedSlotItem";
-import ScheduledSlotItem from "./ScheduledSlotItem";
-import MissedSlotItem from "./MissedSlotItem";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
 import AggregationParticipation from "../slot/AggregationParticipation";
 import { useFinalizedSlotNumber, useSlot } from "../../useConsensus";
+import NotFoundSlotItem from "./NotFoundSlotItem";
 
 type SlotItemProps = {
   slotNumber: number;
@@ -27,9 +26,9 @@ const SlotItem: FC<SlotItemProps> = ({ slotNumber }) => {
   }
   if (slotError) {
     if (finalizedSlotNumber !== undefined && slotNumber > finalizedSlotNumber) {
-      return <ScheduledSlotItem slotNumber={slotNumber} />;
+      return <NotFoundSlotItem slotNumber={slotNumber} scheduled />;
     }
-    return <MissedSlotItem slotNumber={slotNumber} />;
+    return <NotFoundSlotItem slotNumber={slotNumber} missed />;
   }
 
   return (
