@@ -1,7 +1,6 @@
 import { useContext, useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { isArray } from "util";
 import { RuntimeContext } from "./useRuntime";
 
 // TODO: get these from config
@@ -160,21 +159,9 @@ export const useBlockRoot = (slotNumber: number) => {
   const headSlotNumber = useHeadSlotNumber();
 
   const url = useBlockRootURL(slotNumber);
-  const { data, error } = useSWR(
+  const { data, error } = useSWRImmutable(
     headSlotNumber !== undefined ? url : null,
-    jsonFetcher,
-    {
-      revalidateOnFocus: false,
-      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-        // If we are asking a future slot (future meaning: > head), schedule
-        // a refresh in the expected time
-        const refreshInterval =
-          Math.max(0, slotNumber - headSlotNumber!) * SECONDS_PER_SLOT * 1000;
-        if (refreshInterval > 0) {
-          setInterval(() => revalidate({ retryCount }), refreshInterval);
-        }
-      },
-    }
+    jsonFetcher
   );
 
   if (!data) {
