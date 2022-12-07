@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import SuspendedSlotItem from "./SuspendedSlotItem";
+import LoadingSlotItem from "./LoadingSlotItem";
 import NotFoundSlotItem from "./NotFoundSlotItem";
 import StoredSlotItem from "./StoredSlotItem";
 import { useFinalizedSlotNumber, useSlot } from "../../useConsensus";
@@ -17,7 +17,7 @@ const SlotItem: FC<SlotItemProps> = ({ slotNumber }) => {
   } = useSlot(slotNumber);
 
   if (slotIsLoading) {
-    return <SuspendedSlotItem slotNumber={slotNumber} />;
+    return <LoadingSlotItem slotNumber={slotNumber} />;
   }
   if (slotError) {
     if (finalizedSlotNumber !== undefined && slotNumber > finalizedSlotNumber) {

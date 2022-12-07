@@ -5,11 +5,11 @@ import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
-type SuspendedSlotItemProps = {
+type LoadingSlotItemProps = {
   slotNumber: number;
 };
 
-const SuspendedSlotItem: FC<SuspendedSlotItemProps> = ({ slotNumber }) => {
+const LoadingSlotItem: FC<LoadingSlotItemProps> = ({ slotNumber }) => {
   const epochNumber = slot2Epoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
@@ -38,4 +38,4 @@ const SuspendedSlotItem: FC<SuspendedSlotItemProps> = ({ slotNumber }) => {
   );
 };
 
-export default SuspendedSlotItem;
+export default LoadingSlotItem;
