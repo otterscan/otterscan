@@ -3,15 +3,31 @@ import ContentLoader from "react-content-loader";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
-import { slot2Epoch, useProposerMap } from "../../useConsensus";
+import {
+  slot2Epoch,
+  useFinalizedSlotNumber,
+  useProposerMap,
+} from "../../useConsensus";
 
 type NotFoundSlotItemProps = {
+  slotNumber: number;
+};
+
+const NotFoundSlotItem: FC<NotFoundSlotItemProps> = ({ slotNumber }) => {
+  const finalizedSlotNumber = useFinalizedSlotNumber();
+  if (finalizedSlotNumber !== undefined && slotNumber > finalizedSlotNumber) {
+    return <_NotFoundSlotItem slotNumber={slotNumber} scheduled />;
+  }
+  return <_NotFoundSlotItem slotNumber={slotNumber} missed />;
+};
+
+type _NotFoundSlotItemProps = {
   slotNumber: number;
   missed?: boolean;
   scheduled?: boolean;
 };
 
-const NotFoundSlotItem: FC<NotFoundSlotItemProps> = ({
+const _NotFoundSlotItem: FC<_NotFoundSlotItemProps> = ({
   slotNumber,
   missed,
   scheduled,

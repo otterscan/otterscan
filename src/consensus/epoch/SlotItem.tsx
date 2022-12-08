@@ -2,14 +2,13 @@ import { FC, memo } from "react";
 import LoadingSlotItem from "./LoadingSlotItem";
 import NotFoundSlotItem from "./NotFoundSlotItem";
 import StoredSlotItem from "./StoredSlotItem";
-import { useFinalizedSlotNumber, useSlot } from "../../useConsensus";
+import { useSlot } from "../../useConsensus";
 
 type SlotItemProps = {
   slotNumber: number;
 };
 
 const SlotItem: FC<SlotItemProps> = ({ slotNumber }) => {
-  const finalizedSlotNumber = useFinalizedSlotNumber();
   const {
     slot,
     error: slotError,
@@ -20,10 +19,7 @@ const SlotItem: FC<SlotItemProps> = ({ slotNumber }) => {
     return <LoadingSlotItem slotNumber={slotNumber} />;
   }
   if (slotError) {
-    if (finalizedSlotNumber !== undefined && slotNumber > finalizedSlotNumber) {
-      return <NotFoundSlotItem slotNumber={slotNumber} scheduled />;
-    }
-    return <NotFoundSlotItem slotNumber={slotNumber} missed />;
+    return <NotFoundSlotItem slotNumber={slotNumber} />;
   }
 
   return <StoredSlotItem slotNumber={slotNumber} slot={slot} />;
