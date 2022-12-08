@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import ContentLoader from "react-content-loader";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
@@ -38,4 +38,4 @@ const LoadingSlotItem: FC<LoadingSlotItemProps> = ({ slotNumber }) => {
   );
 };
 
-export default LoadingSlotItem;
+export default memo(LoadingSlotItem);
