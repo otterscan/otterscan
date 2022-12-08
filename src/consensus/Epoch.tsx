@@ -1,9 +1,8 @@
 import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
-import StandardSubtitle from "../StandardSubtitle";
+import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
-import NavBlock from "./components/NavBlock";
 import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
 import NotFinalized from "./components/NotFinalized";
@@ -13,11 +12,9 @@ import { SelectionContext, useSelection } from "../useSelection";
 import {
   useEpochTimestamp,
   useFinalizedSlotNumber,
-  useHeadEpoch,
   useSlotsFromEpoch,
 } from "../useConsensus";
 import { TimeContext, useTicker } from "../useTicker";
-import { epochURL } from "../url";
 
 const Epoch: FC = () => {
   const { epochNumber } = useParams();
@@ -33,7 +30,6 @@ const Epoch: FC = () => {
 
   const selectionCtx = useSelection();
 
-  const headEpoch = useHeadEpoch();
   const epochTimestamp = useEpochTimestamp(epochNumber);
   const slots = useSlotsFromEpoch(epochAsNumber);
   const finalizedSlot = useFinalizedSlotNumber();
@@ -50,19 +46,7 @@ const Epoch: FC = () => {
 
   return (
     <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex space-x-1 items-baseline">
-          <span>Epoch</span>
-          <span className="text-base text-gray-500">#{epochNumber}</span>
-          {epochAsNumber && headEpoch && (
-            <NavBlock
-              entityNum={epochAsNumber}
-              latestEntityNum={headEpoch}
-              urlBuilder={epochURL}
-            />
-          )}
-        </div>
-      </StandardSubtitle>
+      <EpochSubtitle epochNumber={epochAsNumber} />
       <SelectionContext.Provider value={selectionCtx}>
         <ContentFrame key={epochAsNumber}>
           <InfoRow title="Finalized">
@@ -103,7 +87,7 @@ const Epoch: FC = () => {
 };
 
 type SlotListProps = {
-  slots: any[];
+  slots: number[];
 };
 
 const SlotList: FC<SlotListProps> = memo(({ slots }) => (

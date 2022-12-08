@@ -5,22 +5,27 @@ import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
-type LoadingSlotItemProps = {
+type ScheduledOrMissedSlotItemProps = {
   slotNumber: number;
+  missed?: boolean;
+  scheduled?: boolean;
 };
 
-const LoadingSlotItem: FC<LoadingSlotItemProps> = ({ slotNumber }) => {
+const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
+  slotNumber,
+  missed,
+  scheduled,
+}) => {
   const epochNumber = slot2Epoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
 
   return (
     <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-skin-table-hover px-2 py-3">
-      <SlotLink slotNumber={slotNumber} scheduled />
+      <SlotLink slotNumber={slotNumber} missed={missed} scheduled={scheduled} />
       <div>
-        <ContentLoader viewBox="0 0 30 4">
-          <rect x="0" y="0" rx="1" ry="1" width="30" height="4" />
-        </ContentLoader>
+        {missed && "Missed"}
+        {scheduled && "Scheduled"}
       </div>
       <div className="truncate">
         <SlotTimestamp slotNumber={slotNumber} />
@@ -34,8 +39,14 @@ const LoadingSlotItem: FC<LoadingSlotItemProps> = ({ slotNumber }) => {
           </ContentLoader>
         </div>
       )}
+      <div>-</div>
+      <div>-</div>
+      <div className="col-span-2"></div>
+      <div>-</div>
+      <div></div>
+      <div>-</div>
     </div>
   );
 };
 
-export default memo(LoadingSlotItem);
+export default memo(ScheduledOrMissedSlotItem);

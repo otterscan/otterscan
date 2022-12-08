@@ -128,16 +128,8 @@ const useCommitteeURL = (
 };
 
 export const useSlot = (slotNumber: number) => {
-  const headSlotNumber = useHeadSlotNumber();
-
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error } = useSWR(
-    headSlotNumber !== undefined ? url : null,
-    jsonFetcherWithErrorHandling,
-    {
-      revalidateOnFocus: false,
-    }
-  );
+  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
 
   return {
     slot: data,
@@ -257,16 +249,10 @@ export const useProposerMap = (epochNumber: number) => {
 
 export const useEpochTimestamp = (epoch: any) => {
   const genesisTime = useGenesisTime();
-
-  const calcTS = useMemo(() => {
-    if (!genesisTime || !epoch) {
-      return undefined;
-    }
-
-    return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
-  }, [genesisTime, epoch]);
-
-  return calcTS;
+  if (epoch === undefined || genesisTime === undefined) {
+    return undefined;
+  }
+  return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
 };
 
 export const useSlotTimestamp = (slot: number | undefined) => {
@@ -295,7 +281,6 @@ const useDynamicHeader = (tag: "finalized" | "head") => {
   // Program SWR to revalidate the head every 1s
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
-    revalidateOnFocus: false,
     refreshInterval: 1000,
   });
 
@@ -356,7 +341,7 @@ export const useFinalizedSlotNumber = (): number | undefined => {
   return parseSlotNumber(slot);
 };
 
-export const useHeadEpoch = () => {
+export const useHeadEpochNumber = () => {
   const headSlot = useHeadSlotNumber();
   if (headSlot === undefined) {
     return undefined;
