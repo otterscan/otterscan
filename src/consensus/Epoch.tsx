@@ -2,8 +2,8 @@ import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
+import EpochNavBlock from "./components/EpochNavBlock";
 import ContentFrame from "../ContentFrame";
-import NavBlock from "./components/NavBlock";
 import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
 import NotFinalized from "./components/NotFinalized";
@@ -13,11 +13,9 @@ import { SelectionContext, useSelection } from "../useSelection";
 import {
   useEpochTimestamp,
   useFinalizedSlotNumber,
-  useHeadEpoch,
   useSlotsFromEpoch,
 } from "../useConsensus";
 import { TimeContext, useTicker } from "../useTicker";
-import { epochURL } from "../url";
 
 const Epoch: FC = () => {
   const { epochNumber } = useParams();
@@ -33,7 +31,6 @@ const Epoch: FC = () => {
 
   const selectionCtx = useSelection();
 
-  const headEpoch = useHeadEpoch();
   const epochTimestamp = useEpochTimestamp(epochNumber);
   const slots = useSlotsFromEpoch(epochAsNumber);
   const finalizedSlot = useFinalizedSlotNumber();
@@ -54,13 +51,7 @@ const Epoch: FC = () => {
         <div className="flex space-x-1 items-baseline">
           <span>Epoch</span>
           <span className="text-base text-gray-500">#{epochNumber}</span>
-          {epochAsNumber && headEpoch && (
-            <NavBlock
-              entityNum={epochAsNumber}
-              latestEntityNum={headEpoch}
-              urlBuilder={epochURL}
-            />
-          )}
+          {epochAsNumber && <EpochNavBlock epochNumber={epochAsNumber} />}
         </div>
       </StandardSubtitle>
       <SelectionContext.Provider value={selectionCtx}>

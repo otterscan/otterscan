@@ -251,16 +251,10 @@ export const useProposerMap = (epochNumber: number) => {
 
 export const useEpochTimestamp = (epoch: any) => {
   const genesisTime = useGenesisTime();
-
-  const calcTS = useMemo(() => {
-    if (!genesisTime || !epoch) {
-      return undefined;
-    }
-
-    return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
-  }, [genesisTime, epoch]);
-
-  return calcTS;
+  if (epoch === undefined || genesisTime === undefined) {
+    return undefined;
+  }
+  return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
 };
 
 export const useSlotTimestamp = (slot: number | undefined) => {
@@ -350,7 +344,7 @@ export const useFinalizedSlotNumber = (): number | undefined => {
   return parseSlotNumber(slot);
 };
 
-export const useHeadEpoch = () => {
+export const useHeadEpochNumber = () => {
   const headSlot = useHeadSlotNumber();
   if (headSlot === undefined) {
     return undefined;
