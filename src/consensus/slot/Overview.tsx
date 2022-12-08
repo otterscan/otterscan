@@ -3,20 +3,18 @@ import { useParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import ContentFrame from "../../ContentFrame";
+import OverviewSkeleton from "./OverviewSkeleton";
+import SlotNotFound from "./SlotNotFound";
 import InfoRow from "../../components/InfoRow";
 import Timestamp from "../../components/Timestamp";
 import EpochLink from "../components/EpochLink";
 import BlockLink from "../../components/BlockLink";
 import ValidatorLink from "../components/ValidatorLink";
+import BlockRoot from "./BlockRoot";
 import HexValue from "../../components/HexValue";
 import AggregationParticipation from "./AggregationParticipation";
 import AggregationBits from "./AggregationBits";
-import {
-  SLOTS_PER_EPOCH,
-  useBlockRoot,
-  useSlot,
-  useSlotTimestamp,
-} from "../../useConsensus";
+import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();
@@ -24,16 +22,14 @@ const Overview: FC = () => {
     throw new Error("slotNumber couldn't be undefined here");
   }
   const slotAsNumber = parseInt(slotNumber);
-  const slot = useSlot(slotAsNumber);
+  const { slot, error, isLoading } = useSlot(slotAsNumber);
   useEffect(() => {
     if (slot !== undefined) {
       document.title = `Slot #${slotNumber} | Otterscan`;
     }
   }, [slotNumber, slot]);
-  const blockRoot = useBlockRoot(slotAsNumber);
 
-  // TODO: get this info from config
-  const epoch = Math.floor(slotAsNumber / SLOTS_PER_EPOCH);
+  const epoch = slot2Epoch(slotAsNumber);
   const slotTimestamp = useSlotTimestamp(slotAsNumber);
 
   const graffiti = useMemo(() => {
@@ -47,10 +43,14 @@ const Overview: FC = () => {
 
   return (
     <ContentFrame tabs>
-      {slot && blockRoot && (
+      {isLoading ? (
+        <OverviewSkeleton />
+      ) : error ? (
+        <SlotNotFound />
+      ) : (
         <>
           <InfoRow title="Timestamp">
-            {slotTimestamp && <Timestamp value={slotTimestamp.toNumber()} />}
+            {slotTimestamp && <Timestamp value={slotTimestamp} />}
           </InfoRow>
           <InfoRow title="Epoch">
             <EpochLink epochNumber={epoch} />
@@ -66,7 +66,7 @@ const Overview: FC = () => {
             <ValidatorLink validatorIndex={slot.data.message.proposer_index} />
           </InfoRow>
           <InfoRow title="Block Root">
-            <HexValue value={blockRoot.data.root} />
+            <BlockRoot slotNumber={slotAsNumber} />
           </InfoRow>
           <InfoRow title="Parent Root">
             <HexValue value={slot.data.message.parent_root} />

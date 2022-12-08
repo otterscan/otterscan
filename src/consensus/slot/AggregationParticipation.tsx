@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import { arrayify } from "@ethersproject/bytes";
 import PercentageBar from "../../components/PercentageBar";
 
@@ -26,4 +26,4 @@ const AggregationParticipation: FC<AggregationParticipationProps> = ({
   return <PercentageBar perc={perc} />;
 };
 
-export default AggregationParticipation;
+export default memo(AggregationParticipation);

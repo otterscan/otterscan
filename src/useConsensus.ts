@@ -1,7 +1,6 @@
 import { useContext, useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { BigNumber } from "@ethersproject/bignumber";
 import { RuntimeContext } from "./useRuntime";
 
 // TODO: get these from config
@@ -9,7 +8,8 @@ export const SLOTS_PER_EPOCH = 32;
 export const SECONDS_PER_SLOT = 12;
 
 // TODO: remove duplication with other json fetchers
-const jsonFetcher = async (url: string) => {
+// TODO: deprecated and remove
+const jsonFetcher = async (url: string): Promise<unknown> => {
   try {
     const res = await fetch(url);
     if (res.ok) {
@@ -22,16 +22,57 @@ const jsonFetcher = async (url: string) => {
   }
 };
 
-export const useGenesis = () => {
+const jsonFetcherWithErrorHandling = async (url: string) => {
+  const res = await fetch(url);
+  if (res.ok) {
+    return res.json();
+  }
+  throw res;
+};
+
+export const slot2Epoch = (slotNumber: number) =>
+  Math.floor(slotNumber / SLOTS_PER_EPOCH);
+
+const useGenesisURL = () => {
   const { config } = useContext(RuntimeContext);
-  const url = config?.beaconAPI
-    ? `${config?.beaconAPI}/eth/v1/beacon/genesis`
-    : null;
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/beacon/genesis`;
+};
+
+export const useGenesisTime = (): number | undefined => {
+  const url = useGenesisURL();
   const { data, error } = useSWRImmutable(url, jsonFetcher);
+
+  if (!error && !data) {
+    return undefined;
+  }
   if (error) {
     return undefined;
   }
-  return data;
+
+  if (typeof data !== "object" || data === null) {
+    return undefined;
+  }
+  if (
+    !("data" in data) ||
+    typeof data.data !== "object" ||
+    data.data === null
+  ) {
+    return undefined;
+  }
+  if (
+    !("genesis_time" in data.data) ||
+    typeof data.data.genesis_time !== "string"
+  ) {
+    return undefined;
+  }
+  const genesisTime = parseInt(data.data.genesis_time);
+  if (isNaN(genesisTime)) {
+    return undefined;
+  }
+  return genesisTime;
 };
 
 const useBeaconHeaderURL = (tag: string) => {
@@ -50,7 +91,7 @@ const useBeaconBlockURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v2/beacon/blocks/${slotNumber}`;
 };
 
-const useBeaconBlockRootURL = (slotNumber: number) => {
+const useBlockRootURL = (slotNumber: number) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
@@ -58,46 +99,93 @@ const useBeaconBlockRootURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
 };
 
-const useBeaconValidatorURL = (validatorIndex: number) => {
+const useValidatorURL = (validatorIndex: number) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
   }
-  return `${config?.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
+  return `${config.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
+};
+
+const useEpochProposersURL = (epochNumber: number) => {
+  const { config } = useContext(RuntimeContext);
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`;
+};
+
+const useCommitteeURL = (
+  epochNumber: number,
+  slotNumber: number,
+  committeeIndex: number
+) => {
+  const { config } = useContext(RuntimeContext);
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`;
 };
 
 export const useSlot = (slotNumber: number) => {
-  const headSlot = useHeadSlot();
+  const headSlotNumber = useHeadSlotNumber();
+
   const url = useBeaconBlockURL(slotNumber);
-  const headSlotAsNumber =
-    headSlot && parseInt(headSlot.data.header.message.slot);
-  const { data, error } = useSWR(headSlotAsNumber ? url : null, jsonFetcher, {
-    revalidateOnFocus: false,
-    refreshInterval: slotNumber > headSlotAsNumber ? 1000 : 0,
-  });
-  if (error) {
-    return undefined;
-  }
-  return data;
+  const { data, error } = useSWR(
+    headSlotNumber !== undefined ? url : null,
+    jsonFetcherWithErrorHandling,
+    {
+      revalidateOnFocus: false,
+    }
+  );
+
+  return {
+    slot: data,
+    error,
+    isLoading: !data && !error,
+  };
 };
 
 export const useBlockRoot = (slotNumber: number) => {
-  const headSlot = useHeadSlot();
-  const headSlotAsNumber = parseInt(headSlot.data.header.message.slot);
+  const url = useBlockRootURL(slotNumber);
+  const { data, error } = useSWRImmutable(url, jsonFetcher);
 
-  const url = useBeaconBlockRootURL(slotNumber);
-  const { data, error } = useSWR(url, jsonFetcher, {
-    revalidateOnFocus: false,
-    refreshInterval: slotNumber > headSlotAsNumber ? 1000 : 0,
-  });
-  if (error) {
-    return undefined;
+  if (!data) {
+    return {
+      blockRoot: undefined,
+      error,
+      isLoading: !data && !error,
+    };
   }
-  return data;
+
+  if (typeof data !== "object" || !("data" in data) || data.data === null) {
+    return {
+      blockRoot: undefined,
+      error,
+      isLoading: !data && !error,
+    };
+  }
+  if (
+    typeof data.data !== "object" ||
+    !("root" in data.data) ||
+    typeof data.data.root !== "string"
+  ) {
+    return {
+      blockRoot: undefined,
+      error,
+      isLoading: !data && !error,
+    };
+  }
+
+  return {
+    blockRoot: data.data.root,
+    error,
+    isLoading: !data && !error,
+  };
 };
 
 export const useValidator = (validatorIndex: number) => {
-  const url = useBeaconValidatorURL(validatorIndex);
+  const url = useValidatorURL(validatorIndex);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
     return undefined;
@@ -105,34 +193,31 @@ export const useValidator = (validatorIndex: number) => {
   return data;
 };
 
-const useEpoch = (
-  epochNumber: number
-): [startSlot: number, endSlot: number] => {
-  const startSlot = epochNumber * SLOTS_PER_EPOCH;
-  const endSlot = (epochNumber + 1) * SLOTS_PER_EPOCH - 1;
-  return [startSlot, endSlot];
-};
-
 export const useSlotsFromEpoch = (epochNumber: number): number[] => {
-  const [startSlot, endSlot] = useEpoch(epochNumber);
   const slots = useMemo(() => {
+    const startSlot = epochNumber * SLOTS_PER_EPOCH;
+    const endSlot = startSlot + SLOTS_PER_EPOCH - 1;
+
     const s: number[] = [];
     for (let i = startSlot; i <= endSlot; i++) {
       s.push(i);
     }
     return s;
-  }, [startSlot, endSlot]);
+  }, [epochNumber]);
 
   return slots;
 };
 
+// Note: this API seems really slow in LH; workaround it
+// to not block the entire UI:
+// https://github.com/sigp/lighthouse/issues/3770
+//
+// DO NOT SUSPEND ON PURPOSE!!!
 export const useProposers = (epochNumber: number) => {
-  const { config } = useContext(RuntimeContext);
-  const url = config?.beaconAPI
-    ? `${config?.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`
-    : null;
+  const url = useEpochProposersURL(epochNumber);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
+    console.error(error);
     return undefined;
   }
   return data;
@@ -144,9 +229,24 @@ export const useProposerMap = (epochNumber: number) => {
     if (!proposers) {
       return undefined;
     }
+    if (typeof proposers !== "object" || !("data" in proposers)) {
+      return undefined;
+    }
+    if (!Array.isArray(proposers.data)) {
+      return undefined;
+    }
 
     const m: Record<string, string> = {};
-    for (const e of proposers.data) {
+    for (const e of proposers.data as unknown[]) {
+      if (typeof e !== "object" || e === null) {
+        return undefined;
+      }
+      if (!("slot" in e) || !("validator_index" in e)) {
+        return undefined;
+      }
+      if (typeof e.slot !== "string" || typeof e.validator_index !== "string") {
+        return undefined;
+      }
       m[e.slot] = e.validator_index;
     }
     return m;
@@ -156,43 +256,30 @@ export const useProposerMap = (epochNumber: number) => {
 };
 
 export const useEpochTimestamp = (epoch: any) => {
-  const genesis = useGenesis();
+  const genesisTime = useGenesisTime();
 
   const calcTS = useMemo(() => {
-    if (!genesis || !epoch) {
+    if (!genesisTime || !epoch) {
       return undefined;
     }
 
-    const genesisTS = BigNumber.from(genesis.data.genesis_time);
-    const epochTS = BigNumber.from(epoch);
-    return genesisTS.add(epochTS.mul(SLOTS_PER_EPOCH * SECONDS_PER_SLOT));
-  }, [genesis, epoch]);
+    return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
+  }, [genesisTime, epoch]);
 
   return calcTS;
 };
 
-export const useSlotTimestamp = (slot: any) => {
-  const genesis = useGenesis();
-
-  const calcTS = useMemo(() => {
-    if (!genesis || !slot) {
-      return undefined;
-    }
-
-    const genesisTS = BigNumber.from(genesis.data.genesis_time);
-    const slotTS = BigNumber.from(slot);
-    return genesisTS.add(slotTS.mul(SECONDS_PER_SLOT));
-  }, [genesis, slot]);
-
-  return calcTS;
+export const useSlotTimestamp = (slot: number | undefined) => {
+  const genesisTime = useGenesisTime();
+  if (slot === undefined || genesisTime === undefined) {
+    return undefined;
+  }
+  return genesisTime + slot * SECONDS_PER_SLOT;
 };
 
 export const useCommittee = (slotNumber: number, committeeIndex: number) => {
   const epochNumber = Math.trunc(slotNumber / SLOTS_PER_EPOCH);
-  const { config } = useContext(RuntimeContext);
-  const url = config?.beaconAPI
-    ? `${config?.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`
-    : null;
+  const url = useCommitteeURL(epochNumber, slotNumber, committeeIndex);
   const { data, error } = useSWRImmutable(url, jsonFetcher);
   if (error) {
     return undefined;
@@ -205,8 +292,6 @@ export const useCommittee = (slotNumber: number, committeeIndex: number) => {
  * moving targets
  */
 const useDynamicHeader = (tag: "finalized" | "head") => {
-  const { config } = useContext(RuntimeContext);
-
   // Program SWR to revalidate the head every 1s
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
@@ -215,39 +300,66 @@ const useDynamicHeader = (tag: "finalized" | "head") => {
   });
 
   if (error) {
+    console.error(error);
     return undefined;
   }
   return data;
 };
 
-export const useFinalizedSlot = () => {
-  return useDynamicHeader("finalized");
-};
-
-export const useHeadSlot = () => {
-  return useDynamicHeader("head");
-};
-
-export const useHeadEpoch = () => {
-  const headSlot = useHeadSlot();
-  const headEpoch = useMemo(() => {
-    if (headSlot === undefined) {
-      return undefined;
-    }
-    return Math.floor(
-      parseInt(headSlot.data.header.message.slot) / SLOTS_PER_EPOCH
-    );
-  }, [headSlot]);
-
-  return headEpoch;
-};
-
-export const useSlotTime = (slot: number | undefined): number | undefined => {
-  const genesis = useGenesis();
-  if (slot === undefined || genesis === undefined) {
+const parseSlotNumber = (slot: unknown): number | undefined => {
+  if (!slot || typeof slot !== "object") {
+    return undefined;
+  }
+  if (
+    !("data" in slot) ||
+    typeof slot.data !== "object" ||
+    slot.data === null
+  ) {
+    return undefined;
+  }
+  if (
+    !("header" in slot.data) ||
+    typeof slot.data.header !== "object" ||
+    slot.data.header === null
+  ) {
+    return undefined;
+  }
+  if (
+    !("message" in slot.data.header) ||
+    typeof slot.data.header.message !== "object" ||
+    slot.data.header.message === null
+  ) {
+    return undefined;
+  }
+  if (
+    !("slot" in slot.data.header.message) ||
+    typeof slot.data.header.message.slot !== "string"
+  ) {
+    return undefined;
+  }
+  const slotAsNumber = parseInt(slot.data.header.message.slot);
+  if (isNaN(slotAsNumber)) {
     return undefined;
   }
 
-  const rawDate = genesis.data.genesis_time;
-  return parseInt(rawDate) + slot * SECONDS_PER_SLOT;
+  return slotAsNumber;
+};
+
+// TODO: useMemo
+export const useHeadSlotNumber = (): number | undefined => {
+  const slot = useDynamicHeader("head");
+  return parseSlotNumber(slot);
+};
+
+export const useFinalizedSlotNumber = (): number | undefined => {
+  const slot = useDynamicHeader("finalized");
+  return parseSlotNumber(slot);
+};
+
+export const useHeadEpoch = () => {
+  const headSlot = useHeadSlotNumber();
+  if (headSlot === undefined) {
+    return undefined;
+  }
+  return slot2Epoch(headSlot);
 };

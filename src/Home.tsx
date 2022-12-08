@@ -10,7 +10,7 @@ import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockHeader } from "./useLatestBlock";
 import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
-import { useFinalizedSlot, useSlotTime } from "./useConsensus";
+import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
@@ -19,8 +19,8 @@ const Home: React.FC = () => {
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
   const latestBlock = useLatestBlockHeader(provider);
-  const beaconData = useFinalizedSlot();
-  const slotTime = useSlotTime(beaconData?.data.header.message.slot);
+  const finalizedSlotNumber = useFinalizedSlotNumber();
+  const slotTime = useSlotTimestamp(finalizedSlotNumber);
   const [isScanning, setScanning] = useState<boolean>(false);
 
   document.title = "Home | Otterscan";
@@ -89,21 +89,13 @@ const Home: React.FC = () => {
           <Timestamp value={latestBlock.timestamp} />
         </NavLink>
       )}
-      {beaconData && (
+      {finalizedSlotNumber !== undefined && (
         <NavLink
           className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
-          to={slotURL(beaconData.data.header.message.slot)}
+          to={slotURL(finalizedSlotNumber)}
         >
-          <div>
-            Finalized slot: {commify(beaconData.data.header.message.slot)}
-          </div>
+          <div>Finalized slot: {commify(finalizedSlotNumber)}</div>
           {slotTime && <Timestamp value={slotTime} />}
-          <div>
-            State root:{" "}
-            <span className="font-hash">
-              {beaconData.data.header.message.state_root}
-            </span>
-          </div>
         </NavLink>
       )}
     </div>
