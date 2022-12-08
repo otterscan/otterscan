@@ -147,13 +147,8 @@ export const useSlot = (slotNumber: number) => {
 };
 
 export const useBlockRoot = (slotNumber: number) => {
-  const headSlotNumber = useHeadSlotNumber();
-
   const url = useBlockRootURL(slotNumber);
-  const { data, error } = useSWRImmutable(
-    headSlotNumber !== undefined ? url : null,
-    jsonFetcher
-  );
+  const { data, error } = useSWRImmutable(url, jsonFetcher);
 
   if (!data) {
     return {
