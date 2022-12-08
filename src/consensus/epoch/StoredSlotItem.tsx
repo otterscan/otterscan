@@ -29,9 +29,11 @@ const StoredSlotItem: FC<StoredSlotItemProps> = ({ slotNumber }) => {
         {commify(slot.data.message.body.attestations.length.toString())}
       </div>
       <div className="col-span-2 self-center">
-        <AggregationParticipation
-          hex={slot.data.message.body.sync_aggregate.sync_committee_bits}
-        />
+        {slot.data.message.body.sync_aggregate && (
+          <AggregationParticipation
+            hex={slot.data.message.body.sync_aggregate.sync_committee_bits}
+          />
+        )}
       </div>
       <div>{commify(slot.data.message.body.deposits.length.toString())}</div>
       <div></div>

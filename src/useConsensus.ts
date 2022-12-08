@@ -6,6 +6,7 @@ import { RuntimeContext } from "./useRuntime";
 // TODO: get these from config
 export const SLOTS_PER_EPOCH = 32;
 export const SECONDS_PER_SLOT = 12;
+export const EPOCHS_AFTER_HEAD = 1;
 
 // TODO: remove duplication with other json fetchers
 // TODO: deprecated and remove

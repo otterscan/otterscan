@@ -1,6 +1,6 @@
 import { FC } from "react";
 import NavBlock from "./NavBlock";
-import { useHeadEpochNumber } from "../../useConsensus";
+import { EPOCHS_AFTER_HEAD, useHeadEpochNumber } from "../../useConsensus";
 import { epochURL } from "../../url";
 
 type EpochNavBlockProps = {
@@ -15,7 +15,7 @@ const EpochNavBlock: FC<EpochNavBlockProps> = ({ epochNumber }) => {
       {headEpochNumber && (
         <NavBlock
           entityNum={epochNumber}
-          latestEntityNum={headEpochNumber}
+          latestEntityNum={headEpochNumber + EPOCHS_AFTER_HEAD}
           urlBuilder={epochURL}
         />
       )}
