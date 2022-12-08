@@ -1,8 +1,7 @@
 import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
-import StandardSubtitle from "../StandardSubtitle";
-import EpochNavBlock from "./components/EpochNavBlock";
+import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
@@ -47,13 +46,7 @@ const Epoch: FC = () => {
 
   return (
     <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex space-x-1 items-baseline">
-          <span>Epoch</span>
-          <span className="text-base text-gray-500">#{epochNumber}</span>
-          {epochAsNumber && <EpochNavBlock epochNumber={epochAsNumber} />}
-        </div>
-      </StandardSubtitle>
+      <EpochSubtitle epochNumber={epochAsNumber} />
       <SelectionContext.Provider value={selectionCtx}>
         <ContentFrame key={epochAsNumber}>
           <InfoRow title="Finalized">
@@ -94,7 +87,7 @@ const Epoch: FC = () => {
 };
 
 type SlotListProps = {
-  slots: any[];
+  slots: number[];
 };
 
 const SlotList: FC<SlotListProps> = memo(({ slots }) => (
