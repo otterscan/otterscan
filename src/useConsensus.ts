@@ -129,12 +129,16 @@ const useCommitteeURL = (
 
 export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
+  const { data, error, isValidating } = useSWR(
+    url,
+    jsonFetcherWithErrorHandling
+  );
 
   return {
     slot: data,
     error,
     isLoading: !data && !error,
+    isValidating,
   };
 };
 

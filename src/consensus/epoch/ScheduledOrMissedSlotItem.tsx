@@ -9,12 +9,14 @@ type ScheduledOrMissedSlotItemProps = {
   slotNumber: number;
   missed?: boolean;
   scheduled?: boolean;
+  isValidating: boolean;
 };
 
 const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
   slotNumber,
   missed,
   scheduled,
+  isValidating,
 }) => {
   const epochNumber = slot2Epoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
@@ -23,7 +25,7 @@ const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
   return (
     <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-skin-table-hover px-2 py-3">
       <SlotLink slotNumber={slotNumber} missed={missed} scheduled={scheduled} />
-      <div>
+      <div className={`${isValidating ? "italic text-gray-400" : ""}`}>
         {missed && "Missed"}
         {scheduled && "Scheduled"}
       </div>
