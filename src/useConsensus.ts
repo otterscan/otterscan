@@ -129,9 +129,7 @@ const useCommitteeURL = (
 
 export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling, {
-    revalidateOnFocus: false,
-  });
+  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
 
   return {
     slot: data,
@@ -283,7 +281,6 @@ const useDynamicHeader = (tag: "finalized" | "head") => {
   // Program SWR to revalidate the head every 1s
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
-    revalidateOnFocus: false,
     refreshInterval: 1000,
   });
 
