@@ -193,23 +193,17 @@ export const useValidator = (validatorIndex: number) => {
   return data;
 };
 
-const useEpoch = (
-  epochNumber: number
-): [startSlot: number, endSlot: number] => {
-  const startSlot = epochNumber * SLOTS_PER_EPOCH;
-  const endSlot = (epochNumber + 1) * SLOTS_PER_EPOCH - 1;
-  return [startSlot, endSlot];
-};
-
 export const useSlotsFromEpoch = (epochNumber: number): number[] => {
-  const [startSlot, endSlot] = useEpoch(epochNumber);
   const slots = useMemo(() => {
+    const startSlot = epochNumber * SLOTS_PER_EPOCH;
+    const endSlot = startSlot + SLOTS_PER_EPOCH - 1;
+
     const s: number[] = [];
     for (let i = startSlot; i <= endSlot; i++) {
       s.push(i);
     }
     return s;
-  }, [startSlot, endSlot]);
+  }, [epochNumber]);
 
   return slots;
 };
