@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from "react";
+import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
@@ -93,9 +93,7 @@ const Epoch: FC = () => {
           </div>
           <div className="flex flex-col-reverse">
             <TimeContext.Provider value={now}>
-              {slots.map((s) => (
-                <SlotItem key={s} slotNumber={s} />
-              ))}
+              <SlotList slots={slots} />
             </TimeContext.Provider>
           </div>
         </ContentFrame>
@@ -103,5 +101,17 @@ const Epoch: FC = () => {
     </StandardFrame>
   );
 };
+
+type SlotListProps = {
+  slots: any[];
+};
+
+const SlotList: FC<SlotListProps> = memo(({ slots }) => (
+  <>
+    {slots.map((s) => (
+      <SlotItem key={s} slotNumber={s} />
+    ))}
+  </>
+));
 
 export default Epoch;
