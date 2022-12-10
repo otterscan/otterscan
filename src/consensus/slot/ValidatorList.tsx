@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import ValidatorLink from "../components/ValidatorLink";
 import { useCommittee } from "../../useConsensus";
 
@@ -25,4 +25,4 @@ const ValidatorList: FC<ValidatorListProps> = ({
   );
 };
 
-export default ValidatorList;
+export default memo(ValidatorList);
