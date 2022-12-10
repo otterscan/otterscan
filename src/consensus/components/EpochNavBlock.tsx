@@ -12,7 +12,7 @@ const EpochNavBlock: FC<EpochNavBlockProps> = ({ epochNumber }) => {
 
   return (
     <>
-      {headEpochNumber && (
+      {headEpochNumber !== undefined && (
         <NavBlock
           entityNum={epochNumber}
           latestEntityNum={headEpochNumber + EPOCHS_AFTER_HEAD}
