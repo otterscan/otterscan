@@ -269,9 +269,9 @@ export const useSlotTimestamp = (slot: number | undefined) => {
 };
 
 export const useCommittee = (slotNumber: number, committeeIndex: number) => {
-  const epochNumber = Math.trunc(slotNumber / SLOTS_PER_EPOCH);
+  const epochNumber = slot2Epoch(slotNumber);
   const url = useCommitteeURL(epochNumber, slotNumber, committeeIndex);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  const { data, error } = useSWRImmutable(url, jsonFetcherWithErrorHandling);
   if (error) {
     return undefined;
   }
