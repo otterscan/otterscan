@@ -7,8 +7,8 @@ import InfoRow from "../../components/InfoRow";
 import AddressBalance from "../../address/AddressBalance";
 import Timestamp from "../../components/Timestamp";
 import HexValue from "../../components/HexValue";
-import { useEpochTimestamp, useValidator } from "../../useConsensus";
 import EpochLink from "../components/EpochLink";
+import { useEpochTimestamp, useValidator } from "../../useConsensus";
 
 const GWEI = BigNumber.from(10).pow(9);
 
@@ -62,17 +62,13 @@ const Overview: FC = () => {
           <EpochLink
             epochNumber={validator.data.validator.activation_eligibility_epoch}
           />
-          {elegibleTimestamp && (
-            <Timestamp value={elegibleTimestamp.toNumber()} />
-          )}
+          {elegibleTimestamp && <Timestamp value={elegibleTimestamp} />}
         </div>
       </InfoRow>
       <InfoRow title="Activation Epoch">
         <div className="flex space-x-2">
           <EpochLink epochNumber={validator.data.validator.activation_epoch} />
-          {activationTimestamp && (
-            <Timestamp value={activationTimestamp.toNumber()} />
-          )}
+          {activationTimestamp && <Timestamp value={activationTimestamp} />}
         </div>
       </InfoRow>
     </ContentFrame>

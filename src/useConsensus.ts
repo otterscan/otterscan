@@ -183,7 +183,7 @@ export const useBlockRoot = (slotNumber: number) => {
 
 export const useValidator = (validatorIndex: number) => {
   const url = useValidatorURL(validatorIndex);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
   if (error) {
     return undefined;
   }
