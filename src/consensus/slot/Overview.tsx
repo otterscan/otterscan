@@ -93,23 +93,32 @@ const Overview: FC = () => {
           <InfoRow title="ETH1 Deposit Count">
             {commify(slot.data.message.body.eth1_data.deposit_count.toString())}
           </InfoRow>
-          <InfoRow title="Sync Aggregate Participation">
-            <AggregationParticipation
-              hex={slot.data.message.body.sync_aggregate.sync_committee_bits}
-            />
-          </InfoRow>
-          <InfoRow title="Sync Aggregate Bits">
-            <AggregationBits
-              hex={slot.data.message.body.sync_aggregate.sync_committee_bits}
-            />
-          </InfoRow>
-          <InfoRow title="Sync Aggregate Signature">
-            <HexValue
-              value={
-                slot.data.message.body.sync_aggregate.sync_committee_signature
-              }
-            />
-          </InfoRow>
+          {slot.data.message.body.sync_aggregate && (
+            <>
+              <InfoRow title="Sync Aggregate Participation">
+                <AggregationParticipation
+                  hex={
+                    slot.data.message.body.sync_aggregate.sync_committee_bits
+                  }
+                />
+              </InfoRow>
+              <InfoRow title="Sync Aggregate Bits">
+                <AggregationBits
+                  hex={
+                    slot.data.message.body.sync_aggregate.sync_committee_bits
+                  }
+                />
+              </InfoRow>
+              <InfoRow title="Sync Aggregate Signature">
+                <HexValue
+                  value={
+                    slot.data.message.body.sync_aggregate
+                      .sync_committee_signature
+                  }
+                />
+              </InfoRow>
+            </>
+          )}
           <InfoRow title="Attestations">
             {commify(slot.data.message.body.attestations.length.toString())}
           </InfoRow>

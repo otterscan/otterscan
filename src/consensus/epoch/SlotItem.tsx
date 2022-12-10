@@ -9,13 +9,15 @@ type SlotItemProps = {
 };
 
 const SlotItem: FC<SlotItemProps> = ({ slotNumber }) => {
-  const { error, isLoading } = useSlot(slotNumber);
+  const { error, isLoading, isValidating } = useSlot(slotNumber);
 
   if (isLoading) {
     return <LoadingSlotItem slotNumber={slotNumber} />;
   }
   if (error) {
-    return <NotFoundSlotItem slotNumber={slotNumber} />;
+    return (
+      <NotFoundSlotItem slotNumber={slotNumber} isValidating={isValidating} />
+    );
   }
 
   return <StoredSlotItem slotNumber={slotNumber} />;

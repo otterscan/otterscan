@@ -6,6 +6,7 @@ import { RuntimeContext } from "./useRuntime";
 // TODO: get these from config
 export const SLOTS_PER_EPOCH = 32;
 export const SECONDS_PER_SLOT = 12;
+export const EPOCHS_AFTER_HEAD = 1;
 
 // TODO: remove duplication with other json fetchers
 // TODO: deprecated and remove
@@ -129,12 +130,16 @@ const useCommitteeURL = (
 
 export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
+  const { data, error, isValidating } = useSWR(
+    url,
+    jsonFetcherWithErrorHandling
+  );
 
   return {
     slot: data,
     error,
     isLoading: !data && !error,
+    isValidating,
   };
 };
 
@@ -178,7 +183,7 @@ export const useBlockRoot = (slotNumber: number) => {
 
 export const useValidator = (validatorIndex: number) => {
   const url = useValidatorURL(validatorIndex);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
   if (error) {
     return undefined;
   }
