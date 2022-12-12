@@ -46,7 +46,7 @@ const Overview: FC = () => {
       {isLoading ? (
         <OverviewSkeleton />
       ) : error ? (
-        <SlotNotFound />
+        <SlotNotFound slotNumber={slotAsNumber} />
       ) : (
         <>
           <InfoRow title="Timestamp">

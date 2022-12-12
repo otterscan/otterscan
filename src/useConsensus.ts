@@ -282,11 +282,14 @@ export const useCommittee = (slotNumber: number, committeeIndex: number) => {
  * They refresh automatically on purpose because the accepted tags are
  * moving targets
  */
-const useDynamicHeader = (tag: "finalized" | "head") => {
+const useDynamicHeader = (
+  tag: "finalized" | "head",
+  refreshInterval: number = 1000
+) => {
   // Program SWR to revalidate the head every 1s
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
-    refreshInterval: 1000,
+    refreshInterval,
   });
 
   if (error) {
@@ -336,13 +339,17 @@ const parseSlotNumber = (slot: unknown): number | undefined => {
 };
 
 // TODO: useMemo
-export const useHeadSlotNumber = (): number | undefined => {
-  const slot = useDynamicHeader("head");
+export const useHeadSlotNumber = (
+  refreshInterval?: number
+): number | undefined => {
+  const slot = useDynamicHeader("head", refreshInterval);
   return parseSlotNumber(slot);
 };
 
-export const useFinalizedSlotNumber = (): number | undefined => {
-  const slot = useDynamicHeader("finalized");
+export const useFinalizedSlotNumber = (
+  refreshInterval?: number
+): number | undefined => {
+  const slot = useDynamicHeader("finalized", refreshInterval);
   return parseSlotNumber(slot);
 };
 

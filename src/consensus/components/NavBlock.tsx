@@ -18,7 +18,10 @@ const NavBlock: FC<NavBlockProps> = ({
   <div className="pl-2 self-center flex space-x-1">
     <NavButton
       entityNum={entityNum - 1}
-      disabled={entityNum === 0}
+      disabled={
+        entityNum === 0 ||
+        (latestEntityNum !== undefined && entityNum > latestEntityNum)
+      }
       urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronLeft} />
