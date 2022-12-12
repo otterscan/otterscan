@@ -22,6 +22,8 @@ Now you should have an Erigon node with Otterscan JSON-RPC APIs and CORS enabled
 
 The Otterscan official repo on Docker Hub is [here](https://hub.docker.com/orgs/otterscan/repositories).
 
+There is an image tag for each release tag on GitHub.
+
 ```
 docker run --rm -p 5100:80 --name otterscan -d otterscan/otterscan:<versiontag>
 ```
@@ -57,6 +59,20 @@ Prysm example:
 ```
 docker run --rm -p 5100:80 --name otterscan -d --env BEACON_API_URL="<your-beacon-node-api-url>" otterscan/otterscan:<versiontag>
 ```
+
+## Run Otterscan development image from Docker Hub
+
+The `develop` branch is automatically built and published on Docker Hub.
+
+There is a helper script that always pull the latest build and set the required parameters.
+
+From the repository root:
+
+```
+./scripts/run-ots-develop.sh <ERIGON-RPC-URL> <CL-REST-API-URL>
+```
+
+It'll start a container under the name `otterscan`.
 
 ## Validating the installation (all methods)
 

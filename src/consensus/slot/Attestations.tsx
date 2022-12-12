@@ -11,7 +11,8 @@ const Attestations: FC = () => {
   if (slotNumber === undefined) {
     throw new Error("slotNumber couldn't be undefined here");
   }
-  const { slot, error, isLoading } = useSlot(parseInt(slotNumber));
+  const slotAsNumber = parseInt(slotNumber);
+  const { slot, error, isLoading } = useSlot(slotAsNumber);
   useEffect(() => {
     if (slot !== undefined) {
       document.title = `Attestations for #${slotNumber} | Otterscan`;
@@ -23,7 +24,7 @@ const Attestations: FC = () => {
       {isLoading ? (
         <OverviewSkeleton />
       ) : error ? (
-        <SlotNotFound />
+        <SlotNotFound slotNumber={slotAsNumber} />
       ) : (
         <>
           {slot.data.message.body.attestations.map((att: any, i: any) => (
