@@ -6,7 +6,7 @@ import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
 import { useGenericSearch } from "./search/search";
-import Otter from "./otter.jpg";
+import Otter from "./otter.png";
 
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
