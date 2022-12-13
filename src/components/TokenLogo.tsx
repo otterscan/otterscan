@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { useImage } from "react-image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
+import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import { tokenLogoURL } from "../url";
 import { RuntimeContext } from "../useRuntime";
 import { ChecksummedAddress } from "../types";

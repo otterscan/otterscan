@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons/faExclamationCircle";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";

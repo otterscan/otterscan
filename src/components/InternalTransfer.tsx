@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
-import { faSackDollar } from "@fortawesome/free-solid-svg-icons/faSackDollar";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import USDAmount from "./USDAmount";

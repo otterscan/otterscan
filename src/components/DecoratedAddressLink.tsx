@@ -1,11 +1,11 @@
 import React, { PropsWithChildren, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
-import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
-import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons/faMoneyBillAlt";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faBomb } from "@fortawesome/free-solid-svg-icons";
+import { faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
+import { faCoins } from "@fortawesome/free-solid-svg-icons";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import PlainAddress from "./PlainAddress";
 import { RuntimeContext } from "../useRuntime";

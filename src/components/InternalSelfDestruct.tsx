@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
 import TransactionAddress from "./TransactionAddress";

@@ -3,7 +3,7 @@ import { useParams, NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import NavBlock from "./block/NavBlock";

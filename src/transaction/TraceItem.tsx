@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons/faPlusSquare";
-import { faMinusSquare } from "@fortawesome/free-regular-svg-icons/faMinusSquare";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
+import { faMinusSquare } from "@fortawesome/free-regular-svg-icons";
 import { Switch } from "@headlessui/react";
 import { TraceGroup } from "../useErigonHooks";
 import TraceInput from "./TraceInput";

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
-import { faSackDollar } from "@fortawesome/free-solid-svg-icons/faSackDollar";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import TransactionAddress from "./components/TransactionAddress";
 import ValueHighlighter from "./components/ValueHighlighter";
 import FormattedBalance from "./components/FormattedBalance";
