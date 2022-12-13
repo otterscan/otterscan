@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { faCube } from "@fortawesome/free-solid-svg-icons";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faCube,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import ContentFrame from "../ContentFrame";
 import InfoRow from "../components/InfoRow";
 import BlockLink from "../components/BlockLink";
