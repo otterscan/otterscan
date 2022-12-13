@@ -9,7 +9,7 @@ type SlotTimestampProps = {
 const SlotTimestamp: FC<SlotTimestampProps> = ({ slotNumber }) => {
   const slotTimestamp = useSlotTimestamp(slotNumber);
   if (slotTimestamp === undefined) {
-    return <div>LOADING TS</div>;
+    return <></>;
   }
 
   return <TimestampAge timestamp={slotTimestamp} />;

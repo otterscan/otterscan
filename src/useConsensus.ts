@@ -8,6 +8,10 @@ export const SLOTS_PER_EPOCH = 32;
 export const SECONDS_PER_SLOT = 12;
 export const EPOCHS_AFTER_HEAD = 1;
 
+export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
+export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
+export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
+
 // TODO: remove duplication with other json fetchers
 // TODO: deprecated and remove
 const jsonFetcher = async (url: string): Promise<unknown> => {
@@ -286,7 +290,6 @@ const useDynamicHeader = (
   tag: "finalized" | "head",
   refreshInterval: number = 1000
 ) => {
-  // Program SWR to revalidate the head every 1s
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
     refreshInterval,
@@ -340,21 +343,23 @@ const parseSlotNumber = (slot: unknown): number | undefined => {
 
 // TODO: useMemo
 export const useHeadSlotNumber = (
-  refreshInterval?: number
+  refreshInterval: number = HEAD_SLOT_REFRESH_INTERVAL
 ): number | undefined => {
   const slot = useDynamicHeader("head", refreshInterval);
   return parseSlotNumber(slot);
 };
 
 export const useFinalizedSlotNumber = (
-  refreshInterval?: number
+  refreshInterval: number = FINALIZED_SLOT_REFRESH_INTERVAL
 ): number | undefined => {
   const slot = useDynamicHeader("finalized", refreshInterval);
   return parseSlotNumber(slot);
 };
 
-export const useHeadEpochNumber = () => {
-  const headSlot = useHeadSlotNumber();
+export const useHeadEpochNumber = (
+  refreshInterval: number = HEAD_EPOCH_REFRESH_INTERVAL
+) => {
+  const headSlot = useHeadSlotNumber(refreshInterval);
   if (headSlot === undefined) {
     return undefined;
   }
