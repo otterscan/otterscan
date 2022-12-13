@@ -10,6 +10,7 @@ export const EPOCHS_AFTER_HEAD = 1;
 
 export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
 export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
+export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
 
 // TODO: remove duplication with other json fetchers
 // TODO: deprecated and remove
@@ -349,7 +350,7 @@ export const useHeadSlotNumber = (
 };
 
 export const useFinalizedSlotNumber = (
-  refreshInterval?: number
+  refreshInterval: number = FINALIZED_SLOT_REFRESH_INTERVAL
 ): number | undefined => {
   const slot = useDynamicHeader("finalized", refreshInterval);
   return parseSlotNumber(slot);
