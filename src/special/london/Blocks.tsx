@@ -19,11 +19,13 @@ import {
 } from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
-import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
-import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
-import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
+import {
+  faBurn,
+  faCoins,
+  faCube,
+  faGasPump,
+  faHistory,
+} from "@fortawesome/free-solid-svg-icons";
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";

@@ -9,8 +9,8 @@ import {
 import { Tab } from "@headlessui/react";
 import Blockies from "react-blockies";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons/faQuestionCircle";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";

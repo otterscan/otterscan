@@ -1,8 +1,7 @@
 import React, { useContext } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
+import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
 import FormattedBalance from "../components/FormattedBalance";
 import PercentageGauge from "../components/PercentageGauge";
 import { RuntimeContext } from "../useRuntime";

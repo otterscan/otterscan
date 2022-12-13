@@ -1,7 +1,7 @@
 import React, { useMemo, useContext } from "react";
 import { commify, formatUnits } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
+import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { RuntimeContext } from "./useRuntime";
 import { formatValue } from "./components/formatter";
 import { useLatestBlockHeader } from "./useLatestBlock";

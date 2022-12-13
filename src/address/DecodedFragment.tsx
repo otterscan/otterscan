@@ -7,7 +7,7 @@ import {
   Interface,
 } from "@ethersproject/abi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
 type DecodedFragmentProps = {
   intf: Interface;

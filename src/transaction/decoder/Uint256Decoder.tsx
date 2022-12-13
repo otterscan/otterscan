@@ -3,7 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { hexlify, hexZeroPad } from "@ethersproject/bytes";
 import { commify, formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSync } from "@fortawesome/free-solid-svg-icons/faSync";
+import { faSync } from "@fortawesome/free-solid-svg-icons";
 
 type Uint256DecoderProps = {
   r: any;

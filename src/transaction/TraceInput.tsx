@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBomb } from "@fortawesome/free-solid-svg-icons/faBomb";
+import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalance from "../components/FormattedBalance";
 import FunctionSignature from "./FunctionSignature";

@@ -1,7 +1,7 @@
 import { useState, useContext, memo, lazy, FC } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
