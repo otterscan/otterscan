@@ -50,7 +50,7 @@ Otterscan requires only mainline Erigon executing node, patched Erigon RPC daemo
 
 ## It looks familiar...
 
-The UI was intentionally made very similar to the most popular Ethereum block explorer so users do not strugle trying to find where the information is.
+The UI was intentionally made very similar to the most popular Ethereum block explorer so users do not struggle trying to find where the information is.
 
 However, you will see that we made many UI improvements.
 
@@ -76,7 +76,7 @@ To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possibl
 
 To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fast database that empowers Erigon.
 
-To [Trust Wallet](https://github.com/trustwallet/assets) who sponsor and make available their icons under a permissive license.
+To [Trust Wallet](https://github.com/trustwallet/assets) who sponsors and makes available their icons under a permissive license.
 
 To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
 
@@ -88,7 +88,7 @@ To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library
 
 Erigon keeps evolving at a fast pace, with weekly releases, sometimes with (necessary) breaking changes.
 
-This project intends to keep following their progress and mantaining compatibility as the availability of the author permits.
+This project intends to keep following their progress and maintaining compatibility as the availability of the author permits.
 
 Erigon itself is alpha, so I consider this software is also in alpha state, however it is pretty usable.
 
@@ -98,17 +98,21 @@ Also there is room for many improvements that are not possible in the current ce
 
 This software itself is MIT licensed and redistributes MIT-compatible dependencies.
 
-The Otterscan patches for Erigon are LGPL-3 as required by Geth (since Erigon is a Geth derivative) and kept in a separate repository.
+The Otterscan API is implemented inside Erigon and follow its own license (LPGL-3).
 
 ## Getting in touch
 
 ### Erigon Discord server
 
-Otterscan has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server).
+Our Discord server: https://discord.gg/5xM2q2eqDz
+
+Otterscan also has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server) (invite should be requested).
 
 ### Twitter
 
-Follow the creator on Twitter for updates ([@wmitsuda](https://twitter.com/wmitsuda)).
+Official Twitter account: ([@otterscan](https://twitter.com/otterscan)).
+
+Follow the creator on Twitter for more updates ([@wmitsuda](https://twitter.com/wmitsuda)).
 
 ### Donation address
 

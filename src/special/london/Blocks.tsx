@@ -19,11 +19,13 @@ import {
 } from "chart.js";
 import { Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
-import { faCube } from "@fortawesome/free-solid-svg-icons/faCube";
-import { faGasPump } from "@fortawesome/free-solid-svg-icons/faGasPump";
-import { faHistory } from "@fortawesome/free-solid-svg-icons/faHistory";
+import {
+  faBurn,
+  faCoins,
+  faCube,
+  faGasPump,
+  faHistory,
+} from "@fortawesome/free-solid-svg-icons";
 import BlockRow from "./BlockRow";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
@@ -55,7 +57,6 @@ type BlocksProps = {
 const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
-  const [now, setNow] = useState<number>(Date.now());
   const [toggleChart, setToggleChart] = useState<boolean>(true);
 
   const addBlock = useCallback(
@@ -70,7 +71,6 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
       }
 
       const extBlock = await readBlock(provider, blockNumber.toString());
-      setNow(Date.now());
       setBlocks((_blocks) => {
         if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
           return _blocks;
@@ -192,7 +192,6 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             leaveTo="opacity-0 translate-y-10"
           >
             <BlockRow
-              now={now}
               block={b}
               baseFeeDelta={
                 i < all.length - 1

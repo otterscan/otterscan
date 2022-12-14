@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons/faFaucetDrip";
+import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons";
 import { ChecksummedAddress } from "../types";
 
 type FaucetProps = {

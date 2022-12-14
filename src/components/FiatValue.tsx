@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 
@@ -13,7 +13,7 @@ type FiatValueProps = {
  * USD amounts are displayed commified with 2 decimals places and $ prefix,
  * i.e., "$1,000.00".
  */
-const FiatValue: React.FC<FiatValueProps> = ({ value }) => (
+const FiatValue: FC<FiatValueProps> = ({ value }) => (
   <span className="text-xs">
     $
     <span className="font-balance">
@@ -22,4 +22,4 @@ const FiatValue: React.FC<FiatValueProps> = ({ value }) => (
   </span>
 );
 
-export default FiatValue;
+export default memo(FiatValue);

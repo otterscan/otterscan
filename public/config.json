@@ -1,5 +1,5 @@
 {
   "erigonURL": "http://localhost:8545",
-  "beaconAPI": null,
+  "beaconAPI": "http://localhost:3500",
   "assetsURLPrefix": "http://localhost:3001"
 }

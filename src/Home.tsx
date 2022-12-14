@@ -2,15 +2,14 @@ import React, { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
+import { faBurn, faQrcode } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockHeader } from "./useLatestBlock";
-import { blockURL } from "./url";
+import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
-import { useFinalizedSlot, useSlotTime } from "./useBeacon";
+import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
 
 const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
 
@@ -19,8 +18,8 @@ const Home: React.FC = () => {
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
   const latestBlock = useLatestBlockHeader(provider);
-  const beaconData = useFinalizedSlot();
-  const slotTime = useSlotTime(beaconData?.data.header.message.slot);
+  const finalizedSlotNumber = useFinalizedSlotNumber();
+  const slotTime = useSlotTimestamp(finalizedSlotNumber);
   const [isScanning, setScanning] = useState<boolean>(false);
 
   document.title = "Home | Otterscan";
@@ -89,19 +88,14 @@ const Home: React.FC = () => {
           <Timestamp value={latestBlock.timestamp} />
         </NavLink>
       )}
-      {beaconData && (
-        <div className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500">
-          <div>
-            Finalized slot: {commify(beaconData.data.header.message.slot)}
-          </div>
+      {finalizedSlotNumber !== undefined && (
+        <NavLink
+          className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+          to={slotURL(finalizedSlotNumber)}
+        >
+          <div>Finalized slot: {commify(finalizedSlotNumber)}</div>
           {slotTime && <Timestamp value={slotTime} />}
-          <div>
-            State root:{" "}
-            <span className="font-hash">
-              {beaconData.data.header.message.state_root}
-            </span>
-          </div>
-        </div>
+        </NavLink>
       )}
     </div>
   );

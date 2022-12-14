@@ -1,16 +1,16 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext, memo, lazy, FC } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
 import { useGenericSearch } from "./search/search";
-import Otter from "./otter.jpg";
+import Otter from "./otter.png";
 
-const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
+const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
-const Header: React.FC = () => {
+const Header: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
   const [isScanning, setScanning] = useState<boolean>(false);
@@ -72,4 +72,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

@@ -242,6 +242,36 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     return;
   }
 
+  // Epoch?
+  if (q.startsWith("epoch:")) {
+    const mayBeEpoch = q.substring(6);
+    const epoch = parseInt(mayBeEpoch);
+    if (!isNaN(epoch)) {
+      navigate(`/epoch/${epoch}`, { replace: true });
+      return;
+    }
+  }
+
+  // Slot?
+  if (q.startsWith("slot:")) {
+    const mayBeSlot = q.substring(5);
+    const slot = parseInt(mayBeSlot);
+    if (!isNaN(slot)) {
+      navigate(`/slot/${slot}`, { replace: true });
+      return;
+    }
+  }
+
+  // Validator?
+  if (q.startsWith("validator:")) {
+    const mayBeValidator = q.substring(10);
+    const validator = parseInt(mayBeValidator);
+    if (!isNaN(validator)) {
+      navigate(`/validator/${validator}`, { replace: true });
+      return;
+    }
+  }
+
   // Assume it is an ENS name
   navigate(
     `/address/${maybeAddress}${

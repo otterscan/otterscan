@@ -2,21 +2,7 @@
 
 This software is currently distributed as a docker image.
 
-It depends heavily on a working Erigon installation with Otterscan patches applied, so let's begin with it first.
-
-## Install Erigon
-
-You will need an Erigon executing node (`erigon`) with Otterscan patches. Since setting up an Erigon environment itself can take some work, make sure to follow their instructions and have a working archive node before continuing.
-
-My personal experience: at the moment of this writing (~block 15,000,000), setting up an archive node takes over 3-7 days (depending on your hardware) and ~1.6 TB of SSD.
-
-They have weekly alpha releases, make sure you are running one of them, not development ones.
-
-## Install Otterscan-patched erigon
-
-We rely on custom JSON-RPC APIs which are not available in a standard ETH node. We keep a separated repository containing an Erigon fork here: https://github.com/wmitsuda/erigon.
-
-Please follow the instructions in the repository `README` and replace the original Erigon `erigon` with our patched one.
+The only requirement is to have a working Erigon node >= v2.29.0. Make sure it is fully synced before continuing.
 
 ## Enable Otterscan namespace on erigon
 
@@ -35,6 +21,8 @@ Now you should have an Erigon node with Otterscan JSON-RPC APIs and CORS enabled
 ## Run Otterscan docker image from Docker Hub
 
 The Otterscan official repo on Docker Hub is [here](https://hub.docker.com/orgs/otterscan/repositories).
+
+There is an image tag for each release tag on GitHub.
 
 ```
 docker run --rm -p 5100:80 --name otterscan -d otterscan/otterscan:<versiontag>
@@ -58,19 +46,21 @@ This is the preferred way to run Otterscan. You can read about other ways [here]
 
 ## (Optional) Enable integration with beacon chain
 
-You can optionally enable displaying extra info from the beacon chain by providing the public URL of your beacon node API.
+[Instructions are here](./beacon-chain.md).
 
-Enabling the beacon chain API depends on which CL implementation you are using.
+## Run Otterscan development image from Docker Hub
 
-> As an example, for Prysm you need to enable CORS and possibly bind the address to the correct network interface with `--grpc-gateway-host="0.0.0.0" --grpc-gateway-corsdomain='*'` and by default it binds it to the port 3500.
+The `develop` branch is automatically built and published on Docker Hub.
 
-When starting the Otterscan process via Docker, you need to add an extra env variable called `BEACON_API_URL` pointing to your beacon node API URL.
+There is a helper script that always pull the latest build and set the required parameters.
 
-Prysm example:
+From the repository root:
 
 ```
-docker run --rm -p 5100:80 --name otterscan -d --env BEACON_API_URL="<your-beacon-node-api-url>" otterscan/otterscan:<versiontag>
+./scripts/run-ots-develop.sh <ERIGON-RPC-URL> <CL-REST-API-URL>
 ```
+
+It'll start a container under the name `otterscan`.
 
 ## Validating the installation (all methods)
 

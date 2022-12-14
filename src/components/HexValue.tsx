@@ -5,7 +5,7 @@ type HexValueProps = {
 };
 
 const HexValue: React.FC<HexValueProps> = ({ value }) => (
-  <span className="font-hash text-black">{value}</span>
+  <span className="font-hash text-black break-all">{value}</span>
 );
 
 export default HexValue;

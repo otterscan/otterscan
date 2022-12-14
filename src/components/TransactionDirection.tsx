@@ -1,7 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins } from "@fortawesome/free-solid-svg-icons/faCoins";
-import { faLongArrowAltRight } from "@fortawesome/free-solid-svg-icons/faLongArrowAltRight";
+import {
+  faCoins,
+  faLongArrowAltRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 export enum Direction {
   IN,
