@@ -45,7 +45,7 @@ const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
       <div>-</div>
       <div className="col-span-2"></div>
       <div>-</div>
-      <div></div>
+      <div>-</div>
       <div>-</div>
     </div>
   );

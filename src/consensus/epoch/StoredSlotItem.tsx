@@ -36,7 +36,10 @@ const StoredSlotItem: FC<StoredSlotItemProps> = ({ slotNumber }) => {
         )}
       </div>
       <div>{commify(slot.data.message.body.deposits.length.toString())}</div>
-      <div></div>
+      <div>
+        {commify(slot.data.message.body.attester_slashings.length.toString())} /{" "}
+        {commify(slot.data.message.body.proposer_slashings.length.toString())}
+      </div>
       <div>
         {commify(slot.data.message.body.voluntary_exits.length.toString())}
       </div>

@@ -70,7 +70,7 @@ const Epoch: FC = () => {
             <div>Attestations</div>
             <div className="col-span-2">Sync Participation</div>
             <div>Deposits</div>
-            <div>Slashings P/A</div>
+            <div>Slashings A/P</div>
             <div>Exits</div>
             <div></div>
             <div></div>
