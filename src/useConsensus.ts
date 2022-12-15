@@ -1,6 +1,7 @@
 import { useContext, useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
+import { jsonFetcher, jsonFetcherWithErrorHandling } from "./fetcher";
 import { RuntimeContext } from "./useRuntime";
 
 // TODO: get these from config
@@ -11,29 +12,6 @@ export const EPOCHS_AFTER_HEAD = 1;
 export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
 export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
 export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
-
-// TODO: remove duplication with other json fetchers
-// TODO: deprecated and remove
-const jsonFetcher = async (url: string): Promise<unknown> => {
-  try {
-    const res = await fetch(url);
-    if (res.ok) {
-      return res.json();
-    }
-    return null;
-  } catch (err) {
-    console.warn(`error while getting beacon data: url=${url} err=${err}`);
-    return null;
-  }
-};
-
-const jsonFetcherWithErrorHandling = async (url: string) => {
-  const res = await fetch(url);
-  if (res.ok) {
-    return res.json();
-  }
-  throw res;
-};
 
 export const slot2Epoch = (slotNumber: number) =>
   Math.floor(slotNumber / SLOTS_PER_EPOCH);

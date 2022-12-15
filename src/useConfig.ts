@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import useSWRImmutable from "swr/immutable";
 import { CONFIG_PATH } from "./config";
+import { jsonFetcherWithErrorHandling } from "./fetcher";
 
 export type OtterscanConfig = {
   erigonURL?: string;
@@ -8,23 +10,17 @@ export type OtterscanConfig = {
 };
 
 export const useConfig = (): [boolean?, OtterscanConfig?] => {
-  const [configOK, setConfigOK] = useState<boolean>();
-  const [config, setConfig] = useState<OtterscanConfig>();
+  const { data } = useSWRImmutable(CONFIG_PATH, jsonFetcherWithErrorHandling);
+  const configOK = data !== undefined;
+  const config = data !== undefined ? (data as OtterscanConfig) : undefined;
 
   useEffect(() => {
-    const readConfig = async () => {
-      const res = await fetch(CONFIG_PATH);
-
-      if (res.ok) {
-        const _config: OtterscanConfig = await res.json();
-        console.info("Loaded app config");
-        console.info(_config);
-        setConfig(_config);
-        setConfigOK(res.ok);
-      }
-    };
-    readConfig();
-  }, []);
+    if (!configOK) {
+      return;
+    }
+    console.info("Loaded app config");
+    console.info(config);
+  }, [config]);
 
   return [configOK, config];
 };
