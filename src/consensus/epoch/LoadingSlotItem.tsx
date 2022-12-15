@@ -1,15 +1,12 @@
 import { FC, memo } from "react";
 import ContentLoader from "react-content-loader";
+import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
-type LoadingSlotItemProps = {
-  slotNumber: number;
-};
-
-const LoadingSlotItem: FC<LoadingSlotItemProps> = ({ slotNumber }) => {
+const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const epochNumber = slot2Epoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);

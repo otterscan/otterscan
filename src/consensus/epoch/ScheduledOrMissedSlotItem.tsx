@@ -1,12 +1,12 @@
 import { FC, memo } from "react";
 import ContentLoader from "react-content-loader";
+import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
-type ScheduledOrMissedSlotItemProps = {
-  slotNumber: number;
+type ScheduledOrMissedSlotItemProps = SlotAwareComponentProps & {
   missed?: boolean;
   scheduled?: boolean;
   isValidating: boolean;

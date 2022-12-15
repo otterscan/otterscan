@@ -4,10 +4,10 @@ import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare } from "@fortawesome/free-solid-svg-icons";
 import { faSquare as faSquareRegular } from "@fortawesome/free-regular-svg-icons";
+import { SlotAwareComponentProps } from "../types";
 import { slotURL } from "../../url";
 
-type SlotLinkProps = {
-  slotNumber: number;
+type SlotLinkProps = SlotAwareComponentProps & {
   missed?: boolean;
   scheduled?: boolean;
 };
