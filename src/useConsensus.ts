@@ -134,7 +134,7 @@ const useCommitteeURL = (
 
 export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     url,
     jsonFetcherWithErrorHandling
   );
@@ -142,28 +142,36 @@ export const useSlot = (slotNumber: number) => {
   return {
     slot: data,
     error,
-    isLoading: !data && !error,
+    isLoading,
     isValidating,
   };
 };
 
 export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  const { data, error, isLoading, isValidating } = useSWRImmutable(
+    url,
+    jsonFetcher
+  );
 
-  if (!data) {
+  if (isLoading || isValidating) {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
 
-  if (typeof data !== "object" || !("data" in data) || data.data === null) {
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("data" in data) ||
+    data.data === null
+  ) {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
   if (
@@ -174,14 +182,14 @@ export const useBlockRoot = (slotNumber: number) => {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
 
   return {
     blockRoot: data.data.root,
     error,
-    isLoading: !data && !error,
+    isLoading,
   };
 };
 
