@@ -36,7 +36,7 @@ const feedRegistryFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
-  async (tokenAddress, blockTag) => {
+  async ([tokenAddress, blockTag]) => {
     if (provider === undefined) {
       return [undefined, undefined];
     }
@@ -88,7 +88,7 @@ const ethUSDFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
-  async (_, blockTag) => {
+  async ([_, blockTag]) => {
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
@@ -139,7 +139,7 @@ const fastGasFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<any | undefined, ["gasgwei", BlockTag | undefined]> =>
-  async (_, blockTag) => {
+  async ([_, blockTag]) => {
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
