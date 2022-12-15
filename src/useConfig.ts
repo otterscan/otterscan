@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { CONFIG_PATH } from "./config";
 
 export type OtterscanConfig = {
   erigonURL?: string;
@@ -12,7 +13,7 @@ export const useConfig = (): [boolean?, OtterscanConfig?] => {
 
   useEffect(() => {
     const readConfig = async () => {
-      const res = await fetch("/config.json");
+      const res = await fetch(CONFIG_PATH);
 
       if (res.ok) {
         const _config: OtterscanConfig = await res.json();
