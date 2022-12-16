@@ -129,7 +129,7 @@ export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
   const { data, error, isLoading, isValidating } = useSWRImmutable(
     url,
-    jsonFetcher
+    jsonFetcherWithErrorHandling
   );
 
   if (isLoading || isValidating) {
@@ -200,18 +200,13 @@ export const useSlotsFromEpoch = (epochNumber: number): number[] => {
 // https://github.com/sigp/lighthouse/issues/3770
 //
 // DO NOT SUSPEND ON PURPOSE!!!
-export const useProposers = (epochNumber: number) => {
-  const url = useEpochProposersURL(epochNumber);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
-  if (error) {
-    console.error(error);
-    return undefined;
-  }
-  return data;
-};
-
 export const useProposerMap = (epochNumber: number) => {
-  const proposers = useProposers(epochNumber);
+  const url = useEpochProposersURL(epochNumber);
+  const { data: proposers } = useSWRImmutable(
+    url,
+    jsonFetcherWithErrorHandling
+  );
+
   const proposerMap = useMemo(() => {
     if (!proposers) {
       return undefined;
