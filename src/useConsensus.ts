@@ -1,6 +1,7 @@
 import { useContext, useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
+import { jsonFetcher, jsonFetcherWithErrorHandling } from "./fetcher";
 import { RuntimeContext } from "./useRuntime";
 
 // TODO: get these from config
@@ -11,29 +12,6 @@ export const EPOCHS_AFTER_HEAD = 1;
 export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
 export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
 export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
-
-// TODO: remove duplication with other json fetchers
-// TODO: deprecated and remove
-const jsonFetcher = async (url: string): Promise<unknown> => {
-  try {
-    const res = await fetch(url);
-    if (res.ok) {
-      return res.json();
-    }
-    return null;
-  } catch (err) {
-    console.warn(`error while getting beacon data: url=${url} err=${err}`);
-    return null;
-  }
-};
-
-const jsonFetcherWithErrorHandling = async (url: string) => {
-  const res = await fetch(url);
-  if (res.ok) {
-    return res.json();
-  }
-  throw res;
-};
 
 export const slot2Epoch = (slotNumber: number) =>
   Math.floor(slotNumber / SLOTS_PER_EPOCH);
@@ -151,7 +129,7 @@ export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
   const { data, error, isLoading, isValidating } = useSWRImmutable(
     url,
-    jsonFetcher
+    jsonFetcherWithErrorHandling
   );
 
   if (isLoading || isValidating) {
@@ -222,18 +200,13 @@ export const useSlotsFromEpoch = (epochNumber: number): number[] => {
 // https://github.com/sigp/lighthouse/issues/3770
 //
 // DO NOT SUSPEND ON PURPOSE!!!
-export const useProposers = (epochNumber: number) => {
-  const url = useEpochProposersURL(epochNumber);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
-  if (error) {
-    console.error(error);
-    return undefined;
-  }
-  return data;
-};
-
 export const useProposerMap = (epochNumber: number) => {
-  const proposers = useProposers(epochNumber);
+  const url = useEpochProposersURL(epochNumber);
+  const { data: proposers } = useSWRImmutable(
+    url,
+    jsonFetcherWithErrorHandling
+  );
+
   const proposerMap = useMemo(() => {
     if (!proposers) {
       return undefined;
