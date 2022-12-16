@@ -9,18 +9,17 @@ export type OtterscanConfig = {
   assetsURLPrefix?: string;
 };
 
-export const useConfig = (): [boolean?, OtterscanConfig?] => {
+export const useConfig = (): OtterscanConfig | undefined => {
   const { data } = useSWRImmutable(CONFIG_PATH, jsonFetcherWithErrorHandling);
-  const configOK = data !== undefined;
   const config = data !== undefined ? (data as OtterscanConfig) : undefined;
 
   useEffect(() => {
-    if (!configOK) {
+    if (data === undefined) {
       return;
     }
     console.info("Loaded app config");
     console.info(config);
   }, [config]);
 
-  return [configOK, config];
+  return config;
 };
