@@ -209,7 +209,7 @@ export const useSourcifyMetadata = (
   return data;
 };
 
-const contractFetcher = async (url: string): Promise<string | null> => {
+const contractFetcher: Fetcher<string | null, string> = async (url) => {
   const res = await fetch(url);
   if (res.ok) {
     return await res.text();
