@@ -648,11 +648,10 @@ export const useHasCode = (
 const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
 
 const tokenMetadataFetcher =
-  (provider: JsonRpcProvider | undefined) =>
-  async (
-    _: "tokenmeta",
-    address: ChecksummedAddress
-  ): Promise<TokenMeta | null> => {
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<TokenMeta | null, ["tokenmeta", ChecksummedAddress]> =>
+  async ([_, address]) => {
     if (provider === undefined) {
       return null;
     }
