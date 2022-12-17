@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
@@ -25,7 +26,10 @@ export const defaultChainInfo: ChainInfo = {
 
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
-const chainInfoFetcher = async (assetsURLPrefix: string, chainId: number) => {
+const chainInfoFetcher: Fetcher<ChainInfo, [string, number]> = async ([
+  assetsURLPrefix,
+  chainId,
+]) => {
   const url = chainInfoURL(assetsURLPrefix, chainId);
   const res = await fetch(url);
   if (!res.ok) {
