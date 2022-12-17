@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Interface } from "@ethersproject/abi";
 import { ErrorDescription } from "@ethersproject/abi/lib/interface";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
@@ -140,12 +141,10 @@ export type Match = {
   metadata: Metadata;
 };
 
-const sourcifyFetcher = async (
-  _: "sourcify",
-  address: ChecksummedAddress,
-  chainId: number,
-  sourcifySource: SourcifySource
-): Promise<Match | null | undefined> => {
+const sourcifyFetcher: Fetcher<
+  Match | null | undefined,
+  ["sourcify", ChecksummedAddress, number, SourcifySource]
+> = async ([_, address, chainId, sourcifySource]) => {
   // Try full match
   try {
     const url = sourcifyMetadata(
