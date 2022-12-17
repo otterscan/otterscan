@@ -11,7 +11,7 @@ import { defaultAbiCoder } from "@ethersproject/abi";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
 import { AddressZero } from "@ethersproject/constants";
-import useSWR from "swr";
+import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import {
   TokenTransfer,
@@ -148,11 +148,11 @@ export const useBlockTransactions = (
   return [totalTxs, txs];
 };
 
-const blockDataFetcher = async (
-  provider: JsonRpcProvider,
-  blockNumberOrHash: string
-) => {
-  return await readBlock(provider, blockNumberOrHash);
+const blockDataFetcher: Fetcher<
+  ExtendedBlock | null,
+  [JsonRpcProvider, string]
+> = async ([provider, blockNumberOrHash]) => {
+  return readBlock(provider, blockNumberOrHash);
 };
 
 // TODO: some callers may use only block headers?
@@ -648,11 +648,10 @@ export const useHasCode = (
 const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
 
 const tokenMetadataFetcher =
-  (provider: JsonRpcProvider | undefined) =>
-  async (
-    _: "tokenmeta",
-    address: ChecksummedAddress
-  ): Promise<TokenMeta | null> => {
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<TokenMeta | null, ["tokenmeta", ChecksummedAddress]> =>
+  async ([_, address]) => {
     if (provider === undefined) {
       return null;
     }

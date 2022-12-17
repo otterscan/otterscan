@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
 import { topic0URL } from "./url";
@@ -7,9 +8,9 @@ export type Topic0Entry = {
   signatures: string[] | undefined;
 };
 
-const topic0Fetcher = async (
-  signatureURL: string
-): Promise<Topic0Entry | null | undefined> => {
+const topic0Fetcher: Fetcher<Topic0Entry | null | undefined, string> = async (
+  signatureURL
+) => {
   try {
     const res = await fetch(signatureURL);
     if (!res.ok) {
