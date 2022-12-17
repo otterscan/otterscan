@@ -265,9 +265,17 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
   // Validator?
   if (q.startsWith("validator:")) {
     const mayBeValidator = q.substring(10);
-    const validator = parseInt(mayBeValidator);
-    if (!isNaN(validator)) {
-      navigate(`/validator/${validator}`, { replace: true });
+
+    // Validator by index
+    if (mayBeValidator.match(/^\d+$/)) {
+      const validatorIndex = parseInt(mayBeValidator);
+      navigate(`/validator/${validatorIndex}`, { replace: true });
+      return;
+    }
+
+    // Validator by public key
+    if (mayBeValidator.length === 98 && isHexString(mayBeValidator, 48)) {
+      navigate(`/validator/${mayBeValidator}`, { replace: true });
       return;
     }
   }

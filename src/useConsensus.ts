@@ -82,7 +82,7 @@ const useBlockRootURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
 };
 
-const useValidatorURL = (validatorIndex: number) => {
+const useValidatorURL = (validatorIndex: number | string) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
@@ -171,7 +171,7 @@ export const useBlockRoot = (slotNumber: number) => {
   };
 };
 
-export const useValidator = (validatorIndex: number) => {
+export const useValidator = (validatorIndex: number | string) => {
   const url = useValidatorURL(validatorIndex);
   const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
   if (error) {
