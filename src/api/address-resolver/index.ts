@@ -35,6 +35,7 @@ _mainnetResolver.addResolver(ercTokenResolver);
 _mainnetResolver.addResolver(hardcodedResolver);
 
 const _defaultResolver = new CompositeAddressResolver();
+_defaultResolver.addResolver(ercTokenResolver);
 _defaultResolver.addResolver(hardcodedResolver);
 
 const resolvers: Record<number, IAddressResolver<SelectedResolvedName<any>>> = {
