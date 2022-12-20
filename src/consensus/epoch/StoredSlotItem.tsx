@@ -5,6 +5,7 @@ import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
+import SlotAttestationsLink from "../components/SlotAttestationsLink";
 import AggregationParticipation from "../slot/AggregationParticipation";
 import { useSlot } from "../../useConsensus";
 
@@ -26,7 +27,11 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
       <td>
         <BlockRoot slotNumber={slotNumber} />
       </td>
-      <td>{commify(slot.data.message.body.attestations.length.toString())}</td>
+      <td>
+        <SlotAttestationsLink slotNumber={slotNumber}>
+          {commify(slot.data.message.body.attestations.length.toString())}
+        </SlotAttestationsLink>
+      </td>
       <td className="self-center">
         {slot.data.message.body.sync_aggregate && (
           <AggregationParticipation
