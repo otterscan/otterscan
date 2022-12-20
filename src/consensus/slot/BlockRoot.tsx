@@ -5,8 +5,11 @@ import { useBlockRoot } from "../../useConsensus";
 
 const BlockRoot: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const { blockRoot } = useBlockRoot(slotNumber);
+  if (blockRoot === undefined) {
+    return <></>;
+  }
 
-  return <div>{blockRoot !== undefined && <HexValue value={blockRoot} />}</div>;
+  return <HexValue value={blockRoot} />;
 };
 
 export default BlockRoot;
