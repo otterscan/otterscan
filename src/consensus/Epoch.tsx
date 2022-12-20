@@ -65,15 +65,16 @@ const Epoch: FC = () => {
             <thead>
               <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
                 <th className="w-28">Slot</th>
-                <th className="w-28">Status</th>
+                <th className="w-24">Status</th>
+                <th className="w-24">Block</th>
                 <th className="w-32">Age</th>
-                <th className="w-28">Proposer</th>
+                <th className="w-24">Proposer</th>
                 <th>Root Hash</th>
-                <th className="w-28">Attestations</th>
+                <th className="w-24">Attestations</th>
                 <th className="w-48">Sync Participation</th>
-                <th className="w-28">Deposits</th>
+                <th className="w-24">Deposits</th>
                 <th className="w-28">Slashings A/P</th>
-                <th className="w-28">Exits</th>
+                <th className="w-24">Exits</th>
               </tr>
             </thead>
             <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">

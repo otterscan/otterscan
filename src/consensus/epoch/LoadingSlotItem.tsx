@@ -21,6 +21,7 @@ const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
           <rect x="0" y="0" rx="1" ry="1" width="30" height="4" />
         </ContentLoader>
       </td>
+      <td></td>
       <td>
         <SlotTimestamp slotNumber={slotNumber} />
       </td>

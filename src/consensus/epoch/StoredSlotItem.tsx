@@ -2,6 +2,7 @@ import { FC, memo } from "react";
 import { commify } from "@ethersproject/units";
 import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
+import BlockLink from "../../components/BlockLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
@@ -18,6 +19,13 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
         <SlotLink slotNumber={slotNumber} />
       </td>
       <td>Proposed</td>
+      <td>
+        {slot.data.message.body.execution_payload && (
+          <BlockLink
+            blockTag={slot.data.message.body.execution_payload.block_number}
+          />
+        )}
+      </td>
       <td>
         <SlotTimestamp slotNumber={slotNumber} />
       </td>

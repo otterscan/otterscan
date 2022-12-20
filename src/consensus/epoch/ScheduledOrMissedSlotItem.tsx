@@ -35,6 +35,7 @@ const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
         {missed && "Missed"}
         {scheduled && "Scheduled"}
       </td>
+      <td>-</td>
       <td>
         <SlotTimestamp slotNumber={slotNumber} />
       </td>
