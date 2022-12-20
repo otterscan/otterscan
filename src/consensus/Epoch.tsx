@@ -12,7 +12,7 @@ import { SelectionContext, useSelection } from "../useSelection";
 import {
   useEpochTimestamp,
   useFinalizedSlotNumber,
-  useSlotsFromEpoch,
+  useReversedSlotsFromEpoch,
 } from "../useConsensus";
 import { TimeContext, useTicker } from "../useTicker";
 
@@ -31,7 +31,7 @@ const Epoch: FC = () => {
   const selectionCtx = useSelection();
 
   const epochTimestamp = useEpochTimestamp(epochNumber);
-  const slots = useSlotsFromEpoch(epochAsNumber);
+  const slots = useReversedSlotsFromEpoch(epochAsNumber);
   const finalizedSlot = useFinalizedSlotNumber();
 
   const isFinalized = useMemo(() => {
@@ -61,25 +61,27 @@ const Epoch: FC = () => {
           <InfoRow title="Timestamp">
             {epochTimestamp && <Timestamp value={epochTimestamp} />}
           </InfoRow>
-          <div className="grid grid-cols-12 gap-x-1 bg-gray-100 border-t border-b border-gray-200 px-2 py-2 font-bold text-gray-500 text-sm">
-            <div>Slot</div>
-            <div>Status</div>
-            <div>Age</div>
-            <div>Proposer</div>
-            <div>Root Hash</div>
-            <div>Attestations</div>
-            <div className="col-span-2">Sync Participation</div>
-            <div>Deposits</div>
-            <div>Slashings A/P</div>
-            <div>Exits</div>
-            <div></div>
-            <div></div>
-          </div>
-          <div className="flex flex-col-reverse">
-            <TimeContext.Provider value={now}>
-              <SlotList slots={slots} />
-            </TimeContext.Provider>
-          </div>
+          <table className="w-full border-t border-b border-gray-200 px-2 py-2 text-sm text-left table-fixed [&>*>tr]:items-baseline">
+            <thead>
+              <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
+                <th className="w-28">Slot</th>
+                <th className="w-28">Status</th>
+                <th className="w-32">Age</th>
+                <th className="w-28">Proposer</th>
+                <th>Root Hash</th>
+                <th className="w-28">Attestations</th>
+                <th className="w-48">Sync Participation</th>
+                <th className="w-28">Deposits</th>
+                <th className="w-28">Slashings A/P</th>
+                <th className="w-28">Exits</th>
+              </tr>
+            </thead>
+            <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
+              <TimeContext.Provider value={now}>
+                <SlotList slots={slots} />
+              </TimeContext.Provider>
+            </tbody>
+          </table>
         </ContentFrame>
       </SelectionContext.Provider>
     </StandardFrame>

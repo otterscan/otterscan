@@ -195,6 +195,16 @@ export const useSlotsFromEpoch = (epochNumber: number): number[] => {
   return slots;
 };
 
+export const useReversedSlotsFromEpoch = (epochNumber: number): number[] => {
+  const slots = useSlotsFromEpoch(epochNumber);
+  const reversed = useMemo(() => {
+    const r = [...slots];
+    return r.reverse();
+  }, [slots]);
+
+  return reversed;
+};
+
 // Note: this API seems really slow in LH; workaround it
 // to not block the entire UI:
 // https://github.com/sigp/lighthouse/issues/3770
