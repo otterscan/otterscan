@@ -12,8 +12,10 @@ import BlockLink from "../../components/BlockLink";
 import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "./BlockRoot";
 import HexValue from "../../components/HexValue";
+import RelevantNumericValue from "../../components/RelevantNumericValue";
 import AggregationParticipation from "./AggregationParticipation";
 import AggregationBits from "./AggregationBits";
+import SlashingCount from "../components/SlashingCount";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
 
 const Overview: FC = () => {
@@ -91,7 +93,9 @@ const Overview: FC = () => {
             <HexValue value={slot.data.message.body.eth1_data.deposit_root} />
           </InfoRow>
           <InfoRow title="ETH1 Deposit Count">
-            {commify(slot.data.message.body.eth1_data.deposit_count.toString())}
+            <RelevantNumericValue
+              value={slot.data.message.body.eth1_data.deposit_count}
+            />
           </InfoRow>
           {slot.data.message.body.sync_aggregate && (
             <>
@@ -120,20 +124,17 @@ const Overview: FC = () => {
             </>
           )}
           <InfoRow title="Voluntary Exits">
-            {commify(slot.data.message.body.voluntary_exits.length.toString())}
+            <RelevantNumericValue
+              value={slot.data.message.body.voluntary_exits.length}
+            />
           </InfoRow>
-          <InfoRow title="Slashings">
-            {commify(
-              slot.data.message.body.attester_slashings.length.toString()
-            )}{" "}
-            attester /{" "}
-            {commify(
-              slot.data.message.body.proposer_slashings.length.toString()
-            )}{" "}
-            proposer slashings
+          <InfoRow title="Slashings (Attester/Proposer)">
+            <SlashingCount slot={slot} />
           </InfoRow>
           <InfoRow title="Deposits">
-            {commify(slot.data.message.body.deposits.length.toString())}
+            <RelevantNumericValue
+              value={slot.data.message.body.deposits.length}
+            />
           </InfoRow>
         </>
       )}

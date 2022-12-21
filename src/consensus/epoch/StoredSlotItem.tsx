@@ -8,6 +8,8 @@ import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
 import SlotAttestationsLink from "../components/SlotAttestationsLink";
 import AggregationParticipation from "../slot/AggregationParticipation";
+import RelevantNumericValue from "../../components/RelevantNumericValue";
+import SlashingCount from "../components/SlashingCount";
 import { useSlot } from "../../useConsensus";
 
 const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
@@ -49,13 +51,16 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
           />
         )}
       </td>
-      <td>{commify(slot.data.message.body.deposits.length.toString())}</td>
       <td>
-        {commify(slot.data.message.body.attester_slashings.length.toString())} /{" "}
-        {commify(slot.data.message.body.proposer_slashings.length.toString())}
+        <RelevantNumericValue value={slot.data.message.body.deposits.length} />
       </td>
       <td>
-        {commify(slot.data.message.body.voluntary_exits.length.toString())}
+        <SlashingCount slot={slot} />
+      </td>
+      <td>
+        <RelevantNumericValue
+          value={slot.data.message.body.voluntary_exits.length}
+        />
       </td>
     </tr>
   );
