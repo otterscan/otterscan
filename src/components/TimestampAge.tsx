@@ -1,22 +1,17 @@
-import React from "react";
-import { useCurrentTime } from "../useTicker";
-import { ageString } from "../utils/utils";
+import { FC, memo } from "react";
+import { useCurrentTimeFastRefresh } from "../useTicker";
+import Age from "./Age";
 
 type TimestampAgeProps = {
   timestamp: number;
 };
 
-const TimestampAge: React.FC<TimestampAgeProps> = ({ timestamp }) => {
-  const now = useCurrentTime();
+const TimestampAge: FC<TimestampAgeProps> = ({ timestamp }) => {
+  const now = useCurrentTimeFastRefresh();
   const nowInSecs = Math.round((now?.getTime() ?? Date.now()) / 1000);
-  const diff = nowInSecs - timestamp;
-  const desc = ageString(diff);
+  const durationInSecs = nowInSecs - timestamp;
 
-  return (
-    <span className="truncate" title={desc}>
-      {desc}
-    </span>
-  );
+  return <Age durationInSecs={durationInSecs} />;
 };
 
-export default React.memo(TimestampAge);
+export default memo(TimestampAge);

@@ -7,6 +7,7 @@ import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
 import NotFinalized from "./components/NotFinalized";
 import Timestamp from "../components/Timestamp";
+import { TickerContextProvider } from "../components/AutoRefreshAge";
 import SlotItem from "./epoch/SlotItem";
 import { SelectionContext, useSelection } from "../useSelection";
 import {
@@ -14,7 +15,6 @@ import {
   useFinalizedSlotNumber,
   useReversedSlotsFromEpoch,
 } from "../useConsensus";
-import { TimeContext, useTicker } from "../useTicker";
 
 const Epoch: FC = () => {
   const { epochNumber } = useParams();
@@ -41,8 +41,6 @@ const Epoch: FC = () => {
 
     return slots[0] <= finalizedSlot;
   }, [slots, finalizedSlot]);
-
-  const now = useTicker();
 
   return (
     <StandardFrame>
@@ -78,9 +76,9 @@ const Epoch: FC = () => {
               </tr>
             </thead>
             <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
-              <TimeContext.Provider value={now}>
+              <TickerContextProvider>
                 <SlotList slots={slots} />
-              </TimeContext.Provider>
+              </TickerContextProvider>
             </tbody>
           </table>
         </ContentFrame>
