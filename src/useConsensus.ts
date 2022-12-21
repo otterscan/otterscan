@@ -247,9 +247,15 @@ export const useProposerMap = (epochNumber: number) => {
   return proposerMap;
 };
 
+// 0xFFFFFFFFFFFFFFFF; used to indicate it has not happened yet
+const MAX_EPOCH = "18446744073709551615";
+
 export const useEpochTimestamp = (epoch: any) => {
   const genesisTime = useGenesisTime();
   if (epoch === undefined || genesisTime === undefined) {
+    return undefined;
+  }
+  if (epoch === MAX_EPOCH) {
     return undefined;
   }
   return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
