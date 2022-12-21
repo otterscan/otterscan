@@ -10,9 +10,15 @@ import { slotURL } from "../../url";
 type SlotLinkProps = SlotAwareComponentProps & {
   missed?: boolean;
   scheduled?: boolean;
+  slashings?: boolean;
 };
 
-const SlotLink: FC<SlotLinkProps> = ({ slotNumber, missed, scheduled }) => {
+const SlotLink: FC<SlotLinkProps> = ({
+  slotNumber,
+  missed,
+  scheduled,
+  slashings,
+}) => {
   let text = commify(slotNumber);
 
   return (
@@ -25,7 +31,7 @@ const SlotLink: FC<SlotLinkProps> = ({ slotNumber, missed, scheduled }) => {
       to={slotURL(slotNumber)}
     >
       <FontAwesomeIcon
-        className="self-center"
+        className={`self-center ${slashings ? "text-red-600" : ""}`}
         icon={missed || scheduled ? faSquareRegular : faSquare}
         size="1x"
       />
