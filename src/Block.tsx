@@ -12,6 +12,7 @@ import BlockNotFound from "./components/BlockNotFound";
 import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import BlockReward from "./BlockReward";
+import RelativePosition from "./components/RelativePosition";
 import GasValue from "./components/GasValue";
 import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
@@ -137,8 +138,10 @@ const Block: React.FC = () => {
           <InfoRow title="Gas Used/Limit">
             <div className="flex space-x-3 items-baseline">
               <div>
-                <GasValue value={block.gasUsed} /> /{" "}
-                <GasValue value={block.gasLimit} />
+                <RelativePosition
+                  pos={<GasValue value={block.gasUsed} />}
+                  total={<GasValue value={block.gasLimit} />}
+                />
               </div>
               <PercentageBar perc={gasUsedPerc!} />
             </div>

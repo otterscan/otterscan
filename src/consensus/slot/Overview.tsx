@@ -85,7 +85,7 @@ const Overview: FC = () => {
             <HexValue value={slot.data.message.body.graffiti} />)
           </InfoRow>
           <InfoRow title="ETH1 Block Hash">
-            <HexValue value={slot.data.message.body.eth1_data.block_hash} />
+            <BlockLink blockTag={slot.data.message.body.eth1_data.block_hash} />
           </InfoRow>
           <InfoRow title="ETH1 Deposit Root">
             <HexValue value={slot.data.message.body.eth1_data.deposit_root} />
@@ -119,9 +119,6 @@ const Overview: FC = () => {
               </InfoRow>
             </>
           )}
-          <InfoRow title="Attestations">
-            {commify(slot.data.message.body.attestations.length.toString())}
-          </InfoRow>
           <InfoRow title="Voluntary Exits">
             {commify(slot.data.message.body.voluntary_exits.length.toString())}
           </InfoRow>

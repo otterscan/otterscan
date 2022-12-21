@@ -30,6 +30,10 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
   const activationTimestamp = useEpochTimestamp(
     validator?.data.validator.activation_epoch
   );
+  const exitTimestamp = useEpochTimestamp(validator?.data.validator.exit_epoch);
+  const withdrawableTimestamp = useEpochTimestamp(
+    validator?.data.validator.withdrawable_epoch
+  );
 
   return (
     <ContentFrame tabs>
@@ -76,6 +80,24 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
               {activationTimestamp && <Timestamp value={activationTimestamp} />}
             </div>
           </InfoRow>
+          {exitTimestamp && (
+            <InfoRow title="Exit Epoch">
+              <div className="flex space-x-2">
+                <EpochLink epochNumber={validator.data.validator.exit_epoch} />
+                <Timestamp value={exitTimestamp} />
+              </div>
+            </InfoRow>
+          )}
+          {withdrawableTimestamp && (
+            <InfoRow title="Withdrawable Epoch">
+              <div className="flex space-x-2">
+                <EpochLink
+                  epochNumber={validator.data.validator.withdrawable_epoch}
+                />
+                <Timestamp value={withdrawableTimestamp} />
+              </div>
+            </InfoRow>
+          )}
         </>
       )}
     </ContentFrame>

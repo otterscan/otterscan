@@ -3,7 +3,7 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { isHexString } from "@ethersproject/bytes";
 import StandardFrame from "../StandardFrame";
-import StandardSubtitle from "../StandardSubtitle";
+import ValidatorSubtitle from "./validator/ValidatorSubtitle";
 import NavTab from "../components/NavTab";
 import Overview from "./validator/Overview";
 import { useValidator } from "../useConsensus";
@@ -26,14 +26,10 @@ const Validator: FC = () => {
     <StandardFrame>
       {validator && (
         <>
-          <StandardSubtitle>
-            <div className="flex space-x-1 items-baseline">
-              <span>Validator</span>
-              <span className="text-base text-gray-500">
-                #{validator.data.index}
-              </span>
-            </div>
-          </StandardSubtitle>
+          <ValidatorSubtitle
+            validatorIndex={validator.data.index}
+            slashed={validator.data.validator.slashed}
+          />
           <SelectionContext.Provider value={selectionCtx}>
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
