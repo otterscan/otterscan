@@ -14,10 +14,12 @@ const ValidatorLink: FC<ValidatorLinkProps> = ({ validatorIndex }) => {
 
   return (
     <NavLink
-      className="flex space-x-2 items-baseline text-link-blue hover:text-link-blue-hover font-blocknum"
+      className="flex space-x-1 items-baseline text-link-blue hover:text-link-blue-hover font-blocknum"
       to={validatorURL(validatorIndex)}
     >
-      <FontAwesomeIcon className="self-center" icon={faUser} size="1x" />
+      <span className="text-cyan-600">
+        <FontAwesomeIcon className="self-center" icon={faUser} size="1x" />
+      </span>
       <span>{text}</span>
     </NavLink>
   );
