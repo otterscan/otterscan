@@ -119,9 +119,6 @@ const Overview: FC = () => {
               </InfoRow>
             </>
           )}
-          <InfoRow title="Attestations">
-            {commify(slot.data.message.body.attestations.length.toString())}
-          </InfoRow>
           <InfoRow title="Voluntary Exits">
             {commify(slot.data.message.body.voluntary_exits.length.toString())}
           </InfoRow>
