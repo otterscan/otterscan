@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { SlotAwareComponentProps } from "../types";
-import TimestampAge from "../../components/TimestampAge";
+import AutoRefreshAge from "../../components/AutoRefreshAge";
 import { useSlotTimestamp } from "../../useConsensus";
 
 const SlotTimestamp: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
@@ -9,7 +9,7 @@ const SlotTimestamp: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
     return <></>;
   }
 
-  return <TimestampAge timestamp={slotTimestamp} />;
+  return <AutoRefreshAge timestamp={slotTimestamp} />;
 };
 
 export default SlotTimestamp;

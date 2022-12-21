@@ -1,26 +1,26 @@
-export const ageString = (diff: number) => {
-  if (diff === 0) {
+export const ageString = (durationInSecs: number) => {
+  if (durationInSecs === 0) {
     return "now";
   }
 
   let desc = "";
 
-  const isInThePast = diff > 0;
+  const isInThePast = durationInSecs > 0;
   if (!isInThePast) {
     desc = "in ";
-    diff = -diff;
+    durationInSecs = -durationInSecs;
   }
 
-  if (diff <= 1) {
+  if (durationInSecs <= 1) {
     desc += "1 sec ";
-  } else if (diff < 60) {
-    desc += `${Math.trunc(diff)} secs `;
+  } else if (durationInSecs < 60) {
+    desc += `${Math.trunc(durationInSecs)} secs `;
   } else {
-    const days = Math.trunc(diff / 86400);
-    diff %= 86400;
-    const hours = Math.trunc(diff / 3600);
-    diff %= 3600;
-    const mins = Math.trunc(diff / 60);
+    const days = Math.trunc(durationInSecs / 86400);
+    durationInSecs %= 86400;
+    const hours = Math.trunc(durationInSecs / 3600);
+    durationInSecs %= 3600;
+    const mins = Math.trunc(durationInSecs / 60);
 
     if (days > 0) {
       desc += `${days} ${days === 1 ? "day" : "days"} `;
