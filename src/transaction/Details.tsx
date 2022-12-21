@@ -218,9 +218,6 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <InfoRow title="Block / Position">
             <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
               <div className="flex space-x-1 items-baseline mr-3">
-                <span className="text-orange-500">
-                  <FontAwesomeIcon icon={faCube} />
-                </span>
                 <BlockLink blockTag={txData.confirmedData.blockNumber} />
                 <BlockConfirmations
                   confirmations={txData.confirmedData.confirmations}
