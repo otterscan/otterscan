@@ -1,49 +1,74 @@
 import { FC, memo } from "react";
 import { commify } from "@ethersproject/units";
+import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
+import BlockLink from "../../components/BlockLink";
 import SlotTimestamp from "./SlotTimestamp";
 import ValidatorLink from "../components/ValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
+import SlotAttestationsLink from "../components/SlotAttestationsLink";
 import AggregationParticipation from "../slot/AggregationParticipation";
+import RelevantNumericValue from "../../components/RelevantNumericValue";
+import SlashingCount from "../components/SlashingCount";
 import { useSlot } from "../../useConsensus";
 
-type StoredSlotItemProps = {
-  slotNumber: number;
-};
-
-const StoredSlotItem: FC<StoredSlotItemProps> = ({ slotNumber }) => {
+const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const { slot } = useSlot(slotNumber);
 
   return (
-    <div className="grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 hover:bg-skin-table-hover px-2 py-3">
-      <SlotLink slotNumber={slotNumber} />
-      <div>Proposed</div>
-      <div className="truncate">
+    <tr>
+      <td>
+        <SlotLink
+          slotNumber={slotNumber}
+          slashings={
+            slot.data.message.body.attester_slashings.length !== 0 ||
+            slot.data.message.body.proposer_slashings.length !== 0
+          }
+        />
+      </td>
+      <td>Proposed</td>
+      <td>
+        {slot.data.message.body.execution_payload && (
+          <BlockLink
+            blockTag={parseInt(
+              slot.data.message.body.execution_payload.block_number
+            )}
+          />
+        )}
+      </td>
+      <td>
         <SlotTimestamp slotNumber={slotNumber} />
-      </div>
-      <ValidatorLink validatorIndex={slot.data.message.proposer_index} />
-      <div className="truncate">
+      </td>
+      <td>
+        <ValidatorLink validatorIndex={slot.data.message.proposer_index} />
+      </td>
+      <td>
         <BlockRoot slotNumber={slotNumber} />
-      </div>
-      <div>
-        {commify(slot.data.message.body.attestations.length.toString())}
-      </div>
-      <div className="col-span-2 self-center">
+      </td>
+      <td>
+        <SlotAttestationsLink slotNumber={slotNumber}>
+          {commify(slot.data.message.body.attestations.length.toString())}
+        </SlotAttestationsLink>
+      </td>
+      <td className="self-center">
         {slot.data.message.body.sync_aggregate && (
           <AggregationParticipation
             hex={slot.data.message.body.sync_aggregate.sync_committee_bits}
           />
         )}
-      </div>
-      <div>{commify(slot.data.message.body.deposits.length.toString())}</div>
-      <div>
-        {commify(slot.data.message.body.attester_slashings.length.toString())} /{" "}
-        {commify(slot.data.message.body.proposer_slashings.length.toString())}
-      </div>
-      <div>
-        {commify(slot.data.message.body.voluntary_exits.length.toString())}
-      </div>
-    </div>
+      </td>
+      <td>
+        <RelevantNumericValue value={slot.data.message.body.deposits.length} />
+      </td>
+      <td>
+        <SlashingCount slot={slot} />
+      </td>
+      <td>
+        <RelevantNumericValue
+          value={slot.data.message.body.voluntary_exits.length}
+        />
+      </td>
+    </tr>
   );
 };
 

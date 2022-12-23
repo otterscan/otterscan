@@ -4,15 +4,21 @@ import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare } from "@fortawesome/free-solid-svg-icons";
 import { faSquare as faSquareRegular } from "@fortawesome/free-regular-svg-icons";
+import { SlotAwareComponentProps } from "../types";
 import { slotURL } from "../../url";
 
-type SlotLinkProps = {
-  slotNumber: number;
+type SlotLinkProps = SlotAwareComponentProps & {
   missed?: boolean;
   scheduled?: boolean;
+  slashings?: boolean;
 };
 
-const SlotLink: FC<SlotLinkProps> = ({ slotNumber, missed, scheduled }) => {
+const SlotLink: FC<SlotLinkProps> = ({
+  slotNumber,
+  missed,
+  scheduled,
+  slashings,
+}) => {
   let text = commify(slotNumber);
 
   return (
@@ -25,7 +31,7 @@ const SlotLink: FC<SlotLinkProps> = ({ slotNumber, missed, scheduled }) => {
       to={slotURL(slotNumber)}
     >
       <FontAwesomeIcon
-        className="self-center"
+        className={`self-center ${slashings ? "text-red-600" : ""}`}
         icon={missed || scheduled ? faSquareRegular : faSquare}
         size="1x"
       />

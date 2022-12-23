@@ -38,7 +38,7 @@ type FourBytesFetcher = Fetcher<
 
 const fourBytesFetcher =
   (assetsURLPrefix: string): FourBytesFetcher =>
-  async (_, key) => {
+  async ([_, key]) => {
     if (key === null || key === "0x") {
       return undefined;
     }

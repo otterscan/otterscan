@@ -1,4 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import useSWRImmutable from "swr/immutable";
+import { CONFIG_PATH } from "./config";
+import { jsonFetcherWithErrorHandling } from "./fetcher";
 
 export type OtterscanConfig = {
   erigonURL?: string;
@@ -6,24 +9,30 @@ export type OtterscanConfig = {
   assetsURLPrefix?: string;
 };
 
-export const useConfig = (): [boolean?, OtterscanConfig?] => {
-  const [configOK, setConfigOK] = useState<boolean>();
-  const [config, setConfig] = useState<OtterscanConfig>();
+export const useConfig = (): OtterscanConfig | undefined => {
+  const { data } = useSWRImmutable(CONFIG_PATH, jsonFetcherWithErrorHandling);
+  const config = useMemo(() => {
+    if (data === undefined) {
+      return undefined;
+    }
+
+    // Override config for local dev
+    const _config: OtterscanConfig = { ...data };
+    if (import.meta.env.DEV) {
+      _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
+      _config.beaconAPI =
+        import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
+    }
+    return _config;
+  }, [data]);
 
   useEffect(() => {
-    const readConfig = async () => {
-      const res = await fetch("/config.json");
+    if (data === undefined) {
+      return;
+    }
+    console.info("Loaded app config");
+    console.info(config);
+  }, [config]);
 
-      if (res.ok) {
-        const _config: OtterscanConfig = await res.json();
-        console.info("Loaded app config");
-        console.info(_config);
-        setConfig(_config);
-        setConfigOK(res.ok);
-      }
-    };
-    readConfig();
-  }, []);
-
-  return [configOK, config];
+  return config;
 };

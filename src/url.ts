@@ -24,6 +24,9 @@ export const epochURL = (epochNumber: number) => `/epoch/${epochNumber}`;
 
 export const slotURL = (slotNumber: number) => `/slot/${slotNumber}`;
 
+export const slotAttestationsURL = (slotNumber: number) =>
+  `/slot/${slotNumber}/attestations`;
+
 export const validatorURL = (validatorIndex: number) =>
   `/validator/${validatorIndex}`;
 

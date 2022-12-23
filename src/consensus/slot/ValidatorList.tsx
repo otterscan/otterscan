@@ -1,9 +1,9 @@
 import { FC, memo } from "react";
+import { SlotAwareComponentProps } from "../types";
 import ValidatorLink from "../components/ValidatorLink";
 import { useCommittee } from "../../useConsensus";
 
-type ValidatorListProps = {
-  slotNumber: number;
+type ValidatorListProps = SlotAwareComponentProps & {
   committeeIndex: number;
 };
 

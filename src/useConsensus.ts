@@ -1,6 +1,7 @@
 import { useContext, useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
+import { jsonFetcher, jsonFetcherWithErrorHandling } from "./fetcher";
 import { RuntimeContext } from "./useRuntime";
 
 // TODO: get these from config
@@ -11,29 +12,6 @@ export const EPOCHS_AFTER_HEAD = 1;
 export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
 export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
 export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
-
-// TODO: remove duplication with other json fetchers
-// TODO: deprecated and remove
-const jsonFetcher = async (url: string): Promise<unknown> => {
-  try {
-    const res = await fetch(url);
-    if (res.ok) {
-      return res.json();
-    }
-    return null;
-  } catch (err) {
-    console.warn(`error while getting beacon data: url=${url} err=${err}`);
-    return null;
-  }
-};
-
-const jsonFetcherWithErrorHandling = async (url: string) => {
-  const res = await fetch(url);
-  if (res.ok) {
-    return res.json();
-  }
-  throw res;
-};
 
 export const slot2Epoch = (slotNumber: number) =>
   Math.floor(slotNumber / SLOTS_PER_EPOCH);
@@ -104,7 +82,7 @@ const useBlockRootURL = (slotNumber: number) => {
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
 };
 
-const useValidatorURL = (validatorIndex: number) => {
+const useValidatorURL = (validatorIndex: number | string) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
@@ -134,7 +112,7 @@ const useCommitteeURL = (
 
 export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
-  const { data, error, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWR(
     url,
     jsonFetcherWithErrorHandling
   );
@@ -142,28 +120,36 @@ export const useSlot = (slotNumber: number) => {
   return {
     slot: data,
     error,
-    isLoading: !data && !error,
+    isLoading,
     isValidating,
   };
 };
 
 export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  const { data, error, isLoading, isValidating } = useSWRImmutable(
+    url,
+    jsonFetcherWithErrorHandling
+  );
 
-  if (!data) {
+  if (isLoading || isValidating) {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
 
-  if (typeof data !== "object" || !("data" in data) || data.data === null) {
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("data" in data) ||
+    data.data === null
+  ) {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
   if (
@@ -174,18 +160,18 @@ export const useBlockRoot = (slotNumber: number) => {
     return {
       blockRoot: undefined,
       error,
-      isLoading: !data && !error,
+      isLoading,
     };
   }
 
   return {
     blockRoot: data.data.root,
     error,
-    isLoading: !data && !error,
+    isLoading,
   };
 };
 
-export const useValidator = (validatorIndex: number) => {
+export const useValidator = (validatorIndex: number | string) => {
   const url = useValidatorURL(validatorIndex);
   const { data, error } = useSWR(url, jsonFetcherWithErrorHandling);
   if (error) {
@@ -209,23 +195,28 @@ export const useSlotsFromEpoch = (epochNumber: number): number[] => {
   return slots;
 };
 
+export const useReversedSlotsFromEpoch = (epochNumber: number): number[] => {
+  const slots = useSlotsFromEpoch(epochNumber);
+  const reversed = useMemo(() => {
+    const r = [...slots];
+    return r.reverse();
+  }, [slots]);
+
+  return reversed;
+};
+
 // Note: this API seems really slow in LH; workaround it
 // to not block the entire UI:
 // https://github.com/sigp/lighthouse/issues/3770
 //
 // DO NOT SUSPEND ON PURPOSE!!!
-export const useProposers = (epochNumber: number) => {
-  const url = useEpochProposersURL(epochNumber);
-  const { data, error } = useSWRImmutable(url, jsonFetcher);
-  if (error) {
-    console.error(error);
-    return undefined;
-  }
-  return data;
-};
-
 export const useProposerMap = (epochNumber: number) => {
-  const proposers = useProposers(epochNumber);
+  const url = useEpochProposersURL(epochNumber);
+  const { data: proposers } = useSWRImmutable(
+    url,
+    jsonFetcherWithErrorHandling
+  );
+
   const proposerMap = useMemo(() => {
     if (!proposers) {
       return undefined;
@@ -256,9 +247,15 @@ export const useProposerMap = (epochNumber: number) => {
   return proposerMap;
 };
 
+// 0xFFFFFFFFFFFFFFFF; used to indicate it has not happened yet
+const MAX_EPOCH = "18446744073709551615";
+
 export const useEpochTimestamp = (epoch: any) => {
   const genesisTime = useGenesisTime();
   if (epoch === undefined || genesisTime === undefined) {
+    return undefined;
+  }
+  if (epoch === MAX_EPOCH) {
     return undefined;
   }
   return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
