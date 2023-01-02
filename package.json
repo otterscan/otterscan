@@ -20,7 +20,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^29.2.4",
-    "@types/node": "^16.18.10",
+    "@types/node": "^16.18.11",
     "@types/react": "^18.0.15",
     "@types/react-blockies": "^1.4.1",
     "@types/react-dom": "^18.0.6",
