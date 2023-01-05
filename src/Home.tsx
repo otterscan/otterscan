@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext, lazy, FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,9 +11,9 @@ import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
 import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
 
-const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
+const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
-const Home: React.FC = () => {
+const Home: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
@@ -101,4 +101,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default React.memo(Home);
+export default memo(Home);

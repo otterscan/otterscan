@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import WarningHeader from "./WarningHeader";
 import Home from "./Home";
@@ -9,16 +9,16 @@ import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
 
-const Block = React.lazy(() => import("./Block"));
-const BlockTransactions = React.lazy(() => import("./BlockTransactions"));
-const Address = React.lazy(() => import("./Address"));
-const Transaction = React.lazy(() => import("./Transaction"));
-const Epoch = React.lazy(() => import("./consensus/Epoch"));
-const Slot = React.lazy(() => import("./consensus/Slot"));
-const Validator = React.lazy(() => import("./consensus/Validator"));
-const London = React.lazy(() => import("./special/london/London"));
-const Faucets = React.lazy(() => import("./Faucets"));
-const PageNotFound = React.lazy(() => import("./PageNotFound"));
+const Block = lazy(() => import("./Block"));
+const BlockTransactions = lazy(() => import("./BlockTransactions"));
+const Address = lazy(() => import("./Address"));
+const Transaction = lazy(() => import("./Transaction"));
+const Epoch = lazy(() => import("./consensus/Epoch"));
+const Slot = lazy(() => import("./consensus/Slot"));
+const Validator = lazy(() => import("./consensus/Validator"));
+const London = lazy(() => import("./special/london/London"));
+const Faucets = lazy(() => import("./Faucets"));
+const PageNotFound = lazy(() => import("./PageNotFound"));
 
 const App = () => {
   const runtime = useRuntime();

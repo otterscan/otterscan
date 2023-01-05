@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { FC, lazy, Suspense, useContext, useEffect } from "react";
 import { useParams, Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import StandardFrame from "./StandardFrame";
@@ -11,11 +11,11 @@ import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
 
-const Details = React.lazy(() => import("./transaction/Details"));
-const Logs = React.lazy(() => import("./transaction/Logs"));
-const Trace = React.lazy(() => import("./transaction/Trace"));
+const Details = lazy(() => import("./transaction/Details"));
+const Logs = lazy(() => import("./transaction/Logs"));
+const Trace = lazy(() => import("./transaction/Trace"));
 
-const Transaction: React.FC = () => {
+const Transaction: FC = () => {
   const { txhash: txHash } = useParams();
   if (txHash === undefined) {
     throw new Error("txhash couldn't be undefined here");
@@ -58,13 +58,13 @@ const Transaction: React.FC = () => {
                   <NavTab href="trace">Trace</NavTab>
                 </Tab.List>
               </Tab.Group>
-              <React.Suspense fallback={null}>
+              <Suspense fallback={null}>
                 <Routes>
                   <Route index element={<Details txData={txData} />} />
                   <Route path="logs" element={<Logs txData={txData} />} />
                   <Route path="trace" element={<Trace txData={txData} />} />
                 </Routes>
-              </React.Suspense>
+              </Suspense>
             </SelectionContext.Provider>
           )}
         </StandardFrame>

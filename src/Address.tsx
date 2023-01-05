@@ -1,8 +1,8 @@
-import React from "react";
+import { FC, lazy } from "react";
 import { useSearchParams } from "react-router-dom";
 import AddressMainPage from "./AddressMainPage";
 
-const AddressTransactionByNonce = React.lazy(
+const AddressTransactionByNonce = lazy(
   () => import("./AddressTransactionByNonce")
 );
 
@@ -13,7 +13,7 @@ const AddressTransactionByNonce = React.lazy(
  * query params, so it is not possible to use default path routing
  * mechanisms to declarative-model them.
  */
-const Address: React.FC = () => {
+const Address: FC = () => {
   // Search address by nonce === transaction @ nonce
   const [searchParams] = useSearchParams();
   const rawNonce = searchParams.get("nonce");
