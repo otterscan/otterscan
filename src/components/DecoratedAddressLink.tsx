@@ -26,6 +26,9 @@ type DecoratedAddressLinkProps = {
   txFrom?: boolean | undefined;
   txTo?: boolean | undefined;
   eoa?: boolean | undefined;
+
+  // Ignore all address resolvers and display the plain address
+  plain?: boolean | undefined;
 };
 
 const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
@@ -38,6 +41,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   txFrom,
   txTo,
   eoa,
+  plain,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(address, provider?.network.chainId);
@@ -88,11 +92,19 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
           <SourcifyLogo />
         </NavLink>
       )}
-      <ResolvedAddress
-        address={address}
-        selectedAddress={selectedAddress}
-        dontOverrideColors={mint || burn}
-      />
+      {plain ? (
+        <PlainAddress
+          address={address}
+          linkable={address !== selectedAddress}
+          dontOverrideColors={mint || burn}
+        />
+      ) : (
+        <ResolvedAddress
+          address={address}
+          selectedAddress={selectedAddress}
+          dontOverrideColors={mint || burn}
+        />
+      )}
       {!mint && !burn && (
         <>
           {eoa === true && (
