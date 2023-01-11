@@ -20,7 +20,7 @@ const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
   };
 
   return (
-    <div
+    <span
       className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
         selection !== null &&
         selection.type === "value" &&
@@ -32,7 +32,7 @@ const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
       onMouseLeave={deselect}
     >
       {children}
-    </div>
+    </span>
   );
 };
 
