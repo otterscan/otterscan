@@ -895,3 +895,56 @@ export const useERC20Metadata = (
   }
   return data;
 };
+
+export const useERC20Holdings = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress
+): ChecksummedAddress[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWR(["ots_getERC20Holdings", address], fetcher);
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined || data === null) {
+    return undefined;
+  }
+  const converted = (data as any[]).map((m) => m.address);
+  return converted;
+};
+
+const erc20BalanceFetcher =
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<
+    BigNumber | null,
+    ["erc20balance", ChecksummedAddress, ChecksummedAddress]
+  > =>
+  async ([_, address, tokenAddress]) => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    const contract = ERC20_PROTOTYPE.connect(provider).attach(tokenAddress);
+    return contract.balanceOf(address);
+  };
+
+export const useTokenBalance = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  tokenAddress: ChecksummedAddress | undefined
+): BigNumber | null | undefined => {
+  const fetcher = erc20BalanceFetcher(provider);
+  const { data, error } = useSWR(
+    ["erc20balance", address, tokenAddress],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined || data === null) {
+    return undefined;
+  }
+  return data;
+};

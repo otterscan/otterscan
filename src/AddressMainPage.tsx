@@ -19,6 +19,7 @@ import Faucet from "./components/Faucet";
 import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
+import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
 import { useHasCode } from "./useErigonHooks";
@@ -106,6 +107,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
+                <NavTab href={`/address/${addressOrName}/tokens`}>
+                  Tokens
+                </NavTab>
                 {hasCode && (
                   <NavTab href={`/address/${addressOrName}/contract`}>
                     <span
@@ -147,6 +151,10 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
                     element={
                       <AddressTransactionResults address={checksummedAddress} />
                     }
+                  />
+                  <Route
+                    path="tokens"
+                    element={<AddressTokens address={checksummedAddress} />}
                   />
                   <Route
                     path="contract"
