@@ -23,6 +23,7 @@ import {
   TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
+import erc721md from "./erc721metadata.json";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -693,6 +694,199 @@ export const useTokenMetadata = (
   const { data, error } = useSWRImmutable(
     provider !== undefined && address !== undefined
       ? ["tokenmeta", address]
+      : null,
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
+
+// TODO: fix json names on erigon return
+export type ContractMatch = {
+  blockNumber: number;
+  address: string;
+};
+
+export const useERC20Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(["ots_getERC20Count"], fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data as number | undefined;
+};
+
+export const useERC20List = (
+  provider: JsonRpcProvider | undefined,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["ots_getERC20Page", pageSize, pageNumber],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined) {
+    return undefined;
+  }
+  const converted = (data as any[]).map((m) => {
+    const c: ContractMatch = {
+      blockNumber: BigNumber.from(m.Block).toNumber(),
+      address: m.Address,
+    };
+    return c;
+  });
+  return converted;
+};
+
+export const useERC721Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(["ots_getERC721Count"], fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data as number | undefined;
+};
+
+export const useERC721List = (
+  provider: JsonRpcProvider | undefined,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["ots_getERC721Page", pageSize, pageNumber],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined) {
+    return undefined;
+  }
+  const converted = (data as any[]).map((m) => {
+    const c: ContractMatch = {
+      blockNumber: BigNumber.from(m.Block).toNumber(),
+      address: m.Address,
+    };
+    return c;
+  });
+  return converted;
+};
+
+const ERC721MD_PROTOTYPE = new Contract(AddressZero, erc721md);
+
+const erc721MetadataFetcher =
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<
+    ERC721Metadata | null,
+    ["erc721meta", ChecksummedAddress, number]
+  > =>
+  async ([_, address, blockNumber]) => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    const contract = ERC721MD_PROTOTYPE.connect(provider).attach(address);
+    try {
+      const [name, symbol] = await Promise.allSettled([
+        contract.name({ blockTag: blockNumber + 1 }),
+        contract.symbol({ blockTag: blockNumber + 1 }),
+      ]);
+
+      return {
+        name: name.status === "fulfilled" ? (name.value as string) : "",
+        symbol: symbol.status === "fulfilled" ? (symbol.value as string) : "",
+      };
+    } catch (err) {
+      // Ignore on purpose; this indicates the probe failed and the address
+      // is not a token
+      return null;
+    }
+  };
+
+export type ERC721Metadata = {
+  name: string;
+  symbol: string;
+};
+
+export const useERC721Metadata = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  blockNumber: number | undefined
+): ERC721Metadata | undefined | null => {
+  const fetcher = erc721MetadataFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && address !== undefined && blockNumber !== undefined
+      ? ["erc721meta", address, blockNumber]
+      : null,
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
+
+const erc20MetadataFetcher =
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<ERC20Metadata | null, ["erc20meta", ChecksummedAddress, number]> =>
+  async ([_, address, blockNumber]) => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    const contract = ERC20_PROTOTYPE.connect(provider).attach(address);
+    try {
+      const [name, symbol, decimals] = await Promise.allSettled([
+        contract.name({ blockTag: blockNumber + 1 }),
+        contract.symbol({ blockTag: blockNumber + 1 }),
+        contract.decimals({ blockTag: blockNumber + 1 }),
+      ]);
+
+      return {
+        name: name.status === "fulfilled" ? (name.value as string) : "",
+        symbol: symbol.status === "fulfilled" ? (symbol.value as string) : "",
+        decimals:
+          decimals.status === "fulfilled"
+            ? (decimals.value as number)
+            : undefined,
+      };
+    } catch (err) {
+      // Ignore on purpose; this indicates the probe failed and the address
+      // is not a token
+      return null;
+    }
+  };
+
+export type ERC20Metadata = {
+  name: string;
+  symbol: string;
+  decimals: number | undefined;
+};
+
+export const useERC20Metadata = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  blockNumber: number | undefined
+): ERC20Metadata | undefined | null => {
+  const fetcher = erc20MetadataFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    provider !== undefined && address !== undefined && blockNumber !== undefined
+      ? ["erc20meta", address, blockNumber]
       : null,
     fetcher
   );
