@@ -4,11 +4,7 @@ import ValueHighlighter from "../components/ValueHighlighter";
 import FormattedBalance from "../components/FormattedBalance";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
-import {
-  useERC20Metadata,
-  useTokenBalance,
-  useTokenMetadata,
-} from "../useErigonHooks";
+import { useTokenBalance, useTokenMetadata } from "../useErigonHooks";
 import { useTokenUSDOracle } from "../usePriceOracle";
 import USDAmount from "../components/USDAmount";
 
@@ -44,14 +40,12 @@ const TokenBalance: FC<TokenBalanceProps> = ({
           metadata &&
           quote !== undefined &&
           decimals !== undefined && (
-            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
-              <USDAmount
-                amount={balance}
-                amountDecimals={metadata.decimals}
-                quote={quote}
-                quoteDecimals={decimals}
-              />
-            </span>
+            <USDAmount
+              amount={balance}
+              amountDecimals={metadata.decimals}
+              quote={quote}
+              quoteDecimals={decimals}
+            />
           )}
       </td>
     </tr>

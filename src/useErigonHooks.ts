@@ -902,14 +902,17 @@ export const useERC20Holdings = (
 ): ChecksummedAddress[] | undefined => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(["ots_getERC20Holdings", address], fetcher);
-  if (error) {
-    return undefined;
-  }
+  const converted = useMemo(() => {
+    if (error) {
+      return undefined;
+    }
 
-  if (data === undefined || data === null) {
-    return undefined;
-  }
-  const converted = (data as any[]).map((m) => m.address);
+    if (data === undefined || data === null) {
+      return undefined;
+    }
+    return (data as any[]).map((m) => m.address);
+  }, [data, error]);
+
   return converted;
 };
 

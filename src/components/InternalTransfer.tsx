@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +20,7 @@ type InternalTransferProps = {
   internalOp: InternalOperation;
 };
 
-const InternalTransfer: React.FC<InternalTransferProps> = ({
+const InternalTransfer: FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {
@@ -102,15 +102,13 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
             {formatEther(internalOp.value)} {symbol}
           </span>
           {blockETHUSDPrice && (
-            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
-              <USDAmount
-                amount={internalOp.value}
-                amountDecimals={decimals}
-                quote={blockETHUSDPrice}
-                // TODO: migrate to SWR and standardize this magic number
-                quoteDecimals={8}
-              />
-            </span>
+            <USDAmount
+              amount={internalOp.value}
+              amountDecimals={decimals}
+              quote={blockETHUSDPrice}
+              // TODO: migrate to SWR and standardize this magic number
+              quoteDecimals={8}
+            />
           )}
         </div>
       </div>

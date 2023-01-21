@@ -1,23 +1,36 @@
 import { FC, memo } from "react";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 
+const DEFAULT_DECIMALS = 2;
+
 type FiatValueProps = {
-  value: BigNumber;
+  value: FixedNumber;
+  decimals?: number;
+  borderColor?: string;
+  bgColor?: string;
+  fgColor?: string;
 };
 
 /**
- * Basic display of ETH -> USD values WITHOUT box decoration, only
- * text formatting.
- *
  * USD amounts are displayed commified with 2 decimals places and $ prefix,
  * i.e., "$1,000.00".
  */
-const FiatValue: FC<FiatValueProps> = ({ value }) => (
-  <span className="text-xs">
+const FiatValue: FC<FiatValueProps> = ({
+  value,
+  decimals = DEFAULT_DECIMALS,
+  borderColor,
+  bgColor,
+  fgColor,
+}) => (
+  <span
+    className={`px-2 ${borderColor ?? ""} border rounded-lg ${
+      bgColor ?? ""
+    } text-xs ${fgColor ?? ""}`}
+  >
     $
     <span className="font-balance">
-      {commify(FixedNumber.fromValue(value, 18).round(2).toString())}
+      {commify(value.round(decimals).toString())}
     </span>
   </span>
 );

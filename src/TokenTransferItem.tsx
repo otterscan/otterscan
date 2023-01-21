@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, memo, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import TransactionAddress from "./components/TransactionAddress";
@@ -15,7 +15,7 @@ type TokenTransferItemProps = {
   t: TokenTransfer;
 };
 
-const TokenTransferItem: React.FC<TokenTransferItemProps> = ({ t }) => {
+const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
   const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
@@ -55,14 +55,12 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({ t }) => {
           </span>
           <TransactionAddress address={t.token} />
           {tokenMeta && quote !== undefined && decimals !== undefined && (
-            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
-              <USDAmount
-                amount={t.value}
-                amountDecimals={tokenMeta.decimals}
-                quote={quote}
-                quoteDecimals={decimals}
-              />
-            </span>
+            <USDAmount
+              amount={t.value}
+              amountDecimals={tokenMeta.decimals}
+              quote={quote}
+              quoteDecimals={decimals}
+            />
           )}
         </div>
       </div>
@@ -70,4 +68,4 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({ t }) => {
   );
 };
 
-export default React.memo(TokenTransferItem);
+export default memo(TokenTransferItem);

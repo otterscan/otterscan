@@ -2,6 +2,9 @@ import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
 import ContentFrame from "../ContentFrame";
+import StandardTable from "../components/StandardTable";
+import StandardTHead from "../components/StandardTHead";
+import StandardTBody from "../components/StandardTBody";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Holdings } from "../useErigonHooks";
@@ -24,54 +27,41 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
     if (erc20List === undefined) {
       return undefined;
     }
-    if (!enabled) {
-      return erc20List;
-    }
-
     return erc20List.filter((t) => tokenSet.has(getAddress(t)));
-  }, [erc20List, tokenSet, enabled]);
+  }, [erc20List, tokenSet]);
+  const tokenList = enabled ? filteredList : erc20List;
 
   return (
     <ContentFrame tabs>
-      <Switch.Group>
-        <div className="flex items-baseline py-4 text-sm">
-          <Switch.Label className="mr-2">Apply filter</Switch.Label>
-          <Switch
-            className={`${
-              enabled ? "bg-blue-600" : "bg-gray-200"
-            } self-center relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
-            checked={enabled}
-            onChange={setEnabled}
-          >
-            <span
-              className={`${
-                enabled ? "translate-x-5" : "translate-x-1"
-              } inline-block h-3 w-3 transform rounded-full bg-white transition-transform`}
-            />
-          </Switch>
-        </div>
-      </Switch.Group>
-      {erc20List && filteredList && (
+      {erc20List && filteredList && tokenList && (
         <SelectionContext.Provider value={selectionCtx}>
-          <TotalBar erc20List={erc20List} filteredList={filteredList} />
-          <table className="w-full border-t border-b border-gray-200 px-2 py-2 text-sm text-left table-fixed [&>*>tr]:items-baseline">
-            <thead>
-              <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
-                <th className="w-96">Token</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
-              {filteredList.map((t) => (
+          <TotalBar
+            erc20List={erc20List}
+            filteredList={filteredList}
+            filterApplied={enabled}
+            applyFilter={setEnabled}
+          />
+          <StandardTable>
+            <StandardTHead>
+              <th className="w-96">Token</th>
+              <th>Balance</th>
+            </StandardTHead>
+            <StandardTBody>
+              {tokenList.map((t) => (
                 <TokenBalance
                   key={t}
                   holderAddress={address}
                   tokenAddress={t}
                 />
               ))}
-            </tbody>
-          </table>
-          <TotalBar erc20List={erc20List} filteredList={filteredList} />
+            </StandardTBody>
+          </StandardTable>
+          <TotalBar
+            erc20List={erc20List}
+            filteredList={filteredList}
+            filterApplied={enabled}
+            applyFilter={setEnabled}
+          />
         </SelectionContext.Provider>
       )}
     </ContentFrame>
@@ -81,17 +71,35 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
 type TotalBarProps = {
   erc20List: ReadonlyArray<unknown>;
   filteredList: ReadonlyArray<unknown>;
+  filterApplied: boolean;
+  applyFilter: (apply: boolean) => void;
 };
 
-const TotalBar: FC<TotalBarProps> = ({ erc20List, filteredList }) => (
+const TotalBar: FC<TotalBarProps> = ({
+  erc20List,
+  filteredList,
+  filterApplied,
+  applyFilter,
+}) => (
   <div className="flex justify-between items-baseline py-3">
     <div className="text-sm text-gray-500">
       {erc20List === undefined || filteredList === undefined ? (
         <>Waiting for search results...</>
       ) : (
         <>
-          {filteredList.length} tokens found (
-          {erc20List.length - filteredList.length} hidden)
+          {filterApplied ? filteredList.length : erc20List.length} tokens found
+          (
+          <Switch
+            className="hover:underline hover:cursor-pointer"
+            onChange={() => applyFilter(!filterApplied)}
+          >
+            {filterApplied ? (
+              <>{erc20List.length - filteredList.length} hidden</>
+            ) : (
+              <>hide spam</>
+            )}
+          </Switch>
+          )
         </>
       )}
     </div>
