@@ -22,9 +22,12 @@ const AddressBalance: React.FC<AddressBalanceProps> = ({ balance }) => {
     <>
       <TransactionValue value={balance} />
       {fiatValue && (
-        <span className="px-2 border-emerald-200 border rounded-lg bg-emerald-100 text-emerald-600">
-          <FiatValue value={fiatValue} />
-        </span>
+        <FiatValue
+          value={fiatValue}
+          borderColor="border-emerald-200"
+          bgColor="bg-emerald-100"
+          fgColor="text-emerald-600"
+        />
       )}
     </>
   );

@@ -35,9 +35,12 @@ const BlockReward: React.FC<BlockRewardProps> = ({ block }) => {
       {value && (
         <>
           {" "}
-          <span className="px-2 border-amber-200 border rounded-lg bg-amber-100 text-amber-600">
-            <FiatValue value={value} />
-          </span>
+          <FiatValue
+            value={value}
+            borderColor="border-amber-200"
+            bgColor="bg-amber-100"
+            fgColor="text-amber-600"
+          />
         </>
       )}
     </>

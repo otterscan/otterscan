@@ -30,9 +30,12 @@ const TransactionDetailsValue: React.FC<TransactionDetailsValueProps> = ({
     <>
       <FormattedBalance value={value} /> {symbol}{" "}
       {fiatValue && (
-        <span className="px-2 border-skin-from border rounded-lg bg-skin-from text-skin-from">
-          <FiatValue value={fiatValue} />
-        </span>
+        <FiatValue
+          value={fiatValue}
+          borderColor="border-skin-from"
+          bgColor="bg-skin-from"
+          fgColor="text-skin-from"
+        />
       )}
     </>
   );
