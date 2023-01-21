@@ -23,7 +23,7 @@ import TransactionType from "../components/TransactionType";
 import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
 import GasValue from "../components/GasValue";
-import USDValue from "../components/USDValue";
+import NativeTokenPrice from "../components/NativeTokenPrice";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
 import { TransactionData } from "../types";
@@ -379,7 +379,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             </div>
           </InfoRow>
           <InfoRow title={`${name} Price`}>
-            <USDValue blockTag={txData.confirmedData.blockNumber} />
+            <NativeTokenPrice blockTag={txData.confirmedData.blockNumber} />
           </InfoRow>
         </>
       )}

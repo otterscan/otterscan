@@ -19,7 +19,7 @@ import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "./components/TransactionValue";
 import FormattedBalance from "./components/FormattedBalance";
-import USDValue from "./components/USDValue";
+import NativeTokenPrice from "./components/NativeTokenPrice";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
@@ -149,7 +149,7 @@ const Block: React.FC = () => {
             <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title={`${name} Price`}>
-            <USDValue blockTag={block.number} />
+            <NativeTokenPrice blockTag={block.number} />
           </InfoRow>
           <InfoRow title="Difficult">
             {commify(block._difficulty.toString())}
