@@ -87,7 +87,8 @@ const TotalBar: FC<TotalBarProps> = ({
         <>Waiting for search results...</>
       ) : (
         <>
-          {filteredList.length} tokens found (
+          {filterApplied ? filteredList.length : erc20List.length} tokens found
+          (
           <Switch
             className="hover:underline hover:cursor-pointer"
             onChange={() => applyFilter(!filterApplied)}
@@ -95,7 +96,7 @@ const TotalBar: FC<TotalBarProps> = ({
             {filterApplied ? (
               <>{erc20List.length - filteredList.length} hidden</>
             ) : (
-              <>filter</>
+              <>hide spam</>
             )}
           </Switch>
           )
