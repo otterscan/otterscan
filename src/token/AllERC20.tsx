@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
+import StandardTable from "../components/StandardTable";
 import PageControl from "../search/PageControl";
 import ERC20Item from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
@@ -72,7 +73,7 @@ const AllERC20: FC = () => {
             />
           )}
         </div>
-        <table className="w-full border-t border-b border-gray-200 px-2 py-2 text-sm text-left table-fixed [&>*>tr]:items-baseline">
+        <StandardTable>
           <thead>
             <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
               <th className="w-96">Address</th>
@@ -95,7 +96,7 @@ const AllERC20: FC = () => {
             // <PendingResults />
             <></>
           )}
-        </table>
+        </StandardTable>
         {page !== undefined && total !== undefined && (
           <div className="flex justify-between items-baseline py-3">
             <div className="text-sm text-gray-500">

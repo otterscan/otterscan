@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
+import StandardTable from "../components/StandardTable";
 import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
 import NotFinalized from "./components/NotFinalized";
@@ -59,7 +60,7 @@ const Epoch: FC = () => {
           <InfoRow title="Timestamp">
             {epochTimestamp && <Timestamp value={epochTimestamp} />}
           </InfoRow>
-          <table className="w-full border-t border-b border-gray-200 px-2 py-2 text-sm text-left table-fixed [&>*>tr]:items-baseline">
+          <StandardTable>
             <thead>
               <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
                 <th className="w-28">Slot</th>
@@ -80,7 +81,7 @@ const Epoch: FC = () => {
                 <SlotList slots={slots} />
               </TickerContextProvider>
             </tbody>
-          </table>
+          </StandardTable>
         </ContentFrame>
       </SelectionContext.Provider>
     </StandardFrame>

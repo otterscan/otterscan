@@ -2,6 +2,7 @@ import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
 import ContentFrame from "../ContentFrame";
+import StandardTable from "../components/StandardTable";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Holdings } from "../useErigonHooks";
@@ -54,7 +55,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
       {erc20List && filteredList && (
         <SelectionContext.Provider value={selectionCtx}>
           <TotalBar erc20List={erc20List} filteredList={filteredList} />
-          <table className="w-full border-t border-b border-gray-200 px-2 py-2 text-sm text-left table-fixed [&>*>tr]:items-baseline">
+          <StandardTable>
             <thead>
               <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
                 <th className="w-96">Token</th>
@@ -70,7 +71,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
                 />
               ))}
             </tbody>
-          </table>
+          </StandardTable>
           <TotalBar erc20List={erc20List} filteredList={filteredList} />
         </SelectionContext.Provider>
       )}
