@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
-import { FixedNumber } from "@ethersproject/bignumber";
+import { FC } from "react";
 import FormattedBalance from "../components/FormattedBalance";
 import FiatValue from "../components/FiatValue";
-import { RuntimeContext } from "../useRuntime";
-import { useETHUSDOracle } from "../usePriceOracle";
+import { useFiatValue } from "../usePriceOracle";
 import { useChainInfo } from "../useChainInfo";
 import { ConfirmedTransactionData } from "../types";
 
@@ -11,19 +9,11 @@ type TransactionFeeProps = {
   confirmedData: ConfirmedTransactionData;
 };
 
-const TransactionFee: React.FC<TransactionFeeProps> = ({ confirmedData }) => {
-  const { provider } = useContext(RuntimeContext);
-  const blockETHUSDPrice = useETHUSDOracle(provider, confirmedData.blockNumber);
+const TransactionFee: FC<TransactionFeeProps> = ({ confirmedData }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const fiatValue =
-    blockETHUSDPrice !== undefined
-      ? FixedNumber.fromValue(
-          confirmedData.fee.mul(blockETHUSDPrice).div(10 ** 8),
-          18
-        )
-      : undefined;
+  const fiatValue = useFiatValue(confirmedData.fee, confirmedData.blockNumber);
 
   return (
     <>

@@ -1,29 +1,19 @@
-import React, { useContext } from "react";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { FC } from "react";
+import { BigNumber } from "@ethersproject/bignumber";
 import TransactionValue from "./components/TransactionValue";
 import FiatValue from "./components/FiatValue";
-import { RuntimeContext } from "./useRuntime";
 import { ExtendedBlock } from "./useErigonHooks";
-import { useETHUSDOracle } from "./usePriceOracle";
+import { useFiatValue } from "./usePriceOracle";
 
 type BlockRewardProps = {
   block: ExtendedBlock;
 };
 
-const BlockReward: React.FC<BlockRewardProps> = ({ block }) => {
-  const { provider } = useContext(RuntimeContext);
-  const eth2USDValue = useETHUSDOracle(provider, block.number);
-
+const BlockReward: FC<BlockRewardProps> = ({ block }) => {
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
-  const value = eth2USDValue
-    ? FixedNumber.fromValue(
-        block.blockReward
-          .add(netFeeReward)
-          .mul(eth2USDValue)
-          .div(10 ** 8),
-        18
-      )
-    : undefined;
+  const totalReward = block.blockReward.add(netFeeReward);
+  const fiatValue = useFiatValue(totalReward, block.number);
+
   return (
     <>
       <TransactionValue value={block.blockReward.add(netFeeReward)} />
@@ -34,11 +24,11 @@ const BlockReward: React.FC<BlockRewardProps> = ({ block }) => {
           <TransactionValue value={netFeeReward} hideUnit />)
         </>
       )}
-      {value && (
+      {fiatValue && (
         <>
           {" "}
           <FiatValue
-            value={value}
+            value={fiatValue}
             borderColor="border-amber-200"
             bgColor="bg-amber-100"
             fgColor="text-amber-600"
