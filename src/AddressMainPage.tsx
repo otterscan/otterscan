@@ -54,7 +54,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
     urlFixer
   );
 
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress, "latest");
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
@@ -107,9 +107,11 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
-                <NavTab href={`/address/${addressOrName}/tokens`}>
-                  Tokens
-                </NavTab>
+                {config?.experimental && (
+                  <NavTab href={`/address/${addressOrName}/tokens`}>
+                    Tokens
+                  </NavTab>
+                )}
                 {hasCode && (
                   <NavTab href={`/address/${addressOrName}/contract`}>
                     <span
@@ -152,10 +154,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = ({}) => {
                       <AddressTransactionResults address={checksummedAddress} />
                     }
                   />
-                  <Route
-                    path="tokens"
-                    element={<AddressTokens address={checksummedAddress} />}
-                  />
+                  {config?.experimental && (
+                    <Route
+                      path="tokens"
+                      element={<AddressTokens address={checksummedAddress} />}
+                    />
+                  )}
                   <Route
                     path="contract"
                     element={

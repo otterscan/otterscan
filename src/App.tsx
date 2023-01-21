@@ -57,8 +57,12 @@ const App = () => {
                       path="address/:addressOrName/*"
                       element={<Address />}
                     />
-                    <Route path="token/erc20/*" element={<AllERC20 />} />
-                    <Route path="token/erc721/*" element={<AllERC721 />} />
+                    {runtime.config?.experimental && (
+                      <>
+                        <Route path="token/erc20/*" element={<AllERC20 />} />
+                        <Route path="token/erc721/*" element={<AllERC721 />} />
+                      </>
+                    )}
                     <Route path="epoch/:epochNumber/*" element={<Epoch />} />
                     <Route path="slot/:slotNumber/*" element={<Slot />} />
                     <Route
