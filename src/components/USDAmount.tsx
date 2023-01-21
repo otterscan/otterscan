@@ -1,8 +1,6 @@
 import { FC, memo } from "react";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
-import { commify } from "@ethersproject/units";
-
-const USD_DECIMALS = 2;
+import FiatValue from "./FiatValue";
 
 type USDAmountProps = {
   amount: BigNumber;
@@ -32,12 +30,12 @@ const USDAmount: FC<USDAmountProps> = ({
   );
 
   return (
-    <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-xs text-gray-600">
-      $
-      <span className="font-balance">
-        {commify(fiatAmount.round(USD_DECIMALS).toString())}
-      </span>
-    </span>
+    <FiatValue
+      value={fiatAmount}
+      borderColor="border-gray-200"
+      bgColor="bg-gray-100"
+      fgColor="text-gray-600"
+    />
   );
 };
 
