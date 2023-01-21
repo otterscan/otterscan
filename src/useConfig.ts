@@ -7,6 +7,7 @@ export type OtterscanConfig = {
   erigonURL?: string;
   beaconAPI?: string;
   assetsURLPrefix?: string;
+  experimental?: boolean;
 };
 
 export const useConfig = (): OtterscanConfig | undefined => {
@@ -22,6 +23,8 @@ export const useConfig = (): OtterscanConfig | undefined => {
       _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
       _config.beaconAPI =
         import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
+      _config.experimental =
+        import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
     }
     return _config;
   }, [data]);

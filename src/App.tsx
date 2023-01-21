@@ -13,6 +13,8 @@ const Block = lazy(() => import("./Block"));
 const BlockTransactions = lazy(() => import("./BlockTransactions"));
 const Address = lazy(() => import("./Address"));
 const Transaction = lazy(() => import("./Transaction"));
+const AllERC20 = lazy(() => import("./token/AllERC20"));
+const AllERC721 = lazy(() => import("./token/AllERC721"));
 const Epoch = lazy(() => import("./consensus/Epoch"));
 const Slot = lazy(() => import("./consensus/Slot"));
 const Validator = lazy(() => import("./consensus/Validator"));
@@ -55,6 +57,12 @@ const App = () => {
                       path="address/:addressOrName/*"
                       element={<Address />}
                     />
+                    {runtime.config?.experimental && (
+                      <>
+                        <Route path="token/erc20/*" element={<AllERC20 />} />
+                        <Route path="token/erc721/*" element={<AllERC721 />} />
+                      </>
+                    )}
                     <Route path="epoch/:epochNumber/*" element={<Epoch />} />
                     <Route path="slot/:slotNumber/*" element={<Slot />} />
                     <Route
