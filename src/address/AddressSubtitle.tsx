@@ -1,8 +1,10 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import Blockies from "react-blockies";
 import StandardSubtitle from "../StandardSubtitle";
 import Copy from "../components/Copy";
 import Faucet from "../components/Faucet";
+import AddressAttributes from "./AddressAttributes";
+import { RuntimeContext } from "../useRuntime";
 import { useChainInfo } from "../useChainInfo";
 import { ChecksummedAddress } from "../types";
 
@@ -17,6 +19,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
   isENS,
   addressOrName,
 }) => {
+  const { config } = useContext(RuntimeContext);
   const { network, faucets } = useChainInfo();
 
   return (
@@ -40,6 +43,9 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
             ENS: {addressOrName}
           </span>
+        )}
+        {config?.experimental && (
+          <AddressAttributes address={checksummedAddress} full />
         )}
       </div>
     </StandardSubtitle>
