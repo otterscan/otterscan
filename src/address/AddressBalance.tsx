@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import TransactionValue from "../components/TransactionValue";
 import FiatValue from "../components/FiatValue";
 import { RuntimeContext } from "../useRuntime";
@@ -14,7 +14,7 @@ const AddressBalance: React.FC<AddressBalanceProps> = ({ balance }) => {
   const eth2USDValue = useETHUSDOracle(provider, "latest");
   const fiatValue =
     !balance.isZero() && eth2USDValue !== undefined
-      ? balance.mul(eth2USDValue).div(10 ** 8)
+      ? FixedNumber.fromValue(balance.mul(eth2USDValue).div(10 ** 8), 18)
       : undefined;
 
   // TODO: inline div with space-x-2 here; verify all users

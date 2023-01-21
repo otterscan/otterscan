@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import TransactionValue from "./components/TransactionValue";
 import FiatValue from "./components/FiatValue";
 import { RuntimeContext } from "./useRuntime";
@@ -16,12 +16,14 @@ const BlockReward: React.FC<BlockRewardProps> = ({ block }) => {
 
   const netFeeReward = block?.feeReward ?? BigNumber.from(0);
   const value = eth2USDValue
-    ? block.blockReward
-        .add(netFeeReward)
-        .mul(eth2USDValue)
-        .div(10 ** 8)
+    ? FixedNumber.fromValue(
+        block.blockReward
+          .add(netFeeReward)
+          .mul(eth2USDValue)
+          .div(10 ** 8),
+        18
+      )
     : undefined;
-
   return (
     <>
       <TransactionValue value={block.blockReward.add(netFeeReward)} />

@@ -1,11 +1,12 @@
 import { FC, memo } from "react";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 
-const USD_DECIMALS = 2;
+const DEFAULT_DECIMALS = 2;
 
 type FiatValueProps = {
-  value: BigNumber;
+  value: FixedNumber;
+  decimals?: number;
   borderColor?: string;
   bgColor?: string;
   fgColor?: string;
@@ -17,22 +18,19 @@ type FiatValueProps = {
  */
 const FiatValue: FC<FiatValueProps> = ({
   value,
+  decimals = DEFAULT_DECIMALS,
   borderColor,
   bgColor,
   fgColor,
 }) => (
   <span
-    className={`px-2 ${borderColor ?? ""} border rounded-lg ${bgColor ?? ""} ${
-      fgColor ?? ""
-    }`}
+    className={`px-2 ${borderColor ?? ""} border rounded-lg ${
+      bgColor ?? ""
+    } text-xs ${fgColor ?? ""}`}
   >
-    <span className="text-xs">
-      $
-      <span className="font-balance">
-        {commify(
-          FixedNumber.fromValue(value, 18).round(USD_DECIMALS).toString()
-        )}
-      </span>
+    $
+    <span className="font-balance">
+      {commify(value.round(decimals).toString())}
     </span>
   </span>
 );

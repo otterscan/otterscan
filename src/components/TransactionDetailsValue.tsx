@@ -1,11 +1,11 @@
 import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import FormattedBalance from "./FormattedBalance";
+import FiatValue from "./FiatValue";
 import { RuntimeContext } from "../useRuntime";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
-import FiatValue from "./FiatValue";
 
 type TransactionDetailsValueProps = {
   blockTag: BlockTag | undefined;
@@ -23,7 +23,7 @@ const TransactionDetailsValue: React.FC<TransactionDetailsValueProps> = ({
   } = useChainInfo();
   const fiatValue =
     !value.isZero() && blockETHUSDPrice !== undefined
-      ? value.mul(blockETHUSDPrice).div(10 ** 8)
+      ? FixedNumber.fromValue(value.mul(blockETHUSDPrice).div(10 ** 8), 18)
       : undefined;
 
   return (

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { FixedNumber } from "@ethersproject/bignumber";
 import FormattedBalance from "../components/FormattedBalance";
 import FiatValue from "../components/FiatValue";
 import { RuntimeContext } from "../useRuntime";
@@ -18,7 +19,10 @@ const TransactionFee: React.FC<TransactionFeeProps> = ({ confirmedData }) => {
   } = useChainInfo();
   const fiatValue =
     blockETHUSDPrice !== undefined
-      ? confirmedData.fee.mul(blockETHUSDPrice).div(10 ** 8)
+      ? FixedNumber.fromValue(
+          confirmedData.fee.mul(blockETHUSDPrice).div(10 ** 8),
+          18
+        )
       : undefined;
 
   return (

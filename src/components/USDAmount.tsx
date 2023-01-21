@@ -25,16 +25,17 @@ const USDAmount: FC<USDAmountProps> = ({
 }) => {
   const value = amount.mul(quote);
   const decimals = amountDecimals + quoteDecimals;
+  const fiatAmount = FixedNumber.fromValue(
+    value,
+    decimals,
+    `ufixed256x${decimals}`
+  );
 
   return (
     <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-xs text-gray-600">
       $
       <span className="font-balance">
-        {commify(
-          FixedNumber.fromValue(value, decimals, `ufixed256x${decimals}`)
-            .round(USD_DECIMALS)
-            .toString()
-        )}
+        {commify(fiatAmount.round(USD_DECIMALS).toString())}
       </span>
     </span>
   );
