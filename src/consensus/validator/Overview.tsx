@@ -46,20 +46,16 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
             <HexValue value={validator.data.validator.pubkey} />
           </InfoRow>
           <InfoRow title="Balance">
-            <div className="space-x-2">
-              <AddressBalance
-                balance={BigNumber.from(validator.data.balance).mul(GWEI)}
-              />
-            </div>
+            <AddressBalance
+              balance={BigNumber.from(validator.data.balance).mul(GWEI)}
+            />
           </InfoRow>
           <InfoRow title="Effective Balance">
-            <div className="space-x-2">
-              <AddressBalance
-                balance={BigNumber.from(
-                  validator.data.validator.effective_balance
-                ).mul(GWEI)}
-              />
-            </div>
+            <AddressBalance
+              balance={BigNumber.from(
+                validator.data.validator.effective_balance
+              ).mul(GWEI)}
+            />
           </InfoRow>
           <InfoRow title="Status">{validator.data.status}</InfoRow>
           <InfoRow title="Eligible Epoch">

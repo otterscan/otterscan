@@ -104,9 +104,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
         <BlockNumberContext.Provider value="latest">
           {balance && (
             <InfoRow title="Balance">
-              <div className="space-x-2">
-                <AddressBalance balance={balance} />
-              </div>
+              <AddressBalance balance={balance} />
             </InfoRow>
           )}
           {creator && (
