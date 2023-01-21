@@ -3,6 +3,8 @@ import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
 import ContentFrame from "../ContentFrame";
 import StandardTable from "../components/StandardTable";
+import StandardTHead from "../components/StandardTHead";
+import StandardTBody from "../components/StandardTBody";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Holdings } from "../useErigonHooks";
@@ -56,13 +58,11 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
         <SelectionContext.Provider value={selectionCtx}>
           <TotalBar erc20List={erc20List} filteredList={filteredList} />
           <StandardTable>
-            <thead>
-              <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
-                <th className="w-96">Token</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
+            <StandardTHead>
+              <th className="w-96">Token</th>
+              <th>Balance</th>
+            </StandardTHead>
+            <StandardTBody>
               {filteredList.map((t) => (
                 <TokenBalance
                   key={t}
@@ -70,7 +70,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
                   tokenAddress={t}
                 />
               ))}
-            </tbody>
+            </StandardTBody>
           </StandardTable>
           <TotalBar erc20List={erc20List} filteredList={filteredList} />
         </SelectionContext.Provider>

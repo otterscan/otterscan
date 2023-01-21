@@ -4,6 +4,8 @@ import StandardFrame from "../StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
 import StandardTable from "../components/StandardTable";
+import StandardTHead from "../components/StandardTHead";
+import StandardTBody from "../components/StandardTBody";
 import InfoRow from "../components/InfoRow";
 import Finalized from "./components/Finalized";
 import NotFinalized from "./components/NotFinalized";
@@ -61,26 +63,24 @@ const Epoch: FC = () => {
             {epochTimestamp && <Timestamp value={epochTimestamp} />}
           </InfoRow>
           <StandardTable>
-            <thead>
-              <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
-                <th className="w-28">Slot</th>
-                <th className="w-24">Status</th>
-                <th className="w-24">Block</th>
-                <th className="w-32">Age</th>
-                <th className="w-24">Proposer</th>
-                <th>Root Hash</th>
-                <th className="w-24">Attestations</th>
-                <th className="w-48">Sync Participation</th>
-                <th className="w-24">Deposits</th>
-                <th className="w-28">Slashings A/P</th>
-                <th className="w-24">Exits</th>
-              </tr>
-            </thead>
-            <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
+            <StandardTHead>
+              <th className="w-28">Slot</th>
+              <th className="w-24">Status</th>
+              <th className="w-24">Block</th>
+              <th className="w-32">Age</th>
+              <th className="w-24">Proposer</th>
+              <th>Root Hash</th>
+              <th className="w-24">Attestations</th>
+              <th className="w-48">Sync Participation</th>
+              <th className="w-24">Deposits</th>
+              <th className="w-28">Slashings A/P</th>
+              <th className="w-24">Exits</th>
+            </StandardTHead>
+            <StandardTBody>
               <TickerContextProvider>
                 <SlotList slots={slots} />
               </TickerContextProvider>
-            </tbody>
+            </StandardTBody>
           </StandardTable>
         </ContentFrame>
       </SelectionContext.Provider>

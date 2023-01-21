@@ -7,6 +7,8 @@ import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
 import StandardTable from "../components/StandardTable";
+import StandardTHead from "../components/StandardTHead";
+import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC721Item from "./ERC721Item";
 import { RuntimeContext } from "../useRuntime";
@@ -74,22 +76,20 @@ const AllERC721: FC = () => {
           )}
         </div>
         <StandardTable>
-          <thead>
-            <tr className="text-gray-500 bg-gray-100 [&>th]:px-2 [&>th]:py-2 [&>th]:truncate">
-              <th className="w-96">Address</th>
-              <th className="w-28">Block</th>
-              <th className="w-40">Age</th>
-              <th>Name</th>
-              <th>Symbol</th>
-            </tr>
-          </thead>
+          <StandardTHead>
+            <th className="w-96">Address</th>
+            <th className="w-28">Block</th>
+            <th className="w-40">Age</th>
+            <th>Name</th>
+            <th>Symbol</th>
+          </StandardTHead>
           {page !== undefined ? (
             <SelectionContext.Provider value={selectionCtx}>
-              <tbody className="[&>tr]:border-t [&>tr]:border-gray-200 hover:[&>tr]:bg-skin-table-hover [&>tr>td]:px-2 [&>tr>td]:py-3 [&>tr>td]:truncate">
+              <StandardTBody>
                 {page.map((m) => (
                   <ERC721Item key={m.address} m={m} />
                 ))}
-              </tbody>
+              </StandardTBody>
             </SelectionContext.Provider>
           ) : (
             // <PendingResults />
