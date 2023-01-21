@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +20,7 @@ type InternalTransferProps = {
   internalOp: InternalOperation;
 };
 
-const InternalTransfer: React.FC<InternalTransferProps> = ({
+const InternalTransfer: FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {

@@ -4,11 +4,7 @@ import ValueHighlighter from "../components/ValueHighlighter";
 import FormattedBalance from "../components/FormattedBalance";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
-import {
-  useERC20Metadata,
-  useTokenBalance,
-  useTokenMetadata,
-} from "../useErigonHooks";
+import { useTokenBalance, useTokenMetadata } from "../useErigonHooks";
 import { useTokenUSDOracle } from "../usePriceOracle";
 import USDAmount from "../components/USDAmount";
 
