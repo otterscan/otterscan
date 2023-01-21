@@ -55,14 +55,12 @@ const TokenTransferItem: React.FC<TokenTransferItemProps> = ({ t }) => {
           </span>
           <TransactionAddress address={t.token} />
           {tokenMeta && quote !== undefined && decimals !== undefined && (
-            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
-              <USDAmount
-                amount={t.value}
-                amountDecimals={tokenMeta.decimals}
-                quote={quote}
-                quoteDecimals={decimals}
-              />
-            </span>
+            <USDAmount
+              amount={t.value}
+              amountDecimals={tokenMeta.decimals}
+              quote={quote}
+              quoteDecimals={decimals}
+            />
           )}
         </div>
       </div>

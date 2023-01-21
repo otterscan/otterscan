@@ -28,14 +28,16 @@ const USDAmount: React.FC<USDAmountProps> = ({
   const decimals = amountDecimals + quoteDecimals;
 
   return (
-    <span className="text-xs">
-      $
-      <span className="font-balance">
-        {commify(
-          FixedNumber.fromValue(value, decimals, `ufixed256x${decimals}`)
-            .round(2)
-            .toString()
-        )}
+    <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
+      <span className="text-xs">
+        $
+        <span className="font-balance">
+          {commify(
+            FixedNumber.fromValue(value, decimals, `ufixed256x${decimals}`)
+              .round(2)
+              .toString()
+          )}
+        </span>
       </span>
     </span>
   );
