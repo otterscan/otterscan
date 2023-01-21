@@ -2,6 +2,8 @@ import { FC, memo } from "react";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 
+const USD_DECIMALS = 2;
+
 type USDAmountProps = {
   amount: BigNumber;
   amountDecimals: number;
@@ -12,9 +14,6 @@ type USDAmountProps = {
 // TODO: fix the duplication mess with other currency display components
 
 /**
- * Basic display of USD amount WITHOUT box decoration, only
- * text formatting.
- *
  * USD amounts are displayed commified with 2 decimals places and $ prefix,
  * i.e., "$1,000.00".
  */
@@ -33,7 +32,7 @@ const USDAmount: FC<USDAmountProps> = ({
       <span className="font-balance">
         {commify(
           FixedNumber.fromValue(value, decimals, `ufixed256x${decimals}`)
-            .round(2)
+            .round(USD_DECIMALS)
             .toString()
         )}
       </span>
