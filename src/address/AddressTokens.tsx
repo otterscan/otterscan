@@ -27,16 +27,13 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
     if (erc20List === undefined) {
       return undefined;
     }
-    if (!enabled) {
-      return erc20List;
-    }
-
     return erc20List.filter((t) => tokenSet.has(getAddress(t)));
-  }, [erc20List, tokenSet, enabled]);
+  }, [erc20List, tokenSet]);
+  const tokenList = enabled ? filteredList : erc20List;
 
   return (
     <ContentFrame tabs>
-      {erc20List && filteredList && (
+      {erc20List && filteredList && tokenList && (
         <SelectionContext.Provider value={selectionCtx}>
           <TotalBar
             erc20List={erc20List}
@@ -50,7 +47,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
               <th>Balance</th>
             </StandardTHead>
             <StandardTBody>
-              {filteredList.map((t) => (
+              {tokenList.map((t) => (
                 <TokenBalance
                   key={t}
                   holderAddress={address}
