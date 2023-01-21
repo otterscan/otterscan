@@ -25,7 +25,6 @@ import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
 import { blockTxsURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
-import { useETHUSDOracle } from "./usePriceOracle";
 import { useChainInfo } from "./useChainInfo";
 
 const Block: React.FC = () => {
@@ -59,7 +58,6 @@ const Block: React.FC = () => {
     block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
-  const blockETHUSDPrice = useETHUSDOracle(provider, block?.number);
 
   return (
     <StandardFrame>
@@ -151,7 +149,7 @@ const Block: React.FC = () => {
             <span className="font-data break-all">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title={`${name} Price`}>
-            <USDValue value={blockETHUSDPrice} />
+            <USDValue blockTag={block.number} />
           </InfoRow>
           <InfoRow title="Difficult">
             {commify(block._difficulty.toString())}

@@ -3,7 +3,6 @@ import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
-  faCube,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import ContentFrame from "../ContentFrame";
@@ -52,7 +51,6 @@ import {
   useTransactionError,
 } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
-import { useETHUSDOracle } from "../usePriceOracle";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -95,11 +93,6 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
   const {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
-
-  const blockETHUSDPrice = useETHUSDOracle(
-    provider,
-    txData?.confirmedData?.blockNumber
-  );
 
   const [errorMsg, outputData, isCustomError] = useTransactionError(
     provider,
@@ -386,7 +379,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             </div>
           </InfoRow>
           <InfoRow title={`${name} Price`}>
-            <USDValue value={blockETHUSDPrice} />
+            <USDValue blockTag={txData.confirmedData.blockNumber} />
           </InfoRow>
         </>
       )}

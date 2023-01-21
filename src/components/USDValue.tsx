@@ -1,18 +1,24 @@
-import React from "react";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { FC, memo, useContext } from "react";
+import { BlockTag } from "@ethersproject/providers";
+import { FixedNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import { useChainInfo } from "../useChainInfo";
+import { RuntimeContext } from "../useRuntime";
+import { useETHUSDOracle } from "../usePriceOracle";
 
 const ETH_FEED_DECIMALS = 8;
 
 type USDValueProps = {
-  value: BigNumber | undefined;
+  blockTag: BlockTag | undefined;
 };
 
-const USDValue: React.FC<USDValueProps> = ({ value }) => {
+const USDValue: FC<USDValueProps> = ({ blockTag }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
+  const { provider } = useContext(RuntimeContext);
+  const blockETHUSDPrice = useETHUSDOracle(provider, blockTag);
+  const value = blockETHUSDPrice;
 
   return (
     <span className="text-sm">
@@ -35,4 +41,4 @@ const USDValue: React.FC<USDValueProps> = ({ value }) => {
   );
 };
 
-export default React.memo(USDValue);
+export default memo(USDValue);
