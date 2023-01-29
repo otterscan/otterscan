@@ -951,3 +951,29 @@ export const useTokenBalance = (
   }
   return data;
 };
+
+export type AddressAttributes = {
+  erc20?: boolean;
+  erc165?: boolean;
+  erc721?: boolean;
+  erc1155?: boolean;
+};
+
+export const useAddressAttributes = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress
+): AddressAttributes | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWR(
+    ["ots_getAddressAttributes", address],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined || data === null) {
+    return undefined;
+  }
+  return data;
+};

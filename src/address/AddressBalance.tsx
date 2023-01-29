@@ -11,9 +11,8 @@ type AddressBalanceProps = {
 const AddressBalance: FC<AddressBalanceProps> = ({ balance }) => {
   const fiatValue = useFiatValue(balance, "latest");
 
-  // TODO: inline div with space-x-2 here; verify all users
   return (
-    <>
+    <div className="space-x-2">
       <TransactionValue value={balance} />
       {fiatValue && (
         <FiatValue
@@ -23,7 +22,7 @@ const AddressBalance: FC<AddressBalanceProps> = ({ balance }) => {
           fgColor="text-emerald-600"
         />
       )}
-    </>
+    </div>
   );
 };
 

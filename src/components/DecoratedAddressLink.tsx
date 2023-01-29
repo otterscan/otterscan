@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useContext } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -10,6 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import PlainAddress from "./PlainAddress";
+import AddressLegend from "./AddressLegend";
+import AddressAttributes from "../address/AddressAttributes";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useResolvedAddress } from "../useResolvedAddresses";
@@ -43,7 +45,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   eoa,
   plain,
 }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(address, provider?.network.chainId);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
@@ -117,6 +119,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
           )}
         </>
       )}
+      {config?.experimental && <AddressAttributes address={address} />}
     </div>
   );
 };
@@ -166,18 +169,5 @@ const ResolvedAddress: React.FC<ResolvedAddressProps> = ({
     !!dontOverrideColors
   );
 };
-
-type AddressLegendProps = {
-  title: string;
-};
-
-const AddressLegend: React.FC<PropsWithChildren<AddressLegendProps>> = ({
-  title,
-  children,
-}) => (
-  <span className="text-xs text-gray-400/70 not-italic" title={title}>
-    {children}
-  </span>
-);
 
 export default React.memo(DecoratedAddressLink);
