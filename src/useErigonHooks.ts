@@ -709,15 +709,50 @@ export type ContractMatch = {
   address: string;
 };
 
-export const useERC20Count = (
-  provider: JsonRpcProvider | undefined
+const useGenericContractList = (
+  provider: JsonRpcProvider | undefined,
+  rpcMethod: string,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    [rpcMethod, pageSize, pageNumber - 1],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined) {
+    return undefined;
+  }
+  const converted = (data as any[]).map((m) => {
+    const c: ContractMatch = {
+      blockNumber: BigNumber.from(m.Block).toNumber(),
+      address: m.Address,
+    };
+    return c;
+  });
+  return converted;
+};
+
+const useGenericContractCount = (
+  provider: JsonRpcProvider | undefined,
+  rpcMethod: string
 ): number | undefined => {
   const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(["ots_getERC20Count"], fetcher);
+  const { data, error } = useSWRImmutable([rpcMethod], fetcher);
   if (error) {
     return undefined;
   }
   return data as number | undefined;
+};
+
+export const useERC20Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  return useGenericContractCount(provider, "ots_getERC20Count");
 };
 
 export const useERC20List = (
@@ -725,37 +760,18 @@ export const useERC20List = (
   pageNumber: number,
   pageSize: number
 ): ContractMatch[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["ots_getERC20Page", pageSize, pageNumber-1],
-    fetcher
+  return useGenericContractList(
+    provider,
+    "ots_getERC20Page",
+    pageNumber,
+    pageSize
   );
-  if (error) {
-    return undefined;
-  }
-
-  if (data === undefined) {
-    return undefined;
-  }
-  const converted = (data as any[]).map((m) => {
-    const c: ContractMatch = {
-      blockNumber: BigNumber.from(m.Block).toNumber(),
-      address: m.Address,
-    };
-    return c;
-  });
-  return converted;
 };
 
 export const useERC721Count = (
   provider: JsonRpcProvider | undefined
 ): number | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(["ots_getERC721Count"], fetcher);
-  if (error) {
-    return undefined;
-  }
-  return data as number | undefined;
+  return useGenericContractCount(provider, "ots_getERC721Count");
 };
 
 export const useERC721List = (
@@ -763,26 +779,12 @@ export const useERC721List = (
   pageNumber: number,
   pageSize: number
 ): ContractMatch[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["ots_getERC721Page", pageSize, pageNumber-1],
-    fetcher
+  return useGenericContractList(
+    provider,
+    "ots_getERC721Page",
+    pageNumber,
+    pageSize
   );
-  if (error) {
-    return undefined;
-  }
-
-  if (data === undefined) {
-    return undefined;
-  }
-  const converted = (data as any[]).map((m) => {
-    const c: ContractMatch = {
-      blockNumber: BigNumber.from(m.Block).toNumber(),
-      address: m.Address,
-    };
-    return c;
-  });
-  return converted;
 };
 
 const ERC721MD_PROTOTYPE = new Contract(AddressZero, erc721md);
