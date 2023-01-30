@@ -1,5 +1,6 @@
 import React from "react";
 import PageButton from "./PageButton";
+import { commify } from "@ethersproject/units";
 
 type PageControlProps = {
   pageNumber: number;
@@ -25,7 +26,7 @@ const PageControl: React.FC<PageControlProps> = ({
         {"<"}
       </PageButton>
       <PageButton goToPage={1} disabled>
-        Page {pageNumber} of {totalPages}
+        Page {commify(pageNumber)} of {commify(totalPages)}
       </PageButton>
       <PageButton goToPage={pageNumber + 1} disabled={isLast}>
         {">"}
