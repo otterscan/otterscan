@@ -6,7 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
-import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";

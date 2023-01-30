@@ -3,7 +3,7 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { isHexString } from "@ethersproject/bytes";
 import StandardFrame from "../StandardFrame";
-import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import ValidatorSubtitle from "./validator/ValidatorSubtitle";
 import NavTab from "../components/NavTab";
 import Overview from "./validator/Overview";

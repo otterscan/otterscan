@@ -1,6 +1,6 @@
 import React from "react";
 import ContentFrame from "../ContentFrame";
-import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import PageControl from "../search/PageControl";
 import ResultHeader from "../search/ResultHeader";
 import PendingResults from "../search/PendingResults";

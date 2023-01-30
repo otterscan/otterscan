@@ -3,7 +3,7 @@ import {
   useSelectionContext,
   OptionalSelection,
   SelectionType,
-} from "../useSelection";
+} from "./useSelection";
 
 export type ContentSelector = (
   selection: OptionalSelection,

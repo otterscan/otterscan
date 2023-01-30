@@ -1,6 +1,6 @@
 import React from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { useSelectionContext } from "../useSelection";
+import { useSelectionContext } from "./useSelection";
 
 type ValueHighlighterProps = React.PropsWithChildren<{
   value: BigNumber;

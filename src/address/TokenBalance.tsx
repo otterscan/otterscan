@@ -1,6 +1,6 @@
 import { FC, useContext } from "react";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
-import ValueHighlighter from "../components/ValueHighlighter";
+import ValueHighlighter from "../selection/ValueHighlighter";
 import FormattedBalance from "../components/FormattedBalance";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";

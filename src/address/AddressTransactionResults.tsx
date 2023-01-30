@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import ContentFrame from "../ContentFrame";
-import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import InfoRow from "../components/InfoRow";
 import AddressBalance from "./AddressBalance";
 import TransactionAddress from "../components/TransactionAddress";

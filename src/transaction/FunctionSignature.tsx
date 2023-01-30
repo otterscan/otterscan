@@ -1,7 +1,7 @@
 import React from "react";
 import SelectionHighlighter, {
   functionSigSelector,
-} from "../components/SelectionHighlighter";
+} from "../selection/SelectionHighlighter";
 
 type FunctionSignatureProps = {
   callType: string;

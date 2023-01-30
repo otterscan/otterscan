@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
-import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";

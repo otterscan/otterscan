@@ -5,7 +5,7 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
 import NavTab from "./components/NavTab";
-import StandardSelectionBoundary from "./components/StandardSelectionBoundary";
+import StandardSelectionBoundary from "./selection/StandardSelectionBoundary";
 import { RuntimeContext } from "./useRuntime";
 import { useTxData } from "./useErigonHooks";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
