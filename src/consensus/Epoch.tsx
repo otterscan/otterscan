@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
@@ -12,7 +13,6 @@ import NotFinalized from "./components/NotFinalized";
 import Timestamp from "../components/Timestamp";
 import { TickerContextProvider } from "../components/AutoRefreshAge";
 import SlotItem from "./epoch/SlotItem";
-import { SelectionContext, useSelection } from "../useSelection";
 import {
   useEpochTimestamp,
   useFinalizedSlotNumber,
@@ -31,8 +31,6 @@ const Epoch: FC = () => {
     }
   }, [epochAsNumber]);
 
-  const selectionCtx = useSelection();
-
   const epochTimestamp = useEpochTimestamp(epochNumber);
   const slots = useReversedSlotsFromEpoch(epochAsNumber);
   const finalizedSlot = useFinalizedSlotNumber();
@@ -48,7 +46,7 @@ const Epoch: FC = () => {
   return (
     <StandardFrame>
       <EpochSubtitle epochNumber={epochAsNumber} />
-      <SelectionContext.Provider value={selectionCtx}>
+      <StandardSelectionBoundary>
         <ContentFrame key={epochAsNumber}>
           <InfoRow title="Finalized">
             {isFinalized === undefined ? (
@@ -83,7 +81,7 @@ const Epoch: FC = () => {
             </StandardTBody>
           </StandardTable>
         </ContentFrame>
-      </SelectionContext.Provider>
+      </StandardSelectionBoundary>
     </StandardFrame>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
 import InfoRow from "../components/InfoRow";
 import AddressBalance from "./AddressBalance";
 import TransactionAddress from "../components/TransactionAddress";
@@ -11,7 +12,6 @@ import { SearchController } from "../search/search";
 import TransactionItem from "../search/TransactionItem";
 import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
-import { SelectionContext, useSelection } from "../useSelection";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
@@ -26,7 +26,6 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   address,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const { addressOrName, direction } = useParams();
@@ -100,7 +99,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
 
   return (
     <ContentFrame tabs>
-      <SelectionContext.Provider value={selectionCtx}>
+      <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
           {balance && (
             <InfoRow title="Balance">
@@ -144,7 +143,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
         ) : (
           <PendingResults />
         )}
-      </SelectionContext.Provider>
+      </StandardSelectionBoundary>
     </ContentFrame>
   );
 };

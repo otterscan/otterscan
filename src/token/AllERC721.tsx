@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
@@ -17,7 +18,6 @@ import {
   useERC721Count,
   useERC721List,
 } from "../useErigonHooks";
-import { SelectionContext, useSelection } from "../useSelection";
 import { PAGE_SIZE } from "../params";
 
 const AllERC721: FC = () => {
@@ -35,7 +35,6 @@ const AllERC721: FC = () => {
 
   const total = useERC721Count(provider);
   const page = useERC721List(provider, pageNumber, PAGE_SIZE);
-  const selectionCtx = useSelection();
 
   // const blockNumber = useMemo(
   //   () => BigNumber.from(params.blockNumber),
@@ -84,13 +83,13 @@ const AllERC721: FC = () => {
             <th>Symbol</th>
           </StandardTHead>
           {page !== undefined ? (
-            <SelectionContext.Provider value={selectionCtx}>
+            <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
                   <ERC721Item key={m.address} m={m} />
                 ))}
               </StandardTBody>
-            </SelectionContext.Provider>
+            </StandardSelectionBoundary>
           ) : (
             // <PendingResults />
             <></>

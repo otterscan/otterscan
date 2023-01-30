@@ -5,9 +5,9 @@ import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
 import NavTab from "./components/NavTab";
+import StandardSelectionBoundary from "./components/StandardSelectionBoundary";
 import { RuntimeContext } from "./useRuntime";
 import { useTxData } from "./useErigonHooks";
-import { SelectionContext, useSelection } from "./useSelection";
 import { SelectedTransactionContext } from "./useSelectedTransaction";
 import { BlockNumberContext } from "./useBlockTagContext";
 
@@ -23,7 +23,6 @@ const Transaction: FC = () => {
 
   const { provider } = useContext(RuntimeContext);
   const txData = useTxData(provider, txHash);
-  const selectionCtx = useSelection();
 
   useEffect(() => {
     if (txData) {
@@ -45,7 +44,7 @@ const Transaction: FC = () => {
             </ContentFrame>
           )}
           {txData && (
-            <SelectionContext.Provider value={selectionCtx}>
+            <StandardSelectionBoundary>
               <Tab.Group>
                 <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                   <NavTab href=".">Overview</NavTab>
@@ -65,7 +64,7 @@ const Transaction: FC = () => {
                   <Route path="trace" element={<Trace txData={txData} />} />
                 </Routes>
               </Suspense>
-            </SelectionContext.Provider>
+            </StandardSelectionBoundary>
           )}
         </StandardFrame>
       </BlockNumberContext.Provider>

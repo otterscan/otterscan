@@ -1,11 +1,11 @@
 import React from "react";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
 import PageControl from "../search/PageControl";
 import ResultHeader from "../search/ResultHeader";
 import PendingResults from "../search/PendingResults";
 import TransactionItem from "../search/TransactionItem";
 import { useFeeToggler } from "../search/useFeeToggler";
-import { SelectionContext, useSelection } from "../useSelection";
 import { ProcessedTransaction } from "../types";
 import { PAGE_SIZE } from "../params";
 
@@ -20,7 +20,6 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   total,
   pageNumber,
 }) => {
-  const selectionCtx = useSelection();
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   return (
@@ -44,7 +43,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
         feeDisplayToggler={feeDisplayToggler}
       />
       {page ? (
-        <SelectionContext.Provider value={selectionCtx}>
+        <StandardSelectionBoundary>
           {page.map((tx) => (
             <TransactionItem key={tx.hash} tx={tx} feeDisplay={feeDisplay} />
           ))}
@@ -58,7 +57,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
               total={total}
             />
           </div>
-        </SelectionContext.Provider>
+        </StandardSelectionBoundary>
       ) : (
         <PendingResults />
       )}

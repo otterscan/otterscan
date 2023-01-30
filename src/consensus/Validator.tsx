@@ -3,11 +3,11 @@ import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { isHexString } from "@ethersproject/bytes";
 import StandardFrame from "../StandardFrame";
+import StandardSelectionBoundary from "../components/StandardSelectionBoundary";
 import ValidatorSubtitle from "./validator/ValidatorSubtitle";
 import NavTab from "../components/NavTab";
 import Overview from "./validator/Overview";
 import { useValidator } from "../useConsensus";
-import { SelectionContext, useSelection } from "../useSelection";
 
 const Validator: FC = () => {
   const { validatorIndex } = useParams();
@@ -20,7 +20,6 @@ const Validator: FC = () => {
   }
 
   const validator = useValidator(idx);
-  const selectionCtx = useSelection();
 
   return (
     <StandardFrame>
@@ -30,7 +29,7 @@ const Validator: FC = () => {
             validatorIndex={validator.data.index}
             slashed={validator.data.validator.slashed}
           />
-          <SelectionContext.Provider value={selectionCtx}>
+          <StandardSelectionBoundary>
             <Tab.Group>
               <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
                 <NavTab href=".">Overview</NavTab>
@@ -44,7 +43,7 @@ const Validator: FC = () => {
                 />
               </Routes>
             </Suspense>
-          </SelectionContext.Provider>
+          </StandardSelectionBoundary>
         </>
       )}
     </StandardFrame>
