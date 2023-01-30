@@ -1,13 +1,13 @@
-import React from "react";
+import { FC, memo, PropsWithChildren } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { useSelectionContext } from "./useSelection";
 
-type ValueHighlighterProps = React.PropsWithChildren<{
+type ValueHighlighterProps = {
   value: BigNumber;
-}>;
+};
 
 // TODO: replace all occurences with SelectionHighlighter and remove this component
-const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
+const ValueHighlighter: FC<PropsWithChildren<ValueHighlighterProps>> = ({
   value,
   children,
 }) => {
@@ -36,4 +36,4 @@ const ValueHighlighter: React.FC<ValueHighlighterProps> = ({
   );
 };
 
-export default React.memo(ValueHighlighter);
+export default memo(ValueHighlighter);
