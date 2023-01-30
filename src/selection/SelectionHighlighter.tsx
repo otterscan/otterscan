@@ -21,6 +21,7 @@ export const addressSelector: ContentSelector = genericSelector("address");
 export const valueSelector: ContentSelector = genericSelector("value");
 export const functionSigSelector: ContentSelector =
   genericSelector("functionSig");
+export const tagSelector: ContentSelector = genericSelector("tag");
 
 type SelectionHighlighterProps = {
   myType: SelectionType;

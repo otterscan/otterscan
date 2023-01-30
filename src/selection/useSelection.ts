@@ -6,7 +6,7 @@ import {
   useContext,
 } from "react";
 
-export type SelectionType = "address" | "value" | "functionSig";
+export type SelectionType = "address" | "value" | "functionSig" | "tag";
 
 export type Selection = {
   type: SelectionType;
