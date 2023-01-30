@@ -727,7 +727,7 @@ export const useERC20List = (
 ): ContractMatch[] | undefined => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    ["ots_getERC20Page", pageSize, pageNumber],
+    ["ots_getERC20Page", pageSize, pageNumber-1],
     fetcher
   );
   if (error) {
@@ -765,7 +765,7 @@ export const useERC721List = (
 ): ContractMatch[] | undefined => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    ["ots_getERC721Page", pageSize, pageNumber],
+    ["ots_getERC721Page", pageSize, pageNumber-1],
     fetcher
   );
   if (error) {
