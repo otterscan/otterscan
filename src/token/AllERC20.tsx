@@ -1,8 +1,6 @@
-import { useMemo, useContext, FC } from "react";
-import { useParams } from "react-router";
+import { useContext, FC } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
-import { BigNumber } from "@ethersproject/bignumber";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
@@ -13,16 +11,11 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC20Item from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
-import {
-  useBlockTransactions,
-  useERC20Count,
-  useERC20List,
-} from "../useErigonHooks";
+import { useERC20Count, useERC20List } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const params = useParams();
 
   const [searchParams] = useSearchParams();
   let pageNumber = 1;
@@ -35,18 +28,6 @@ const AllERC20: FC = () => {
 
   const total = useERC20Count(provider);
   const page = useERC20List(provider, pageNumber, PAGE_SIZE);
-
-  // const blockNumber = useMemo(
-  //   () => BigNumber.from(params.blockNumber),
-  //   [params.blockNumber]
-  // );
-
-  // const [totalTxs, txs] = useBlockTransactions(
-  //   provider,
-  //   blockNumber.toNumber(),
-  //   pageNumber - 1,
-  //   PAGE_SIZE
-  // );
 
   document.title = `ERC20 Tokens | Otterscan`;
 
@@ -109,12 +90,6 @@ const AllERC20: FC = () => {
           </div>
         )}
       </ContentFrame>
-      {/* <BlockTransactionHeader blockTag={blockNumber.toNumber()} />
-      <BlockTransactionResults
-        page={txs}
-        total={totalTxs ?? 0}
-        pageNumber={pageNumber}
-      /> */}
     </StandardFrame>
   );
 };

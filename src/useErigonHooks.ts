@@ -787,6 +787,25 @@ export const useERC721List = (
   );
 };
 
+export const useERC1155Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  return useGenericContractCount(provider, "ots_getERC1155Count");
+};
+
+export const useERC1155List = (
+  provider: JsonRpcProvider | undefined,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  return useGenericContractList(
+    provider,
+    "ots_getERC1155Page",
+    pageNumber,
+    pageSize
+  );
+};
+
 const ERC721MD_PROTOTYPE = new Contract(AddressZero, erc721md);
 
 const erc721MetadataFetcher =
