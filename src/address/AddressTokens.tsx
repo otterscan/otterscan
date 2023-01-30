@@ -2,13 +2,13 @@ import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Holdings } from "../useErigonHooks";
-import { SelectionContext, useSelection } from "../useSelection";
 import { ChecksummedAddress } from "../types";
 import { useTokenSet } from "../kleros/useTokenList";
 
@@ -20,7 +20,6 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
   const erc20List = useERC20Holdings(provider, address);
 
-  const selectionCtx = useSelection();
   const [enabled, setEnabled] = useState<boolean>(true);
   const tokenSet = useTokenSet(provider?.network.chainId);
   const filteredList = useMemo(() => {
@@ -34,7 +33,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
   return (
     <ContentFrame tabs>
       {erc20List && filteredList && tokenList && (
-        <SelectionContext.Provider value={selectionCtx}>
+        <StandardSelectionBoundary>
           <TotalBar
             erc20List={erc20List}
             filteredList={filteredList}
@@ -62,7 +61,7 @@ const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
             filterApplied={enabled}
             applyFilter={setEnabled}
           />
-        </SelectionContext.Provider>
+        </StandardSelectionBoundary>
       )}
     </ContentFrame>
   );

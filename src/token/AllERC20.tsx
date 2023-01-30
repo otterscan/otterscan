@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import StandardFrame from "../StandardFrame";
 import StandardSubtitle from "../StandardSubtitle";
 import ContentFrame from "../ContentFrame";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
@@ -17,7 +18,6 @@ import {
   useERC20Count,
   useERC20List,
 } from "../useErigonHooks";
-import { SelectionContext, useSelection } from "../useSelection";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {
@@ -35,7 +35,6 @@ const AllERC20: FC = () => {
 
   const total = useERC20Count(provider);
   const page = useERC20List(provider, pageNumber, PAGE_SIZE);
-  const selectionCtx = useSelection();
 
   // const blockNumber = useMemo(
   //   () => BigNumber.from(params.blockNumber),
@@ -85,13 +84,13 @@ const AllERC20: FC = () => {
             <th className="w-40">Decimals</th>
           </StandardTHead>
           {page !== undefined ? (
-            <SelectionContext.Provider value={selectionCtx}>
+            <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
                   <ERC20Item key={m.address} m={m} />
                 ))}
               </StandardTBody>
-            </SelectionContext.Provider>
+            </StandardSelectionBoundary>
           ) : (
             // <PendingResults />
             <></>

@@ -10,7 +10,7 @@ import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
 import SelectionHighlighter, {
   valueSelector,
-} from "../../components/SelectionHighlighter";
+} from "../../selection/SelectionHighlighter";
 
 type DecodedParamRowProps = {
   prefix?: ReactNode;

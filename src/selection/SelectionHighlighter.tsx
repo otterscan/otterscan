@@ -1,9 +1,9 @@
-import React, { PropsWithChildren, useMemo } from "react";
+import { FC, memo, PropsWithChildren, useMemo } from "react";
 import {
   useSelectionContext,
   OptionalSelection,
   SelectionType,
-} from "../useSelection";
+} from "./useSelection";
 
 export type ContentSelector = (
   selection: OptionalSelection,
@@ -21,19 +21,17 @@ export const addressSelector: ContentSelector = genericSelector("address");
 export const valueSelector: ContentSelector = genericSelector("value");
 export const functionSigSelector: ContentSelector =
   genericSelector("functionSig");
+export const tagSelector: ContentSelector = genericSelector("tag");
 
-type SelectionHighlighterProps = React.PropsWithChildren<{
+type SelectionHighlighterProps = {
   myType: SelectionType;
   myContent: string;
   selector: ContentSelector;
-}>;
+};
 
-const SelectionHighlighter: React.FC<SelectionHighlighterProps> = ({
-  myType,
-  myContent,
-  selector,
-  children,
-}) => {
+const SelectionHighlighter: FC<
+  PropsWithChildren<SelectionHighlighterProps>
+> = ({ myType, myContent, selector, children }) => {
   const [selection, setSelection] = useSelectionContext();
   const [select, deselect] = useMemo(() => {
     const _select = () => {
@@ -62,8 +60,8 @@ type HighlighterBoxProps = {
   deselect: () => void;
 };
 
-const HighlighterBox: React.FC<PropsWithChildren<HighlighterBoxProps>> =
-  React.memo(({ selected, select, deselect, children }) => (
+const HighlighterBox: FC<PropsWithChildren<HighlighterBoxProps>> = memo(
+  ({ selected, select, deselect, children }) => (
     <div
       className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
         selected ? "border-orange-400 bg-amber-100" : "border-transparent"
@@ -73,6 +71,7 @@ const HighlighterBox: React.FC<PropsWithChildren<HighlighterBoxProps>> =
     >
       {children}
     </div>
-  ));
+  )
+);
 
 export default SelectionHighlighter;
