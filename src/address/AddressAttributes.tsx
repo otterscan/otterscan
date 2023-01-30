@@ -16,16 +16,24 @@ const AddressAttributes: FC<AddressAttributesProps> = ({ address, full }) => {
   return (
     <>
       {attr?.erc20 && (
-        <AddressLegend full={full}>[{full ? "ERC20" : "20"}]</AddressLegend>
+        <AddressLegend full={full} title="ERC20 token">
+          [{full ? "ERC20" : "20"}]
+        </AddressLegend>
       )}
       {attr?.erc165 && (
-        <AddressLegend full={full}>[{full ? "ERC165" : "165"}]</AddressLegend>
+        <AddressLegend full={full} title="ERC165 contract">
+          [{full ? "ERC165" : "165"}]
+        </AddressLegend>
       )}
       {attr?.erc721 && (
-        <AddressLegend full={full}>[{full ? "ERC721" : "721"}]</AddressLegend>
+        <AddressLegend full={full} title="ERC721 token">
+          [{full ? "ERC721" : "721"}]
+        </AddressLegend>
       )}
       {attr?.erc1155 && (
-        <AddressLegend full={full}>[{full ? "ERC1155" : "1155"}]</AddressLegend>
+        <AddressLegend full={full} title="ERC1155 token">
+          [{full ? "ERC1155" : "1155"}]
+        </AddressLegend>
       )}
     </>
   );
