@@ -58,11 +58,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
 
   return (
     <div
-      className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
+      className={`grid grid-cols-12 items-baseline gap-x-1 border-t border-gray-200 text-sm ${
         flash ? "bg-amber-100 hover:bg-amber-200" : "hover:bg-skin-table-hover"
       } px-2 py-3`}
     >
-      <div className="col-span-2 flex space-x-1 items-baseline">
+      <div className="col-span-2 flex items-baseline space-x-1">
         {tx.status === 0 && (
           <span className="text-red-600" title="Transaction reverted">
             <FontAwesomeIcon icon={faExclamationCircle} />
@@ -77,7 +77,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <BlockLink blockTag={tx.blockNumber} />
       </span>
       <TimestampAge timestamp={tx.timestamp} />
-      <span className="col-span-2 flex justify-between items-baseline space-x-2 pr-2">
+      <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
         <span className="truncate">
           {tx.from && (
             <AddressHighlighter address={tx.from}>
@@ -125,7 +125,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
       <span className="col-span-2 truncate">
         <TransactionValue value={tx.value} />
       </span>
-      <span className="font-balance text-xs text-gray-500 truncate">
+      <span className="truncate font-balance text-xs text-gray-500">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
         {feeDisplay === FeeDisplay.TX_FEE_USD && (
           <TransactionItemFiatFee blockTag={tx.blockNumber} fee={tx.fee} />

@@ -55,10 +55,10 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
           <Blip value={baseFeeDelta} />
         </div>
       </div>
-      <div className="text-right col-span-2">
+      <div className="col-span-2 text-right">
         {commify(formatEther(totalReward))} {symbol}
       </div>
-      <div className="text-right col-span-2 line-through text-orange-500">
+      <div className="col-span-2 text-right text-orange-500 line-through">
         {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} {symbol}
       </div>
       <div className="text-right text-gray-400">

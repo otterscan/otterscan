@@ -18,7 +18,7 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
             ))}
           </>
         ) : (
-          <div className="text-sm py-4">Transaction didn't emit any logs</div>
+          <div className="py-4 text-sm">Transaction didn't emit any logs</div>
         )}
       </>
     )}

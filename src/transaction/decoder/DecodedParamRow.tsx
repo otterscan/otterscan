@@ -35,7 +35,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
     <>
       <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
         <td className="col-span-3 pl-1">
-          <div className="flex space-x-2 items-baseline">
+          <div className="flex items-baseline space-x-2">
             <span>
               {prefix && <span className="text-gray-300">{prefix}</span>}
               {arrayElem !== undefined ? (
@@ -47,7 +47,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
                 <>
                   {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
                   {i !== undefined && (
-                    <span className="text-gray-400 text-xs">({i})</span>
+                    <span className="text-xs text-gray-400">({i})</span>
                   )}
                 </>
               )}
@@ -56,7 +56,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
               <Switch
                 checked={showHelp}
                 onChange={setShowHelp}
-                className="text-gray-500 self-center"
+                className="self-center text-gray-500"
               >
                 <FontAwesomeIcon
                   icon={showHelp ? faQuestionCircleSolid : faQuestionCircle}
@@ -68,7 +68,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           {help && showHelp && <div className="mt-2 text-gray-400">{help}</div>}
         </td>
         <td className="col-span-1 text-gray-500">{paramType.type}</td>
-        <td className="col-span-8 pr-1 font-code break-all flex">
+        <td className="col-span-8 flex break-all pr-1 font-code">
           <SelectionHighlighter
             myType="value"
             myContent={r.toString()}

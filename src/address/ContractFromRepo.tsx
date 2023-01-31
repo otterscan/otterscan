@@ -27,7 +27,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
 
   return (
     <SyntaxHighlighter
-      className="w-full h-full border font-code text-base"
+      className="h-full w-full border font-code text-base"
       language="solidity"
       style={docco}
       showLineNumbers

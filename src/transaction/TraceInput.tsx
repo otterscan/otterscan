@@ -38,12 +38,12 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
 
   return (
     <div
-      className={`ml-5 border hover:border-gray-500 rounded px-1 py-0.5 ${
+      className={`ml-5 rounded border px-1 py-0.5 hover:border-gray-500 ${
         expanded ? "w-full" : ""
       }`}
     >
       <div className="flex items-baseline">
-        <span className="text-xs text-gray-400 lowercase">{t.type}</span>
+        <span className="text-xs lowercase text-gray-400">{t.type}</span>
         {t.type === "SELFDESTRUCT" ? (
           <span className="pl-2 text-red-800" title="Self destruct">
             <FontAwesomeIcon icon={faBomb} size="1x" />
@@ -58,7 +58,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
                 <span>.</span>
                 <FunctionSignature callType={t.type} sig={sigText} />
                 {t.value && !t.value.isZero() && (
-                  <span className="text-red-700 whitespace-nowrap">
+                  <span className="whitespace-nowrap text-red-700">
                     {"{"}value: <FormattedBalance value={t.value} /> {symbol}
                     {"}"}
                   </span>
@@ -80,7 +80,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
       </div>
       {hasParams && expanded && (
         <>
-          <div className="ml-5 mr-1 my-2">
+          <div className="my-2 ml-5 mr-1">
             <InputDecoder
               fourBytes={raw4Bytes ?? "0x"}
               resolvedTxDesc={fourBytesTxDesc}

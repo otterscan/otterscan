@@ -8,7 +8,7 @@ type AggregationBitsProps = {
 const AggregationBits: FC<AggregationBitsProps> = ({ hex }) => {
   const bm = Array.from(arrayify(hex));
   return (
-    <div className="grid grid-cols-8 gap-2 w-fit font-hash">
+    <div className="grid w-fit grid-cols-8 gap-2 font-hash">
       {bm.map((b, i) => (
         <Bitmap key={i} b={b} />
       ))}

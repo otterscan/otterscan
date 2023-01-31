@@ -74,8 +74,8 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             )}
             <div>
               <Menu>
-                <div className="flex space-x-2 justify-between items-baseline">
-                  <Menu.Button className="flex space-x-2 text-sm border-l border-r border-t rounded-t px-2 py-1">
+                <div className="flex items-baseline justify-between space-x-2">
+                  <Menu.Button className="flex space-x-2 rounded-t border-l border-r border-t px-2 py-1 text-sm">
                     <span>{selected}</span>
                     <span className="self-center">
                       <FontAwesomeIcon icon={faChevronDown} size="xs" />
@@ -95,14 +95,14 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                   )}
                 </div>
                 <div className="relative">
-                  <Menu.Items className="absolute border p-1 rounded-b bg-white flex flex-col">
+                  <Menu.Items className="absolute flex flex-col rounded-b border bg-white p-1">
                     {Object.entries(match.metadata.sources).map(([k]) => (
                       <Menu.Item key={k}>
                         <button
-                          className={`flex text-sm px-2 py-1 ${
+                          className={`flex px-2 py-1 text-sm ${
                             selected === k
-                              ? "font-bold bg-gray-200 text-gray-500"
-                              : "hover:text-gray-500 text-gray-400 transition-colors duration-75"
+                              ? "bg-gray-200 font-bold text-gray-500"
+                              : "text-gray-400 transition-colors duration-75 hover:text-gray-500"
                           }`}
                           onClick={() => setSelected(k)}
                         >

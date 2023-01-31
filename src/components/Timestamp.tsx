@@ -43,7 +43,7 @@ const Timestamp: React.FC<TimestampProps> = ({ value }) => {
   })} ${am ? "AM" : "PM"} +UTC`;
 
   return (
-    <div className="flex space-x-1 items-baseline">
+    <div className="flex items-baseline space-x-1">
       <FontAwesomeIcon className="self-center" icon={faClock} size="sm" />
       <span>
         <TimestampAge timestamp={value} /> ({tsString})

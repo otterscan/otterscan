@@ -63,7 +63,7 @@ type HighlighterBoxProps = {
 const HighlighterBox: FC<PropsWithChildren<HighlighterBoxProps>> = memo(
   ({ selected, select, deselect, children }) => (
     <div
-      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
+      className={`truncate rounded border border-dashed px-1 hover:border-transparent hover:bg-transparent ${
         selected ? "border-orange-400 bg-amber-100" : "border-transparent"
       }`}
       onMouseEnter={select}

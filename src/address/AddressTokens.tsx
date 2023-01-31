@@ -80,7 +80,7 @@ const TotalBar: FC<TotalBarProps> = ({
   filterApplied,
   applyFilter,
 }) => (
-  <div className="flex justify-between items-baseline py-3">
+  <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {erc20List === undefined || filteredList === undefined ? (
         <>Waiting for search results...</>
@@ -89,7 +89,7 @@ const TotalBar: FC<TotalBarProps> = ({
           {filterApplied ? filteredList.length : erc20List.length} tokens found
           (
           <Switch
-            className="hover:underline hover:cursor-pointer"
+            className="hover:cursor-pointer hover:underline"
             onChange={() => applyFilter(!filterApplied)}
           >
             {filterApplied ? (

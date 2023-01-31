@@ -8,7 +8,7 @@ type DecodedLogSignatureProps = {
 const DecodedLogSignature: React.FC<DecodedLogSignatureProps> = ({ event }) => {
   return (
     <span>
-      <span className="text-blue-900 font-bold">{event.name}</span>(
+      <span className="font-bold text-blue-900">{event.name}</span>(
       {event.inputs.map((input, i) => (
         <span key={i}>
           {i > 0 ? ", " : ""}

@@ -1,11 +1,7 @@
 {
   "name": "Kleros Tokens",
   "logoURI": "ipfs://QmRYXpD8X4sQZwA1E4SJvEjVZpEK1WtSrTqzTWvGpZVDwa",
-  "keywords": [
-    "t2cr",
-    "kleros",
-    "list"
-  ],
+  "keywords": ["t2cr", "kleros", "list"],
   "timestamp": "2022-12-07T17:06:16.099Z",
   "version": {
     "major": 89,
@@ -56,9 +52,7 @@
       "name": "Wrapped Bitcoin",
       "decimals": 8,
       "logoURI": "ipfs://QmSWYBb4H1kshiyowb4VK1YabmzjTZUJLKcTxqDdjS6W5E",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -283,9 +277,7 @@
       "name": "Neos Metaverse Credits",
       "decimals": 18,
       "logoURI": "ipfs://QmVJQF2eQoWjJpgN2CuHMuUzbK5ipXaufRiRBUymvcM5GG",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -411,9 +403,7 @@
       "name": "FOAM",
       "decimals": 18,
       "logoURI": "ipfs://QmYFNrwbNBx3fyZMimGyqW31TGRYbGTUvsLmybmVy73Pdh",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -521,10 +511,7 @@
       "name": "WETH",
       "decimals": 18,
       "logoURI": "ipfs://QmbNx3LvKhXzLypCzZ5ez7u9TUVgmPdwQmV8FQbfjDJ3Uo",
-      "tags": [
-        "erc20",
-        "trueCrypto"
-      ]
+      "tags": ["erc20", "trueCrypto"]
     },
     {
       "chainId": 1,
@@ -551,9 +538,7 @@
       "name": "0x",
       "decimals": 18,
       "logoURI": "ipfs://QmR2dXqmayFv3FNVkdiY7Kc2BtZPyHXajpwqonPzZBCQxB",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -778,10 +763,7 @@
       "name": "USD Coin",
       "decimals": 6,
       "logoURI": "ipfs://QmV4pPzqz3fzAv1tevqCFWQGecKQDDvWRvAR2R5qoqhT9f",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -1393,9 +1375,7 @@
       "name": "OST",
       "decimals": 18,
       "logoURI": "ipfs://QmTE42QiDkvaVQBmfCeSiovp4LnJJ3XSxa2pAjmB8YBrj8",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -1647,9 +1627,7 @@
       "name": "Chai",
       "decimals": 18,
       "logoURI": "ipfs://QmUZkQwz3DFx9sQzU56bwUyBpauxhmTJbi3FcqQjZkguCb",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -2081,9 +2059,7 @@
       "name": "Bancor",
       "decimals": 18,
       "logoURI": "ipfs://QmdF8hpUBvx1ZEm1C4t4jrGwbqZRYTUYiqmKrLjYV5KkA7",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -2173,9 +2149,7 @@
       "name": "Lugh",
       "decimals": 6,
       "logoURI": "ipfs://QmaT499Xv3zmw3EtHxbfPoWHi1QFKyz1nL2ypVVvTKJtBR",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -2490,10 +2464,7 @@
       "name": "Sai",
       "decimals": 18,
       "logoURI": "ipfs://QmWb18SxAhj7Kki2ii7GZ1rmMxfFJsbJfV8gE5GKMRkBgk",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -2520,9 +2491,7 @@
       "name": "Storj",
       "decimals": 8,
       "logoURI": "ipfs://QmbcbGnDefdcWSkeF8ottoFajF7iwcUH9q3QFjFvEb6C2u",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -2558,9 +2527,7 @@
       "name": "Gemini Dollar",
       "decimals": 2,
       "logoURI": "ipfs://QmZ7jA9mKp2ZiwDbHnCNHchEBcfXxDFYMT891f4Jiihn45",
-      "tags": [
-        "stablecoin"
-      ]
+      "tags": ["stablecoin"]
     },
     {
       "chainId": 1,
@@ -2677,9 +2644,7 @@
       "name": "Binance USD",
       "decimals": 18,
       "logoURI": "ipfs://Qma6QWgQvz5U9GYoQCgn98wEmrmKxc9ViSxbRUppeELXvK",
-      "tags": [
-        "stablecoin"
-      ]
+      "tags": ["stablecoin"]
     },
     {
       "chainId": 1,
@@ -3039,9 +3004,7 @@
       "name": "DXdao",
       "decimals": 18,
       "logoURI": "ipfs://Qmbq3H5LGw56SGogY9MzQgi6mGJhnWvEG1jFaosPsUi98Q",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3086,9 +3049,7 @@
       "name": "Cardstack",
       "decimals": 18,
       "logoURI": "ipfs://QmU6WqqJJfQhvdLuy5vTcGeuQZaSvBrLq2rsw9nSN39CTi",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3151,9 +3112,7 @@
       "name": "Euro Coin",
       "decimals": 6,
       "logoURI": "ipfs://Qmah8RxMz69grmPfa8wDdzYNd9DNqrp2NETzwdh9LtawPb",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3198,10 +3157,7 @@
       "name": "Pax Dollar",
       "decimals": 18,
       "logoURI": "ipfs://QmaiB87xQzMZdHKanh9etNECJLiYrm7kuvBRq1Y3DbCTmy",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -3300,9 +3256,7 @@
       "name": "Upfiring",
       "decimals": 18,
       "logoURI": "ipfs://QmVc8BdizoPXQUtQHcx5NG5WWUphjpiDGTRvNjgBV7W4T9",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3329,9 +3283,7 @@
       "name": "Veritaseum",
       "decimals": 18,
       "logoURI": "ipfs://QmPETifc1S3Qr8y5p2JRcri67vk9ppnkpiRRtcU7RRtCGP",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3439,9 +3391,7 @@
       "name": "iExec RLC",
       "decimals": 9,
       "logoURI": "ipfs://QmY1fPqyZzpiW5u6rHsNj3UNFDXnCyApP7J9TVDiZrCo9Q",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -3945,9 +3895,7 @@
       "name": "district0x",
       "decimals": 18,
       "logoURI": "ipfs://QmNQwUmRK8QvfeCpeXV7cjPsKyc6VQS5hSj91t23REGFGW",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4019,9 +3967,7 @@
       "name": "DAOstack",
       "decimals": 18,
       "logoURI": "ipfs://QmSHrgVb7yAw4a1BH27c28kVkeg42N7a86SKFfSjyFsv3j",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4147,9 +4093,7 @@
       "name": "Blockchain Certified Data Token",
       "decimals": 18,
       "logoURI": "ipfs://QmY3no5kWCQ88kJpykqUoxypmNBQjXf2Tz2fq8HDUZYikh",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4428,10 +4372,7 @@
       "name": "CryptoFranc",
       "decimals": 18,
       "logoURI": "ipfs://QmXgVkidQdNCAX6EtHmmLAyQvGHLx5h3mnYcRt6YfAWjk6",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -4548,9 +4489,7 @@
       "name": "Livepeer",
       "decimals": 18,
       "logoURI": "ipfs://QmSbGEAtdH7hJjzagxHkg7fS5woexBaYrBRZCwakcuGFVz",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4559,9 +4498,7 @@
       "name": "Nectar",
       "decimals": 18,
       "logoURI": "ipfs://QmebyBkLzkVDc7yqv8zGDkxa4FnbsAYZEx7i3eyrn3Vbwm",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4615,9 +4552,7 @@
       "name": "Nexo",
       "decimals": 18,
       "logoURI": "ipfs://QmRXaPHoDStJjza7vJR3BzEHXCJzJSh4QchtGEbkfoRNzF",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4716,9 +4651,7 @@
       "name": "Bloom",
       "decimals": 18,
       "logoURI": "ipfs://QmNNDMbPws8VzfHshPTS1bZJNmPV26EL2dV4KSCU73jKfm",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -4907,9 +4840,7 @@
       "name": "Maker",
       "decimals": 18,
       "logoURI": "ipfs://QmeeYGf5qwXQ1ot6s8JVEi7shK6t38qnh3aUatKNCEnmVa",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5161,9 +5092,7 @@
       "name": "Civic",
       "decimals": 8,
       "logoURI": "ipfs://QmWXjXDCYtWwZxgxGXDAbvUfYTo2xr5vjQ63SrvQQA4NLs",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5172,10 +5101,7 @@
       "name": "Dai",
       "decimals": 18,
       "logoURI": "ipfs://QmNYVMm3iC7HEoxfvxsZbRoapdjDHj9EREFac4BPeVphSJ",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -5229,9 +5155,7 @@
       "name": "Stably USD",
       "decimals": 6,
       "logoURI": "ipfs://QmQm28F4jUinrerS9NKf8DvaLBgTPdBMzq2s4BMZxuwmPN",
-      "tags": [
-        "stablecoin"
-      ]
+      "tags": ["stablecoin"]
     },
     {
       "chainId": 1,
@@ -5312,9 +5236,7 @@
       "name": "Grid+",
       "decimals": 12,
       "logoURI": "ipfs://QmTRN85Nqa18fqnAKf1Ey63jDRKC7wR8KcRvh971u5zLjd",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5332,9 +5254,7 @@
       "name": "Ren",
       "decimals": 18,
       "logoURI": "ipfs://QmWbJjLyxkWvVRtPSu8rBdnjaaH4eGfeW3sCDuAYHEKChc",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5640,9 +5560,7 @@
       "name": "Gnosis",
       "decimals": 18,
       "logoURI": "ipfs://QmUYKgHqkbMW97uqSmGYwDeriunvRoLjq2XBtfLG61Yrgb",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5741,9 +5659,7 @@
       "name": "Status",
       "decimals": 18,
       "logoURI": "ipfs://Qmbfps3m6oNsk2iqQvVzFbyCfGKjznKmZU8aeXXfGAjEKE",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -5905,9 +5821,7 @@
       "name": "Numeraire",
       "decimals": 18,
       "logoURI": "ipfs://QmceQYSghNctywfeNBSmupppULfBeFadTiYQ5k2vVQZRoa",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -6240,9 +6154,7 @@
       "name": "HEX",
       "decimals": 8,
       "logoURI": "ipfs://QmQ8fpp72zMRLTqPELZQjybdXqAaMcrdJzqMqSDjorpvou",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -6467,9 +6379,7 @@
       "name": "0xcert",
       "decimals": 18,
       "logoURI": "ipfs://QmYRt2mF671P7yssmVSrzy7m5CcDBkQVeeVAp2FqH25vPM",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -6676,9 +6586,7 @@
       "name": "Enzyme",
       "decimals": 18,
       "logoURI": "ipfs://QmaERUB5JY9vhtDhKmagaYa4pEfQ9kTFovdWM4CKCMQQiv",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7155,9 +7063,7 @@
       "name": "yCurve",
       "decimals": 18,
       "logoURI": "ipfs://QmVpUWmbDd5o129gYYh5GujtNBDjDx8WBBg8EvUheMEREq",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7544,9 +7450,7 @@
       "name": "Unicap.finance",
       "decimals": 18,
       "logoURI": "ipfs://QmVoE7GBj7HLK7dUjWS6FR8Vu2KqgUamjPpUUvPzRXeuti",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7582,10 +7486,7 @@
       "name": "TrueUSD",
       "decimals": 18,
       "logoURI": "ipfs://QmVwUiFsBG9vcQjk1EF2onVDq5mQEXHroU7Ni5eqUNJ1rW",
-      "tags": [
-        "erc20",
-        "stablecoin"
-      ]
+      "tags": ["erc20", "stablecoin"]
     },
     {
       "chainId": 1,
@@ -7657,9 +7558,7 @@
       "name": "Decentraland",
       "decimals": 18,
       "logoURI": "ipfs://QmSNrU9cq1LcuinhyfSpS9v1emVsr6qvroeu7HFAC8tfpj",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7695,9 +7594,7 @@
       "name": "Ripio Credit Network",
       "decimals": 18,
       "logoURI": "ipfs://QmbpAx415aUmfER6hi4xff5XfE3jU5HcbQ8KbSFPtMeZFG",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7733,9 +7630,7 @@
       "name": "Po.et",
       "decimals": 8,
       "logoURI": "ipfs://QmbUnXjj3PQcCwDBUoHRVU1jiC9sULGZQBwgmrmQcqpGuM",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7771,9 +7666,7 @@
       "name": "Cigarettes",
       "decimals": 18,
       "logoURI": "ipfs://QmNfoArdJ8Hidfs5dRN6nVzPUn5kZAhJhsA99SadNvK9Fx",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7809,9 +7702,7 @@
       "name": "bCurve",
       "decimals": 18,
       "logoURI": "ipfs://QmUL61A6B1FJwwuxKakFMz5pxkZsV6YSqy3za1nSEfehVN",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -7955,9 +7846,7 @@
       "name": "Basic Attention Token",
       "decimals": 18,
       "logoURI": "ipfs://QmPUXtfZXEZfbVAAGcxreg7UP8hYqdS5oEZucYrsfYdD51",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8065,9 +7954,7 @@
       "name": "Flexacoin",
       "decimals": 18,
       "logoURI": "ipfs://QmaSJqmW65RGZVyKvGJPKvWyLa9rGWXKmvHN3adBWFR1n4",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8130,9 +8017,7 @@
       "name": "Kleros",
       "decimals": 18,
       "logoURI": "ipfs://QmbA8fNadvuke3f4q9q6YAuW51U33TA4gxmPo6Ajc2EAF5",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8240,9 +8125,7 @@
       "name": "Aurora DAO",
       "decimals": 18,
       "logoURI": "ipfs://QmP5f1wb6xhSSz6BMyS1J5iexHwxjPxo1NRt9jwVJeGmMm",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8278,9 +8161,7 @@
       "name": "Synthetic Ether",
       "decimals": 18,
       "logoURI": "ipfs://QmXGyydVoMMrNt6GSnJsGcPrFyXMu2VA81omPwMLxAPreR",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8496,9 +8377,7 @@
       "name": "FunFair",
       "decimals": 8,
       "logoURI": "ipfs://QmUc3XNDu5HfJkmWrnHUWbRNmoBEnuEcz7yVMA38DAJ1gV",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -8705,9 +8584,7 @@
       "name": "Tether",
       "decimals": 6,
       "logoURI": "ipfs://QmR3TGmDDdmid99ExTHwPiKro4njZhSidbjcTbSrS5rHnq",
-      "tags": [
-        "stablecoin"
-      ]
+      "tags": ["stablecoin"]
     },
     {
       "chainId": 1,
@@ -8878,9 +8755,7 @@
       "name": "Aragon",
       "decimals": 18,
       "logoURI": "ipfs://QmPF5snNxWnunfp4RuiEgiikt135y5P4YH14VgfNtHXnuc",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9015,9 +8890,7 @@
       "name": "Digital Rand",
       "decimals": 6,
       "logoURI": "ipfs://QmQn49reiLsViACuWpnRFSv7wJprfXgwRg3aUyUx7RUAu5",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9062,9 +8935,7 @@
       "name": "Compound Sai",
       "decimals": 8,
       "logoURI": "ipfs://QmNa3jJkD2aDVqi2nb1tj5RCjJzyZ2xJp8Q5fxkzQFfjsk",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9262,9 +9133,7 @@
       "name": "SpankChain",
       "decimals": 18,
       "logoURI": "ipfs://QmQmw3ETqbSRUEEgpMsv64Z9VJdPEPVR8oHh3697b1eq4C",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9462,9 +9331,7 @@
       "name": "EURS",
       "decimals": 2,
       "logoURI": "ipfs://QmV57oiWPZ1rVNH6wqFbz9kvUQu1ZmDFikFZfE82Ctt2YR",
-      "tags": [
-        "stablecoin"
-      ]
+      "tags": ["stablecoin"]
     },
     {
       "chainId": 1,
@@ -9545,9 +9412,7 @@
       "name": "Chainlink",
       "decimals": 18,
       "logoURI": "ipfs://QmQhZAdcZvW9T2tPm516yHqbGkfhyZwTZmLixW9MXJudTA",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9682,9 +9547,7 @@
       "name": "Enjin Coin",
       "decimals": 18,
       "logoURI": "ipfs://QmQWXMdB6WmSf2apK2P6PUeZ446SpxNjG41hJMwCFvBEJX",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -9828,9 +9691,7 @@
       "name": "OctoFi",
       "decimals": 18,
       "logoURI": "ipfs://QmWfTxQjsg7XcELexEMcx6Kukw2q3HuUjKHgCMZkaiBNGV",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -10496,9 +10357,7 @@
       "name": "Líf",
       "decimals": 18,
       "logoURI": "ipfs://QmQxgNR9yt7ctSvD7fhS6cLj7AMeoMM5rZE6mY7bZxc7ah",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,
@@ -10507,9 +10366,7 @@
       "name": "DigixDAO",
       "decimals": 9,
       "logoURI": "ipfs://QmTEzXg9o6gtULhZWyDBYLy5QgLYae2qvUL24Ak6t6bPvT",
-      "tags": [
-        "erc20"
-      ]
+      "tags": ["erc20"]
     },
     {
       "chainId": 1,

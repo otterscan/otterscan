@@ -25,20 +25,20 @@ const Home: FC = () => {
   document.title = "Home | Otterscan";
 
   return (
-    <div className="flex flex-col items-center grow pb-5">
+    <div className="flex grow flex-col items-center pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="grow mt-5 mb-10 max-h-64 flex items-end">
+      <div className="mt-5 mb-10 flex max-h-64 grow items-end">
         <Logo />
       </div>
       <form
-        className="flex flex-col w-1/3"
+        className="flex w-1/3 flex-col"
         onSubmit={handleSubmit}
         autoComplete="off"
         spellCheck={false}
       >
-        <div className="flex mb-10">
+        <div className="mb-10 flex">
           <input
-            className="w-full border-l border-t border-b rounded-l focus:outline-none px-2 py-1"
+            className="w-full rounded-l border-l border-t border-b px-2 py-1 focus:outline-none"
             type="text"
             size={50}
             placeholder={`Search by address / txn hash / block number${
@@ -49,7 +49,7 @@ const Home: FC = () => {
             autoFocus
           />
           <button
-            className="border rounded-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-base text-skin-button flex justify-center items-center"
+            className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
             type="button"
             onClick={() => setScanning(true)}
             title="Scan an ETH address using your camera"
@@ -58,16 +58,16 @@ const Home: FC = () => {
           </button>
         </div>
         <button
-          className="mx-auto px-3 py-1 mb-10 rounded bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none"
+          className="mx-auto mb-10 rounded bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-none"
           type="submit"
         >
           Search
         </button>
       </form>
-      <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
+      <div className="text-lg font-bold text-link-blue hover:text-link-blue-hover">
         {provider?.network.chainId !== 11155111 && (
           <NavLink to="/special/london">
-            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+            <div className="flex items-baseline space-x-2 text-orange-500 hover:text-orange-700 hover:underline">
               <span>
                 <FontAwesomeIcon icon={faBurn} />
               </span>
@@ -81,7 +81,7 @@ const Home: FC = () => {
       </div>
       {latestBlock && (
         <NavLink
-          className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
           to={blockURL(latestBlock.number)}
         >
           <div>Latest block: {commify(latestBlock.number)}</div>
@@ -90,7 +90,7 @@ const Home: FC = () => {
       )}
       {finalizedSlotNumber !== undefined && (
         <NavLink
-          className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
           to={slotURL(finalizedSlotNumber)}
         >
           <div>Finalized slot: {commify(finalizedSlotNumber)}</div>

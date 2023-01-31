@@ -49,17 +49,17 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
       </span>
       {letter && (
         <span
-          className={`shrink-0 text-xs font-code border border-gray-300 rounded-full w-5 h-5 self-center flex items-center justify-center text-white font-bold ${letterBg}`}
+          className={`flex h-5 w-5 shrink-0 items-center justify-center self-center rounded-full border border-gray-300 font-code text-xs font-bold text-white ${letterBg}`}
         >
           {letter}
         </span>
       )}
-      <span className="text-sm font-code whitespace-nowrap">
+      <span className="whitespace-nowrap font-code text-sm">
         {fragment.format("full")}
       </span>
       {sig && (
         <span
-          className={`text-xs border rounded-xl px-2 pt-1 font-code text-gray-600 ${hashBg}`}
+          className={`rounded-xl border px-2 pt-1 font-code text-xs text-gray-600 ${hashBg}`}
           title={
             fragmentType === "function"
               ? "Method Selector"

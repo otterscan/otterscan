@@ -17,7 +17,7 @@ const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
 }) => {
   if (disabled) {
     return (
-      <span className="bg-link-blue/10 text-gray-400 rounded px-2 py-1 text-xs">
+      <span className="rounded bg-link-blue/10 px-2 py-1 text-xs text-gray-400">
         {children}
       </span>
     );
@@ -25,7 +25,7 @@ const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
 
   return (
     <NavLink
-      className="transition-colors bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded px-2 py-1 text-xs"
+      className="rounded bg-link-blue/10 px-2 py-1 text-xs text-link-blue transition-colors hover:bg-link-blue/100 hover:text-white disabled:cursor-default disabled:bg-link-blue disabled:text-gray-400"
       to={urlBuilder ? urlBuilder(blockNum) : blockURL(blockNum)}
     >
       {children}

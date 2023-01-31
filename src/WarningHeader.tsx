@@ -21,7 +21,7 @@ const WarningHeader: React.FC = () => {
     chainMsg = "Sepolia Testnet";
   }
   return (
-    <div className="w-full bg-orange-400 text-white text-center font-bold px-2 py-1">
+    <div className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white">
       You are on {chainMsg}
     </div>
   );

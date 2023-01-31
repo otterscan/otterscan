@@ -12,8 +12,8 @@ type ContractABIProps = {
 const ContractABI: React.FC<ContractABIProps> = ({ abi }) => (
   <div className="mb-3">
     <Tab.Group>
-      <Tab.List className="flex items-baseline space-x-1 mb-1">
-        <div className="flex items-baseline space-x-2 text-sm pr-2 py-1">
+      <Tab.List className="mb-1 flex items-baseline space-x-1">
+        <div className="flex items-baseline space-x-2 py-1 pr-2 text-sm">
           <span>ABI</span>
           <Copy value={JSON.stringify(abi)} />
         </div>

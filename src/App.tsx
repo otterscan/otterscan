@@ -39,7 +39,7 @@ const App = () => {
       ) : (
         <RuntimeContext.Provider value={runtime}>
           <ChainInfoContext.Provider value={chainInfo}>
-            <div className="h-screen flex flex-col">
+            <div className="flex h-screen flex-col">
               <WarningHeader />
               <Router>
                 <Routes>

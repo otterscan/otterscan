@@ -43,7 +43,7 @@ const TokenName: React.FC<TokenNameProps> = ({
 
   return (
     <div
-      className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
+      className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`${name} (${symbol}): ${address}`}
     >
       <Content
@@ -73,9 +73,7 @@ const Content: React.FC<ContentProps> = ({
   linkable,
 }) => (
   <>
-    <div
-      className={`self-center w-5 h-5 ${linkable ? "" : "grayscale"}`}
-    >
+    <div className={`h-5 w-5 self-center ${linkable ? "" : "grayscale"}`}>
       <TokenLogo chainId={chainId} address={address} name={name} />
     </div>
     <span className="truncate">

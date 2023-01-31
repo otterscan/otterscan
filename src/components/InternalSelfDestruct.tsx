@@ -56,7 +56,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
             <AddressHighlighter address={internalOp.to}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                  toMiner ? "rounded bg-amber-100 px-2 py-1" : ""
                 }`}
               >
                 <DecoratedAddressLink address={internalOp.to} miner={toMiner} />

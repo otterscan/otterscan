@@ -24,7 +24,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
 
   return (
     <StandardSubtitle>
-      <div className="flex space-x-2 items-baseline">
+      <div className="flex items-baseline space-x-2">
         <Blockies
           className="self-center rounded"
           seed={checksummedAddress.toLowerCase()}
@@ -40,7 +40,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           <Faucet address={checksummedAddress} rounded />
         )}
         {isENS && (
-          <span className="rounded-lg px-2 py-1 bg-gray-200 text-gray-500 text-xs">
+          <span className="rounded-lg bg-gray-200 px-2 py-1 text-xs text-gray-500">
             ENS: {addressOrName}
           </span>
         )}

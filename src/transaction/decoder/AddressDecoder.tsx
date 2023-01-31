@@ -8,7 +8,7 @@ type AddressDecoderProps = {
 };
 
 const AddressDecoder: React.FC<AddressDecoderProps> = ({ r }) => (
-  <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+  <div className="-ml-1 mr-3 flex items-baseline space-x-2">
     <TransactionAddress address={r} showCodeIndicator />
     <Copy value={r} />
   </div>

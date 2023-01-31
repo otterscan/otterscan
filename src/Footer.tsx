@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
 
   return (
     <div
-      className={`w-full px-2 py-1 border-t border-t-gray-100 text-xs ${
+      className={`w-full border-t border-t-gray-100 px-2 py-1 text-xs ${
         provider?.network.chainId === 1
           ? "bg-link-blue text-gray-200"
           : "bg-orange-400 text-white"

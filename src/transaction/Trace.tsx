@@ -16,10 +16,10 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
 
   return (
     <ContentFrame tabs>
-      <div className="mt-4 mb-5 space-y-3 font-code text-sm flex flex-col items-start overflow-x-auto">
+      <div className="mt-4 mb-5 flex flex-col items-start space-y-3 overflow-x-auto font-code text-sm">
         {traces ? (
           <>
-            <div className="border hover:border-gray-500 rounded px-1 py-0.5">
+            <div className="rounded border px-1 py-0.5 hover:border-gray-500">
               <TransactionAddress address={txData.from} />
             </div>
             <div className="ml-5 space-y-3 self-stretch">
@@ -29,8 +29,8 @@ const Trace: React.FC<TraceProps> = ({ txData }) => {
             </div>
           </>
         ) : (
-          <div className="border hover:border-gray-500 rounded px-1 py-1 w-96 h-7">
-            <div className="animate-pulse w-full h-full rounded bg-gray-200"></div>
+          <div className="h-7 w-96 rounded border px-1 py-1 hover:border-gray-500">
+            <div className="h-full w-full animate-pulse rounded bg-gray-200"></div>
           </div>
         )}
       </div>

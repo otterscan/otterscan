@@ -13,7 +13,7 @@ const UndefinedPageButton: React.FC<
 > = ({ address, direction, hash, disabled, children }) => {
   if (disabled) {
     return (
-      <span className="bg-link-blue/10 text-gray-400 rounded-lg px-3 py-2 text-xs">
+      <span className="rounded-lg bg-link-blue/10 px-3 py-2 text-xs text-gray-400">
         {children}
       </span>
     );
@@ -21,7 +21,7 @@ const UndefinedPageButton: React.FC<
 
   return (
     <NavLink
-      className="transition-colors bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded-lg px-3 py-2 text-xs"
+      className="rounded-lg bg-link-blue/10 px-3 py-2 text-xs text-link-blue transition-colors hover:bg-link-blue/100 hover:text-white disabled:cursor-default disabled:bg-link-blue disabled:text-gray-400"
       to={`/address/${address}/txs/${direction}${
         direction === "prev" || direction === "next" ? `?h=${hash}` : ""
       }`}

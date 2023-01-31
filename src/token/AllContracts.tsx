@@ -34,12 +34,12 @@ const AllContracts: FC = () => {
   return (
     <StandardFrame>
       <StandardSubtitle>
-        <div className="flex space-x-1 items-baseline">
+        <div className="flex items-baseline space-x-1">
           <span>Contracts</span>
         </div>
       </StandardSubtitle>
       <ContentFrame key={pageNumber}>
-        <div className="flex justify-between items-baseline py-3">
+        <div className="flex items-baseline justify-between py-3">
           <div className="text-sm text-gray-500">
             {page === undefined || total === undefined ? (
               <>Waiting for search results...</>
@@ -75,7 +75,7 @@ const AllContracts: FC = () => {
           )}
         </StandardTable>
         {page !== undefined && total !== undefined && (
-          <div className="flex justify-between items-baseline py-3">
+          <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">
               A total of {commify(total)} contracts found
             </div>

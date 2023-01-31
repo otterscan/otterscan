@@ -34,7 +34,7 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
 
   return (
     <Tab.Group>
-      <Tab.List className="flex space-x-1 mb-1">
+      <Tab.List className="mb-1 flex space-x-1">
         <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
         <ModeTab disabled={utfInput === undefined}>UTF-8</ModeTab>
@@ -59,14 +59,14 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
         </Tab.Panel>
         <Tab.Panel>
           <textarea
-            className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+            className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
             value={data}
             readOnly
           />
         </Tab.Panel>
         <Tab.Panel>
           <textarea
-            className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+            className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
             value={utfInput}
             readOnly
           />

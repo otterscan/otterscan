@@ -10,7 +10,7 @@ const SlotAttestationsLink: FC<PropsWithChildren<SlotAwareComponentProps>> = ({
   children,
 }) => (
   <NavLink
-    className={`flex space-x-1 items-baseline text-link-blue hover:text-link-blue-hover font-blocknum`}
+    className={`flex items-baseline space-x-1 font-blocknum text-link-blue hover:text-link-blue-hover`}
     to={slotAttestationsURL(slotNumber)}
   >
     <FontAwesomeIcon className="self-center" icon={faCircleCheck} size="1x" />

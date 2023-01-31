@@ -22,8 +22,8 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
   const tokenMeta = useTokenMetadata(provider, t.token);
 
   return (
-    <div className="flex items-baseline space-x-2 px-2 py-1 truncate hover:bg-gray-100">
-      <div className="grid grid-cols-4 gap-x-1 w-full items-baseline">
+    <div className="flex items-baseline space-x-2 truncate px-2 py-1 hover:bg-gray-100">
+      <div className="grid w-full grid-cols-4 items-baseline gap-x-1">
         <div className="flex items-baseline space-x-1">
           <TransactionAddress
             address={t.from}

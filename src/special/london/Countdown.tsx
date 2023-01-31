@@ -28,14 +28,14 @@ const Countdown: React.FC<CountdownProps> = ({
   }, [provider, currentBlock, targetBlock]);
 
   return (
-    <div className="w-full h-full flex">
+    <div className="flex h-full w-full">
       <div className="m-auto text-center">
-        <h1 className="text-6xl mb-10">London Network Upgrade</h1>
+        <h1 className="mb-10 text-6xl">London Network Upgrade</h1>
         <h2 className="text-5xl">
           {commify(targetBlock - currentBlock.number)}
         </h2>
-        <h6 className="text-sm mb-10">Blocks remaining</h6>
-        <h2 className="inline-flex space-x-10 text-base mb-10">
+        <h6 className="mb-10 text-sm">Blocks remaining</h6>
+        <h2 className="mb-10 inline-flex space-x-10 text-base">
           <div>Current block: {commify(currentBlock.number)}</div>
           <div>Target block: {commify(targetBlock)}</div>
         </h2>

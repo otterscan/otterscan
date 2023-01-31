@@ -12,7 +12,7 @@ const MethodName: React.FC<MethodNameProps> = ({ data }) => {
     <div
       className={`${
         isSimpleTransfer ? "bg-amber-100" : "bg-blue-50"
-      } rounded-lg px-3 py-1 min-h-full flex items-baseline text-xs max-w-max`}
+      } flex min-h-full max-w-max items-baseline rounded-lg px-3 py-1 text-xs`}
     >
       <p className="truncate" title={methodTitle}>
         {methodName}
