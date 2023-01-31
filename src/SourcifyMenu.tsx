@@ -11,11 +11,11 @@ const SourcifyMenu: React.FC = () => {
   return (
     <Menu>
       <div className="relative self-stretch">
-        <Menu.Button className="w-full h-full flex justify-center items-center space-x-2 text-sm border rounded px-2 py-1">
+        <Menu.Button className="flex h-full w-full items-center justify-center space-x-2 rounded border px-2 py-1 text-sm">
           <FontAwesomeIcon icon={faBars} size="1x" />
         </Menu.Button>
-        <Menu.Items className="absolute right-0 mt-1 border p-1 rounded-b bg-white flex flex-col text-sm min-w-max">
-          <div className="px-2 py-1 text-xs border-b border-gray-300">
+        <Menu.Items className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
+          <div className="border-b border-gray-300 px-2 py-1 text-xs">
             Sourcify Datasource
           </div>
           <SourcifyMenuItem
@@ -49,7 +49,7 @@ const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
   <Menu.Item>
     {({ active }) => (
       <button
-        className={`text-sm text-left px-2 py-1 ${
+        className={`px-2 py-1 text-left text-sm ${
           active ? "border-orange-200 text-gray-500" : "text-gray-400"
         } transition-transform transition-colors duration-75 ${
           checked ? "text-gray-900" : ""

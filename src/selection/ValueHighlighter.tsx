@@ -21,7 +21,7 @@ const ValueHighlighter: FC<PropsWithChildren<ValueHighlighterProps>> = ({
 
   return (
     <span
-      className={`border border-dashed rounded hover:bg-transparent hover:border-transparent px-1 truncate ${
+      className={`truncate rounded border border-dashed px-1 hover:border-transparent hover:bg-transparent ${
         selection !== null &&
         selection.type === "value" &&
         selection.content === value.toString()

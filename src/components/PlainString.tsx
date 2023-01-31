@@ -30,7 +30,7 @@ const PlainString: React.FC<PlainStringProps> = ({
   }
 
   return (
-    <span className="text-gray-400 truncate" title={name}>
+    <span className="truncate text-gray-400" title={name}>
       {name}
     </span>
   );

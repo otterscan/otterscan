@@ -46,7 +46,7 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
 
   return (
     <div
-      className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
+      className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`Uniswap V1 LP (${token.symbol}): ${address}`}
     >
       <span>Uniswap V1 LP:</span>
@@ -76,9 +76,7 @@ const Content: React.FC<ContentProps> = ({
   linkable,
 }) => (
   <>
-    <div
-      className={`self-center w-5 h-5 ${linkable ? "" : "grayscale"}`}
-    >
+    <div className={`h-5 w-5 self-center ${linkable ? "" : "grayscale"}`}>
       <TokenLogo chainId={chainId} address={address} name={name} />
     </div>
     <span>{symbol}</span>

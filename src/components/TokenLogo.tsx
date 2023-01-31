@@ -22,9 +22,9 @@ const TokenLogo: React.FC<TokenLogoProps> = ({ chainId, address, name }) => {
   const { src, isLoading } = useImage({ srcList, useSuspense: false });
 
   return (
-    <div className="flex items-center justify-center text-gray-400 w-5 h-5">
+    <div className="flex h-5 w-5 items-center justify-center text-gray-400">
       {src && (
-        <img className="max-w-full max-h-full" src={src} alt={`${name} logo`} />
+        <img className="max-h-full max-w-full" src={src} alt={`${name} logo`} />
       )}
       {!src && !isLoading && <FontAwesomeIcon icon={faCoins} size="1x" />}
     </div>

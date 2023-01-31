@@ -11,9 +11,9 @@ type FaucetProps = {
 
 const Faucet: React.FC<FaucetProps> = ({ address, rounded }) => (
   <NavLink
-    className={`self-center flex flex-no-wrap justify-center items-center space-x-1 text-gray-500 focus:outline-none ${
+    className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-none ${
       rounded
-        ? "transition-colors transition-shadows bg-gray-200 hover:bg-gray-500 hover:text-gray-200 hover:shadow w-7 h-7 rounded-full text-xs"
+        ? "transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow"
         : "text-sm"
     }`}
     to={`/faucets?address=${address}`}

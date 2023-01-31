@@ -17,7 +17,7 @@ const NavBlock: FC<NavBlockProps> = ({
   latestEntityNum,
   urlBuilder,
 }) => (
-  <div className="pl-2 self-center flex space-x-1">
+  <div className="flex space-x-1 self-center pl-2">
     <NavButton
       entityNum={entityNum - 1}
       disabled={

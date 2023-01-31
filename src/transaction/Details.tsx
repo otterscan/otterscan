@@ -122,7 +122,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
         {txData.confirmedData === undefined ? (
           <span className="italic text-gray-400">Pending</span>
         ) : txData.confirmedData.status ? (
-          <span className="flex items-baseline w-min rounded-lg space-x-1 px-3 py-1 bg-emerald-50 text-emerald-500 text-xs">
+          <span className="flex w-min items-baseline space-x-1 rounded-lg bg-emerald-50 px-3 py-1 text-xs text-emerald-500">
             <FontAwesomeIcon
               className="self-center"
               icon={faCheckCircle}
@@ -132,8 +132,8 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           </span>
         ) : (
           <>
-            <div className="flex space-x-1 items-baseline">
-              <div className="flex items-baseline rounded-lg space-x-1 px-3 py-1 bg-red-50 text-red-500 text-xs">
+            <div className="flex items-baseline space-x-1">
+              <div className="flex items-baseline space-x-1 rounded-lg bg-red-50 px-3 py-1 text-xs text-red-500">
                 <FontAwesomeIcon
                   className="self-center"
                   icon={faTimesCircle}
@@ -171,7 +171,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             </div>
             {expanded && (
               <Tab.Group>
-                <Tab.List className="flex space-x-1 mt-2 mb-1">
+                <Tab.List className="mt-2 mb-1 flex space-x-1">
                   <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
                   <ModeTab>Raw</ModeTab>
                 </Tab.List>
@@ -195,7 +195,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
                   </Tab.Panel>
                   <Tab.Panel>
                     <textarea
-                      className="w-full h-40 bg-gray-50 text-gray-500 font-mono focus:outline-none border rounded p-2"
+                      className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
                       value={outputData}
                       readOnly
                     />
@@ -210,14 +210,14 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
         <>
           <InfoRow title="Block / Position">
             <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
-              <div className="flex space-x-1 items-baseline mr-3">
+              <div className="mr-3 flex items-baseline space-x-1">
                 <BlockLink blockTag={txData.confirmedData.blockNumber} />
                 <BlockConfirmations
                   confirmations={txData.confirmedData.confirmations}
                 />
               </div>
               {block && (
-                <div className="flex space-x-2 items-baseline pl-3">
+                <div className="flex items-baseline space-x-2 pl-3">
                   <RelativePosition
                     pos={txData.confirmedData.transactionIndex}
                     total={block.transactionCount - 1}
@@ -239,7 +239,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       )}
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
-          <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+          <div className="-ml-1 mr-3 flex items-baseline space-x-2">
             <TransactionAddress address={txData.from} />
             <Copy value={txData.from} />
           </div>
@@ -251,7 +251,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       </InfoRow>
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
-          <div className="flex items-baseline space-x-2 -ml-1">
+          <div className="-ml-1 flex items-baseline space-x-2">
             <TransactionAddress address={txData.to} showCodeIndicator />
             <Copy value={txData.to} />
           </div>
@@ -260,7 +260,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             Pending contract creation
           </span>
         ) : (
-          <div className="flex items-baseline space-x-2 -ml-1">
+          <div className="-ml-1 flex items-baseline space-x-2">
             <TransactionAddress
               address={txData.confirmedData?.createdContractAddress!}
             />
@@ -334,7 +334,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
               <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
             </span>
             {sendsEthToMiner && (
-              <span className="rounded text-amber-500 bg-amber-100 text-xs px-2 py-1">
+              <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-500">
                 Flashbots
               </span>
             )}
@@ -343,7 +343,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       )}
       {txData.confirmedData && (
         <InfoRow title="Gas Used / Limit">
-          <div className="flex space-x-3 items-baseline">
+          <div className="flex items-baseline space-x-3">
             <div>
               <RelativePosition
                 pos={<GasValue value={txData.confirmedData.gasUsed} />}

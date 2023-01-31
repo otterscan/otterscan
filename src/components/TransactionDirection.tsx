@@ -54,8 +54,8 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
     <span
       className={`${bgColor} ${fgColor} ${
         direction !== undefined
-          ? "px-2 py-1 rounded-lg"
-          : "w-5 h-5 rounded-full flex justify-center items-center"
+          ? "rounded-lg px-2 py-1"
+          : "flex h-5 w-5 items-center justify-center rounded-full"
       } text-xs font-bold`}
     >
       {flags === Flags.MINER ? (

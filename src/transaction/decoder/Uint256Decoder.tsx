@@ -39,7 +39,7 @@ const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
   return (
     <div className="flex items-baseline space-x-2">
       <button
-        className="flex items-baseline space-x-2 rounded-lg bg-gray-50 text-gray-300 hover:text-gray-500 font-sans text-xs px-3 py-1 min-w-max"
+        className="flex min-w-max items-baseline space-x-2 rounded-lg bg-gray-50 px-3 py-1 font-sans text-xs text-gray-300 hover:text-gray-500"
         onClick={toggleModes}
       >
         <div>

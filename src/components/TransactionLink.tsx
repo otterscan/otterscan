@@ -8,7 +8,7 @@ type TransactionLinkProps = {
 
 const TransactionLink: React.FC<TransactionLinkProps> = ({ txHash }) => (
   <NavLink
-    className="text-link-blue hover:text-link-blue-hover font-hash"
+    className="font-hash text-link-blue hover:text-link-blue-hover"
     to={transactionURL(txHash)}
   >
     <p className="truncate">{txHash}</p>

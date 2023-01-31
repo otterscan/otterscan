@@ -8,7 +8,7 @@ type EpochSubtitleProps = {
 
 const EpochSubtitle: FC<EpochSubtitleProps> = ({ epochNumber }) => (
   <StandardSubtitle>
-    <div className="flex space-x-1 items-baseline">
+    <div className="flex items-baseline space-x-1">
       <span>Epoch</span>
       <span className="text-base text-gray-500">#{epochNumber}</span>
       <EpochNavBlock epochNumber={epochNumber} />

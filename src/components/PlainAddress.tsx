@@ -17,7 +17,7 @@ const PlainAddress: React.FC<PlainAddressProps> = ({
       <NavLink
         className={`${
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
-        } font-address truncate`}
+        } truncate font-address`}
         to={`/address/${address}`}
         title={address}
       >
@@ -27,7 +27,7 @@ const PlainAddress: React.FC<PlainAddressProps> = ({
   }
 
   return (
-    <span className="font-address text-gray-400 truncate" title={address}>
+    <span className="truncate font-address text-gray-400" title={address}>
       {address}
     </span>
   );

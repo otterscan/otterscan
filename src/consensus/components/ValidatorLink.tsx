@@ -18,9 +18,9 @@ const ValidatorLink: FC<ValidatorLinkProps> = ({ validatorIndex }) => {
 
   return (
     <NavLink
-      className={`flex space-x-1 items-baseline font-blocknum ${
+      className={`flex items-baseline space-x-1 font-blocknum ${
         isSlashed
-          ? "line-through text-red-600 hover:text-red-800"
+          ? "text-red-600 line-through hover:text-red-800"
           : "text-link-blue hover:text-link-blue-hover"
       }`}
       to={validatorURL(validatorIndex)}

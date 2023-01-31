@@ -10,7 +10,7 @@ const SlotSubtitle: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
 
   return (
     <StandardSubtitle>
-      <div className="flex space-x-1 items-baseline">
+      <div className="flex items-baseline space-x-1">
         <span>Slot</span>
         <span className="text-base text-gray-500">#{slotNumber}</span>
         {headSlotNumber !== undefined && (

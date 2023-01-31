@@ -32,7 +32,7 @@ const ENSName: React.FC<ENSNameProps> = ({
 
   return (
     <div
-      className="flex items-baseline space-x-1 font-sans text-gray-700 truncate"
+      className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`${name}: ${address}`}
     >
       <Content linkable={false} name={name} />

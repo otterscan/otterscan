@@ -19,7 +19,7 @@ const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
   const count = useTransactionCount(provider, sender);
 
   return (
-    <div className="pl-2 self-center flex space-x-1">
+    <div className="flex space-x-1 self-center pl-2">
       <NavButton sender={sender} nonce={nonce - 1} disabled={nonce === 0}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </NavButton>

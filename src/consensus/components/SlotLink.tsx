@@ -23,9 +23,9 @@ const SlotLink: FC<SlotLinkProps> = ({
 
   return (
     <NavLink
-      className={`flex space-x-2 items-baseline ${
+      className={`flex items-baseline space-x-2 ${
         missed
-          ? "line-through text-red-500 hover:text-red-800"
+          ? "text-red-500 line-through hover:text-red-800"
           : "text-link-blue hover:text-link-blue-hover"
       } font-blocknum`}
       to={slotURL(slotNumber)}

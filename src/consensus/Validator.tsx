@@ -31,7 +31,7 @@ const Validator: FC = () => {
           />
           <StandardSelectionBoundary>
             <Tab.Group>
-              <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+              <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
                 <NavTab href=".">Overview</NavTab>
               </Tab.List>
             </Tab.Group>

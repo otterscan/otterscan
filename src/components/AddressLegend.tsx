@@ -20,7 +20,7 @@ const AddressLegend: FC<PropsWithChildren<AddressLegendProps>> = ({
   <span
     className={`${
       full ? "text-sm text-gray-500/70" : "text-xs text-gray-400/70"
-    } not-italic text-clip`}
+    } text-clip not-italic`}
     title={title}
   >
     {children}

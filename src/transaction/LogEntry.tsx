@@ -66,15 +66,15 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
   return (
     <div className="flex space-x-10 py-5">
       <div>
-        <span className="rounded-full w-12 h-12 flex items-center justify-center bg-emerald-50 text-emerald-500">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
           {log.logIndex}
         </span>
       </div>
       <div className="w-full space-y-2">
         <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-          <div className="font-bold text-right">Address</div>
+          <div className="text-right font-bold">Address</div>
           <div className="col-span-11 mr-auto">
-            <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+            <div className="-ml-1 mr-3 flex items-baseline space-x-2">
               <TransactionAddress address={log.address} />
               <Copy value={log.address} />
             </div>
@@ -83,7 +83,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
         <Tab.Group>
           <Tab.List className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
             <div className="text-right">Parameters</div>
-            <div className="col-span-11 flex space-x-1 mb-1">
+            <div className="col-span-11 mb-1 flex space-x-1">
               <ModeTab>Decoded</ModeTab>
               <ModeTab>Raw</ModeTab>
             </div>
@@ -92,27 +92,27 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
             <Tab.Panel className="space-y-2">
               {resolvedLogDesc === undefined ? (
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="col-start-2 flex space-x-2 items-center col-span-11">
+                  <div className="col-span-11 col-start-2 flex items-center space-x-2">
                     Waiting for data...
                   </div>
                 </div>
               ) : resolvedLogDesc === null ? (
                 <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="col-start-2 flex space-x-2 items-center col-span-11">
+                  <div className="col-span-11 col-start-2 flex items-center space-x-2">
                     Can't decode data
                   </div>
                 </div>
               ) : (
                 <>
                   <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                    <div className="col-start-2 flex space-x-2 items-center col-span-11 font-mono">
+                    <div className="col-span-11 col-start-2 flex items-center space-x-2 font-mono">
                       <DecodedLogSignature
                         event={resolvedLogDesc.eventFragment}
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                    <div className="col-start-2 flex space-x-2 items-center col-span-11">
+                    <div className="col-span-11 col-start-2 flex items-center space-x-2">
                       <DecodedParamsTable
                         args={resolvedLogDesc.args}
                         paramTypes={resolvedLogDesc.eventFragment.inputs}
@@ -130,8 +130,8 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
                   key={i}
                 >
                   <div className="text-right">{i === 0 && "Topics"}</div>
-                  <div className="flex space-x-2 items-center col-span-11 font-mono">
-                    <span className="rounded bg-gray-100 text-gray-500 px-2 py-1 text-xs">
+                  <div className="col-span-11 flex items-center space-x-2 font-mono">
+                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-500">
                       {i}
                     </span>
                     <span>{t}</span>
@@ -139,10 +139,10 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
                 </div>
               ))}
               <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                <div className="text-right pt-2">Data</div>
+                <div className="pt-2 text-right">Data</div>
                 <div className="col-span-11">
                   <textarea
-                    className="w-full h-40 bg-gray-50 font-mono focus:outline-none border rounded p-2"
+                    className="h-40 w-full rounded border bg-gray-50 p-2 font-mono focus:outline-none"
                     value={log.data}
                     readOnly
                   />

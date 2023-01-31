@@ -51,7 +51,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
 
   return (
     <div className="flex items-baseline space-x-1 truncate">
-      <div className="grid grid-cols-6 gap-x-1 w-full items-baseline">
+      <div className="grid w-full grid-cols-6 items-baseline gap-x-1">
         <div className="col-span-2 flex items-baseline space-x-1">
           <span className="text-gray-500">
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
@@ -60,7 +60,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
             <AddressHighlighter address={internalOp.from}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  fromMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                  fromMiner ? "rounded bg-amber-100 px-2 py-1" : ""
                 }`}
               >
                 <DecoratedAddressLink
@@ -81,7 +81,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
           <AddressHighlighter address={internalOp.to}>
             <div
               className={`flex items-baseline space-x-1 ${
-                toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                toMiner ? "rounded bg-amber-100 px-2 py-1" : ""
               }`}
             >
               <DecoratedAddressLink

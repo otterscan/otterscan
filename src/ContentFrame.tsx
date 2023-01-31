@@ -9,9 +9,9 @@ const ContentFrame: React.FC<PropsWithChildren<ContentFrameProps>> = ({
   children,
 }) => {
   return tabs ? (
-    <div className="divide-y border rounded-b-lg px-3 bg-white">{children}</div>
+    <div className="divide-y rounded-b-lg border bg-white px-3">{children}</div>
   ) : (
-    <div className="divide-y border rounded-lg px-3 bg-white">{children}</div>
+    <div className="divide-y rounded-lg border bg-white px-3">{children}</div>
   );
 };
 

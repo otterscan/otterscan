@@ -24,7 +24,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
 
   return (
     <ContentFrame>
-      <div className="flex justify-between items-baseline py-3">
+      <div className="flex items-baseline justify-between py-3">
         <div className="text-sm text-gray-500">
           {page === undefined ? (
             <>Waiting for search results...</>
@@ -47,7 +47,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
           {page.map((tx) => (
             <TransactionItem key={tx.hash} tx={tx} feeDisplay={feeDisplay} />
           ))}
-          <div className="flex justify-between items-baseline py-3">
+          <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">
               A total of {total} transactions found
             </div>

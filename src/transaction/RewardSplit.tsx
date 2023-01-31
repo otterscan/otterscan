@@ -32,7 +32,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
 
   return (
     <div className="inline-block">
-      <div className="grid grid-cols-2 gap-x-2 gap-y-1 items-center text-sm">
+      <div className="grid grid-cols-2 items-center gap-x-2 gap-y-1 text-sm">
         <PercentageGauge
           perc={burntPerc}
           bgColor="bg-orange-100"

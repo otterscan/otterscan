@@ -62,7 +62,7 @@ const Block: React.FC = () => {
   return (
     <StandardFrame>
       <StandardSubtitle>
-        <div className="flex space-x-1 items-baseline">
+        <div className="flex items-baseline space-x-1">
           <span>Block</span>
           <span className="text-base text-gray-500">#{blockNumberOrHash}</span>
           {block && (
@@ -86,7 +86,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Transactions">
             <NavLink
-              className="bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white rounded-lg px-2 py-1 text-xs"
+              className="rounded-lg bg-link-blue/10 px-2 py-1 text-xs text-link-blue hover:bg-link-blue/100 hover:text-white"
               to={blockTxsURL(block.number)}
             >
               {block.transactionCount} transactions
@@ -134,7 +134,7 @@ const Block: React.FC = () => {
             </InfoRow>
           )}
           <InfoRow title="Gas Used/Limit">
-            <div className="flex space-x-3 items-baseline">
+            <div className="flex items-baseline space-x-3">
               <div>
                 <RelativePosition
                   pos={<GasValue value={block.gasUsed} />}
@@ -146,7 +146,7 @@ const Block: React.FC = () => {
           </InfoRow>
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
-            <span className="font-data break-all">{block.extraData}</span>)
+            <span className="break-all font-data">{block.extraData}</span>)
           </InfoRow>
           <InfoRow title={`${name} Price`}>
             <NativeTokenPrice blockTag={block.number} />

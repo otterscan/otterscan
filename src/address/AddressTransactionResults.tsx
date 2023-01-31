@@ -109,7 +109,7 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex divide-x-2 divide-dotted divide-gray-300">
-                <div className="flex items-baseline space-x-2 -ml-1 mr-3">
+                <div className="-ml-1 mr-3 flex items-baseline space-x-2">
                   <TransactionAddress
                     address={creator.creator}
                     showCodeIndicator
@@ -155,7 +155,7 @@ type NavBarProps = {
 };
 
 const NavBar: React.FC<NavBarProps> = ({ address, page, controller }) => (
-  <div className="flex justify-between items-baseline py-3">
+  <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {page === undefined ? (
         <>Waiting for search results...</>

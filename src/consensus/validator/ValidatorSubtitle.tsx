@@ -13,11 +13,11 @@ const ValidatorSubtitle: FC<ValidatorSubtitleProps> = ({
   slashed,
 }) => (
   <StandardSubtitle>
-    <div className="flex space-x-1 items-baseline">
+    <div className="flex items-baseline space-x-1">
       <span>Validator</span>
       <span className="text-base text-gray-500">#{validatorIndex}</span>
       {slashed && (
-        <span className="text-sm text-red-600 bg-red-200 space-x-2 rounded-xl border border-red-600 px-2 py-1">
+        <span className="space-x-2 rounded-xl border border-red-600 bg-red-200 px-2 py-1 text-sm text-red-600">
           <span className="">
             <FontAwesomeIcon
               className="self-center"

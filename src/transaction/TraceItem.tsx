@@ -18,14 +18,14 @@ const TraceItem: React.FC<TraceItemProps> = ({ t, last }) => {
 
   return (
     <>
-      <div className="flex relative">
-        <div className="absolute border-l border-b w-5 h-6 -translate-y-3"></div>
+      <div className="relative flex">
+        <div className="absolute h-6 w-5 -translate-y-3 border-l border-b"></div>
         {!last && (
-          <div className="absolute left-0 border-l w-5 h-full translate-y-3"></div>
+          <div className="absolute left-0 h-full w-5 translate-y-3 border-l"></div>
         )}
         {t.children && (
           <Switch
-            className="absolute left-0 bg-white -translate-x-1/2 text-gray-500"
+            className="absolute left-0 -translate-x-1/2 bg-white text-gray-500"
             checked={expanded}
             onChange={setExpanded}
           >

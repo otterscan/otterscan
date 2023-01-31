@@ -57,7 +57,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
         txFrom ? "bg-skin-from" : ""
       } ${txTo ? "bg-skin-to" : ""} ${
         mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
-      } ${burn ? "line-through text-orange-500 hover:text-orange-700" : ""} ${
+      } ${burn ? "text-orange-500 line-through hover:text-orange-700" : ""} ${
         selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
       }`}
     >
@@ -88,7 +88,7 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
       )}
       {match && (
         <NavLink
-          className="self-center shrink-0 flex items-center"
+          className="flex shrink-0 items-center self-center"
           to={`/address/${address}/contract`}
         >
           <SourcifyLogo />
