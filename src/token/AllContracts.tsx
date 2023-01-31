@@ -9,12 +9,12 @@ import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ERC20Item from "./ERC20Item";
+import ContractItem from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
-import { useERC20Count, useERC20List } from "../useErigonHooks";
+import { useContractsCount, useContractsList } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
-const AllERC20: FC = () => {
+const AllContracts: FC = () => {
   const { provider } = useContext(RuntimeContext);
 
   const [searchParams] = useSearchParams();
@@ -26,16 +26,16 @@ const AllERC20: FC = () => {
     } catch (err) {}
   }
 
-  const total = useERC20Count(provider);
-  const page = useERC20List(provider, pageNumber, PAGE_SIZE);
+  const total = useContractsCount(provider);
+  const page = useContractsList(provider, pageNumber, PAGE_SIZE);
 
-  document.title = `ERC20 Tokens | Otterscan`;
+  document.title = `All contracts | Otterscan`;
 
   return (
     <StandardFrame>
       <StandardSubtitle>
         <div className="flex space-x-1 items-baseline">
-          <span>ERC20 tokens</span>
+          <span>Contracts</span>
         </div>
       </StandardSubtitle>
       <ContentFrame key={pageNumber}>
@@ -59,16 +59,13 @@ const AllERC20: FC = () => {
           <StandardTHead>
             <th className="w-96">Address</th>
             <th className="w-28">Block</th>
-            <th className="w-40">Age</th>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th className="w-40">Decimals</th>
+            <th>Age</th>
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
-                  <ERC20Item key={m.address} m={m} />
+                  <ContractItem key={m.address} m={m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
@@ -94,4 +91,4 @@ const AllERC20: FC = () => {
   );
 };
 
-export default AllERC20;
+export default AllContracts;
