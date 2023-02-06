@@ -2,9 +2,7 @@ import React, { useContext } from "react";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TimestampAge from "../components/TimestampAge";
-import AddressHighlighter from "../components/AddressHighlighter";
 import TransactionDirection, {
   Direction,
   Flags,
@@ -14,8 +12,10 @@ import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
-import { useHasCode, useSendsToMiner } from "../useErigonHooks";
+import { useSendsToMiner } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
+import TransactionAddress from "../components/TransactionAddress";
+import { BlockNumberContext } from "../useBlockTagContext";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
@@ -29,11 +29,6 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   feeDisplay,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const toHasCode = useHasCode(
-    provider,
-    tx.to ?? undefined,
-    tx.blockNumber - 1
-  );
   const [sendsToMiner] = useSendsToMiner(provider, tx.hash, tx.miner);
 
   let direction: Direction | undefined;
@@ -55,75 +50,73 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   const flash = tx.gasPrice.isZero() && sendsToMiner;
 
   return (
-    <div
-      className={`grid grid-cols-12 items-baseline gap-x-1 border-t border-gray-200 text-sm ${
-        flash ? "bg-amber-100 hover:bg-amber-200" : "hover:bg-skin-table-hover"
-      } px-2 py-3`}
-    >
-      <span className="col-span-2">
-        <TransactionLink txHash={tx.hash} fail={tx.status === 0} />
-      </span>
-      {tx.to !== null ? <MethodName data={tx.data} /> : <span></span>}
-      <span>
-        <BlockLink blockTag={tx.blockNumber} />
-      </span>
-      <TimestampAge timestamp={tx.timestamp} />
-      <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
-        <span className="truncate">
-          {tx.from && (
-            <AddressHighlighter address={tx.from}>
-              <DecoratedAddressLink
+    <BlockNumberContext.Provider value={tx.blockNumber}>
+      <div
+        className={`grid grid-cols-12 items-baseline gap-x-1 border-t border-gray-200 text-sm ${
+          flash
+            ? "bg-amber-100 hover:bg-amber-200"
+            : "hover:bg-skin-table-hover"
+        } px-2 py-3`}
+      >
+        <span className="col-span-2">
+          <TransactionLink txHash={tx.hash} fail={tx.status === 0} />
+        </span>
+        {tx.to !== null ? <MethodName data={tx.data} /> : <span></span>}
+        <span>
+          <BlockLink blockTag={tx.blockNumber} />
+        </span>
+        <TimestampAge timestamp={tx.timestamp} />
+        <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
+          <span className="truncate">
+            {tx.from && (
+              <TransactionAddress
                 address={tx.from}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.from}
               />
-            </AddressHighlighter>
-          )}
+            )}
+          </span>
+          <span>
+            <TransactionDirection
+              direction={direction}
+              flags={sendsToMiner ? Flags.MINER : undefined}
+            />
+          </span>
         </span>
-        <span>
-          <TransactionDirection
-            direction={direction}
-            flags={sendsToMiner ? Flags.MINER : undefined}
-          />
-        </span>
-      </span>
-      <span
-        className="col-span-2 flex items-baseline"
-        title={tx.to ?? tx.createdContractAddress}
-      >
-        <span className="truncate">
-          {tx.to ? (
-            <AddressHighlighter address={tx.to}>
-              <DecoratedAddressLink
+        <span
+          className="col-span-2 flex items-baseline"
+          title={tx.to ?? tx.createdContractAddress}
+        >
+          <span className="truncate">
+            {tx.to ? (
+              <TransactionAddress
                 address={tx.to}
                 selectedAddress={selectedAddress}
                 miner={tx.miner === tx.to}
-                eoa={toHasCode === undefined ? undefined : !toHasCode}
+                showCodeIndicator
               />
-            </AddressHighlighter>
-          ) : (
-            <AddressHighlighter address={tx.createdContractAddress!}>
-              <DecoratedAddressLink
+            ) : (
+              <TransactionAddress
                 address={tx.createdContractAddress!}
                 selectedAddress={selectedAddress}
                 creation
-                eoa={false}
+                showCodeIndicator
               />
-            </AddressHighlighter>
-          )}
+            )}
+          </span>
         </span>
-      </span>
-      <span className="col-span-2 truncate">
-        <TransactionValue value={tx.value} />
-      </span>
-      <span className="truncate font-balance text-xs text-gray-500">
-        {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
-        {feeDisplay === FeeDisplay.TX_FEE_USD && (
-          <TransactionItemFiatFee blockTag={tx.blockNumber} fee={tx.fee} />
-        )}
-        {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(tx.gasPrice, 9)}
-      </span>
-    </div>
+        <span className="col-span-2 truncate">
+          <TransactionValue value={tx.value} />
+        </span>
+        <span className="truncate font-balance text-xs text-gray-500">
+          {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
+          {feeDisplay === FeeDisplay.TX_FEE_USD && (
+            <TransactionItemFiatFee blockTag={tx.blockNumber} fee={tx.fee} />
+          )}
+          {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(tx.gasPrice, 9)}
+        </span>
+      </div>
+    </BlockNumberContext.Provider>
   );
 };
 

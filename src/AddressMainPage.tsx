@@ -52,7 +52,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   );
 
   const { config, provider } = useContext(RuntimeContext);
-  const hasCode = useHasCode(provider, checksummedAddress, "latest");
+  const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
     provider?.network.chainId
