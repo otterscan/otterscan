@@ -11,7 +11,7 @@ import BlockLink from "../components/BlockLink";
 import ModeTab from "../components/ModeTab";
 import ExpanderSwitch from "../components/ExpanderSwitch";
 import BlockConfirmations from "../components/BlockConfirmations";
-import TransactionAddress from "../components/TransactionAddress";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import Copy from "../components/Copy";
 import Nonce from "../components/Nonce";
 import NavNonce from "./NavNonce";
@@ -239,11 +239,8 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       )}
       <InfoRow title="From / Nonce">
         <div className="flex divide-x-2 divide-dotted divide-gray-300">
-          <div className="-ml-1 mr-3 flex items-baseline space-x-2">
-            <TransactionAddress address={txData.from} />
-            <Copy value={txData.from} />
-          </div>
-          <div className="flex items-baseline pl-3">
+          <TransactionAddressWithCopy address={txData.from} />
+          <div className="ml-3 flex items-baseline pl-3">
             <Nonce value={txData.nonce} />
             <NavNonce sender={txData.from} nonce={txData.nonce} />
           </div>
@@ -251,21 +248,15 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       </InfoRow>
       <InfoRow title={txData.to ? "Interacted With (To)" : "Contract Created"}>
         {txData.to ? (
-          <div className="-ml-1 flex items-baseline space-x-2">
-            <TransactionAddress address={txData.to} showCodeIndicator />
-            <Copy value={txData.to} />
-          </div>
+          <TransactionAddressWithCopy address={txData.to} showCodeIndicator />
         ) : txData.confirmedData === undefined ? (
           <span className="italic text-gray-400">
             Pending contract creation
           </span>
         ) : (
-          <div className="-ml-1 flex items-baseline space-x-2">
-            <TransactionAddress
-              address={txData.confirmedData?.createdContractAddress!}
-            />
-            <Copy value={txData.confirmedData.createdContractAddress!} />
-          </div>
+          <TransactionAddressWithCopy
+            address={txData.confirmedData?.createdContractAddress!}
+          />
         )}
         {internalOps && internalOps.length > 0 && (
           <div className="mt-2 space-y-1 overflow-x-auto">

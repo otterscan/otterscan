@@ -6,27 +6,34 @@ import { useSelectedTransaction } from "../useSelectedTransaction";
 import { useBlockNumberContext } from "../useBlockTagContext";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
-import { AddressContext } from "../types";
+import { AddressContext, ChecksummedAddress } from "../types";
 
-type TransactionAddressProps = AddressAwareComponentProps & {
+export type TransactionAddressProps = AddressAwareComponentProps & {
+  selectedAddress?: ChecksummedAddress | undefined;
   addressCtx?: AddressContext | undefined;
+  creation?: boolean | undefined;
+  miner?: boolean | undefined;
   showCodeIndicator?: boolean;
 };
 
 const TransactionAddress: FC<TransactionAddressProps> = ({
   address,
+  selectedAddress,
   addressCtx,
+  creation,
+  miner,
   showCodeIndicator = false,
 }) => {
   const txData = useSelectedTransaction();
   // TODO: push down creation coloring logic into DecoratedAddressLink
-  const creation = address === txData?.confirmedData?.createdContractAddress;
+  const _creation =
+    creation || address === txData?.confirmedData?.createdContractAddress;
 
   const { provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
 
   const blockNumber = useBlockNumberContext();
-  const toHasCode = useHasCode(
+  const hasCode = useHasCode(
     provider,
     address,
     blockNumber !== undefined
@@ -40,14 +47,17 @@ const TransactionAddress: FC<TransactionAddressProps> = ({
     <AddressHighlighter address={address}>
       <DecoratedAddressLink
         address={address}
+        selectedAddress={selectedAddress}
         addressCtx={addressCtx}
-        miner={address === block?.miner}
+        miner={miner || address === block?.miner}
         txFrom={address === txData?.from}
-        txTo={address === txData?.to || creation}
-        creation={creation}
+        txTo={address === txData?.to || _creation}
+        creation={_creation}
         eoa={
-          showCodeIndicator && blockNumber !== undefined
-            ? !toHasCode
+          showCodeIndicator
+            ? creation || blockNumber !== undefined
+              ? !hasCode
+              : undefined
             : undefined
         }
       />

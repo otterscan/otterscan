@@ -19,7 +19,7 @@ import { useResolvedAddress } from "../useResolvedAddresses";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
 import { resolverRendererRegistry } from "../api/address-resolver";
 
-type DecoratedAddressLinkProps = AddressAwareComponentProps & {
+export type DecoratedAddressLinkProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
   addressCtx?: AddressContext | undefined;
   creation?: boolean | undefined;

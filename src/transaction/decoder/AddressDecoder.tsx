@@ -1,6 +1,5 @@
 import React from "react";
-import TransactionAddress from "../../components/TransactionAddress";
-import Copy from "../../components/Copy";
+import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
 import { ChecksummedAddress } from "../../types";
 
 type AddressDecoderProps = {
@@ -8,10 +7,7 @@ type AddressDecoderProps = {
 };
 
 const AddressDecoder: React.FC<AddressDecoderProps> = ({ r }) => (
-  <div className="-ml-1 mr-3 flex items-baseline space-x-2">
-    <TransactionAddress address={r} showCodeIndicator />
-    <Copy value={r} />
-  </div>
+  <TransactionAddressWithCopy address={r} showCodeIndicator />
 );
 
 export default AddressDecoder;
