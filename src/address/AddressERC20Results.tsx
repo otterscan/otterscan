@@ -57,13 +57,12 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
           <th>From</th>
           <th>To</th>
           <th className="w-44">Value</th>
-          <th className="w-28">Txn Fee</th>
         </StandardTHead>
         {page !== undefined ? (
           <StandardSelectionBoundary>
             <StandardTBody>
               {page.map((m) => (
-                <ERC20Item key={m.hash} m={m} />
+                <ERC20Item key={m.hash} address={address} m={m} />
               ))}
             </StandardTBody>
           </StandardSelectionBoundary>
