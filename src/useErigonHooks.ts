@@ -4,7 +4,7 @@ import {
   BlockWithTransactions,
   BlockTag,
 } from "@ethersproject/abstract-provider";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { JsonRpcProvider, TransactionResponse } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { Contract } from "@ethersproject/contracts";
 import { defaultAbiCoder } from "@ethersproject/abi";
@@ -24,6 +24,7 @@ import {
 } from "./types";
 import erc20 from "./erc20.json";
 import erc721md from "./erc721metadata.json";
+import { rawToProcessed } from "./search/search";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -709,6 +710,10 @@ export type ContractMatch = {
   address: string;
 };
 
+export type TransactionMatch = {
+  hash: string;
+};
+
 const useGenericContractList = (
   provider: JsonRpcProvider | undefined,
   rpcMethod: string,
@@ -823,6 +828,94 @@ export const useERC1155List = (
     pageNumber,
     pageSize
   );
+};
+
+const useGenericTransactionCount = (
+  provider: JsonRpcProvider | undefined,
+  rpcMethod: string,
+  address: ChecksummedAddress
+): number | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
+  if (error) {
+    return undefined;
+  }
+  return data as number | undefined;
+};
+
+const useGenericTransactionList = (
+  provider: JsonRpcProvider | undefined,
+  rpcMethod: string,
+  address: ChecksummedAddress,
+  pageNumber: number,
+  pageSize: number
+): TransactionMatch[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    [rpcMethod, address, pageNumber - 1, pageSize],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (data === undefined) {
+    return undefined;
+  }
+  const converted = (data as any[]).map((m) => {
+    const t: TransactionMatch = {
+      hash: m.hash,
+    };
+    return t;
+  });
+  return converted;
+};
+
+export const useERC20TransferCount = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress
+): number | undefined => {
+  return useGenericTransactionCount(
+    provider,
+    "ots_getERC20TransferCount",
+    address
+  );
+};
+
+export const useERC20TransferList = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress,
+  pageNumber: number,
+  pageSize: number
+): TransactionMatch[] | undefined => {
+  return useGenericTransactionList(
+    provider,
+    "ots_getERC20TransferPage",
+    address,
+    pageNumber,
+    pageSize
+  );
+};
+
+// TODO: remove temporary prototype
+export const useTransactionsWithReceipts = (
+  provider: JsonRpcProvider | undefined,
+  hash: string[] | undefined
+): ProcessedTransaction[] | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    hash === undefined ? null : ["ots_getTransactionsWithReceipts", hash],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+
+  if (!provider || data === undefined) {
+    return undefined;
+  }
+  const converted = rawToProcessed(provider, data);
+  return converted.txs;
 };
 
 const ERC721MD_PROTOTYPE = new Contract(AddressZero, erc721md);

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, memo, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,6 +9,7 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
+import { AddressAwareComponentProps } from "../execution/types";
 import PlainAddress from "./PlainAddress";
 import AddressLegend from "./AddressLegend";
 import AddressAttributes from "../address/AddressAttributes";
@@ -18,8 +19,7 @@ import { useResolvedAddress } from "../useResolvedAddresses";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
 import { resolverRendererRegistry } from "../api/address-resolver";
 
-type DecoratedAddressLinkProps = {
-  address: ChecksummedAddress;
+type DecoratedAddressLinkProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
   addressCtx?: AddressContext | undefined;
   creation?: boolean | undefined;
@@ -33,7 +33,7 @@ type DecoratedAddressLinkProps = {
   plain?: boolean | undefined;
 };
 
-const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
+const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
   address,
   selectedAddress,
   addressCtx,
@@ -126,13 +126,12 @@ const DecoratedAddressLink: React.FC<DecoratedAddressLinkProps> = ({
   );
 };
 
-type ResolvedAddressProps = {
-  address: ChecksummedAddress;
+type ResolvedAddressProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
   dontOverrideColors?: boolean;
 };
 
-const ResolvedAddress: React.FC<ResolvedAddressProps> = ({
+const ResolvedAddress: FC<ResolvedAddressProps> = ({
   address,
   selectedAddress,
   dontOverrideColors,
@@ -172,4 +171,4 @@ const ResolvedAddress: React.FC<ResolvedAddressProps> = ({
   );
 };
 
-export default React.memo(DecoratedAddressLink);
+export default memo(DecoratedAddressLink);

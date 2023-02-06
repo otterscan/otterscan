@@ -16,6 +16,7 @@ import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
 import NavTab from "./components/NavTab";
 import SourcifyLogo from "./sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
+import AddressERC20Results from "./address/AddressERC20Results";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "./useRuntime";
@@ -77,16 +78,21 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
           <>
             <AddressSubtitle
               addressOrName={addressOrName}
-              checksummedAddress={checksummedAddress}
+              address={checksummedAddress}
               isENS={isENS}
             />
             <Tab.Group>
               <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
                 {config?.experimental && (
-                  <NavTab href={`/address/${addressOrName}/tokens`}>
-                    Tokens
-                  </NavTab>
+                  <>
+                    <NavTab href={`/address/${addressOrName}/erc20`}>
+                      ERC20 Transfers
+                    </NavTab>
+                    <NavTab href={`/address/${addressOrName}/tokens`}>
+                      Token Balances
+                    </NavTab>
+                  </>
                 )}
                 {hasCode && (
                   <NavTab href={`/address/${addressOrName}/contract`}>
@@ -131,10 +137,18 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     }
                   />
                   {config?.experimental && (
-                    <Route
-                      path="tokens"
-                      element={<AddressTokens address={checksummedAddress} />}
-                    />
+                    <>
+                      <Route
+                        path="erc20"
+                        element={
+                          <AddressERC20Results address={checksummedAddress} />
+                        }
+                      />
+                      <Route
+                        path="tokens"
+                        element={<AddressTokens address={checksummedAddress} />}
+                      />
+                    </>
                   )}
                   <Route
                     path="contract"

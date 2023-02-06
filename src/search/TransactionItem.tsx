@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
 import TransactionLink from "../components/TransactionLink";
@@ -62,16 +60,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         flash ? "bg-amber-100 hover:bg-amber-200" : "hover:bg-skin-table-hover"
       } px-2 py-3`}
     >
-      <div className="col-span-2 flex items-baseline space-x-1">
-        {tx.status === 0 && (
-          <span className="text-red-600" title="Transaction reverted">
-            <FontAwesomeIcon icon={faExclamationCircle} />
-          </span>
-        )}
-        <span className="truncate">
-          <TransactionLink txHash={tx.hash} />
-        </span>
-      </div>
+      <span className="col-span-2">
+        <TransactionLink txHash={tx.hash} fail={tx.status === 0} />
+      </span>
       {tx.to !== null ? <MethodName data={tx.data} /> : <span></span>}
       <span>
         <BlockLink blockTag={tx.blockNumber} />

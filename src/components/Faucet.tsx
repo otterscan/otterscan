@@ -1,15 +1,14 @@
-import React from "react";
+import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons";
-import { ChecksummedAddress } from "../types";
+import { AddressAwareComponentProps } from "../execution/types";
 
-type FaucetProps = {
-  address: ChecksummedAddress;
+type FaucetProps = AddressAwareComponentProps & {
   rounded?: boolean;
 };
 
-const Faucet: React.FC<FaucetProps> = ({ address, rounded }) => (
+const Faucet: FC<FaucetProps> = ({ address, rounded }) => (
   <NavLink
     className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-none ${
       rounded
@@ -23,4 +22,4 @@ const Faucet: React.FC<FaucetProps> = ({ address, rounded }) => (
   </NavLink>
 );
 
-export default React.memo(Faucet);
+export default memo(Faucet);

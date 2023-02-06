@@ -1,6 +1,7 @@
 import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
+import { AddressAwareComponentProps } from "../execution/types";
 import ContentFrame from "../ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
@@ -9,14 +10,9 @@ import StandardTBody from "../components/StandardTBody";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Holdings } from "../useErigonHooks";
-import { ChecksummedAddress } from "../types";
 import { useTokenSet } from "../kleros/useTokenList";
 
-type AddressTokensProps = {
-  address: ChecksummedAddress;
-};
-
-const AddressTokens: FC<AddressTokensProps> = ({ address }) => {
+const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
   const erc20List = useERC20Holdings(provider, address);
 
