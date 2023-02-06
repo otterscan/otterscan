@@ -1,11 +1,10 @@
 import { FC, useContext } from "react";
+import { AddressAwareComponentProps } from "../execution/types";
 import AddressLegend from "../components/AddressLegend";
 import { useAddressAttributes } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
-import { ChecksummedAddress } from "../types";
 
-type AddressAttributesProps = {
-  address: ChecksummedAddress;
+type AddressAttributesProps = AddressAwareComponentProps & {
   full?: boolean;
 };
 

@@ -1,6 +1,7 @@
 import { useContext, FC } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
+import { AddressAwareComponentProps } from "../execution/types";
 import ContentFrame from "../ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
@@ -11,13 +12,8 @@ import ERC20Item from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20TransferCount, useERC20TransferList } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
-import { ChecksummedAddress } from "../types";
 
-type AddressERC20ResultsProps = {
-  address: ChecksummedAddress;
-};
-
-const AddressERC20Results: FC<AddressERC20ResultsProps> = ({ address }) => {
+const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const [searchParams] = useSearchParams();

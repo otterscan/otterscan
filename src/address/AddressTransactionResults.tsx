@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
+import { AddressAwareComponentProps } from "../execution/types";
 import ContentFrame from "../ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import InfoRow from "../components/InfoRow";
@@ -14,15 +15,11 @@ import UndefinedPageControl from "../search/UndefinedPageControl";
 import { useFeeToggler } from "../search/useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { useParams, useSearchParams } from "react-router-dom";
-import { ChecksummedAddress, ProcessedTransaction } from "../types";
+import { ProcessedTransaction } from "../types";
 import { useAddressBalance, useContractCreator } from "../useErigonHooks";
 import { BlockNumberContext } from "../useBlockTagContext";
 
-type AddressTransactionResultsProps = {
-  address: ChecksummedAddress;
-};
-
-const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
+const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
 }) => {
   const { provider } = useContext(RuntimeContext);
@@ -148,13 +145,12 @@ const AddressTransactionResults: React.FC<AddressTransactionResultsProps> = ({
   );
 };
 
-type NavBarProps = {
-  address: ChecksummedAddress;
+type NavBarProps = AddressAwareComponentProps & {
   page: ProcessedTransaction[] | undefined;
   controller: SearchController | undefined;
 };
 
-const NavBar: React.FC<NavBarProps> = ({ address, page, controller }) => (
+const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
   <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {page === undefined ? (

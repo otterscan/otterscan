@@ -78,7 +78,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
           <>
             <AddressSubtitle
               addressOrName={addressOrName}
-              checksummedAddress={checksummedAddress}
+              address={checksummedAddress}
               isENS={isENS}
             />
             <Tab.Group>
