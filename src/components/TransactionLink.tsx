@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { transactionURL } from "../url";
 
@@ -6,7 +6,7 @@ type TransactionLinkProps = {
   txHash: string;
 };
 
-const TransactionLink: React.FC<TransactionLinkProps> = ({ txHash }) => (
+const TransactionLink: FC<TransactionLinkProps> = ({ txHash }) => (
   <NavLink
     className="font-hash text-link-blue hover:text-link-blue-hover"
     to={transactionURL(txHash)}
@@ -15,4 +15,4 @@ const TransactionLink: React.FC<TransactionLinkProps> = ({ txHash }) => (
   </NavLink>
 );
 
-export default React.memo(TransactionLink);
+export default memo(TransactionLink);
