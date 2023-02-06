@@ -8,7 +8,7 @@ import { RuntimeContext } from "../useRuntime";
 import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
 import { AddressContext } from "../types";
 
-type TransactionAddressProps = AddressAwareComponentProps & {
+export type TransactionAddressProps = AddressAwareComponentProps & {
   addressCtx?: AddressContext | undefined;
   showCodeIndicator?: boolean;
 };

@@ -4,8 +4,7 @@ import ContentFrame from "../ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import InfoRow from "../components/InfoRow";
 import AddressBalance from "./AddressBalance";
-import TransactionAddress from "../components/TransactionAddress";
-import Copy from "../components/Copy";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import TransactionLink from "../components/TransactionLink";
 import PendingResults from "../search/PendingResults";
 import ResultHeader from "../search/ResultHeader";
@@ -106,14 +105,11 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex divide-x-2 divide-dotted divide-gray-300">
-                <div className="-ml-1 mr-3 flex items-baseline space-x-2">
-                  <TransactionAddress
-                    address={creator.creator}
-                    showCodeIndicator
-                  />
-                  <Copy value={creator.creator} />
-                </div>
-                <div className="flex items-baseline pl-3">
+                <TransactionAddressWithCopy
+                  address={creator.creator}
+                  showCodeIndicator
+                />
+                <div className="ml-3 flex items-baseline pl-3">
                   <TransactionLink txHash={creator.hash} />
                 </div>
               </div>

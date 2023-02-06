@@ -2,8 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { Log } from "@ethersproject/abstract-provider";
 import { Fragment, Interface } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
-import TransactionAddress from "../components/TransactionAddress";
-import Copy from "../components/Copy";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
@@ -74,10 +73,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
         <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
           <div className="text-right font-bold">Address</div>
           <div className="col-span-11 mr-auto">
-            <div className="-ml-1 mr-3 flex items-baseline space-x-2">
-              <TransactionAddress address={log.address} />
-              <Copy value={log.address} />
-            </div>
+            <TransactionAddressWithCopy address={log.address} />
           </div>
         </div>
         <Tab.Group>
