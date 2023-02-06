@@ -7,92 +7,76 @@ import AddressHighlighter from "../components/AddressHighlighter";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionDirection from "../components/TransactionDirection";
 import { RuntimeContext } from "../useRuntime";
-import {
-  TransactionMatch,
-  useHasCode,
-  useTransactionByHash,
-} from "../useErigonHooks";
+import { useHasCode } from "../useErigonHooks";
 import { AddressAwareComponentProps } from "../execution/types";
 import TransactionValue from "../components/TransactionValue";
+import { ProcessedTransaction } from "../types";
 
 type ERC20temProps = AddressAwareComponentProps & {
-  m: TransactionMatch;
+  p: ProcessedTransaction;
 };
 
-const ERC20Item: FC<ERC20temProps> = ({ address, m: { hash } }) => {
+const ERC20Item: FC<ERC20temProps> = ({ address, p }) => {
   const { provider } = useContext(RuntimeContext);
-  const res = useTransactionByHash(provider, hash);
-  const toHasCode = useHasCode(
-    provider,
-    res?.to ?? undefined,
-    res?.blockNumber ? res.blockNumber - 1 : undefined
-  );
+  const toHasCode = useHasCode(provider, p.to ?? undefined, p.blockNumber - 1);
 
   return (
     <tr>
-      {res ? (
-        <>
-          <td>
-            {/* {tx.status === 0 && (
+      <>
+        <td>
+          {/* {tx.status === 0 && (
             <span className="text-red-600" title="Transaction reverted">
               <FontAwesomeIcon icon={faExclamationCircle} />
             </span>
           )} */}
+          <span className="truncate">
+            <TransactionLink txHash={p.hash} />
+          </span>
+        </td>
+        <td>{p.to !== null && <MethodName data={p.data} />}</td>
+        <td>
+          <BlockLink blockTag={p.blockNumber} />
+        </td>
+        <td>
+          <TimestampAge timestamp={p.timestamp} />
+        </td>
+        <td>
+          <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
-              <TransactionLink txHash={res.hash} />
+              {p.from && (
+                <AddressHighlighter address={p.from}>
+                  <DecoratedAddressLink
+                    address={p.from}
+                    selectedAddress={address}
+                    // miner={res.miner === res.from}
+                  />
+                </AddressHighlighter>
+              )}
             </span>
-          </td>
-          <td>{res.to !== null && <MethodName data={res.data} />}</td>
-          <td>{res.blockNumber && <BlockLink blockTag={res.blockNumber} />}</td>
-          <td>{res.timestamp && <TimestampAge timestamp={res.timestamp} />}</td>
-          <td>
-            <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
-              <span className="truncate">
-                {res.from && (
-                  <AddressHighlighter address={res.from}>
-                    <DecoratedAddressLink
-                      address={res.from}
-                      selectedAddress={address}
-                      // miner={res.miner === res.from}
-                    />
-                  </AddressHighlighter>
-                )}
-              </span>
-              <span>
-                <TransactionDirection
-                // direction={undefined}
-                // flags={sendsToMiner ? Flags.MINER : undefined}
-                />
-              </span>
+            <span>
+              <TransactionDirection
+              // direction={undefined}
+              // flags={sendsToMiner ? Flags.MINER : undefined}
+              />
             </span>
-          </td>
-          <td>
-            {res.to && (
-              <AddressHighlighter address={res.to}>
-                <DecoratedAddressLink
-                  address={res.to}
-                  selectedAddress={address}
-                  // miner={tx.miner === tx.to}
-                  eoa={toHasCode === undefined ? undefined : !toHasCode}
-                />
-              </AddressHighlighter>
-            )}
-          </td>
-          <td>
-            <TransactionValue value={res.value} />
-          </td>
-        </>
-      ) : (
-        <>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </>
-      )}
+          </span>
+        </td>
+        <td>
+          {p.to && (
+            <AddressHighlighter address={p.to}>
+              <DecoratedAddressLink
+                address={p.to}
+                selectedAddress={address}
+                // miner={tx.miner === tx.to}
+                eoa={toHasCode === undefined ? undefined : !toHasCode}
+              />
+            </AddressHighlighter>
+          )}
+        </td>
+        <td>
+          <TransactionValue value={p.value} />
+        </td>
+      </>
     </tr>
   );
 };

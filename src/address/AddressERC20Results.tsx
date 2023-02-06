@@ -10,7 +10,11 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC20Item from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
-import { useERC20TransferCount, useERC20TransferList } from "../useErigonHooks";
+import {
+  useERC20TransferCount,
+  useERC20TransferList,
+  useTransactionsWithReceipts,
+} from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
@@ -27,6 +31,10 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
 
   const total = useERC20TransferCount(provider, address);
   const page = useERC20TransferList(provider, address, pageNumber, PAGE_SIZE);
+  const matches = useTransactionsWithReceipts(
+    provider,
+    page?.map((p) => p.hash)
+  );
 
   document.title = `ERC20 Transfers | Otterscan`;
 
@@ -58,11 +66,11 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
           <th>To</th>
           <th className="w-44">Value</th>
         </StandardTHead>
-        {page !== undefined ? (
+        {matches !== undefined ? (
           <StandardSelectionBoundary>
             <StandardTBody>
-              {page.map((m) => (
-                <ERC20Item key={m.hash} address={address} m={m} />
+              {matches.map((m) => (
+                <ERC20Item key={m.hash} address={address} p={m} />
               ))}
             </StandardTBody>
           </StandardSelectionBoundary>

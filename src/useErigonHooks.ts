@@ -24,6 +24,7 @@ import {
 } from "./types";
 import erc20 from "./erc20.json";
 import erc721md from "./erc721metadata.json";
+import { rawToProcessed } from "./search/search";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -897,38 +898,24 @@ export const useERC20TransferList = (
 };
 
 // TODO: remove temporary prototype
-const transactionByHashFetcher =
-  (
-    provider: JsonRpcProvider | undefined
-  ): Fetcher<
-    TransactionResponse | undefined,
-    ["getTransactionByHash", string]
-  > =>
-  async ([_, hash]) => {
-    if (provider === undefined) {
-      return undefined;
-    }
-    return provider.getTransaction(hash);
-  };
-
-// TODO: remove temporary prototype
-export const useTransactionByHash = (
+export const useTransactionsWithReceipts = (
   provider: JsonRpcProvider | undefined,
-  hash: string
-): TransactionResponse | undefined => {
-  const fetcher = transactionByHashFetcher(provider);
+  hash: string[] | undefined
+): ProcessedTransaction[] | undefined => {
+  const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    ["getTransactionByHash", hash],
+    hash === undefined ? null : ["ots_getTransactionsWithReceipts", hash],
     fetcher
   );
   if (error) {
     return undefined;
   }
 
-  if (data === undefined) {
+  if (!provider || data === undefined) {
     return undefined;
   }
-  return data;
+  const converted = rawToProcessed(provider, data);
+  return converted.txs;
 };
 
 const ERC721MD_PROTOTYPE = new Contract(AddressZero, erc721md);
