@@ -24,14 +24,7 @@ const ERC20Item: FC<ERC20temProps> = ({ address, p }) => {
     <tr>
       <>
         <td>
-          {/* {tx.status === 0 && (
-            <span className="text-red-600" title="Transaction reverted">
-              <FontAwesomeIcon icon={faExclamationCircle} />
-            </span>
-          )} */}
-          <span className="truncate">
-            <TransactionLink txHash={p.hash} />
-          </span>
+          <TransactionLink txHash={p.hash} fail={p.status === 0} />
         </td>
         <td>{p.to !== null && <MethodName data={p.data} />}</td>
         <td>
