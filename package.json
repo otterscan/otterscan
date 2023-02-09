@@ -83,7 +83,7 @@
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.2",
     "source-map-explorer": "^2.5.3",
-    "tailwindcss": "^3.2.5",
+    "tailwindcss": "^3.2.6",
     "ts-jest": "^29.0.5",
     "typescript": "^4.9.5",
     "vite": "^4.0.4",
