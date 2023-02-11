@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 
 type PercentageGaugeProps = {
   perc: number;
@@ -7,7 +7,7 @@ type PercentageGaugeProps = {
   textColor: string;
 };
 
-const PercentageGauge: React.FC<PercentageGaugeProps> = ({
+const PercentageGauge: FC<PercentageGaugeProps> = ({
   perc,
   bgColor,
   bgColorPerc,
@@ -31,4 +31,4 @@ const PercentageGauge: React.FC<PercentageGaugeProps> = ({
   </div>
 );
 
-export default React.memo(PercentageGauge);
+export default memo(PercentageGauge);

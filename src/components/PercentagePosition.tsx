@@ -1,10 +1,10 @@
-import React from "react";
+import { FC, memo } from "react";
 
 type PercentagePositionProps = {
   perc: number;
 };
 
-const PercentagePosition: React.FC<PercentagePositionProps> = ({ perc }) => (
+const PercentagePosition: FC<PercentagePositionProps> = ({ perc }) => (
   <div className="w-40 self-center">
     <div className="relative h-5 w-full rounded border border-orange-200">
       <div className="absolute h-1/2 w-full border-b"></div>
@@ -20,4 +20,4 @@ const PercentagePosition: React.FC<PercentagePositionProps> = ({ perc }) => (
   </div>
 );
 
-export default React.memo(PercentagePosition);
+export default memo(PercentagePosition);
