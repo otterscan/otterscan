@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +7,7 @@ type NonceProps = {
   value: number;
 };
 
-const Nonce: React.FC<NonceProps> = ({ value }) => (
+const Nonce: FC<NonceProps> = ({ value }) => (
   <span
     className="flex items-baseline space-x-2 rounded-lg bg-emerald-50 px-2 py-1 text-xs"
     title="Nonce"
@@ -19,4 +19,4 @@ const Nonce: React.FC<NonceProps> = ({ value }) => (
   </span>
 );
 
-export default React.memo(Nonce);
+export default memo(Nonce);
