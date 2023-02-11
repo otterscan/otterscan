@@ -9,7 +9,7 @@ type NonceProps = {
 
 const Nonce: FC<NonceProps> = ({ value }) => (
   <span
-    className="flex items-baseline space-x-2 rounded-lg bg-emerald-50 px-2 py-1 text-xs"
+    className="flex-inline items-baseline space-x-2 rounded-lg bg-emerald-50 px-2 py-1 text-xs"
     title="Nonce"
   >
     <span className="text-emerald-400">
