@@ -1,4 +1,5 @@
 import React from "react";
+import { Decorator } from "@storybook/react";
 import { BrowserRouter as Router } from "react-router-dom";
 import "@fontsource/fira-code/index.css";
 import "@fontsource/space-grotesk/index.css";
@@ -20,7 +21,7 @@ export const parameters = {
   },
 };
 
-export const decorators = [
+export const decorators: Decorator[] = [
   (Story) => (
     <Router>
       <Story />
