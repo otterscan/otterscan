@@ -1,12 +1,9 @@
 import { FC, memo } from "react";
 import StandardSubtitle from "../../StandardSubtitle";
 import EpochNavBlock from "../components/EpochNavBlock";
+import { EpochAwareComponentProps } from "../types";
 
-type EpochSubtitleProps = {
-  epochNumber: number;
-};
-
-const EpochSubtitle: FC<EpochSubtitleProps> = ({ epochNumber }) => (
+const EpochSubtitle: FC<EpochAwareComponentProps> = ({ epochNumber }) => (
   <StandardSubtitle>
     <div className="flex items-baseline space-x-1">
       <span>Epoch</span>

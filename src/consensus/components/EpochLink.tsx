@@ -3,13 +3,10 @@ import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList } from "@fortawesome/free-solid-svg-icons";
+import { EpochAwareComponentProps } from "../types";
 import { epochURL } from "../../url";
 
-type EpochLinkProps = {
-  epochNumber: number;
-};
-
-const EpochLink: FC<EpochLinkProps> = ({ epochNumber }) => {
+const EpochLink: FC<EpochAwareComponentProps> = ({ epochNumber }) => {
   let text = commify(epochNumber);
 
   return (

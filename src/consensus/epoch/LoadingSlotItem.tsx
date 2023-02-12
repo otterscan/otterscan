@@ -3,7 +3,7 @@ import ContentLoader from "react-content-loader";
 import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import SlotTimestamp from "./SlotTimestamp";
-import ValidatorLink from "../components/ValidatorLink";
+import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import { slot2Epoch, useProposerMap } from "../../useConsensus";
 
 const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
@@ -27,7 +27,7 @@ const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
       </td>
       {expectedProposer !== undefined ? (
         <td>
-          <ValidatorLink validatorIndex={expectedProposer} />
+          <CheckedValidatorLink validatorIndex={expectedProposer} />
         </td>
       ) : (
         <td className="self-center">

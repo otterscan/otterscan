@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import { commify, formatUnits } from "@ethersproject/units";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +23,6 @@ import TransactionDetailsValue from "../components/TransactionDetailsValue";
 import TransactionType from "../components/TransactionType";
 import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
-import GasValue from "../components/GasValue";
 import NativeTokenPrice from "../components/NativeTokenPrice";
 import FormattedBalance from "../components/FormattedBalance";
 import TokenTransferItem from "../TokenTransferItem";
@@ -337,8 +337,8 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <div className="flex items-baseline space-x-3">
             <div>
               <RelativePosition
-                pos={<GasValue value={txData.confirmedData.gasUsed} />}
-                total={<GasValue value={txData.gasLimit} />}
+                pos={commify(formatUnits(txData.confirmedData.gasUsed, 0))}
+                total={commify(formatUnits(txData.gasLimit, 0))}
               />
             </div>
             <PercentageBar
