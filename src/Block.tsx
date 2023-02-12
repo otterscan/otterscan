@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { commify } from "@ethersproject/units";
+import { commify, formatUnits } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,6 @@ import InfoRow from "./components/InfoRow";
 import Timestamp from "./components/Timestamp";
 import BlockReward from "./BlockReward";
 import RelativePosition from "./components/RelativePosition";
-import GasValue from "./components/GasValue";
 import PercentageBar from "./components/PercentageBar";
 import BlockLink from "./components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
@@ -137,8 +136,8 @@ const Block: React.FC = () => {
             <div className="flex items-baseline space-x-3">
               <div>
                 <RelativePosition
-                  pos={<GasValue value={block.gasUsed} />}
-                  total={<GasValue value={block.gasLimit} />}
+                  pos={commify(formatUnits(block.gasUsed, 0))}
+                  total={commify(formatUnits(block.gasLimit, 0))}
                 />
               </div>
               <PercentageBar perc={gasUsedPerc!} />
