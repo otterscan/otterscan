@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { Tab } from "@headlessui/react";
 import ModeTab from "../components/ModeTab";
 import Copy from "../components/Copy";
@@ -9,7 +9,7 @@ type ContractABIProps = {
   abi: any[];
 };
 
-const ContractABI: React.FC<ContractABIProps> = ({ abi }) => (
+const ContractABI: FC<ContractABIProps> = ({ abi }) => (
   <div className="mb-3">
     <Tab.Group>
       <Tab.List className="mb-1 flex items-baseline space-x-1">
@@ -32,4 +32,4 @@ const ContractABI: React.FC<ContractABIProps> = ({ abi }) => (
   </div>
 );
 
-export default React.memo(ContractABI);
+export default memo(ContractABI);
