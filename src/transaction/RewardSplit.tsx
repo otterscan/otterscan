@@ -64,7 +64,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>
-              <FormattedBalance value={minerReward} /> {symbol}
+              <FormattedBalance value={minerReward} symbol={symbol} />
             </span>
           </span>
         </div>

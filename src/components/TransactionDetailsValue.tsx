@@ -22,7 +22,7 @@ const TransactionDetailsValue: FC<TransactionDetailsValueProps> = ({
 
   return (
     <>
-      <FormattedBalance value={value} /> {symbol}{" "}
+      <FormattedBalance value={value} symbol={symbol} />{" "}
       {fiatValue && (
         <FiatValue
           value={fiatValue}

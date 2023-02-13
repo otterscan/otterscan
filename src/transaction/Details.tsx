@@ -304,16 +304,26 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       {txData.type === 2 && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
-            <FormattedBalance value={txData.maxPriorityFeePerGas!} /> {symbol} (
+            <FormattedBalance
+              value={txData.maxPriorityFeePerGas!}
+              symbol={symbol}
+            />{" "}
+            (
             <FormattedBalance
               value={txData.maxPriorityFeePerGas!}
               decimals={9}
-            />{" "}
-            Gwei)
+              symbol="Gwei"
+            />
+            )
           </InfoRow>
           <InfoRow title="Max Fee Per Gas">
-            <FormattedBalance value={txData.maxFeePerGas!} /> {symbol} (
-            <FormattedBalance value={txData.maxFeePerGas!} decimals={9} /> Gwei)
+            <FormattedBalance value={txData.maxFeePerGas!} symbol={symbol} /> (
+            <FormattedBalance
+              value={txData.maxFeePerGas!}
+              decimals={9}
+              symbol="Gwei"
+            />
+            )
           </InfoRow>
         </>
       )}
@@ -321,8 +331,13 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
         <InfoRow title="Gas Price">
           <div className="flex items-baseline space-x-1">
             <span>
-              <FormattedBalance value={txData.gasPrice} /> {symbol} (
-              <FormattedBalance value={txData.gasPrice} decimals={9} /> Gwei)
+              <FormattedBalance value={txData.gasPrice} symbol={symbol} /> (
+              <FormattedBalance
+                value={txData.gasPrice}
+                decimals={9}
+                symbol="Gwei"
+              />
+              )
             </span>
             {sendsEthToMiner && (
               <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-500">
@@ -355,8 +370,18 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
       )}
       {block && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
-          <FormattedBalance value={block.baseFeePerGas!} decimals={9} /> Gwei (
-          <FormattedBalance value={block.baseFeePerGas!} decimals={0} /> wei)
+          <FormattedBalance
+            value={block.baseFeePerGas!}
+            decimals={9}
+            symbol="Gwei"
+          />{" "}
+          (
+          <FormattedBalance
+            value={block.baseFeePerGas!}
+            decimals={0}
+            symbol="wei"
+          />
+          )
         </InfoRow>
       )}
       {txData.confirmedData && (

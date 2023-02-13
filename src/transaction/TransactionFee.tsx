@@ -17,7 +17,7 @@ const TransactionFee: FC<TransactionFeeProps> = ({ confirmedData }) => {
 
   return (
     <>
-      <FormattedBalance value={confirmedData.fee} /> {symbol}{" "}
+      <FormattedBalance value={confirmedData.fee} symbol={symbol} />{" "}
       {fiatValue && (
         <FiatValue
           value={fiatValue}
