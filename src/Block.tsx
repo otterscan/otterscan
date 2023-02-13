@@ -105,13 +105,18 @@ const Block: React.FC = () => {
           {block.baseFeePerGas && (
             <InfoRow title="Base Fee">
               <span>
-                <FormattedBalance value={block.baseFeePerGas} decimals={9} />{" "}
-                Gwei (
+                <FormattedBalance
+                  value={block.baseFeePerGas}
+                  decimals={9}
+                  symbol="Gwei"
+                />{" "}
+                (
                 <FormattedBalance
                   value={block.baseFeePerGas}
                   decimals={0}
-                />{" "}
-                wei)
+                  symbol="wei"
+                />
+                )
               </span>
             </InfoRow>
           )}

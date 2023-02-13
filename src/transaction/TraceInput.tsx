@@ -59,7 +59,8 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
                 <FunctionSignature callType={t.type} sig={sigText} />
                 {t.value && !t.value.isZero() && (
                   <span className="whitespace-nowrap text-red-700">
-                    {"{"}value: <FormattedBalance value={t.value} /> {symbol}
+                    {"{"}value:{" "}
+                    <FormattedBalance value={t.value} symbol={symbol} />
                     {"}"}
                   </span>
                 )}

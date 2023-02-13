@@ -2,8 +2,7 @@ import { FC, memo, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import TransactionAddress from "./components/TransactionAddress";
-import ValueHighlighter from "./selection/ValueHighlighter";
-import FormattedBalance from "./components/FormattedBalance";
+import FormattedBalanceHighlighter from "./selection/FormattedBalanceHighlighter";
 import USDAmount from "./components/USDAmount";
 import { RuntimeContext } from "./useRuntime";
 import { useBlockNumberContext } from "./useBlockTagContext";
@@ -46,12 +45,10 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
             <FontAwesomeIcon icon={faSackDollar} size="1x" />
           </span>
           <span>
-            <ValueHighlighter value={t.value}>
-              <FormattedBalance
-                value={t.value}
-                decimals={tokenMeta?.decimals ?? 0}
-              />
-            </ValueHighlighter>
+            <FormattedBalanceHighlighter
+              value={t.value}
+              decimals={tokenMeta?.decimals ?? 0}
+            />
           </span>
           <TransactionAddress address={t.token} />
           {tokenMeta && quote !== undefined && decimals !== undefined && (
