@@ -12,7 +12,7 @@ const DecodedLogSignature: React.FC<DecodedLogSignatureProps> = ({ event }) => {
       {event.inputs.map((input, i) => (
         <span key={i}>
           {i > 0 ? ", " : ""}
-          <span>{input.format("full")}</span>
+          <span>{input.format ? input.format("full") : `${input.type} ${input.name}`}</span>
         </span>
       ))}
       ){event.anonymous ? " anonymous" : ""}
