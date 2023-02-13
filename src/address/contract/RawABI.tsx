@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
-import { SyntaxHighlighter, docco } from "../highlight-init";
-import { ABIAwareComponentProps } from "../execution/types";
+import { SyntaxHighlighter, docco } from "../../highlight-init";
+import { ABIAwareComponentProps } from "../../execution/types";
 
 const RawABI: FC<ABIAwareComponentProps> = ({ abi }) => (
   <SyntaxHighlighter

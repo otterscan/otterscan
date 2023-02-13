@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from "@storybook/react";
-import ContractABI from "./ContractABI";
-import erc20 from "../erc20.json";
+import RawABI from "./RawABI";
+import erc20 from "../../erc20.json";
 
 const meta = {
-  component: ContractABI,
-} satisfies Meta<typeof ContractABI>;
+  component: RawABI,
+} satisfies Meta<typeof RawABI>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
