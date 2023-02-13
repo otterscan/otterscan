@@ -1,15 +1,13 @@
-import { FC, memo, PropsWithChildren } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
+import { FC, memo } from "react";
 import { useSelectionContext } from "./useSelection";
-
-type ValueHighlighterProps = {
-  value: BigNumber;
-};
+import FormattedBalance, {
+  FormattedBalanceProps,
+} from "../components/FormattedBalance";
 
 // TODO: replace all occurences with SelectionHighlighter and remove this component
-const ValueHighlighter: FC<PropsWithChildren<ValueHighlighterProps>> = ({
+const FormattedBalanceHighlighter: FC<FormattedBalanceProps> = ({
   value,
-  children,
+  ...rest
 }) => {
   const [selection, setSelection] = useSelectionContext();
   const select = () => {
@@ -31,9 +29,9 @@ const ValueHighlighter: FC<PropsWithChildren<ValueHighlighterProps>> = ({
       onMouseEnter={select}
       onMouseLeave={deselect}
     >
-      {children}
+      <FormattedBalance value={value} {...rest} />
     </span>
   );
 };
 
-export default memo(ValueHighlighter);
+export default memo(FormattedBalanceHighlighter);

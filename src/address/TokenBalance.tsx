@@ -1,7 +1,6 @@
 import { FC, useContext } from "react";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
-import ValueHighlighter from "../selection/ValueHighlighter";
-import FormattedBalance from "../components/FormattedBalance";
+import FormattedBalanceHighlighter from "../selection/FormattedBalanceHighlighter";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 import { useTokenBalance, useTokenMetadata } from "../useErigonHooks";
@@ -29,12 +28,10 @@ const TokenBalance: FC<TokenBalanceProps> = ({
       </td>
       <td>
         {balance && (
-          <ValueHighlighter value={balance}>
-            <FormattedBalance
-              value={balance}
-              decimals={metadata?.decimals ?? 0}
-            />
-          </ValueHighlighter>
+          <FormattedBalanceHighlighter
+            value={balance}
+            decimals={metadata?.decimals ?? 0}
+          />
         )}
         {balance &&
           metadata &&

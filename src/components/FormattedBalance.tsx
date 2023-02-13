@@ -4,14 +4,14 @@ import { commify, formatUnits } from "@ethersproject/units";
 
 const DEFAULT_DECIMALS = 18;
 
-type FormatterBalanceProps = {
+export type FormattedBalanceProps = {
   value: BigNumber;
   decimals?: number;
   symbol?: string | undefined;
 };
 
 // TODO: remove duplication with TransactionValue component
-const FormattedBalance: FC<FormatterBalanceProps> = ({
+const FormattedBalance: FC<FormattedBalanceProps> = ({
   value,
   decimals = DEFAULT_DECIMALS,
   symbol,
