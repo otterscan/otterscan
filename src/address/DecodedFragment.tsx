@@ -40,7 +40,7 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
   }
 
   return (
-    <div className="flex flex-wrap items-baseline space-x-2 px-2 py-1 hover:bg-gray-100">
+    <div className="flex items-baseline space-x-2 px-2 py-1 hover:bg-gray-100">
       <span className="text-gray-500">
         <FontAwesomeIcon icon={faCaretRight} size="1x" />
       </span>
