@@ -1,11 +1,8 @@
 import { FC, memo } from "react";
 import { SyntaxHighlighter, docco } from "../highlight-init";
+import { ABIAwareComponentProps } from "../execution/types";
 
-type RawABIProps = {
-  abi: any[];
-};
-
-const RawABI: FC<RawABIProps> = ({ abi }) => (
+const RawABI: FC<ABIAwareComponentProps> = ({ abi }) => (
   <SyntaxHighlighter
     className="h-60 w-full border font-code text-base"
     language="json"

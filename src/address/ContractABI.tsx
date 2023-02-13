@@ -4,12 +4,9 @@ import ModeTab from "../components/ModeTab";
 import Copy from "../components/Copy";
 import DecodedABI from "./DecodedABI";
 import RawABI from "./RawABI";
+import { ABIAwareComponentProps } from "../execution/types";
 
-type ContractABIProps = {
-  abi: any[];
-};
-
-const ContractABI: FC<ContractABIProps> = ({ abi }) => (
+const ContractABI: FC<ABIAwareComponentProps> = ({ abi }) => (
   <div className="mb-3">
     <Tab.Group>
       <Tab.List className="mb-1 flex items-baseline space-x-1">

@@ -1,12 +1,9 @@
 import { FC, memo } from "react";
 import { Interface } from "@ethersproject/abi";
 import DecodedFragment from "./DecodedFragment";
+import { ABIAwareComponentProps } from "../execution/types";
 
-type DecodedABIProps = {
-  abi: any[];
-};
-
-const DecodedABI: FC<DecodedABIProps> = ({ abi }) => {
+const DecodedABI: FC<ABIAwareComponentProps> = ({ abi }) => {
   const intf = new Interface(abi);
   return (
     <div className="overflow-x-auto border">
