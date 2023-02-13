@@ -1,5 +1,5 @@
-import { Interface } from "@ethersproject/abi";
 import React from "react";
+import { Interface } from "@ethersproject/abi";
 import DecodedFragment from "./DecodedFragment";
 
 type DecodedABIProps = {

@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import {
   ConstructorFragment,
   EventFragment,
@@ -14,10 +14,7 @@ type DecodedFragmentProps = {
   fragment: Fragment;
 };
 
-const DecodedFragment: React.FC<DecodedFragmentProps> = ({
-  intf,
-  fragment,
-}) => {
+const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
   let fragmentType: "constructor" | "event" | "function" | undefined;
   let sig: string | undefined;
   let letter: string | undefined;
@@ -75,4 +72,4 @@ const DecodedFragment: React.FC<DecodedFragmentProps> = ({
   );
 };
 
-export default React.memo(DecodedFragment);
+export default memo(DecodedFragment);
