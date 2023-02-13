@@ -11,7 +11,7 @@ import { RuntimeContext } from "../useRuntime";
 import { Match, MatchType } from "../sourcify/useSourcify";
 import ExternalLink from "../components/ExternalLink";
 import { openInRemixURL } from "../url";
-import ContractABI from "./ContractABI";
+import ContractABI from "./contract/ContractABI";
 
 type ContractsProps = {
   checksummedAddress: string;

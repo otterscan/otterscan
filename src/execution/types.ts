@@ -6,3 +6,11 @@ import { ChecksummedAddress } from "../types";
 export type AddressAwareComponentProps = {
   address: ChecksummedAddress;
 };
+
+/**
+ * Component is related to an entire contract ABI;
+ * the abi prop is the abi element from metadata.json.
+ */
+export type ABIAwareComponentProps = {
+  abi: any[];
+};
