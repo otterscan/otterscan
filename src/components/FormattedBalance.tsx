@@ -2,6 +2,8 @@ import { FC, memo } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { commify, formatUnits } from "@ethersproject/units";
 
+const DEFAULT_DECIMALS = 18;
+
 type FormatterBalanceProps = {
   value: BigNumber;
   decimals?: number;
@@ -11,7 +13,7 @@ type FormatterBalanceProps = {
 // TODO: remove duplication with TransactionValue component
 const FormattedBalance: FC<FormatterBalanceProps> = ({
   value,
-  decimals = 18,
+  decimals = DEFAULT_DECIMALS,
   symbol,
 }) => {
   const formatted = commify(formatUnits(value, decimals));
