@@ -9,6 +9,7 @@ import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import { useTopic0 } from "../useTopic0";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import StandardTextarea from "../components/StandardTextarea";
 
 type LogEntryProps = {
   log: Log;
@@ -137,11 +138,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
               <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
                 <div className="pt-2 text-right">Data</div>
                 <div className="col-span-11">
-                  <textarea
-                    className="h-40 w-full rounded border bg-gray-50 p-2 font-mono focus:outline-none"
-                    value={log.data}
-                    readOnly
-                  />
+                  <StandardTextarea value={log.data} />
                 </div>
               </div>
             </Tab.Panel>

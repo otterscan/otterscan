@@ -62,3 +62,10 @@ export const Default: Story = {
     ],
   },
 };
+
+export const WithoutParamNames: Story = {
+  args: {
+    ...Default.args,
+    hasParamNames: false,
+  },
+};
