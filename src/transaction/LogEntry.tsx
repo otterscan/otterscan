@@ -6,10 +6,11 @@ import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
+import Topic from "./log/Topic";
+import StandardTextarea from "../components/StandardTextarea";
 import { useTopic0 } from "../useTopic0";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
-import StandardTextarea from "../components/StandardTextarea";
 
 type LogEntryProps = {
   log: Log;
@@ -127,11 +128,8 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
                   key={i}
                 >
                   <div className="text-right">{i === 0 && "Topics"}</div>
-                  <div className="col-span-11 flex items-center space-x-2 font-mono">
-                    <span className="rounded bg-gray-100 px-2 py-1 text-xs text-gray-500">
-                      {i}
-                    </span>
-                    <span>{t}</span>
+                  <div className="col-span-11">
+                    <Topic idx={i} data={t} />
                   </div>
                 </div>
               ))}
