@@ -101,7 +101,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
               ) : (
                 <>
                   <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                    <div className="col-span-11 col-start-2 flex items-center space-x-2 font-mono">
+                    <div className="col-span-11 col-start-2 flex items-center space-x-2">
                       <DecodedLogSignature
                         event={resolvedLogDesc.eventFragment}
                       />
