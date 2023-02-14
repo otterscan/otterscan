@@ -6,13 +6,13 @@ import { AppConfigContext } from "../../useAppConfig";
 import { RuntimeContext } from "../../useRuntime";
 import DecodedParamsTable from "./DecodedParamsTable";
 import {
-  Address,
-  Array,
-  ArrayOfTuple,
-  Boolean,
-  Tuple,
-  Uint256,
-  Uint8,
+  AddressWithHelp,
+  ArrayOfTupleWithHelp,
+  ArrayWithHelp,
+  BooleanWithHelp,
+  TupleWithHelp,
+  Uint256WithHelp,
+  Uint8WithHelp,
 } from "./DecodedParamRow.stories";
 
 const meta = {
@@ -43,22 +43,22 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     args: [
-      Uint8.args.r,
-      Uint256.args.r,
-      Boolean.args.r,
-      Address.args.r,
-      Array.args.r,
-      Tuple.args.r,
-      ArrayOfTuple.args.r,
+      Uint8WithHelp.args.r,
+      Uint256WithHelp.args.r,
+      BooleanWithHelp.args.r,
+      AddressWithHelp.args.r,
+      ArrayWithHelp.args.r,
+      TupleWithHelp.args.r,
+      ArrayOfTupleWithHelp.args.r,
     ],
     paramTypes: [
-      Uint8.args.paramType,
-      Uint256.args.paramType,
-      Boolean.args.paramType,
-      Address.args.paramType,
-      Array.args.paramType,
-      Tuple.args.paramType,
-      ArrayOfTuple.args.paramType,
+      Uint8WithHelp.args.paramType,
+      Uint256WithHelp.args.paramType,
+      BooleanWithHelp.args.paramType,
+      AddressWithHelp.args.paramType,
+      ArrayWithHelp.args.paramType,
+      TupleWithHelp.args.paramType,
+      ArrayOfTupleWithHelp.args.paramType,
     ],
   },
 };
