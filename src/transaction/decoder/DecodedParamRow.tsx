@@ -8,6 +8,7 @@ import Uint256Decoder from "./Uint256Decoder";
 import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
+import DefaultDecoder from "./DefaultDecoder";
 import SelectionHighlighter, {
   valueSelector,
 } from "../../selection/SelectionHighlighter";
@@ -68,7 +69,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
           {help && showHelp && <div className="mt-2 text-gray-400">{help}</div>}
         </td>
         <td className="col-span-1 text-gray-500">{paramType.type}</td>
-        <td className="col-span-8 flex break-all pr-1 font-code">
+        <td className="col-span-8 flex break-all pr-1">
           <SelectionHighlighter
             myType="value"
             myContent={r.toString()}
@@ -86,7 +87,7 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
               paramType.baseType === "array" ? (
               <></>
             ) : (
-              r.toString()
+              <DefaultDecoder r={r} />
             )}
           </SelectionHighlighter>
         </td>
