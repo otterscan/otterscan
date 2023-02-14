@@ -1,11 +1,11 @@
-import React from "react";
+import { FC, memo } from "react";
 
 type BytesDecoderProps = {
   r: any;
 };
 
-const BytesDecoder: React.FC<BytesDecoderProps> = ({ r }) => (
-  <span>
+const BytesDecoder: FC<BytesDecoderProps> = ({ r }) => (
+  <span className="font-code">
     {r.toString()}{" "}
     <span className="font-sans text-xs text-gray-400">
       {r.toString().length / 2 - 1}{" "}
@@ -14,4 +14,4 @@ const BytesDecoder: React.FC<BytesDecoderProps> = ({ r }) => (
   </span>
 );
 
-export default React.memo(BytesDecoder);
+export default memo(BytesDecoder);

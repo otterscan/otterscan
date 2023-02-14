@@ -1,13 +1,13 @@
-import React from "react";
+import { FC, memo } from "react";
 
 type BooleanDecoderProps = {
   r: any;
 };
 
-const BooleanDecoder: React.FC<BooleanDecoderProps> = ({ r }) => (
-  <span className={`${r ? "text-emerald-700" : "text-red-700"}`}>
+const BooleanDecoder: FC<BooleanDecoderProps> = ({ r }) => (
+  <span className={`font-code ${r ? "text-emerald-700" : "text-red-700"}`}>
     {r.toString()}
   </span>
 );
 
-export default React.memo(BooleanDecoder);
+export default memo(BooleanDecoder);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { FC, memo, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { hexlify, hexZeroPad } from "@ethersproject/bytes";
 import { commify, formatEther } from "@ethersproject/units";
@@ -26,7 +26,7 @@ const initDisplayMode = (r: any): DisplayMode => {
   return DisplayMode.RAW;
 };
 
-const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
+const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>(
     initDisplayMode(r)
   );
@@ -37,7 +37,7 @@ const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
   };
 
   return (
-    <div className="flex items-baseline space-x-2">
+    <div className="flex items-baseline space-x-2 font-code">
       <button
         className="flex min-w-max items-baseline space-x-2 rounded-lg bg-gray-50 px-3 py-1 font-sans text-xs text-gray-300 hover:text-gray-500"
         onClick={toggleModes}
@@ -66,4 +66,4 @@ const Uint256Decoder: React.FC<Uint256DecoderProps> = ({ r }) => {
   );
 };
 
-export default React.memo(Uint256Decoder);
+export default memo(Uint256Decoder);
