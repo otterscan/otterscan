@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import { FC, memo, ReactNode, useState } from "react";
 import { ParamType } from "@ethersproject/abi";
 import { Switch } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +22,7 @@ type DecodedParamRowProps = {
   help?: string | undefined;
 };
 
-const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
+const DecodedParamRow: FC<DecodedParamRowProps> = ({
   prefix,
   i,
   r,
@@ -122,4 +122,4 @@ const DecodedParamRow: React.FC<DecodedParamRowProps> = ({
   );
 };
 
-export default React.memo(DecodedParamRow);
+export default memo(DecodedParamRow);
