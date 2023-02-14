@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { ParamType, Result } from "@ethersproject/abi";
 import DecodedParamRow from "./DecodedParamRow";
 import { DevMethod, UserMethod } from "../../sourcify/useSourcify";
@@ -11,7 +11,7 @@ type DecodedParamsTableProps = {
   devMethod?: DevMethod | undefined;
 };
 
-const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
+const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
   args,
   paramTypes,
   hasParamNames = true,
@@ -50,4 +50,4 @@ const DecodedParamsTable: React.FC<DecodedParamsTableProps> = ({
   </table>
 );
 
-export default React.memo(DecodedParamsTable);
+export default memo(DecodedParamsTable);
