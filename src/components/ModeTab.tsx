@@ -1,11 +1,11 @@
-import React, { PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { Tab } from "@headlessui/react";
 
 type ModeTabProps = {
   disabled?: boolean | undefined;
 };
 
-const ModeTab: React.FC<PropsWithChildren<ModeTabProps>> = ({
+const ModeTab: FC<PropsWithChildren<ModeTabProps>> = ({
   disabled,
   children,
 }) => (

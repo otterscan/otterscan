@@ -60,7 +60,10 @@ const Transaction: FC = () => {
               <Suspense fallback={null}>
                 <Routes>
                   <Route index element={<Details txData={txData} />} />
-                  <Route path="logs" element={<Logs txData={txData} />} />
+                  <Route
+                    path="logs"
+                    element={<Logs logs={txData.confirmedData?.logs} />}
+                  />
                   <Route path="trace" element={<Trace txData={txData} />} />
                 </Routes>
               </Suspense>

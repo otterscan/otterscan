@@ -4,6 +4,7 @@ import { toUtf8String } from "@ethersproject/strings";
 import { Tab } from "@headlessui/react";
 import ModeTab from "../../components/ModeTab";
 import DecodedParamsTable from "./DecodedParamsTable";
+import StandardTextarea from "../../components/StandardTextarea";
 import { DevMethod, UserMethod } from "../../sourcify/useSourcify";
 
 type InputDecoderProps = {
@@ -58,18 +59,10 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
           )}
         </Tab.Panel>
         <Tab.Panel>
-          <textarea
-            className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
-            value={data}
-            readOnly
-          />
+          <StandardTextarea value={data} />
         </Tab.Panel>
         <Tab.Panel>
-          <textarea
-            className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
-            value={utfInput}
-            readOnly
-          />
+          <StandardTextarea value={utfInput} />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>

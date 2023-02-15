@@ -33,6 +33,7 @@ import RelativePosition from "../components/RelativePosition";
 import PercentagePosition from "../components/PercentagePosition";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
+import StandardTextarea from "../components/StandardTextarea";
 import {
   extract4Bytes,
   use4Bytes,
@@ -194,11 +195,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
                     )}
                   </Tab.Panel>
                   <Tab.Panel>
-                    <textarea
-                      className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
-                      value={outputData}
-                      readOnly
-                    />
+                    <StandardTextarea value={outputData} />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>

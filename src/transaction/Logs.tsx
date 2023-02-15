@@ -1,19 +1,19 @@
-import React from "react";
+import { FC, memo } from "react";
+import { Log } from "@ethersproject/providers";
 import ContentFrame from "../ContentFrame";
 import LogEntry from "./LogEntry";
-import { TransactionData } from "../types";
 
 type LogsProps = {
-  txData: TransactionData;
+  logs: Log[] | undefined;
 };
 
-const Logs: React.FC<LogsProps> = ({ txData }) => (
+const Logs: FC<LogsProps> = ({ logs }) => (
   <ContentFrame tabs>
-    {txData.confirmedData && (
+    {logs && (
       <>
-        {txData.confirmedData.logs.length > 0 ? (
+        {logs.length > 0 ? (
           <>
-            {txData.confirmedData.logs.map((l, i) => (
+            {logs.map((l, i) => (
               <LogEntry key={i} log={l} />
             ))}
           </>
@@ -25,4 +25,4 @@ const Logs: React.FC<LogsProps> = ({ txData }) => (
   </ContentFrame>
 );
 
-export default React.memo(Logs);
+export default memo(Logs);
