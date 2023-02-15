@@ -10,11 +10,11 @@ type RawLogProps = {
 
 const RawLog: FC<RawLogProps> = ({ topics, data }) => (
   <div className="space-y-2">
-    {topics.map((t, i) => (
-      <TwoColumnPanel key={i} leftPanel={i === 0 && "Topics"}>
-        <Topic idx={i} data={t} />
-      </TwoColumnPanel>
-    ))}
+    <TwoColumnPanel leftPanel={"Topics"}>
+      {topics.map((t, i) => (
+        <Topic key={i} idx={i} data={t} />
+      ))}
+    </TwoColumnPanel>
     <TwoColumnPanel leftPanel="Data">
       <StandardTextarea value={data} />
     </TwoColumnPanel>
