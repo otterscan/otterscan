@@ -1,22 +1,22 @@
-import React, { useContext, useMemo } from "react";
+import React, { FC, memo, useContext, useMemo } from "react";
 import { Log } from "@ethersproject/abstract-provider";
 import { Fragment, Interface } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
+import LogIndex from "./log/LogIndex";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
-import Topic from "./log/Topic";
-import StandardTextarea from "../components/StandardTextarea";
 import { useTopic0 } from "../useTopic0";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import RawLog from "./log/RawLog";
 
 type LogEntryProps = {
   log: Log;
 };
 
-const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
+const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(log.address, provider?.network.chainId);
 
@@ -67,9 +67,7 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
   return (
     <div className="flex space-x-10 py-5">
       <div>
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
-          {log.logIndex}
-        </span>
+        <LogIndex idx={log.logIndex} />
       </div>
       <div className="w-full space-y-2">
         <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
@@ -121,24 +119,8 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
                 </>
               )}
             </Tab.Panel>
-            <Tab.Panel className="space-y-2">
-              {log.topics.map((t, i) => (
-                <div
-                  className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm"
-                  key={i}
-                >
-                  <div className="text-right">{i === 0 && "Topics"}</div>
-                  <div className="col-span-11">
-                    <Topic idx={i} data={t} />
-                  </div>
-                </div>
-              ))}
-              <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                <div className="pt-2 text-right">Data</div>
-                <div className="col-span-11">
-                  <StandardTextarea value={log.data} />
-                </div>
-              </div>
+            <Tab.Panel as={React.Fragment}>
+              <RawLog topics={log.topics} data={log.data} />
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
@@ -147,4 +129,4 @@ const LogEntry: React.FC<LogEntryProps> = ({ log }) => {
   );
 };
 
-export default React.memo(LogEntry);
+export default memo(LogEntry);
