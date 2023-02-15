@@ -1,4 +1,5 @@
 import { FC } from "react";
+import TwoColumnPanel from "./TwoColumnPanel";
 import Topic from "./Topic";
 import StandardTextarea from "../../components/StandardTextarea";
 
@@ -10,19 +11,13 @@ type RawLogProps = {
 const RawLog: FC<RawLogProps> = ({ topics, data }) => (
   <div className="space-y-2">
     {topics.map((t, i) => (
-      <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm" key={i}>
-        <div className="text-right">{i === 0 && "Topics"}</div>
-        <div className="col-span-11">
-          <Topic idx={i} data={t} />
-        </div>
-      </div>
+      <TwoColumnPanel key={i} leftPanel={i === 0 && "Topics"}>
+        <Topic idx={i} data={t} />
+      </TwoColumnPanel>
     ))}
-    <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-      <div className="pt-2 text-right">Data</div>
-      <div className="col-span-11">
-        <StandardTextarea value={data} />
-      </div>
-    </div>
+    <TwoColumnPanel leftPanel="Data">
+      <StandardTextarea value={data} />
+    </TwoColumnPanel>
   </div>
 );
 

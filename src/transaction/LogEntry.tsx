@@ -7,10 +7,11 @@ import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy
 import ModeTab from "../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
+import RawLog from "./log/RawLog";
+import TwoColumnPanel from "./log/TwoColumnPanel";
 import { useTopic0 } from "../useTopic0";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
-import RawLog from "./log/RawLog";
 
 type LogEntryProps = {
   log: Log;
@@ -70,53 +71,33 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
         <LogIndex idx={log.logIndex} />
       </div>
       <div className="w-full space-y-2">
-        <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-          <div className="text-right font-bold">Address</div>
-          <div className="col-span-11 mr-auto">
-            <TransactionAddressWithCopy address={log.address} />
-          </div>
-        </div>
+        <TwoColumnPanel leftPanel={<span className="font-bold">Address</span>}>
+          <TransactionAddressWithCopy address={log.address} />
+        </TwoColumnPanel>
         <Tab.Group>
-          <Tab.List className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-            <div className="text-right">Parameters</div>
-            <div className="col-span-11 mb-1 flex space-x-1">
-              <ModeTab>Decoded</ModeTab>
-              <ModeTab>Raw</ModeTab>
-            </div>
+          <Tab.List as={React.Fragment}>
+            <TwoColumnPanel leftPanel="Parameters">
+              <div className="mb-1 flex space-x-1">
+                <ModeTab>Decoded</ModeTab>
+                <ModeTab>Raw</ModeTab>
+              </div>
+            </TwoColumnPanel>
           </Tab.List>
           <Tab.Panels as={React.Fragment}>
-            <Tab.Panel className="space-y-2">
+            <Tab.Panel>
               {resolvedLogDesc === undefined ? (
-                <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="col-span-11 col-start-2 flex items-center space-x-2">
-                    Waiting for data...
-                  </div>
-                </div>
+                <TwoColumnPanel>Waiting for data...</TwoColumnPanel>
               ) : resolvedLogDesc === null ? (
-                <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                  <div className="col-span-11 col-start-2 flex items-center space-x-2">
-                    Can't decode data
-                  </div>
-                </div>
+                <TwoColumnPanel>Can't decode data</TwoColumnPanel>
               ) : (
-                <>
-                  <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                    <div className="col-span-11 col-start-2 flex items-center space-x-2">
-                      <DecodedLogSignature
-                        event={resolvedLogDesc.eventFragment}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-12 gap-x-3 gap-y-5 text-sm">
-                    <div className="col-span-11 col-start-2 flex items-center space-x-2">
-                      <DecodedParamsTable
-                        args={resolvedLogDesc.args}
-                        paramTypes={resolvedLogDesc.eventFragment.inputs}
-                        hasParamNames={resolvedLogDesc === logDesc}
-                      />
-                    </div>
-                  </div>
-                </>
+                <TwoColumnPanel>
+                  <DecodedLogSignature event={resolvedLogDesc.eventFragment} />
+                  <DecodedParamsTable
+                    args={resolvedLogDesc.args}
+                    paramTypes={resolvedLogDesc.eventFragment.inputs}
+                    hasParamNames={resolvedLogDesc === logDesc}
+                  />
+                </TwoColumnPanel>
               )}
             </Tab.Panel>
             <Tab.Panel as={React.Fragment}>
