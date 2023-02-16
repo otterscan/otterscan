@@ -1,0 +1,10 @@
+{
+  "github": {
+    "silent": true
+  },
+  "git": {
+    "deploymentEnabled": {
+      "dependabot/*": false
+    }
+  }
+}
