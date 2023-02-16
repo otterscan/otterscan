@@ -78,7 +78,7 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.0.0-beta.47",
+    "@storybook/addon-essentials": "7.0.0-beta.49",
     "@storybook/addon-interactions": "7.0.0-beta.47",
     "@storybook/addon-links": "7.0.0-beta.47",
     "@storybook/blocks": "7.0.0-beta.47",
