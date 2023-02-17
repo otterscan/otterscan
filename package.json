@@ -80,7 +80,7 @@
   "devDependencies": {
     "@storybook/addon-essentials": "7.0.0-beta.47",
     "@storybook/addon-interactions": "7.0.0-beta.47",
-    "@storybook/addon-links": "7.0.0-beta.47",
+    "@storybook/addon-links": "7.0.0-beta.50",
     "@storybook/blocks": "7.0.0-beta.47",
     "@storybook/react": "7.0.0-beta.47",
     "@storybook/react-vite": "7.0.0-beta.47",
