@@ -1,5 +1,4 @@
 import { FC, memo } from "react";
-import { BlockTag } from "@ethersproject/abstract-provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
@@ -8,33 +7,29 @@ import {
 import NavButton from "../components/NavButton";
 
 type NavBlockProps = {
-  blockNumber: number;
-  latestBlockNumber: number | undefined;
-  urlBuilder: (blockNumber: BlockTag) => string;
+  entityNum: number;
+  latestEntityNum: number | undefined;
+  urlBuilder: (blockNumber: number) => string;
 };
 
 const NavBlock: FC<NavBlockProps> = ({
-  blockNumber,
-  latestBlockNumber,
+  entityNum,
+  latestEntityNum,
   urlBuilder,
 }) => (
   <div className="flex space-x-1 self-center pl-2">
-    <NavButton href={urlBuilder(blockNumber - 1)} disabled={blockNumber === 0}>
+    <NavButton href={urlBuilder(entityNum - 1)} disabled={entityNum === 0}>
       <FontAwesomeIcon icon={faChevronLeft} />
     </NavButton>
     <NavButton
-      href={urlBuilder(blockNumber + 1)}
-      disabled={
-        latestBlockNumber === undefined || blockNumber >= latestBlockNumber
-      }
+      href={urlBuilder(entityNum + 1)}
+      disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
     >
       <FontAwesomeIcon icon={faChevronRight} />
     </NavButton>
     <NavButton
-      href={urlBuilder(latestBlockNumber!)}
-      disabled={
-        latestBlockNumber === undefined || blockNumber >= latestBlockNumber
-      }
+      href={urlBuilder(latestEntityNum!)}
+      disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
     >
       <FontAwesomeIcon icon={faChevronRight} />
       <FontAwesomeIcon icon={faChevronRight} />

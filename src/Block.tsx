@@ -66,8 +66,8 @@ const Block: React.FC = () => {
           <span className="text-base text-gray-500">#{blockNumberOrHash}</span>
           {block && (
             <NavBlock
-              blockNumber={block.number}
-              latestBlockNumber={latestBlockNumber}
+              entityNum={block.number}
+              latestEntityNum={latestBlockNumber}
               urlBuilder={blockURL}
             />
           )}

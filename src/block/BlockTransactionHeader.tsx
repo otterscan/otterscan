@@ -25,8 +25,8 @@ const BlockTransactionHeader: React.FC<BlockTransactionHeaderProps> = ({
           <span>For Block</span>
           <BlockLink blockTag={blockTag} />
           <NavBlock
-            blockNumber={blockTag as number}
-            latestBlockNumber={latestBlockNumber}
+            entityNum={blockTag as number}
+            latestEntityNum={latestBlockNumber}
             urlBuilder={blockTxsURL}
           />
         </div>
