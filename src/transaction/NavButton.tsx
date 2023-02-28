@@ -1,5 +1,5 @@
-import React, { PropsWithChildren, useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { FC, PropsWithChildren, useContext, useState } from "react";
+import _NavButton from "../components/NavButton";
 import { RuntimeContext } from "../useRuntime";
 import { useTransactionBySenderAndNonce } from "../useErigonHooks";
 import { ChecksummedAddress } from "../types";
@@ -12,7 +12,7 @@ type NavButtonProps = {
   disabled?: boolean;
 };
 
-const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
+const NavButton: FC<PropsWithChildren<NavButtonProps>> = ({
   sender,
   nonce,
   disabled,
@@ -22,21 +22,20 @@ const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
 
   if (disabled) {
     return (
-      <span className="rounded bg-link-blue/10 px-2 py-1 text-xs text-gray-300">
+      <_NavButton href="" disabled>
         {children}
-      </span>
+      </_NavButton>
     );
   }
 
   return (
     <>
-      <NavLink
-        className="rounded bg-link-blue/10 px-2 py-1 text-xs text-link-blue hover:bg-link-blue/100 hover:text-white"
-        to={addressByNonceURL(sender, nonce)}
+      <_NavButton
+        href={addressByNonceURL(sender, nonce)}
         onMouseOver={() => setPrefetch(true)}
       >
         {children}
-      </NavLink>
+      </_NavButton>
       {prefetch && <Prefetcher checksummedAddress={sender} nonce={nonce} />}
     </>
   );
@@ -47,10 +46,7 @@ type PrefetcherProps = {
   nonce: number;
 };
 
-const Prefetcher: React.FC<PrefetcherProps> = ({
-  checksummedAddress,
-  nonce,
-}) => {
+const Prefetcher: FC<PrefetcherProps> = ({ checksummedAddress, nonce }) => {
   const { provider } = useContext(RuntimeContext);
   const _txHash = useTransactionBySenderAndNonce(
     provider,
