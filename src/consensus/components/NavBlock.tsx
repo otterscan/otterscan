@@ -4,7 +4,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import NavButton from "./NavButton";
+import NavButton from "../../components/NavButton";
 
 type NavBlockProps = {
   entityNum: number;
