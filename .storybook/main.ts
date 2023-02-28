@@ -14,6 +14,9 @@ const config: StorybookConfig = {
   docs: {
     autodocs: "tag",
   },
+  typescript: {
+    reactDocgen: false,
+  },
 };
 
 export default config;
