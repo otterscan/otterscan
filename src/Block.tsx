@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
-import NavBlock from "./block/NavBlock";
+import NavBlock from "./components/NavBlock";
 import ContentFrame from "./ContentFrame";
 import BlockNotFound from "./components/BlockNotFound";
 import InfoRow from "./components/InfoRow";
@@ -22,7 +22,7 @@ import NativeTokenPrice from "./components/NativeTokenPrice";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
-import { blockTxsURL } from "./url";
+import { blockTxsURL, blockURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
 import { useChainInfo } from "./useChainInfo";
 
@@ -66,8 +66,9 @@ const Block: React.FC = () => {
           <span className="text-base text-gray-500">#{blockNumberOrHash}</span>
           {block && (
             <NavBlock
-              blockNumber={block.number}
-              latestBlockNumber={latestBlockNumber}
+              entityNum={block.number}
+              latestEntityNum={latestBlockNumber}
+              urlBuilder={blockURL}
             />
           )}
         </div>

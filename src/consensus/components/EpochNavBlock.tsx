@@ -1,5 +1,5 @@
 import { FC } from "react";
-import NavBlock from "./NavBlock";
+import NavBlock from "../../components/NavBlock";
 import { EPOCHS_AFTER_HEAD, useHeadEpochNumber } from "../../useConsensus";
 import { EpochAwareComponentProps } from "../types";
 import { epochURL } from "../../url";

@@ -9,7 +9,7 @@ import NavButton from "./NavButton";
 type NavBlockProps = {
   entityNum: number;
   latestEntityNum: number | undefined;
-  urlBuilder: (blockNumber: number) => string;
+  urlBuilder: (n: number) => string;
 };
 
 const NavBlock: FC<NavBlockProps> = ({
@@ -18,27 +18,18 @@ const NavBlock: FC<NavBlockProps> = ({
   urlBuilder,
 }) => (
   <div className="flex space-x-1 self-center pl-2">
-    <NavButton
-      entityNum={entityNum - 1}
-      disabled={
-        entityNum === 0 ||
-        (latestEntityNum !== undefined && entityNum > latestEntityNum)
-      }
-      urlBuilder={urlBuilder}
-    >
+    <NavButton href={urlBuilder(entityNum - 1)} disabled={entityNum === 0}>
       <FontAwesomeIcon icon={faChevronLeft} />
     </NavButton>
     <NavButton
-      entityNum={entityNum + 1}
+      href={urlBuilder(entityNum + 1)}
       disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
     </NavButton>
     <NavButton
-      entityNum={latestEntityNum!}
+      href={urlBuilder(latestEntityNum!)}
       disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
       <FontAwesomeIcon icon={faChevronRight} />
