@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,34 +13,28 @@ type NavBlockProps = {
   urlBuilder: (blockNumber: BlockTag) => string;
 };
 
-const NavBlock: React.FC<NavBlockProps> = ({
+const NavBlock: FC<NavBlockProps> = ({
   blockNumber,
   latestBlockNumber,
   urlBuilder,
 }) => (
   <div className="flex space-x-1 self-center pl-2">
-    <NavButton
-      blockNum={blockNumber - 1}
-      disabled={blockNumber === 0}
-      urlBuilder={urlBuilder}
-    >
+    <NavButton href={urlBuilder(blockNumber - 1)} disabled={blockNumber === 0}>
       <FontAwesomeIcon icon={faChevronLeft} />
     </NavButton>
     <NavButton
-      blockNum={blockNumber + 1}
+      href={urlBuilder(blockNumber + 1)}
       disabled={
         latestBlockNumber === undefined || blockNumber >= latestBlockNumber
       }
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
     </NavButton>
     <NavButton
-      blockNum={latestBlockNumber!}
+      href={urlBuilder(latestBlockNumber!)}
       disabled={
         latestBlockNumber === undefined || blockNumber >= latestBlockNumber
       }
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
       <FontAwesomeIcon icon={faChevronRight} />
@@ -48,4 +42,4 @@ const NavBlock: React.FC<NavBlockProps> = ({
   </div>
 );
 
-export default React.memo(NavBlock);
+export default memo(NavBlock);

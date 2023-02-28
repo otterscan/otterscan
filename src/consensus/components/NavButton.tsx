@@ -2,15 +2,13 @@ import { FC, PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type NavButtonProps = {
-  entityNum: number;
+  href: string;
   disabled?: boolean;
-  urlBuilder: (entityNum: number) => string;
 };
 
 const NavButton: FC<PropsWithChildren<NavButtonProps>> = ({
-  entityNum,
+  href,
   disabled,
-  urlBuilder,
   children,
 }) => {
   if (disabled) {
@@ -24,7 +22,7 @@ const NavButton: FC<PropsWithChildren<NavButtonProps>> = ({
   return (
     <NavLink
       className="rounded bg-link-blue/10 px-2 py-1 text-xs text-link-blue transition-colors hover:bg-link-blue/100 hover:text-white disabled:cursor-default disabled:bg-link-blue disabled:text-gray-400"
-      to={urlBuilder(entityNum)}
+      to={href}
     >
       {children}
     </NavLink>

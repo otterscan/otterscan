@@ -19,26 +19,23 @@ const NavBlock: FC<NavBlockProps> = ({
 }) => (
   <div className="flex space-x-1 self-center pl-2">
     <NavButton
-      entityNum={entityNum - 1}
+      href={urlBuilder(entityNum - 1)}
       disabled={
         entityNum === 0 ||
         (latestEntityNum !== undefined && entityNum > latestEntityNum)
       }
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronLeft} />
     </NavButton>
     <NavButton
-      entityNum={entityNum + 1}
+      href={urlBuilder(entityNum + 1)}
       disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
     </NavButton>
     <NavButton
-      entityNum={latestEntityNum!}
+      href={urlBuilder(latestEntityNum!)}
       disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
-      urlBuilder={urlBuilder}
     >
       <FontAwesomeIcon icon={faChevronRight} />
       <FontAwesomeIcon icon={faChevronRight} />
