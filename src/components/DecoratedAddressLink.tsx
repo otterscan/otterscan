@@ -12,7 +12,7 @@ import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { AddressAwareComponentProps } from "../execution/types";
 import PlainAddress from "./PlainAddress";
 import AddressLegend from "./AddressLegend";
-import AddressAttributes from "../address/AddressAttributes";
+import AddressAttributes from "../execution/address/AddressAttributes";
 import { RuntimeContext } from "../useRuntime";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useResolvedAddress } from "../useResolvedAddresses";

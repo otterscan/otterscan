@@ -1,5 +1,5 @@
 import React from "react";
-import ContentFrame from "../ContentFrame";
+import ContentFrame from "./ContentFrame";
 
 type BlockNotFoundProps = {
   blockNumberOrHash: string;

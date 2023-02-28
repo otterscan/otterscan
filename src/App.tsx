@@ -9,10 +9,10 @@ import { ConnectionStatus } from "./types";
 import { RuntimeContext, useRuntime } from "./useRuntime";
 import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
 
-const Block = lazy(() => import("./Block"));
-const BlockTransactions = lazy(() => import("./BlockTransactions"));
-const Address = lazy(() => import("./Address"));
-const Transaction = lazy(() => import("./Transaction"));
+const Block = lazy(() => import("./execution/Block"));
+const BlockTransactions = lazy(() => import("./execution/BlockTransactions"));
+const Address = lazy(() => import("./execution/Address"));
+const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
 const AllERC721 = lazy(() => import("./token/AllERC721"));

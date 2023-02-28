@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import StandardSubtitle from "../../StandardSubtitle";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import EpochNavBlock from "../components/EpochNavBlock";
 import { EpochAwareComponentProps } from "../types";
 
