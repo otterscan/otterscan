@@ -6,9 +6,9 @@ import {
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import ExternalLink from "./components/ExternalLink";
-import ContentFrame from "./ContentFrame";
-import StandardFrame from "./StandardFrame";
-import StandardSubtitle from "./StandardSubtitle";
+import ContentFrame from "./components/ContentFrame";
+import StandardFrame from "./components/StandardFrame";
+import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
 
 const Faucets: React.FC = () => {

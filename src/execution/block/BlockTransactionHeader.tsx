@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/abstract-provider";
-import StandardSubtitle from "../../StandardSubtitle";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import BlockLink from "../../components/BlockLink";
 import NavBlock from "../../components/NavBlock";
 import { RuntimeContext } from "../../useRuntime";

@@ -2,7 +2,7 @@ import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import StandardFrame from "../StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
-import ContentFrame from "../ContentFrame";
+import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardTable from "../components/StandardTable";
 import StandardTHead from "../components/StandardTHead";

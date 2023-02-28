@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import Blockies from "react-blockies";
 import { AddressAwareComponentProps } from "../types";
-import StandardSubtitle from "../../StandardSubtitle";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
 import AddressAttributes from "./AddressAttributes";

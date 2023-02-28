@@ -1,7 +1,7 @@
 import { FC, memo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserSlash } from "@fortawesome/free-solid-svg-icons";
-import StandardSubtitle from "../../StandardSubtitle";
+import StandardSubtitle from "../../components/StandardSubtitle";
 
 type ValidatorSubtitleProps = {
   validatorIndex: number | string;

@@ -3,7 +3,7 @@ import { commify } from "@ethersproject/units";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
 import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";

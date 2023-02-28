@@ -1,7 +1,7 @@
 import React, { useMemo, useContext } from "react";
 import { useParams } from "react-router";
 import { BigNumber } from "@ethersproject/bignumber";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
 import { PAGE_SIZE } from "../params";

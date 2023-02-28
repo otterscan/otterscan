@@ -1,5 +1,5 @@
 import React from "react";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import PageControl from "../../search/PageControl";
 import ResultHeader from "../../search/ResultHeader";

@@ -10,7 +10,7 @@ import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import AddressSubtitle from "./address/AddressSubtitle";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";

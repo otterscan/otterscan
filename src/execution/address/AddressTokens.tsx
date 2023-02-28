@@ -2,7 +2,7 @@ import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "@ethersproject/address";
 import { AddressAwareComponentProps } from "../types";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";

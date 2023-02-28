@@ -6,7 +6,7 @@ import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
 import BlockLink from "../../components/BlockLink";
 import ModeTab from "../../components/ModeTab";

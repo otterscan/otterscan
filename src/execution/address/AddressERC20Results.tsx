@@ -2,7 +2,7 @@ import { useContext, FC } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { AddressAwareComponentProps } from "../types";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";

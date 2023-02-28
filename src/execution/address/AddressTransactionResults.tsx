@@ -1,6 +1,6 @@
 import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { AddressAwareComponentProps } from "../types";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import InfoRow from "../../components/InfoRow";
 import AddressBalance from "./AddressBalance";

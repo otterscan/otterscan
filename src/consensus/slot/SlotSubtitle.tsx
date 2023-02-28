@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { SlotAwareComponentProps } from "../types";
-import StandardSubtitle from "../../StandardSubtitle";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import NavBlock from "../../components/NavBlock";
 import { slotURL } from "../../url";
 import { useHeadSlotNumber } from "../../useConsensus";

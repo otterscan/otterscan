@@ -2,7 +2,7 @@ import { FC, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
 import InfoRow from "../../components/InfoRow";

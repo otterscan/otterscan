@@ -1,7 +1,7 @@
 import { FC, useEffect } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
 import AddressBalance from "../../execution/address/AddressBalance";
 import Timestamp from "../../components/Timestamp";

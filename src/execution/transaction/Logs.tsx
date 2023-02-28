@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { Log } from "@ethersproject/providers";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import LogEntry from "./LogEntry";
 
 type LogsProps = {
