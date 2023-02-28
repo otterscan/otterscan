@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/abstract-provider";
 import StandardSubtitle from "../StandardSubtitle";
 import BlockLink from "../components/BlockLink";
-import NavBlock from "./NavBlock";
+import NavBlock from "../components/NavBlock";
 import { RuntimeContext } from "../useRuntime";
 import { useLatestBlockNumber } from "../useLatestBlock";
 import { blockTxsURL } from "../url";

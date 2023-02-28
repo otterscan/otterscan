@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "./StandardFrame";
 import StandardSubtitle from "./StandardSubtitle";
-import NavBlock from "./block/NavBlock";
+import NavBlock from "./components/NavBlock";
 import ContentFrame from "./ContentFrame";
 import BlockNotFound from "./components/BlockNotFound";
 import InfoRow from "./components/InfoRow";
