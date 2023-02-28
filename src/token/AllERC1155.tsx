@@ -1,7 +1,7 @@
 import { useContext, FC } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";

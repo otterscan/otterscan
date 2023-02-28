@@ -1,7 +1,7 @@
 import { FC, Suspense } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import SlotSubtitle from "./slot/SlotSubtitle";
 import NavTab from "../components/NavTab";

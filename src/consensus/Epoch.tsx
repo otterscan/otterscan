@@ -1,6 +1,6 @@
 import { FC, memo, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import EpochSubtitle from "./epoch/EpochSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";

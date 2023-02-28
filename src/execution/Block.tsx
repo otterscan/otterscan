@@ -4,7 +4,7 @@ import { commify, formatUnits } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import NavBlock from "../components/NavBlock";
 import ContentFrame from "../components/ContentFrame";

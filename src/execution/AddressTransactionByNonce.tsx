@@ -1,14 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import StandardFrame from "./StandardFrame";
-import AddressOrENSNameNotFound from "./components/AddressOrENSNameNotFound";
-import AddressOrENSNameInvalidNonce from "./components/AddressOrENSNameInvalidNonce";
-import AddressOrENSNameNoTx from "./components/AddressOrENSNameNoTx";
-import { useTransactionBySenderAndNonce } from "./useErigonHooks";
-import { RuntimeContext } from "./useRuntime";
-import { useAddressOrENS } from "./useResolvedAddresses";
-import { ChecksummedAddress } from "./types";
-import { transactionURL } from "./url";
+import StandardFrame from "../components/StandardFrame";
+import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
+import AddressOrENSNameInvalidNonce from "../components/AddressOrENSNameInvalidNonce";
+import AddressOrENSNameNoTx from "../components/AddressOrENSNameNoTx";
+import { useTransactionBySenderAndNonce } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import { useAddressOrENS } from "../useResolvedAddresses";
+import { ChecksummedAddress } from "../types";
+import { transactionURL } from "../url";
 
 type AddressTransactionByNonceProps = {
   rawNonce: string;

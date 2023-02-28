@@ -1,7 +1,7 @@
 import { FC, lazy, Suspense, useContext, useEffect } from "react";
 import { useParams, Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import NavTab from "../components/NavTab";
