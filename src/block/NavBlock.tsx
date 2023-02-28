@@ -10,7 +10,7 @@ import NavButton from "./NavButton";
 type NavBlockProps = {
   blockNumber: number;
   latestBlockNumber: number | undefined;
-  urlBuilder?: (blockNumber: BlockTag) => string;
+  urlBuilder: (blockNumber: BlockTag) => string;
 };
 
 const NavBlock: React.FC<NavBlockProps> = ({

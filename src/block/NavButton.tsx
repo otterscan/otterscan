@@ -1,15 +1,14 @@
-import { PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 import { BlockTag } from "@ethersproject/abstract-provider";
-import { blockURL } from "../url";
 
 type NavButtonProps = {
   blockNum: number;
   disabled?: boolean;
-  urlBuilder?: (blockNumber: BlockTag) => string;
+  urlBuilder: (blockNumber: BlockTag) => string;
 };
 
-const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
+const NavButton: FC<PropsWithChildren<NavButtonProps>> = ({
   blockNum,
   disabled,
   urlBuilder,
@@ -26,7 +25,7 @@ const NavButton: React.FC<PropsWithChildren<NavButtonProps>> = ({
   return (
     <NavLink
       className="rounded bg-link-blue/10 px-2 py-1 text-xs text-link-blue transition-colors hover:bg-link-blue/100 hover:text-white disabled:cursor-default disabled:bg-link-blue disabled:text-gray-400"
-      to={urlBuilder ? urlBuilder(blockNum) : blockURL(blockNum)}
+      to={urlBuilder(blockNum)}
     >
       {children}
     </NavLink>

@@ -22,7 +22,7 @@ import NativeTokenPrice from "./components/NativeTokenPrice";
 import HexValue from "./components/HexValue";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockNumber } from "./useLatestBlock";
-import { blockTxsURL } from "./url";
+import { blockTxsURL, blockURL } from "./url";
 import { useBlockData } from "./useErigonHooks";
 import { useChainInfo } from "./useChainInfo";
 
@@ -68,6 +68,7 @@ const Block: React.FC = () => {
             <NavBlock
               blockNumber={block.number}
               latestBlockNumber={latestBlockNumber}
+              urlBuilder={blockURL}
             />
           )}
         </div>
