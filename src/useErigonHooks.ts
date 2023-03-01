@@ -126,7 +126,7 @@ export const useBlockTransactions = (
               t.type !== 2
                 ? provider.formatter
                     .bigNumber(_receipt.gasUsed)
-                    .mul(t.gasPrice!)
+                    .mul(t.gasPrice ?? BigNumber.from(0))
                 : provider.formatter
                     .bigNumber(_receipt.gasUsed)
                     .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),

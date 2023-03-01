@@ -54,8 +54,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  const flash = tx.gasPrice.isZero() && sendsToMiner;
-
+  var flash2 = false;
+  if (tx.gasPrice != undefined) {
+    flash2 = tx.gasPrice.isZero() && sendsToMiner;
+  }
+  const flash = flash2;
+  
   return (
     <div
       className={`grid grid-cols-12 gap-x-1 items-baseline text-sm border-t border-gray-200 ${
