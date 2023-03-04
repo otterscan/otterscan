@@ -1124,6 +1124,7 @@ export type AddressAttributes = {
   erc165?: boolean;
   erc721?: boolean;
   erc1155?: boolean;
+  erc1167?: boolean;
 };
 
 export const useAddressAttributes = (
