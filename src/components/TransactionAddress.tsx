@@ -56,7 +56,9 @@ const TransactionAddress: FC<TransactionAddressProps> = ({
         eoa={
           showCodeIndicator
             ? creation || blockNumber !== undefined
-              ? !hasCode
+              ? hasCode !== undefined
+                ? !hasCode
+                : undefined
               : undefined
             : undefined
         }
