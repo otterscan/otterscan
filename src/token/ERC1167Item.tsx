@@ -2,6 +2,7 @@ import { FC, memo, useContext } from "react";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
+import AddressHighlighter from "../components/AddressHighlighter";
 import { RuntimeContext } from "../useRuntime";
 import { ContractMatch, useBlockData, useERC1167Impl } from "../useErigonHooks";
 
@@ -17,15 +18,17 @@ const ERC1167Item: FC<ERC1167ItemProps> = ({ m: { address, blockNumber } }) => {
   return (
     <tr>
       <td>
-        <DecoratedAddressLink address={address} plain />
+        <DecoratedAddressLink address={address} eoa={false} plain />
       </td>
       <td>
         <BlockLink blockTag={blockNumber} />
       </td>
       <td>{block && <TimestampAge timestamp={block.timestamp} />}</td>
       {erc1167Impl ? (
-        <td>
-          <DecoratedAddressLink address={erc1167Impl} />
+        <td className="inline-flex">
+          <AddressHighlighter address={erc1167Impl}>
+            <DecoratedAddressLink address={erc1167Impl} eoa={false} />
+          </AddressHighlighter>
         </td>
       ) : (
         <td></td>
