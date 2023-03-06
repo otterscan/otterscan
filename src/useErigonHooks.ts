@@ -830,6 +830,25 @@ export const useERC1155List = (
   );
 };
 
+export const useERC1167Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  return useGenericContractCount(provider, "ots_getERC1167Count");
+};
+
+export const useERC1167List = (
+  provider: JsonRpcProvider | undefined,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  return useGenericContractList(
+    provider,
+    "ots_getERC1167Page",
+    pageNumber,
+    pageSize
+  );
+};
+
 const useGenericTransactionCount = (
   provider: JsonRpcProvider | undefined,
   rpcMethod: string,
@@ -973,6 +992,21 @@ export const useERC721Metadata = (
   return data;
 };
 
+export const useERC1167Impl = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress | undefined
+): ChecksummedAddress | undefined | null => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["ots_getERC1167Impl", address],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data;
+};
+
 const erc20MetadataFetcher =
   (
     provider: JsonRpcProvider | undefined
@@ -1090,6 +1124,8 @@ export type AddressAttributes = {
   erc165?: boolean;
   erc721?: boolean;
   erc1155?: boolean;
+  erc1167?: boolean;
+  erc1167Logic?: boolean;
 };
 
 export const useAddressAttributes = (

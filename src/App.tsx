@@ -17,6 +17,7 @@ const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
 const AllERC721 = lazy(() => import("./token/AllERC721"));
 const AllERC1155 = lazy(() => import("./token/AllERC1155"));
+const AllERC1167 = lazy(() => import("./token/AllERC1167"));
 const Epoch = lazy(() => import("./consensus/Epoch"));
 const Slot = lazy(() => import("./consensus/Slot"));
 const Validator = lazy(() => import("./consensus/Validator"));
@@ -67,6 +68,10 @@ const App = () => {
                         <Route
                           path="token/erc1155/*"
                           element={<AllERC1155 />}
+                        />
+                        <Route
+                          path="contracts/erc1167/*"
+                          element={<AllERC1167 />}
                         />
                       </>
                     )}
