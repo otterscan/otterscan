@@ -19,7 +19,7 @@ const ENSName: FC<ENSNameProps> = ({
   if (linkable) {
     return (
       <NavLink
-        className={`flex items-baseline space-x-1 font-sans ${
+        className={`inline-flex items-baseline space-x-1 font-sans ${
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } truncate`}
         to={`/address/${name}`}
@@ -31,12 +31,12 @@ const ENSName: FC<ENSNameProps> = ({
   }
 
   return (
-    <div
-      className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
+    <span
+      className="inline-flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`${name}: ${address}`}
     >
       <Content linkable={false} name={name} />
-    </div>
+    </span>
   );
 };
 
