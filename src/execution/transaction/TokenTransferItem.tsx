@@ -1,7 +1,7 @@
 import { FC, memo, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight, faSackDollar } from "@fortawesome/free-solid-svg-icons";
-import TransactionAddress from "../../components/TransactionAddress";
+import TransactionAddress from "../components/TransactionAddress";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
 import USDAmount from "../../components/USDAmount";
 import { RuntimeContext } from "../../useRuntime";

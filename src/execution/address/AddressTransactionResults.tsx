@@ -4,7 +4,7 @@ import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import InfoRow from "../../components/InfoRow";
 import AddressBalance from "./AddressBalance";
-import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import TransactionLink from "../../components/TransactionLink";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";

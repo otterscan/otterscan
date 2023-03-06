@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
-import TransactionAddress from "../../components/TransactionAddress";
+import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
 import { TransactionData } from "../../types";
 import { useTraceTransaction } from "../../useErigonHooks";

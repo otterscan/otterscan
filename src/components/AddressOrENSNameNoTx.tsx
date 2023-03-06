@@ -1,7 +1,7 @@
 import React from "react";
 import StandardSubtitle from "./StandardSubtitle";
 import ContentFrame from "./ContentFrame";
-import DecoratedAddressLink from "./DecoratedAddressLink";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 
 type AddressOrENSNameNoTxProps = {
   addressOrENSName: string;

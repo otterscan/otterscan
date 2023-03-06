@@ -3,7 +3,7 @@ import { Log } from "@ethersproject/abstract-provider";
 import { Fragment, Interface } from "@ethersproject/abi";
 import { Tab } from "@headlessui/react";
 import LogIndex from "./log/LogIndex";
-import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import ModeTab from "../../components/ModeTab";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";

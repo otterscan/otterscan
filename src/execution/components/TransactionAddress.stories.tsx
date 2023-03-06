@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react";
 import TransactionAddress from "./TransactionAddress";
-import { RuntimeContext } from "../useRuntime";
-import { AppConfigContext } from "../useAppConfig";
-import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import { AddressContext, ConnectionStatus } from "../types";
-import { SourcifySource } from "../sourcify/useSourcify";
-import { SelectionContext } from "../selection/useSelection";
+import { RuntimeContext } from "../../useRuntime";
+import { AppConfigContext } from "../../useAppConfig";
+import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
+import { AddressContext, ConnectionStatus } from "../../types";
+import { SourcifySource } from "../../sourcify/useSourcify";
+import { SelectionContext } from "../../selection/useSelection";
 
 const meta = {
   component: TransactionAddress,

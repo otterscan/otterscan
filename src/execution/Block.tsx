@@ -15,7 +15,7 @@ import BlockReward from "./components/BlockReward";
 import RelativePosition from "../components/RelativePosition";
 import PercentageBar from "../components/PercentageBar";
 import BlockLink from "../components/BlockLink";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import DecoratedAddressLink from "./components/DecoratedAddressLink";
 import TransactionValue from "../components/TransactionValue";
 import FormattedBalance from "../components/FormattedBalance";
 import NativeTokenPrice from "../components/NativeTokenPrice";

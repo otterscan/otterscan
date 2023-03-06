@@ -1,12 +1,12 @@
 import { FC, useContext } from "react";
-import { AddressAwareComponentProps } from "../execution/types";
-import AddressHighlighter from "./AddressHighlighter";
+import { AddressAwareComponentProps } from "../types";
+import AddressHighlighter from "../../components/AddressHighlighter";
 import DecoratedAddressLink from "./DecoratedAddressLink";
-import { useSelectedTransaction } from "../useSelectedTransaction";
-import { useBlockNumberContext } from "../useBlockTagContext";
-import { RuntimeContext } from "../useRuntime";
-import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
-import { AddressContext, ChecksummedAddress } from "../types";
+import { useSelectedTransaction } from "../../useSelectedTransaction";
+import { useBlockNumberContext } from "../../useBlockTagContext";
+import { RuntimeContext } from "../../useRuntime";
+import { useBlockDataFromTransaction, useHasCode } from "../../useErigonHooks";
+import { AddressContext, ChecksummedAddress } from "../../types";
 
 export type TransactionAddressProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;

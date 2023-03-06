@@ -12,7 +12,7 @@ import BlockLink from "../../components/BlockLink";
 import ModeTab from "../../components/ModeTab";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
 import BlockConfirmations from "../../components/BlockConfirmations";
-import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import Copy from "../../components/Copy";
 import Nonce from "../../components/Nonce";
 import NavNonce from "./NavNonce";

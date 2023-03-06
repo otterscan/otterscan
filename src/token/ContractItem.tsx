@@ -1,5 +1,5 @@
 import { FC, memo, useContext } from "react";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
 import { RuntimeContext } from "../useRuntime";

@@ -7,7 +7,7 @@ import {
   faSackDollar,
 } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import DecoratedAddressLink from "./DecoratedAddressLink";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import USDAmount from "./USDAmount";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";

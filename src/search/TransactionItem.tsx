@@ -14,7 +14,7 @@ import { FeeDisplay } from "./useFeeToggler";
 import { RuntimeContext } from "../useRuntime";
 import { useSendsToMiner } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
-import TransactionAddress from "../components/TransactionAddress";
+import TransactionAddress from "../execution/components/TransactionAddress";
 import { BlockNumberContext } from "../useBlockTagContext";
 
 type TransactionItemProps = {
