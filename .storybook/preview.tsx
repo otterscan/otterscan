@@ -1,5 +1,6 @@
 import React from "react";
 import { Decorator } from "@storybook/react";
+import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { BrowserRouter as Router } from "react-router-dom";
 import "@fontsource/fira-code/index.css";
 import "@fontsource/space-grotesk/index.css";
@@ -18,6 +19,9 @@ export const parameters = {
       color: /(background|color)$/i,
       date: /Date$/,
     },
+  },
+  viewport: {
+    viewports: INITIAL_VIEWPORTS,
   },
 };
 
