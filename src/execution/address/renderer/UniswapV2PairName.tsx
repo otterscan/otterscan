@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import TokenLogo from "./TokenLogo";
 import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
@@ -17,7 +17,7 @@ type UniswapV2PairNameProps = {
   dontOverrideColors?: boolean;
 };
 
-const UniswapV2PairName: React.FC<UniswapV2PairNameProps> = ({
+const UniswapV2PairName: FC<UniswapV2PairNameProps> = ({
   chainId,
   address,
   token0,
@@ -85,7 +85,7 @@ type ContentProps = {
   linkable?: boolean;
 };
 
-const Content: React.FC<ContentProps> = ({
+const Content: FC<ContentProps> = ({
   chainId,
   address,
   name,

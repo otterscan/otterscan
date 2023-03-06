@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 import ENSLogo from "./ensLogo.svg";
@@ -10,7 +10,7 @@ type ENSNameProps = {
   dontOverrideColors?: boolean;
 };
 
-const ENSName: React.FC<ENSNameProps> = ({
+const ENSName: FC<ENSNameProps> = ({
   name,
   address,
   linkable,
@@ -45,7 +45,7 @@ type ContentProps = {
   name: string;
 };
 
-const Content: React.FC<ContentProps> = ({ linkable, name }) => (
+const Content: FC<ContentProps> = ({ linkable, name }) => (
   <>
     <img
       className={`self-center ${linkable ? "" : "grayscale"}`}

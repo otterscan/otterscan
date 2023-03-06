@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { FC, memo, useContext } from "react";
 import { useImage } from "react-image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCoins } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +12,7 @@ type TokenLogoProps = {
   name: string;
 };
 
-const TokenLogo: React.FC<TokenLogoProps> = ({ chainId, address, name }) => {
+const TokenLogo: FC<TokenLogoProps> = ({ chainId, address, name }) => {
   const { config } = useContext(RuntimeContext);
 
   const srcList: string[] = [];
@@ -31,4 +31,4 @@ const TokenLogo: React.FC<TokenLogoProps> = ({ chainId, address, name }) => {
   );
 };
 
-export default React.memo(TokenLogo);
+export default memo(TokenLogo);
