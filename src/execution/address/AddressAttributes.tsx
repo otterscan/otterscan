@@ -43,9 +43,23 @@ const AddressAttributes: FC<AddressAttributesProps> = ({ address, full }) => {
           [{full ? "ERC1167" : "1167"}]
         </AddressLegend>
       )}
+      {attr?.erc1167Logic && (
+        <AddressLegend
+          full={full}
+          title="ERC1167 logic contract"
+          uniqueId="erc1167logic"
+        >
+          [{full ? "ERC1167-Logic" : "1167-L"}]
+        </AddressLegend>
+      )}
       {attr?.erc1167 && (
         <AddressLegend full={full} title="Proxy" uniqueId="proxy">
           [P]
+        </AddressLegend>
+      )}
+      {attr?.erc1167Logic && (
+        <AddressLegend full={full} title="Logic" uniqueId="logic">
+          [L]
         </AddressLegend>
       )}
     </>
