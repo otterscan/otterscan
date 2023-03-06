@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import TokenLogo from "./TokenLogo";
-import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 import {
   UniswapV3PairMeta,
   UniswapV3TokenMeta,
-} from "../api/address-resolver/UniswapV3Resolver";
-import { ChecksummedAddress } from "../types";
+} from "../../../api/address-resolver/UniswapV3Resolver";
+import { ChecksummedAddress } from "../../../types";
 
 type UniswapV3PoolNameProps = {
   chainId: number;

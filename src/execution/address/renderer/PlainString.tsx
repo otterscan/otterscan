@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 
 type PlainStringProps = {
   address: string;

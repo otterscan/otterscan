@@ -1,25 +1,27 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import TokenLogo from "./TokenLogo";
-import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
-import { ChecksummedAddress } from "../types";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 import {
-  UniswapV1PairMeta,
-  UniswapV1TokenMeta,
-} from "../api/address-resolver/UniswapV1Resolver";
+  UniswapV2PairMeta,
+  UniswapV2TokenMeta,
+} from "../../../api/address-resolver/UniswapV2Resolver";
+import { ChecksummedAddress } from "../../../types";
 
-type UniswapV1ExchangeNameProps = {
+type UniswapV2PairNameProps = {
   chainId: number;
   address: string;
-  token: UniswapV1TokenMeta;
+  token0: UniswapV2TokenMeta;
+  token1: UniswapV2TokenMeta;
   linkable: boolean;
   dontOverrideColors?: boolean;
 };
 
-const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
+const UniswapV2PairName: React.FC<UniswapV2PairNameProps> = ({
   chainId,
   address,
-  token,
+  token0,
+  token1,
   linkable,
   dontOverrideColors,
 }) => {
@@ -30,14 +32,22 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } truncate`}
         to={`/address/${address}`}
-        title={`Uniswap V1 LP (${token.symbol}): ${address}`}
+        title={`Uniswap V2 LP (${token0.symbol}/${token1.symbol}): ${address}`}
       >
-        <span>Uniswap V1 LP:</span>
+        <span>Uniswap V2 LP:</span>
         <Content
           chainId={chainId}
-          address={token.address}
-          name={token.name}
-          symbol={token.symbol}
+          address={token0.address}
+          name={token0.name}
+          symbol={token0.symbol}
+          linkable
+        />
+        <span>/</span>
+        <Content
+          chainId={chainId}
+          address={token1.address}
+          name={token1.name}
+          symbol={token1.symbol}
           linkable
         />
       </NavLink>
@@ -47,14 +57,21 @@ const UniswapV1ExchangeName: React.FC<UniswapV1ExchangeNameProps> = ({
   return (
     <div
       className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
-      title={`Uniswap V1 LP (${token.symbol}): ${address}`}
+      title={`Uniswap V2 LP (${token0.symbol}/${token1.symbol}): ${address}`}
     >
-      <span>Uniswap V1 LP:</span>
+      <span>Uniswap V2 LP:</span>
       <Content
         chainId={chainId}
-        address={token.address}
-        name={token.name}
-        symbol={token.symbol}
+        address={token0.address}
+        name={token0.name}
+        symbol={token0.symbol}
+      />
+      <span>/</span>
+      <Content
+        chainId={chainId}
+        address={token1.address}
+        name={token1.name}
+        symbol={token1.symbol}
       />
     </div>
   );
@@ -83,16 +100,17 @@ const Content: React.FC<ContentProps> = ({
   </>
 );
 
-export const uniswapV1PairRenderer: ResolvedAddressRenderer<
-  UniswapV1PairMeta
+export const uniswapV2PairRenderer: ResolvedAddressRenderer<
+  UniswapV2PairMeta
 > = (chainId, address, tokenMeta, linkable, dontOverrideColors) => (
-  <UniswapV1ExchangeName
+  <UniswapV2PairName
     chainId={chainId}
     address={address}
-    token={tokenMeta.token}
+    token0={tokenMeta.token0}
+    token1={tokenMeta.token1}
     linkable={linkable}
     dontOverrideColors={dontOverrideColors}
   />
 );
 
-export default UniswapV1ExchangeName;
+export default UniswapV2PairName;
