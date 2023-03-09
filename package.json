@@ -81,7 +81,7 @@
     "@storybook/addon-essentials": "7.0.0-beta.59",
     "@storybook/addon-interactions": "7.0.0-beta.59",
     "@storybook/addon-links": "7.0.0-beta.59",
-    "@storybook/blocks": "7.0.0-beta.59",
+    "@storybook/blocks": "7.0.0-beta.64",
     "@storybook/react": "7.0.0-beta.59",
     "@storybook/react-vite": "7.0.0-beta.59",
     "@storybook/testing-library": "^0.0.14--canary.30.5f44d14.0",
