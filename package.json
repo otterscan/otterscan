@@ -83,7 +83,7 @@
     "@storybook/addon-links": "7.0.0-beta.59",
     "@storybook/blocks": "7.0.0-beta.59",
     "@storybook/react": "7.0.0-beta.59",
-    "@storybook/react-vite": "7.0.0-beta.59",
+    "@storybook/react-vite": "7.0.0-rc.1",
     "@storybook/testing-library": "^0.0.14--canary.30.5f44d14.0",
     "@vitejs/plugin-react-swc": "^3.2.0",
     "autoprefixer": "^10.4.13",
