@@ -1,5 +1,5 @@
 import { FC } from "react";
-import TransactionAddressWithCopy from "../../../components/TransactionAddressWithCopy";
+import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
 import { ChecksummedAddress } from "../../../types";
 
 type AddressDecoderProps = {

@@ -8,16 +8,16 @@ import {
   faMoneyBillAlt,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
-import SourcifyLogo from "../sourcify/SourcifyLogo";
-import { AddressAwareComponentProps } from "../execution/types";
+import SourcifyLogo from "../../sourcify/SourcifyLogo";
+import { AddressAwareComponentProps } from "../types";
 import PlainAddress from "./PlainAddress";
-import AddressLegend from "./AddressLegend";
-import AddressAttributes from "../execution/address/AddressAttributes";
-import { RuntimeContext } from "../useRuntime";
-import { useSourcifyMetadata } from "../sourcify/useSourcify";
-import { useResolvedAddress } from "../useResolvedAddresses";
-import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../types";
-import { resolverRendererRegistry } from "../api/address-resolver";
+import AddressLegend from "../../components/AddressLegend";
+import AddressAttributes from "../address/AddressAttributes";
+import { RuntimeContext } from "../../useRuntime";
+import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { useResolvedAddress } from "../../useResolvedAddresses";
+import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
+import { resolverRendererRegistry } from "../../api/address-resolver";
 
 export type DecoratedAddressLinkProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;

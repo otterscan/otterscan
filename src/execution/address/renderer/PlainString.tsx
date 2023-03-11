@@ -1,6 +1,6 @@
-import React from "react";
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 
 type PlainStringProps = {
   address: string;
@@ -9,7 +9,7 @@ type PlainStringProps = {
   dontOverrideColors: boolean | undefined;
 };
 
-const PlainString: React.FC<PlainStringProps> = ({
+const PlainString: FC<PlainStringProps> = ({
   address,
   name,
   linkable,

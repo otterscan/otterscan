@@ -1,6 +1,6 @@
-import React from "react";
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { ResolvedAddressRenderer } from "../api/address-resolver/address-resolver";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 import ENSLogo from "./ensLogo.svg";
 
 type ENSNameProps = {
@@ -10,7 +10,7 @@ type ENSNameProps = {
   dontOverrideColors?: boolean;
 };
 
-const ENSName: React.FC<ENSNameProps> = ({
+const ENSName: FC<ENSNameProps> = ({
   name,
   address,
   linkable,
@@ -19,7 +19,7 @@ const ENSName: React.FC<ENSNameProps> = ({
   if (linkable) {
     return (
       <NavLink
-        className={`flex items-baseline space-x-1 font-sans ${
+        className={`inline-flex items-baseline space-x-1 font-sans ${
           dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
         } truncate`}
         to={`/address/${name}`}
@@ -31,12 +31,12 @@ const ENSName: React.FC<ENSNameProps> = ({
   }
 
   return (
-    <div
-      className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
+    <span
+      className="inline-flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`${name}: ${address}`}
     >
       <Content linkable={false} name={name} />
-    </div>
+    </span>
   );
 };
 
@@ -45,7 +45,7 @@ type ContentProps = {
   name: string;
 };
 
-const Content: React.FC<ContentProps> = ({ linkable, name }) => (
+const Content: FC<ContentProps> = ({ linkable, name }) => (
   <>
     <img
       className={`self-center ${linkable ? "" : "grayscale"}`}

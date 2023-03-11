@@ -7,7 +7,7 @@ import TransactionDirection from "../../components/TransactionDirection";
 import { AddressAwareComponentProps } from "../types";
 import TransactionValue from "../../components/TransactionValue";
 import { ProcessedTransaction } from "../../types";
-import TransactionAddress from "../../components/TransactionAddress";
+import TransactionAddress from "../components/TransactionAddress";
 import { BlockNumberContext } from "../../useBlockTagContext";
 
 type ERC20temProps = AddressAwareComponentProps & {

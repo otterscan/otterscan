@@ -2,7 +2,7 @@ import { FC } from "react";
 import TransactionAddress, {
   TransactionAddressProps,
 } from "./TransactionAddress";
-import Copy from "./Copy";
+import Copy from "../../components/Copy";
 
 const TransactionAddressWithCopy: FC<TransactionAddressProps> = ({
   address,

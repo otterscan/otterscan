@@ -1,4 +1,4 @@
-import React from "react";
+import { FC } from "react";
 import { NavLink } from "react-router-dom";
 
 type PlainAddressProps = {
@@ -7,7 +7,7 @@ type PlainAddressProps = {
   dontOverrideColors: boolean | undefined;
 };
 
-const PlainAddress: React.FC<PlainAddressProps> = ({
+const PlainAddress: FC<PlainAddressProps> = ({
   address,
   linkable,
   dontOverrideColors,
