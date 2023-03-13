@@ -111,7 +111,29 @@ export const useBlockTransactions = (
           // Empty logs on purpose because of ethers formatter requires it
           _rawReceipt.logs = [];
           const _receipt = provider.formatter.receipt(_rawReceipt);
-
+          var fee: BigNumber;
+          var gasPrice: BigNumber;
+          if (t.type == 0x7e) {
+            // depositTx
+            // t.gasPrice is undefined
+            // fee = 0
+            fee = BigNumber.from(0);
+            gasPrice = BigNumber.from(0);
+          } else {
+            // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
+            const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
+            const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
+            const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+            if (t.type == 0x2) {
+              // EIP1559
+              // recalculate in case t.gasPrice is undefined
+              gasPrice = t.gasPrice != undefined ? t.gasPrice : provider.formatter.bigNumber(_receipt.gasUsed).mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!))
+            } else {
+              // legacyTx falls in here
+              gasPrice = t.gasPrice!
+            }
+            fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+          }
           return {
             blockNumber: blockNumber,
             timestamp: _block.timestamp,
@@ -122,18 +144,8 @@ export const useBlockTransactions = (
             to: t.to ?? null,
             createdContractAddress: _receipt.contractAddress,
             value: t.value,
-            fee:
-              t.type !== 2
-                ? provider.formatter
-                    .bigNumber(_receipt.gasUsed)
-                    .mul(t.gasPrice ?? BigNumber.from(0))
-                : provider.formatter
-                    .bigNumber(_receipt.gasUsed)
-                    .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
-            gasPrice:
-              t.type !== 2
-                ? t.gasPrice!
-                : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
+            fee: fee,
+            gasPrice: gasPrice,
             data: t.data,
             status: provider.formatter.number(_receipt.status),
           };

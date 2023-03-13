@@ -12,6 +12,7 @@ import { isHexString } from "@ethersproject/bytes";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
+import { BigNumber } from "ethers";
 
 export class SearchController {
   private txs: ProcessedTransaction[];
@@ -46,6 +47,23 @@ export class SearchController {
       txs: _res.map((t, i): ProcessedTransaction => {
         const _rawReceipt = _rawRes.receipts[i];
         const _receipt = provider.formatter.receipt(_rawReceipt);
+        var fee: BigNumber;
+        var gasPrice: BigNumber;
+        if (t.type == 0x7e) {
+          // depositTx
+          // t.gasPrice is undefined
+          fee = BigNumber.from(0);
+          gasPrice = BigNumber.from(0);
+        } else {
+          // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
+          const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
+          const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
+          const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+          // legacyTx falls in here
+          // when EIP1559, do not have to be recalculated: t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)
+          gasPrice = t.gasPrice!
+          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+        }
         return {
           blockNumber: t.blockNumber!,
           timestamp: provider.formatter.number(_rawReceipt.timestamp),
@@ -55,8 +73,8 @@ export class SearchController {
           to: t.to ?? null,
           createdContractAddress: _receipt.contractAddress,
           value: t.value,
-          fee: _receipt.gasUsed.mul(t.gasPrice!),
-          gasPrice: t.gasPrice!,
+          fee: fee,
+          gasPrice: gasPrice,
           data: t.data,
           status: _receipt.status!,
         };
