@@ -219,6 +219,9 @@ export const useTxData = (
         
         var fee: BigNumber;
         var gasPrice: BigNumber;
+        var l1GasUsed: BigNumber = BigNumber.from(0);
+        var l1GasPrice: BigNumber = BigNumber.from(0);
+        var l1FeeScalar: BigNumber = BigNumber.from(0);
         if (_response.type == 0x7e) {
           // depositTx
           // _response.gasPrice is undefined
@@ -227,9 +230,9 @@ export const useTxData = (
           gasPrice = BigNumber.from(0);
         } else {
           // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
-          const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
-          const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
-          const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+          l1GasUsed = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
+          l1GasPrice = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
+          l1FeeScalar = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
           // legacyTx falls in here
           // when EIP1559, do not have to be recalculated: _response.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)
           gasPrice = _response.gasPrice!
@@ -239,9 +242,6 @@ export const useTxData = (
           setTxData(null);
           return;
         }
-        console.log("gasPrice", gasPrice)
-        console.log("fee", fee)
-        
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
@@ -266,6 +266,9 @@ export const useTxData = (
                   fee: fee,
                   gasUsed: _receipt.gasUsed,
                   logs: _receipt.logs,
+                  l1GasUsed: l1GasUsed,
+                  l1GasPrice: l1GasPrice,
+                  l1FeeScalar: l1FeeScalar,
                 },
         });
       } catch (err) {

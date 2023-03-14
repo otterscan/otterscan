@@ -53,6 +53,7 @@ import {
 } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 import { useETHUSDOracle } from "../usePriceOracle";
+import L1FeeScalar from "../components/L1FeeScalar";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -367,6 +368,35 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
               }
             />
           </div>
+        </InfoRow>
+      )}
+      {txData.confirmedData && txData.confirmedData.l1GasUsed && (
+        <InfoRow title="L1 Gas Used by Txn">
+          <span>
+            <GasValue value={txData.confirmedData.l1GasUsed} />
+          </span>
+        </InfoRow>
+      )}
+      {txData.confirmedData && txData.confirmedData.l1GasPrice && (
+        <InfoRow title="L1 Gas Price">
+          <div className="flex items-baseline space-x-1">
+            <span>
+              <FormattedBalance value={txData.confirmedData.l1GasPrice} /> {symbol} (
+              <FormattedBalance value={txData.confirmedData.l1GasPrice} decimals={9} /> Gwei)
+            </span>
+            {sendsEthToMiner && (
+              <span className="rounded text-amber-500 bg-amber-100 text-xs px-2 py-1">
+                Flashbots
+              </span>
+            )}
+          </div>
+        </InfoRow>
+      )}
+      {txData.confirmedData && txData.confirmedData.l1FeeScalar && (
+        <InfoRow title="L1 Fee Scalar">
+          <span>
+            <L1FeeScalar value={txData.confirmedData.l1FeeScalar} />
+          </span>
         </InfoRow>
       )}
       {block && hasEIP1559 && (
