@@ -210,15 +210,38 @@ export const useTxData = (
 
     const readTxData = async () => {
       try {
-        const [_response, _receipt] = await Promise.all([
+        // we need rawReceipt for fee derivation
+        const [_response, _rawReceipt] = await Promise.all([
           provider.getTransaction(txhash),
-          provider.getTransactionReceipt(txhash),
+          provider.send("eth_getTransactionReceipt", [txhash]),
         ]);
+        const _receipt = provider.formatter.receipt(_rawReceipt);
+        
+        var fee: BigNumber;
+        var gasPrice: BigNumber;
+        if (_response.type == 0x7e) {
+          // depositTx
+          // _response.gasPrice is undefined
+          // fee = 0
+          fee = BigNumber.from(0);
+          gasPrice = BigNumber.from(0);
+        } else {
+          // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
+          const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
+          const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
+          const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+          // legacyTx falls in here
+          // when EIP1559, do not have to be recalculated: _response.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)
+          gasPrice = _response.gasPrice!
+          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+        }
         if (_response === null) {
           setTxData(null);
           return;
         }
-
+        console.log("gasPrice", gasPrice)
+        console.log("fee", fee)
+        
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
@@ -227,7 +250,7 @@ export const useTxData = (
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
-          gasPrice: _response.gasPrice!,
+          gasPrice: gasPrice,
           gasLimit: _response.gasLimit,
           nonce: _response.nonce,
           data: _response.data,
@@ -240,7 +263,7 @@ export const useTxData = (
                   transactionIndex: _receipt.transactionIndex,
                   confirmations: _receipt.confirmations,
                   createdContractAddress: _receipt.contractAddress,
-                  fee: _response.gasPrice!.mul(_receipt.gasUsed),
+                  fee: fee,
                   gasUsed: _receipt.gasUsed,
                   logs: _receipt.logs,
                 },
