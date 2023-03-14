@@ -23,6 +23,7 @@ import {
   TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
+import L1FeeScalar from "./components/L1FeeScalar";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -123,7 +124,11 @@ export const useBlockTransactions = (
             // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
             const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
             const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
-            const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+            const l1FeeScalar: number = parseFloat(_rawReceipt.l1FeeScalar ?? 0);
+            const numDecimals: number = Math.floor(l1FeeScalar) == l1FeeScalar ? 0 : l1FeeScalar.toString().split(".")[1].length || 0;
+            // l1feeScalar is float, so scale up and down
+            const l1FeeScalarScaleFactor: BigNumber = BigNumber.from(10).pow(numDecimals)
+            const l1FeeScalarScaled: BigNumber = BigNumber.from(l1FeeScalar * l1FeeScalarScaleFactor.toNumber())
             if (t.type == 0x2) {
               // EIP1559
               // recalculate in case t.gasPrice is undefined
@@ -132,7 +137,7 @@ export const useBlockTransactions = (
               // legacyTx falls in here
               gasPrice = t.gasPrice!
             }
-            fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+            fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalarScaled).div(l1FeeScalarScaleFactor));
           }
           return {
             blockNumber: blockNumber,
@@ -221,7 +226,7 @@ export const useTxData = (
         var gasPrice: BigNumber;
         var l1GasUsed: BigNumber = BigNumber.from(0);
         var l1GasPrice: BigNumber = BigNumber.from(0);
-        var l1FeeScalar: BigNumber = BigNumber.from(0);
+        var l1FeeScalar: number = 0;
         if (_response.type == 0x7e) {
           // depositTx
           // _response.gasPrice is undefined
@@ -232,11 +237,15 @@ export const useTxData = (
           // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
           l1GasUsed = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
           l1GasPrice = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
-          l1FeeScalar = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+          l1FeeScalar = parseFloat(_rawReceipt.l1FeeScalar ?? 0);
+          const numDecimals = Math.floor(l1FeeScalar) == l1FeeScalar ? 0 : l1FeeScalar.toString().split(".")[1].length || 0;
+          // l1feeScalar is float, so scale up and down
+          const l1FeeScalarScaleFactor: BigNumber = BigNumber.from(10).pow(numDecimals)
+          const l1FeeScalarScaled: BigNumber = BigNumber.from(l1FeeScalar * l1FeeScalarScaleFactor.toNumber())
           // legacyTx falls in here
           // when EIP1559, do not have to be recalculated: _response.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)
           gasPrice = _response.gasPrice!
-          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalarScaled).div(l1FeeScalarScaleFactor));
         }
         if (_response === null) {
           setTxData(null);

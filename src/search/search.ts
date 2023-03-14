@@ -58,11 +58,15 @@ export class SearchController {
           // fee = gasPrice * gas + l1GasUsed * l1GasPrice * l1FeeScalar
           const l1GasUsed: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasUsed ?? 0);
           const l1GasPrice: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1GasPrice ?? 0);
-          const l1FeeScalar: BigNumber = provider.formatter.bigNumber(_rawReceipt.l1FeeScalar ?? 0);
+          const l1FeeScalar: number = parseFloat(_rawReceipt.l1FeeScalar ?? 0);
+          const numDecimals: number = Math.floor(l1FeeScalar) == l1FeeScalar ? 0 : l1FeeScalar.toString().split(".")[1].length || 0;
+          // l1feeScalar is float, so scale up and down
+          const l1FeeScalarScaleFactor: BigNumber = BigNumber.from(10).pow(numDecimals)
+          const l1FeeScalarScaled: BigNumber = BigNumber.from(l1FeeScalar * l1FeeScalarScaleFactor.toNumber())
           // legacyTx falls in here
           // when EIP1559, do not have to be recalculated: t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)
           gasPrice = t.gasPrice!
-          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalar));
+          fee = _receipt.gasUsed.mul(gasPrice).add(l1GasUsed.mul(l1GasPrice).mul(l1FeeScalarScaled).div(l1FeeScalarScaleFactor));
         }
         return {
           blockNumber: t.blockNumber!,

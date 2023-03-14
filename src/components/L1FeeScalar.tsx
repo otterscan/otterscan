@@ -3,11 +3,11 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { commify, formatUnits } from "@ethersproject/units";
 
 type L1FeeScalarProps = {
-  value: BigNumber;
+  value: number;
 };
 
 const L1FeeScalar: React.FC<L1FeeScalarProps> = ({ value }) => {
-  return <>{commify(formatUnits(value, 0))}</>;
+  return <>{commify(value)}</>;
 };
 
 export default React.memo(L1FeeScalar);

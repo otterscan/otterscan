@@ -57,7 +57,7 @@ export type ConfirmedTransactionData = {
   logs: Log[];
   l1GasUsed?: BigNumber | undefined;
   l1GasPrice?: BigNumber | undefined;
-  l1FeeScalar?: BigNumber | undefined;
+  l1FeeScalar?: number | undefined;
 };
 
 // The VOID...
