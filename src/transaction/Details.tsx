@@ -392,7 +392,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           </div>
         </InfoRow>
       )}
-      {txData.confirmedData && txData.confirmedData.l1FeeScalar && (
+      {txData.confirmedData && (txData.confirmedData.l1FeeScalar != undefined) && (
         <InfoRow title="L1 Fee Scalar">
           <span>
             <L1FeeScalar value={txData.confirmedData.l1FeeScalar} />
