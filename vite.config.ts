@@ -11,4 +11,11 @@ export default defineConfig({
     viteCompression({ algorithm: "brotliCompress" }),
     pluginRewriteAll(),
   ],
+  server: {
+    watch: {
+      ignored: [
+        "**/4bytes/**",
+      ],
+    },
+  },
 });
