@@ -20,6 +20,22 @@ const FEED_REGISTRY_MAINNET: ChecksummedAddress =
 // The USD "token" address for Chainlink feed registry's purposes
 const USD = "0x0000000000000000000000000000000000000348";
 
+// Map of (network ID => (token address => equivalent value token address))
+const tokenEquivMap = new Map<
+  bigint | undefined,
+  Map<ChecksummedAddress, ChecksummedAddress>
+>([
+  [
+    1n,
+    new Map<ChecksummedAddress, ChecksummedAddress>([
+      [
+        "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      ],
+    ]),
+  ],
+]);
+
 type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
 type FeedRegistryFetcherData = [bigint | undefined, number | undefined];
 
@@ -73,6 +89,13 @@ export const useTokenUSDOracle = (
   blockTag: BlockTag | undefined,
   tokenAddress: ChecksummedAddress,
 ): [bigint | undefined, number | undefined] => {
+  const netTokenEquivMap = tokenEquivMap.get(provider?._network.chainId);
+  if (netTokenEquivMap !== undefined) {
+    const tokenEquiv = netTokenEquivMap.get(tokenAddress);
+    if (tokenEquiv !== undefined) {
+      tokenAddress = tokenEquiv;
+    }
+  }
   const fetcher = feedRegistryFetcher(provider);
   const { data, error } = useSWRImmutable(
     feedRegistryFetcherKey(tokenAddress, blockTag),
