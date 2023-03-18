@@ -54,11 +54,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  var flash2 = false;
-  if (tx.gasPrice != undefined) {
-    flash2 = tx.gasPrice.isZero() && sendsToMiner;
-  }
-  const flash = flash2;
+  const flash = (tx.gasPrice != undefined) ? tx.gasPrice.isZero() && (sendsToMiner ?? false) : false;
   
   return (
     <div
