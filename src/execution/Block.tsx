@@ -156,10 +156,10 @@ const Block: React.FC = () => {
           <InfoRow title={`${name} Price`}>
             <NativeTokenPrice blockTag={block.number} />
           </InfoRow>
-          <InfoRow title="Difficult">
+          <InfoRow title="Difficulty">
             {commify(block._difficulty.toString())}
           </InfoRow>
-          <InfoRow title="Total Difficult">
+          <InfoRow title="Total Difficulty">
             {commify(block.totalDifficulty.toString())}
           </InfoRow>
           <InfoRow title="Hash">
