@@ -223,22 +223,21 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     navigate(
       `/address/${maybeAddress}${
         maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-      }`,
-      { replace: true }
+      }`
     );
     return;
   }
 
   // Tx hash?
   if (isHexString(q, 32)) {
-    navigate(`/tx/${q}`, { replace: true });
+    navigate(`/tx/${q}`);
     return;
   }
 
   // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
-    navigate(`/block/${blockNumber}`, { replace: true });
+    navigate(`/block/${blockNumber}`);
     return;
   }
 
@@ -247,7 +246,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeEpoch = q.substring(6);
     const epoch = parseInt(mayBeEpoch);
     if (!isNaN(epoch)) {
-      navigate(`/epoch/${epoch}`, { replace: true });
+      navigate(`/epoch/${epoch}`);
       return;
     }
   }
@@ -257,7 +256,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeSlot = q.substring(5);
     const slot = parseInt(mayBeSlot);
     if (!isNaN(slot)) {
-      navigate(`/slot/${slot}`, { replace: true });
+      navigate(`/slot/${slot}`);
       return;
     }
   }
@@ -269,23 +268,20 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     // Validator by index
     if (mayBeValidator.match(/^\d+$/)) {
       const validatorIndex = parseInt(mayBeValidator);
-      navigate(`/validator/${validatorIndex}`, { replace: true });
+      navigate(`/validator/${validatorIndex}`);
       return;
     }
 
     // Validator by public key
     if (mayBeValidator.length === 98 && isHexString(mayBeValidator, 48)) {
-      navigate(`/validator/${mayBeValidator}`, { replace: true });
+      navigate(`/validator/${mayBeValidator}`);
       return;
     }
   }
 
   // Assume it is an ENS name
   navigate(
-    `/address/${maybeAddress}${
-      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-    }`,
-    { replace: true }
+    `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`
   );
 };
 
