@@ -4,6 +4,7 @@ import DecodedParamRow from "./DecodedParamRow";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 
 type DecodedParamsTableProps = {
+  signature?: string;
   args: Result;
   paramTypes: ParamType[];
   hasParamNames?: boolean;
@@ -12,6 +13,7 @@ type DecodedParamsTableProps = {
 };
 
 const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
+  signature,
   args,
   paramTypes,
   hasParamNames = true,
@@ -19,6 +21,11 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
 }) => (
   <table className="w-full border">
     <thead>
+      {signature && (
+        <tr className="grid grid-cols-12 gap-x-2 py-2 text-left">
+          <th className="col-span-12 pl-1 font-mono">{signature}</th>
+        </tr>
+      )}
       <tr className="grid grid-cols-12 gap-x-2 bg-gray-100 py-2 text-left">
         <th className="col-span-3 pl-1">
           name <span className="text-xs text-gray-400">(index)</span>

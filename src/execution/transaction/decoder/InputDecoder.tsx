@@ -50,6 +50,7 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
             <>Can't decode data</>
           ) : (
             <DecodedParamsTable
+              signature={resolvedTxDesc.signature}
               args={resolvedTxDesc.args}
               paramTypes={resolvedTxDesc.functionFragment.inputs}
               hasParamNames={hasParamNames}
