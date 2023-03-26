@@ -9,6 +9,7 @@ import { useBlockNumberContext } from "../../useBlockTagContext";
 import { useTokenMetadata } from "../../useErigonHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
 import { AddressContext, TokenTransfer } from "../../types";
+import { BigNumber } from "@ethersproject/bignumber";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
@@ -17,8 +18,31 @@ type TokenTransferItemProps = {
 const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
-  const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
+  let [quote, decimals]: [BigNumber | undefined, number | undefined] = [
+    undefined,
+    undefined,
+  ];
+  if (t.type === "erc20") {
+    [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
+  }
   const tokenMeta = useTokenMetadata(provider, t.token);
+
+  let tokenExtra: false | JSX.Element | string | null | undefined = <></>;
+  if (t.type === "erc20") {
+    tokenExtra = tokenMeta &&
+      quote !== undefined &&
+      decimals !== undefined &&
+      t.value !== undefined && (
+        <USDAmount
+          amount={t.value}
+          amountDecimals={tokenMeta.decimals}
+          quote={quote}
+          quoteDecimals={decimals}
+        />
+      );
+  } else if (t.type === "erc721") {
+    tokenExtra = "ERC-721: Token #" + t.tokenId?.toString();
+  }
 
   return (
     <div className="flex items-baseline space-x-2 truncate px-2 py-1 hover:bg-gray-100">
@@ -46,19 +70,12 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
           </span>
           <span>
             <FormattedBalanceHighlighter
-              value={t.value}
+              value={t.value ?? t.tokenId ?? BigNumber.from(0)}
               decimals={tokenMeta?.decimals ?? 0}
             />
           </span>
           <TransactionAddress address={t.token} />
-          {tokenMeta && quote !== undefined && decimals !== undefined && (
-            <USDAmount
-              amount={t.value}
-              amountDecimals={tokenMeta.decimals}
-              quote={quote}
-              quoteDecimals={decimals}
-            />
-          )}
+          {tokenExtra}
         </div>
       </div>
     </div>
