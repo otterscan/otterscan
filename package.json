@@ -89,7 +89,7 @@
     "autoprefixer": "^10.4.14",
     "jest": "^29.5.0",
     "postcss": "^8.4.16",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.5",
     "source-map-explorer": "^2.5.3",
     "storybook": "7.0.0-rc.8",
