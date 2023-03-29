@@ -45,7 +45,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "vite --host",
+    "start": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "jest",
