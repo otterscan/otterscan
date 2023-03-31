@@ -1,6 +1,6 @@
 # Otterscan
 
-An open-source, fast, local, laptop-friendly Ethereum block explorer.
+An open-source, fast, local, laptop-friendly Ethereum block explorer tweaked for optimism.
 
 https://user-images.githubusercontent.com/28685/124196700-4fe71200-daa3-11eb-912c-b66494fe4b23.mov
 
@@ -61,6 +61,10 @@ However, you will see that we made many UI improvements.
 ## Contract verification
 
 We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info. More info [here](docs/sourcify.md).
+
+## Patches for Optimism
+
+[Here](./docs/optimism.md).
 
 ## Otterscan JSON-RPC API extensions
 
