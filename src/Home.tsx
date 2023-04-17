@@ -22,7 +22,7 @@ const Home: React.FC = () => {
   const slotTime = useSlotTimestamp(finalizedSlotNumber);
   const [isScanning, setScanning] = useState<boolean>(false);
 
-  document.title = "Home | Otterscan";
+  document.title = "Home | Optimistic Otterscan";
 
   return (
     <div className="flex flex-col items-center grow pb-5">
