@@ -82,7 +82,7 @@
     "@storybook/addon-links": "7.0.4",
     "@storybook/blocks": "7.0.4",
     "@storybook/react": "7.0.4",
-    "@storybook/react-vite": "7.0.4",
+    "@storybook/react-vite": "7.0.5",
     "@storybook/testing-library": "0.1.0",
     "@vitejs/plugin-react-swc": "^3.3.0",
     "autoprefixer": "^10.4.14",
