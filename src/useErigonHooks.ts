@@ -792,6 +792,25 @@ export const useERC20List = (
   );
 };
 
+export const useERC4626Count = (
+  provider: JsonRpcProvider | undefined
+): number | undefined => {
+  return useGenericContractCount(provider, "ots_getERC4626Count");
+};
+
+export const useERC4626List = (
+  provider: JsonRpcProvider | undefined,
+  pageNumber: number,
+  pageSize: number
+): ContractMatch[] | undefined => {
+  return useGenericContractList(
+    provider,
+    "ots_getERC4626Page",
+    pageNumber,
+    pageSize
+  );
+};
+
 export const useERC721Count = (
   provider: JsonRpcProvider | undefined
 ): number | undefined => {

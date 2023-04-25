@@ -15,6 +15,7 @@ const Address = lazy(() => import("./execution/Address"));
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
+const AllERC4626 = lazy(() => import("./token/AllERC4626"));
 const AllERC721 = lazy(() => import("./token/AllERC721"));
 const AllERC1155 = lazy(() => import("./token/AllERC1155"));
 const AllERC1167 = lazy(() => import("./token/AllERC1167"));
@@ -64,6 +65,7 @@ const App = () => {
                       <>
                         <Route path="contracts/*" element={<AllContracts />} />
                         <Route path="token/erc20/*" element={<AllERC20 />} />
+                        <Route path="token/erc4626/*" element={<AllERC4626 />} />
                         <Route path="token/erc721/*" element={<AllERC721 />} />
                         <Route
                           path="token/erc1155/*"
