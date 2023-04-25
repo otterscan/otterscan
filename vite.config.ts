@@ -13,9 +13,7 @@ export default defineConfig({
   ],
   server: {
     watch: {
-      ignored: [
-        "**/4bytes/**",
-      ],
+      ignored: ["**/4bytes/**"],
     },
   },
 });
