@@ -52,8 +52,8 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
           <span>
             {FixedNumber.fromValue(block.baseFeePerGas ?? 0n)
               .divUnsafe(FixedNumber.fromValue(1_000_000_000n))
-              .round(0)
-              .toUnsafeFloat()}{" "}
+              .toUnsafeFloat()
+              .toFixed(2)}{" "}
             Gwei
           </span>
           <Blip value={baseFeeDelta} />
