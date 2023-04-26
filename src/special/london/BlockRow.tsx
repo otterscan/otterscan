@@ -29,7 +29,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
         <BlockLink blockTag={block.number} />
       </div>
       <div
-        className={`text-right ${
+        className={`col-span-2 text-right ${
           block.gasUsed > gasTarget
             ? "text-emerald-500"
             : block.gasUsed < gasTarget
@@ -37,10 +37,15 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
             : ""
         }`}
       >
-        {commify(block.gasUsed.toString())}
-      </div>
-      <div className="text-right text-gray-400">
-        {commify(gasTarget.toString())}
+        {commify(block.gasUsed.toString())} (
+        {block.gasUsed > gasTarget ? "+" : ""}
+        {FixedNumber.fromValue(block.gasUsed)
+          .subUnsafe(FixedNumber.fromValue(gasTarget))
+          .mulUnsafe(FixedNumber.fromValue(100))
+          .divUnsafe(FixedNumber.fromValue(gasTarget))
+          .round(2)
+          .toUnsafeFloat()}
+        %)
       </div>
       <div className="text-right">
         <div className="relative">

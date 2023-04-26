@@ -154,13 +154,12 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
             </span>
             <span>Block</span>
           </div>
-          <div className="flex items-baseline justify-end space-x-1 text-right">
+          <div className="col-span-2 flex items-baseline justify-end space-x-1 text-right">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faGasPump} />
             </span>
             <span>Gas used</span>
           </div>
-          <div className="text-right">Gas target</div>
           <div className="text-right">Base fee</div>
           <div className="col-span-2 flex items-baseline justify-end space-x-1 text-right">
             <span className="text-amber-400">
