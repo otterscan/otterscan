@@ -3,13 +3,14 @@ import { ageString } from "../utils/utils";
 
 type AgeProps = {
   durationInSecs: number;
+  title?: string;
 };
 
-const Age: FC<AgeProps> = ({ durationInSecs }) => {
+const Age: FC<AgeProps> = ({ durationInSecs, title }) => {
   const desc = ageString(durationInSecs);
 
   return (
-    <span className="truncate" title={desc}>
+    <span className="truncate" title={title ?? desc}>
       {desc}
     </span>
   );
