@@ -68,14 +68,18 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
               {elegibleTimestamp && <Timestamp value={elegibleTimestamp} />}
             </div>
           </InfoRow>
-          <InfoRow title="Activation Epoch">
-            <div className="flex space-x-2">
-              <EpochLink
-                epochNumber={validator.data.validator.activation_epoch}
-              />
-              {activationTimestamp && <Timestamp value={activationTimestamp} />}
-            </div>
-          </InfoRow>
+          {activationTimestamp && (
+            <InfoRow title="Activation Epoch">
+              <div className="flex space-x-2">
+                <EpochLink
+                  epochNumber={validator.data.validator.activation_epoch}
+                />
+                {activationTimestamp && (
+                  <Timestamp value={activationTimestamp} />
+                )}
+              </div>
+            </InfoRow>
+          )}
           {exitTimestamp && (
             <InfoRow title="Exit Epoch">
               <div className="flex space-x-2">
