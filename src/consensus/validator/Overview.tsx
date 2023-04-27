@@ -9,6 +9,7 @@ import EpochLink from "../components/EpochLink";
 import { useEpochTimestamp, useValidator } from "../../useConsensus";
 import { commify } from "../../utils/utils";
 import { usePageTitle } from "../../useTitle";
+import WithdrawalCredentials from "./WithdrawalCredentials";
 
 const GWEI = 10n ** 9n;
 
@@ -43,6 +44,11 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
           </InfoRow>
           <InfoRow title="Public Key">
             <HexValue value={validator.data.validator.pubkey} />
+          </InfoRow>
+          <InfoRow title="Withdrawal Credentials">
+            <WithdrawalCredentials
+              credentials={validator.data.validator.withdrawal_credentials}
+            />
           </InfoRow>
           <InfoRow title="Balance">
             <NativeTokenAmountAndFiat
