@@ -5,8 +5,10 @@ import React, { useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
+import StandardTextarea from "../../components/StandardTextarea";
 import { Match, MatchType } from "../../sourcify/useSourcify";
 import { openInRemixURL } from "../../url";
+import { useGetCode } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
@@ -22,6 +24,7 @@ type ContractsProps = {
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
   usePageTitle(`Contract | ${checksummedAddress}`);
+  const code = useGetCode(provider, checksummedAddress);
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
@@ -142,6 +145,15 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 </>
               )}
             </div>
+          </>
+        )}
+      </div>
+      <div className="py-5">
+        {code === undefined && <span>Getting contract bytecode...</span>}
+        {code && (
+          <>
+            <div className="pb-2">Contract Bytecode</div>
+            <StandardTextarea value={code} />
           </>
         )}
       </div>
