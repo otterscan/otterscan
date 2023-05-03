@@ -935,6 +935,31 @@ export const useERC20TransferList = (
   );
 };
 
+export const useERC721TransferCount = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress
+): number | undefined => {
+  return useGenericTransactionCount(
+    provider,
+    "ots_getERC721TransferCount",
+    address
+  );
+};
+
+export const useERC721TransferList = (
+  provider: JsonRpcProvider | undefined,
+  address: ChecksummedAddress,
+  pageNumber: number,
+  pageSize: number
+): TransactionMatch[] | undefined => {
+  return useGenericTransactionList(
+    provider,
+    "ots_getERC721TransferPage",
+    address,
+    pageNumber,
+    pageSize
+  );
+};
 // TODO: remove temporary prototype
 export const useTransactionsWithReceipts = (
   provider: JsonRpcProvider | undefined,

@@ -17,6 +17,7 @@ import NavTab from "../components/NavTab";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressERC20Results from "./address/AddressERC20Results";
+import AddressERC721Results from "./address/AddressERC721Results";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import { RuntimeContext } from "../useRuntime";
@@ -89,6 +90,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     <NavTab href={`/address/${addressOrName}/erc20`}>
                       ERC20 Transfers
                     </NavTab>
+                    <NavTab href={`/address/${addressOrName}/erc721`}>
+                      ERC721 Transfers
+                    </NavTab>
                     <NavTab href={`/address/${addressOrName}/tokens`}>
                       Token Balances
                     </NavTab>
@@ -142,6 +146,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                         path="erc20"
                         element={
                           <AddressERC20Results address={checksummedAddress} />
+                        }
+                      />
+                      <Route
+                        path="erc721"
+                        element={
+                          <AddressERC721Results address={checksummedAddress} />
                         }
                       />
                       <Route
