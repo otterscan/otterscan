@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { useCommittee } from "../../useConsensus";
-import CheckedValidatorLink from "../components/CheckedValidatorLink";
+import UncheckedValidatorLink from "../components/UncheckedValidatorLink";
 import { SlotAwareComponentProps } from "../types";
 
 type ValidatorListProps = SlotAwareComponentProps & {
@@ -19,7 +19,7 @@ const ValidatorList: FC<ValidatorListProps> = ({
   return (
     <div className="grid grid-cols-8 ">
       {validators.data[0].validators.map((v: any) => (
-        <CheckedValidatorLink key={v} validatorIndex={v} />
+        <UncheckedValidatorLink key={v} validatorIndex={v} />
       ))}
     </div>
   );
