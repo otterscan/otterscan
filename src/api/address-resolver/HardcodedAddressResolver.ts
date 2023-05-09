@@ -9,9 +9,9 @@ export class HardcodedAddressResolver implements IAddressResolver<string> {
     address: string
   ): Promise<string | undefined> {
     try {
-      const addressMap: HardcodedAddressMap = await import(
+      const addressMap: HardcodedAddressMap = (await import(
         `./hardcoded-addresses/${provider.network.chainId}.json`
-      );
+      )).default;
 
       return addressMap[address];
     } catch (err) {
