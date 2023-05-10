@@ -13,9 +13,4 @@ export default defineConfig({
     imagetools(),
     pluginRewriteAll(),
   ],
-  server: {
-    watch: {
-      ignored: ["**/4bytes/**"],
-    },
-  },
 });
