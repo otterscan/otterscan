@@ -49,7 +49,7 @@
     "preview": "vite preview",
     "test": "jest",
     "source-map-explorer": "source-map-explorer build/static/js/*.js",
-    "assets-start": "docker run --rm -p 5175:80 --name otterscan-assets -d otterscan-assets",
+    "assets-start": "docker run --rm -p 5175:80 --name otterscan-assets -d otterscan/otterscan-assets:v1.0.1",
     "assets-stop": "docker stop otterscan-assets",
     "docker-build": "docker buildx build -t otterscan  .",
     "docker-start": "docker run --rm -p 5273:80 --name otterscan -d otterscan",
