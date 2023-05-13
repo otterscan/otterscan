@@ -714,6 +714,7 @@ export type TransactionMatch = {
   hash: string;
 };
 
+// TODO: remove
 const useGenericContractList = (
   provider: JsonRpcProvider | undefined,
   rpcMethod: string,
@@ -739,6 +740,51 @@ const useGenericContractList = (
     };
     return c;
   });
+  return converted;
+};
+
+const useGenericContractSearch = (
+  provider: JsonRpcProvider | undefined,
+  rpcMethod: string,
+  pageNumber: number,
+  pageSize: number,
+  total: number | undefined
+): ContractMatch[] | undefined => {
+  // Calculates the N-th page (1-based) backwards from the total
+  // of matches.
+  //
+  // i.e.: page 1 == [total - pageSize + 1, total]
+  let idx = total !== undefined ? total - pageSize * pageNumber + 1 : undefined;
+  let count = pageSize;
+
+  // Last page? [1, total % pageSize]
+  if (idx !== undefined && total !== undefined && idx < 1) {
+    idx = 1;
+    count = total % pageSize;
+  }
+
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWR(
+    idx === undefined ? null : [rpcMethod, idx, count],
+    fetcher
+  );
+  if (error) {
+    console.error(error);
+    return undefined;
+  }
+
+  if (data === undefined) {
+    return undefined;
+  }
+  const converted = (data as any[])
+    .map((m) => {
+      const c: ContractMatch = {
+        blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+        address: m.address,
+      };
+      return c;
+    })
+    .reverse();
   return converted;
 };
 
@@ -782,13 +828,15 @@ export const useERC20Count = (
 export const useERC20List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
+  pageSize: number,
+  total: number | undefined
 ): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  return useGenericContractSearch(
     provider,
-    "ots_getERC20Page",
+    "ots_getERC20List",
     pageNumber,
-    pageSize
+    pageSize,
+    total
   );
 };
 

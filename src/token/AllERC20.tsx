@@ -27,7 +27,7 @@ const AllERC20: FC = () => {
   }
 
   const total = useERC20Count(provider);
-  const page = useERC20List(provider, pageNumber, PAGE_SIZE);
+  const page = useERC20List(provider, pageNumber, PAGE_SIZE, total);
 
   document.title = `ERC20 Tokens | Otterscan`;
 
