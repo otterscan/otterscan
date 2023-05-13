@@ -54,6 +54,7 @@
     "docker-build": "docker buildx build -t otterscan  .",
     "docker-start": "docker run --rm -p 5273:80 --name otterscan -d otterscan",
     "docker-stop": "docker stop otterscan",
+    "docker-hub-start": "docker run --rm -p 5273:80 --pull always --name otterscan -d otterscan/otterscan:develop",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
