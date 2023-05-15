@@ -11,7 +11,11 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
-import { useContractsList, useGenericContractsCount } from "../useErigonHooks";
+import {
+  contractMatchParser,
+  useGenericContractSearch,
+  useGenericContractsCount,
+} from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllContracts: FC = () => {
@@ -27,7 +31,14 @@ const AllContracts: FC = () => {
   }
 
   const total = useGenericContractsCount(provider, "AllContracts");
-  const results = useContractsList(provider, pageNumber, PAGE_SIZE, total);
+  const results = useGenericContractSearch(
+    provider,
+    "AllContracts",
+    pageNumber,
+    PAGE_SIZE,
+    total,
+    contractMatchParser
+  );
   const page: ContractItemProps[] | undefined = useMemo(() => {
     return results?.results
       .map(

@@ -751,7 +751,7 @@ export type TransactionMatch = {
 
 export type ContractResultParser<T> = (e: any) => T;
 
-const useGenericContractSearch = <T>(
+export const useGenericContractSearch = <T>(
   provider: JsonRpcProvider | undefined,
   t: ContractSearchType,
   pageNumber: number,
@@ -826,28 +826,16 @@ export const useGenericContractsCount = (
   return data as number | undefined;
 };
 
-const contractMatchParser: ContractResultParser<ContractMatch> = (m) => ({
+export const contractMatchParser: ContractResultParser<ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
 });
 
-export const useContractsList = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "AllContracts",
-    pageNumber,
-    pageSize,
-    total,
-    contractMatchParser
-  );
-};
-
-const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (m) => ({
+export const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
   name: m.name,
@@ -855,23 +843,9 @@ const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (m) => ({
   decimals: m.decimals,
 });
 
-export const useERC20List = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "ERC20",
-    pageNumber,
-    pageSize,
-    total,
-    erc20MatchParser
-  );
-};
-
-const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (m) => ({
+export const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
   name: m.name,
@@ -881,89 +855,31 @@ const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (m) => ({
   totalAssets: m.totalAssets,
 });
 
-export const useERC4626List = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "ERC4626",
-    pageNumber,
-    pageSize,
-    total,
-    erc4626MatchParser
-  );
-};
-
-const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (m) => ({
+export const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
 });
 
-export const useERC721List = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "ERC721",
-    pageNumber,
-    pageSize,
-    total,
-    erc721MatchParser
-  );
-};
-
-const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (m) => ({
+export const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
 });
 
-export const useERC1155List = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "ERC1155",
-    pageNumber,
-    pageSize,
-    total,
-    erc1155MatchParser
-  );
-};
-
-const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (m) => ({
+export const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (
+  m
+) => ({
   blockNumber: BigNumber.from(m.blockNumber).toNumber(),
   address: m.address,
   implementation: m.implementation,
 });
-
-export const useERC1167List = (
-  provider: JsonRpcProvider | undefined,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined
-) => {
-  return useGenericContractSearch(
-    provider,
-    "ERC1167",
-    pageNumber,
-    pageSize,
-    total,
-    erc1167MatchParser
-  );
-};
 
 const useGenericTransactionCount = (
   provider: JsonRpcProvider | undefined,

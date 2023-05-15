@@ -11,7 +11,11 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
-import { useERC20List, useGenericContractsCount } from "../useErigonHooks";
+import {
+  erc20MatchParser,
+  useGenericContractSearch,
+  useGenericContractsCount,
+} from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {
@@ -27,7 +31,14 @@ const AllERC20: FC = () => {
   }
 
   const total = useGenericContractsCount(provider, "ERC20");
-  const results = useERC20List(provider, pageNumber, PAGE_SIZE, total);
+  const results = useGenericContractSearch(
+    provider,
+    "ERC20",
+    pageNumber,
+    PAGE_SIZE,
+    total,
+    erc20MatchParser
+  );
   const page: ERC20ItemProps[] | undefined = useMemo(() => {
     return results?.results
       .map(
