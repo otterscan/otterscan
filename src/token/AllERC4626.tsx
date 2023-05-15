@@ -11,7 +11,7 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC4626Item from "./ERC4626Item";
 import { RuntimeContext } from "../useRuntime";
-import { useERC4626Count, useERC4626List } from "../useErigonHooks";
+import { useERC4626List, useGenericContractsCount } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC4626: FC = () => {
@@ -26,7 +26,7 @@ const AllERC4626: FC = () => {
     } catch (err) {}
   }
 
-  const total = useERC4626Count(provider);
+  const total = useGenericContractsCount(provider, "ERC4626");
   const page = useERC4626List(provider, pageNumber, PAGE_SIZE, total);
 
   document.title = `ERC4626 Tokens | Otterscan`;

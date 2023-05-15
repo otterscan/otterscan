@@ -11,7 +11,7 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC1155Item, { ERC1155ItemProps } from "./ERC1155Item";
 import { RuntimeContext } from "../useRuntime";
-import { useERC1155Count, useERC1155List } from "../useErigonHooks";
+import { useERC1155List, useGenericContractsCount } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC1155: FC = () => {
@@ -26,7 +26,7 @@ const AllERC1155: FC = () => {
     } catch (err) {}
   }
 
-  const total = useERC1155Count(provider);
+  const total = useGenericContractsCount(provider, "ERC1155");
   const results = useERC1155List(provider, pageNumber, PAGE_SIZE, total);
   const page: ERC1155ItemProps[] | undefined = useMemo(() => {
     return results?.results

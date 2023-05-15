@@ -11,7 +11,7 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ERC721Item, { ERC721ItemProps } from "./ERC721Item";
 import { RuntimeContext } from "../useRuntime";
-import { useERC721Count, useERC721List } from "../useErigonHooks";
+import { useERC721List, useGenericContractsCount } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC721: FC = () => {
@@ -26,7 +26,7 @@ const AllERC721: FC = () => {
     } catch (err) {}
   }
 
-  const total = useERC721Count(provider);
+  const total = useGenericContractsCount(provider, "ERC721");
   const results = useERC721List(provider, pageNumber, PAGE_SIZE, total);
   const page: ERC721ItemProps[] | undefined = useMemo(() => {
     return results?.results

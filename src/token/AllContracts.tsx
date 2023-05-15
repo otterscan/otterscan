@@ -11,7 +11,7 @@ import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
-import { useContractsCount, useContractsList } from "../useErigonHooks";
+import { useContractsList, useGenericContractsCount } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllContracts: FC = () => {
@@ -26,7 +26,7 @@ const AllContracts: FC = () => {
     } catch (err) {}
   }
 
-  const total = useContractsCount(provider);
+  const total = useGenericContractsCount(provider, "AllContracts");
   const results = useContractsList(provider, pageNumber, PAGE_SIZE, total);
   const page: ContractItemProps[] | undefined = useMemo(() => {
     return results?.results

@@ -25,6 +25,7 @@ import {
 import erc20 from "./erc20.json";
 import erc721md from "./erc721metadata.json";
 import { rawToProcessed } from "./search/search";
+import AllContracts from "./token/AllContracts";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -794,22 +795,32 @@ const useGenericContractSearch = <T>(
   };
 };
 
-const useGenericContractCount = (
+/**
+ * All supported contract search types.
+ *
+ * Those are NOT arbitrary strings, they are used to compose RPC method
+ * names.
+ */
+export type ContractSearchType =
+  | "AllContracts"
+  | "ERC20"
+  | "ERC4626"
+  | "ERC721"
+  | "ERC1155"
+  | "ERC1167";
+
+export const useGenericContractsCount = (
   provider: JsonRpcProvider | undefined,
-  rpcMethod: string
+  t: ContractSearchType
 ): number | undefined => {
+  const rpcMethod = `ots_get${t}Count`;
   const fetcher = providerFetcher(provider);
+
   const { data, error } = useSWRImmutable([rpcMethod], fetcher);
   if (error) {
     return undefined;
   }
   return data as number | undefined;
-};
-
-export const useContractsCount = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getAllContractsCount");
 };
 
 export const useContractsList = (
@@ -829,12 +840,6 @@ export const useContractsList = (
       address: m.address,
     })
   );
-};
-
-export const useERC20Count = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getERC20Count");
 };
 
 export const useERC20List = (
@@ -857,12 +862,6 @@ export const useERC20List = (
       decimals: m.decimals,
     })
   );
-};
-
-export const useERC4626Count = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getERC4626Count");
 };
 
 export const useERC4626List = (
@@ -889,12 +888,6 @@ export const useERC4626List = (
   );
 };
 
-export const useERC721Count = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getERC721Count");
-};
-
 export const useERC721List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
@@ -916,12 +909,6 @@ export const useERC721List = (
   );
 };
 
-export const useERC1155Count = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getERC1155Count");
-};
-
 export const useERC1155List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
@@ -941,12 +928,6 @@ export const useERC1155List = (
       symbol: m.symbol,
     })
   );
-};
-
-export const useERC1167Count = (
-  provider: JsonRpcProvider | undefined
-): number | undefined => {
-  return useGenericContractCount(provider, "ots_getERC1167Count");
 };
 
 export const useERC1167List = (
