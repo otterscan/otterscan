@@ -749,13 +749,15 @@ export type TransactionMatch = {
   hash: string;
 };
 
+export type ContractResultParser<T> = (e: any) => T;
+
 const useGenericContractSearch = <T>(
   provider: JsonRpcProvider | undefined,
-  rpcMethod: string,
+  t: ContractSearchType,
   pageNumber: number,
   pageSize: number,
   total: number | undefined,
-  parser: (e: any) => T
+  parser: ContractResultParser<T>
 ): ContractListResults<T> | undefined => {
   // Calculates the N-th page (1-based) backwards from the total
   // of matches.
@@ -770,6 +772,7 @@ const useGenericContractSearch = <T>(
     count = total % pageSize;
   }
 
+  const rpcMethod = `ots_get${t}List`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
     idx === undefined ? null : [rpcMethod, idx, count],
@@ -823,130 +826,142 @@ export const useGenericContractsCount = (
   return data as number | undefined;
 };
 
+const contractMatchParser: ContractResultParser<ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+});
+
 export const useContractsList = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getAllContractsList",
+    "AllContracts",
     pageNumber,
     pageSize,
     total,
-    (m): ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-    })
+    contractMatchParser
   );
 };
+
+const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+  name: m.name,
+  symbol: m.symbol,
+  decimals: m.decimals,
+});
 
 export const useERC20List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ERC20ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getERC20List",
+    "ERC20",
     pageNumber,
     pageSize,
     total,
-    (m): ERC20ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-      name: m.name,
-      symbol: m.symbol,
-      decimals: m.decimals,
-    })
+    erc20MatchParser
   );
 };
+
+const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+  name: m.name,
+  symbol: m.symbol,
+  decimals: m.decimals,
+  asset: m.asset,
+  totalAssets: m.totalAssets,
+});
 
 export const useERC4626List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ERC4626ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getERC4626List",
+    "ERC4626",
     pageNumber,
     pageSize,
     total,
-    (m): ERC4626ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-      name: m.name,
-      symbol: m.symbol,
-      decimals: m.decimals,
-      asset: m.asset,
-      totalAssets: m.totalAssets,
-    })
+    erc4626MatchParser
   );
 };
+
+const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+  name: m.name,
+  symbol: m.symbol,
+});
 
 export const useERC721List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ERC721ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getERC721List",
+    "ERC721",
     pageNumber,
     pageSize,
     total,
-    (m): ERC721ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-      name: m.name,
-      symbol: m.symbol,
-    })
+    erc721MatchParser
   );
 };
+
+const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+  name: m.name,
+  symbol: m.symbol,
+});
 
 export const useERC1155List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ERC1155ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getERC1155List",
+    "ERC1155",
     pageNumber,
     pageSize,
     total,
-    (m): ERC1155ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-      name: m.name,
-      symbol: m.symbol,
-    })
+    erc1155MatchParser
   );
 };
+
+const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (m) => ({
+  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  address: m.address,
+  implementation: m.implementation,
+});
 
 export const useERC1167List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractListResults<ERC1167ContractMatch> | undefined => {
+) => {
   return useGenericContractSearch(
     provider,
-    "ots_getERC1167List",
+    "ERC1167",
     pageNumber,
     pageSize,
     total,
-    (m): ERC1167ContractMatch => ({
-      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-      address: m.address,
-      implementation: m.implementation,
-    })
+    erc1167MatchParser
   );
 };
 
