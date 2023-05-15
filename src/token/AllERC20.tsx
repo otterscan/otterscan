@@ -1,15 +1,15 @@
-import { useContext, FC } from "react";
+import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardTable from "../components/StandardTable";
+import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ERC20Item from "./ERC20Item";
+import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
 import { useERC20Count, useERC20List } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
@@ -27,7 +27,21 @@ const AllERC20: FC = () => {
   }
 
   const total = useERC20Count(provider);
-  const page = useERC20List(provider, pageNumber, PAGE_SIZE, total);
+  const results = useERC20List(provider, pageNumber, PAGE_SIZE, total);
+  const page: ERC20ItemProps[] | undefined = useMemo(() => {
+    return results?.results
+      .map(
+        (m): ERC20ItemProps => ({
+          blockNumber: m.blockNumber,
+          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
+          address: m.address,
+          name: m.name,
+          symbol: m.symbol,
+          decimals: m.decimals,
+        })
+      )
+      .reverse();
+  }, [results]);
 
   document.title = `ERC20 Tokens | Otterscan`;
 
@@ -55,20 +69,20 @@ const AllERC20: FC = () => {
             />
           )}
         </div>
-        <StandardTable>
+        <StandardScrollableTable>
           <StandardTHead>
             <th className="w-96">Address</th>
             <th className="w-28">Block</th>
             <th className="w-40">Age</th>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th className="w-40">Decimals</th>
+            <th className="w-96">Name</th>
+            <th className="w-48">Symbol</th>
+            <th className="w-20">Decimals</th>
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
-                  <ERC20Item key={m.address} m={m} />
+                  <ERC20Item key={m.address} {...m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
@@ -76,7 +90,7 @@ const AllERC20: FC = () => {
             // <PendingResults />
             <></>
           )}
-        </StandardTable>
+        </StandardScrollableTable>
         {page !== undefined && total !== undefined && (
           <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">

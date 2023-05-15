@@ -1,15 +1,15 @@
-import { useContext, FC } from "react";
+import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardTable from "../components/StandardTable";
+import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ContractItem from "./ContractItem";
+import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
 import { useContractsCount, useContractsList } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
@@ -27,7 +27,18 @@ const AllContracts: FC = () => {
   }
 
   const total = useContractsCount(provider);
-  const page = useContractsList(provider, pageNumber, PAGE_SIZE);
+  const results = useContractsList(provider, pageNumber, PAGE_SIZE, total);
+  const page: ContractItemProps[] | undefined = useMemo(() => {
+    return results?.results
+      .map(
+        (m): ContractItemProps => ({
+          blockNumber: m.blockNumber,
+          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
+          address: m.address,
+        })
+      )
+      .reverse();
+  }, [results]);
 
   document.title = `All contracts | Otterscan`;
 
@@ -55,7 +66,7 @@ const AllContracts: FC = () => {
             />
           )}
         </div>
-        <StandardTable>
+        <StandardScrollableTable>
           <StandardTHead>
             <th className="w-96">Address</th>
             <th className="w-28">Block</th>
@@ -65,7 +76,7 @@ const AllContracts: FC = () => {
             <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
-                  <ContractItem key={m.address} m={m} />
+                  <ContractItem key={m.address} {...m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
@@ -73,7 +84,7 @@ const AllContracts: FC = () => {
             // <PendingResults />
             <></>
           )}
-        </StandardTable>
+        </StandardScrollableTable>
         {page !== undefined && total !== undefined && (
           <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">

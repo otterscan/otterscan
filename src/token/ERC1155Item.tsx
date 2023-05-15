@@ -5,22 +5,20 @@ import TimestampAge from "../components/TimestampAge";
 import CanBeEmptyText from "../components/CanBeEmptyText";
 import { ChecksummedAddress } from "../types";
 
-export type ERC20ItemProps = {
+export type ERC1155ItemProps = {
   blockNumber: number;
   timestamp: number;
   address: ChecksummedAddress;
   name: string;
   symbol: string;
-  decimals: number;
 };
 
-const ERC20Item: FC<ERC20ItemProps> = ({
+const ERC1155Item: FC<ERC1155ItemProps> = ({
   blockNumber,
   timestamp,
   address,
   name,
   symbol,
-  decimals,
 }) => (
   <tr>
     <td>
@@ -38,8 +36,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
     <td>
       <CanBeEmptyText text={symbol} />
     </td>
-    <td>{decimals}</td>
   </tr>
 );
 
-export default memo(ERC20Item);
+export default memo(ERC1155Item);

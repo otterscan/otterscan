@@ -1,15 +1,15 @@
-import { useContext, FC } from "react";
+import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardTable from "../components/StandardTable";
+import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ERC721Item from "./ERC721Item";
+import ERC1155Item, { ERC1155ItemProps } from "./ERC1155Item";
 import { RuntimeContext } from "../useRuntime";
 import { useERC1155Count, useERC1155List } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
@@ -27,7 +27,20 @@ const AllERC1155: FC = () => {
   }
 
   const total = useERC1155Count(provider);
-  const page = useERC1155List(provider, pageNumber, PAGE_SIZE);
+  const results = useERC1155List(provider, pageNumber, PAGE_SIZE, total);
+  const page: ERC1155ItemProps[] | undefined = useMemo(() => {
+    return results?.results
+      .map(
+        (m): ERC1155ItemProps => ({
+          blockNumber: m.blockNumber,
+          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
+          address: m.address,
+          name: m.name,
+          symbol: m.symbol,
+        })
+      )
+      .reverse();
+  }, [results]);
 
   document.title = `ERC1155 Tokens | Otterscan`;
 
@@ -55,7 +68,7 @@ const AllERC1155: FC = () => {
             />
           )}
         </div>
-        <StandardTable>
+        <StandardScrollableTable>
           <StandardTHead>
             <th className="w-96">Address</th>
             <th className="w-28">Block</th>
@@ -67,7 +80,7 @@ const AllERC1155: FC = () => {
             <StandardSelectionBoundary>
               <StandardTBody>
                 {page.map((m) => (
-                  <ERC721Item key={m.address} m={m} />
+                  <ERC1155Item key={m.address} {...m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
@@ -75,7 +88,7 @@ const AllERC1155: FC = () => {
             // <PendingResults />
             <></>
           )}
-        </StandardTable>
+        </StandardScrollableTable>
         {page !== undefined && total !== undefined && (
           <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">

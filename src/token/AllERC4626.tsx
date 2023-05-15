@@ -5,11 +5,11 @@ import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardTable from "../components/StandardTable";
+import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ERC20Item from "./ERC20Item";
+import ERC4626Item from "./ERC4626Item";
 import { RuntimeContext } from "../useRuntime";
 import { useERC4626Count, useERC4626List } from "../useErigonHooks";
 import { PAGE_SIZE } from "../params";
@@ -27,7 +27,7 @@ const AllERC4626: FC = () => {
   }
 
   const total = useERC4626Count(provider);
-  const page = useERC4626List(provider, pageNumber, PAGE_SIZE);
+  const page = useERC4626List(provider, pageNumber, PAGE_SIZE, total);
 
   document.title = `ERC4626 Tokens | Otterscan`;
 
@@ -55,20 +55,22 @@ const AllERC4626: FC = () => {
             />
           )}
         </div>
-        <StandardTable>
+        <StandardScrollableTable>
           <StandardTHead>
             <th className="w-96">Address</th>
             <th className="w-28">Block</th>
             <th className="w-40">Age</th>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th className="w-40">Decimals</th>
+            <th className="w-96">Name</th>
+            <th className="w-48">Symbol</th>
+            <th className="w-20">Decimals</th>
+            <th className="w-96">Asset</th>
+            <th className="w-40">Total Assets</th>
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>
               <StandardTBody>
-                {page.map((m) => (
-                  <ERC20Item key={m.address} m={m} />
+                {page.results.map((m) => (
+                  <ERC4626Item key={m.address} m={m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
@@ -76,7 +78,7 @@ const AllERC4626: FC = () => {
             // <PendingResults />
             <></>
           )}
-        </StandardTable>
+        </StandardScrollableTable>
         {page !== undefined && total !== undefined && (
           <div className="flex items-baseline justify-between py-3">
             <div className="text-sm text-gray-500">

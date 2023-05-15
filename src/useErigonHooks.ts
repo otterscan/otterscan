@@ -704,52 +704,58 @@ export const useTokenMetadata = (
   return data;
 };
 
-// TODO: fix json names on erigon return
+export type BlockSummary = {
+  blockNumber: number;
+  timestamp: number;
+};
+
 export type ContractMatch = {
   blockNumber: number;
   address: string;
+};
+
+export type ERC20ContractMatch = ContractMatch & {
+  name: string;
+  symbol: string;
+  decimals: number;
+};
+
+export type ERC721ContractMatch = ContractMatch & {
+  name: string;
+  symbol: string;
+};
+
+export type ERC1155ContractMatch = ContractMatch & {
+  name: string;
+  symbol: string;
+};
+
+export type ERC1167ContractMatch = ContractMatch & {
+  implementation: ChecksummedAddress;
+};
+
+export type ERC4626ContractMatch = ERC20ContractMatch & {
+  asset: string;
+  totalAssets: number;
+};
+
+export type ContractListResults<T> = {
+  blocksSummary: Map<number, BlockSummary>;
+  results: T[];
 };
 
 export type TransactionMatch = {
   hash: string;
 };
 
-// TODO: remove
-const useGenericContractList = (
-  provider: JsonRpcProvider | undefined,
-  rpcMethod: string,
-  pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    [rpcMethod, pageSize, pageNumber - 1],
-    fetcher
-  );
-  if (error) {
-    return undefined;
-  }
-
-  if (data === undefined) {
-    return undefined;
-  }
-  const converted = (data as any[]).map((m) => {
-    const c: ContractMatch = {
-      blockNumber: BigNumber.from(m.Block).toNumber(),
-      address: m.Address,
-    };
-    return c;
-  });
-  return converted;
-};
-
-const useGenericContractSearch = (
+const useGenericContractSearch = <T>(
   provider: JsonRpcProvider | undefined,
   rpcMethod: string,
   pageNumber: number,
   pageSize: number,
-  total: number | undefined
-): ContractMatch[] | undefined => {
+  total: number | undefined,
+  parser: (e: any) => T
+): ContractListResults<T> | undefined => {
   // Calculates the N-th page (1-based) backwards from the total
   // of matches.
   //
@@ -776,16 +782,16 @@ const useGenericContractSearch = (
   if (data === undefined) {
     return undefined;
   }
-  const converted = (data as any[])
-    .map((m) => {
-      const c: ContractMatch = {
-        blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-        address: m.address,
-      };
-      return c;
-    })
-    .reverse();
-  return converted;
+  const results = (data.results as any[]).map((m) => parser(m));
+
+  const blockMap = new Map<number, BlockSummary>();
+  for (const [k, v] of Object.entries(data.blocksSummary as any)) {
+    blockMap.set(parseInt(k), v as any);
+  }
+  return {
+    blocksSummary: blockMap,
+    results,
+  };
 };
 
 const useGenericContractCount = (
@@ -809,13 +815,19 @@ export const useContractsCount = (
 export const useContractsList = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  pageSize: number,
+  total: number | undefined
+): ContractListResults<ContractMatch> | undefined => {
+  return useGenericContractSearch(
     provider,
-    "ots_getAllContractsPage",
+    "ots_getAllContractsList",
     pageNumber,
-    pageSize
+    pageSize,
+    total,
+    (m): ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+    })
   );
 };
 
@@ -830,13 +842,20 @@ export const useERC20List = (
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): ContractMatch[] | undefined => {
+): ContractListResults<ERC20ContractMatch> | undefined => {
   return useGenericContractSearch(
     provider,
     "ots_getERC20List",
     pageNumber,
     pageSize,
-    total
+    total,
+    (m): ERC20ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+      name: m.name,
+      symbol: m.symbol,
+      decimals: m.decimals,
+    })
   );
 };
 
@@ -849,13 +868,24 @@ export const useERC4626Count = (
 export const useERC4626List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  pageSize: number,
+  total: number | undefined
+): ContractListResults<ERC4626ContractMatch> | undefined => {
+  return useGenericContractSearch(
     provider,
-    "ots_getERC4626Page",
+    "ots_getERC4626List",
     pageNumber,
-    pageSize
+    pageSize,
+    total,
+    (m): ERC4626ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+      name: m.name,
+      symbol: m.symbol,
+      decimals: m.decimals,
+      asset: m.asset,
+      totalAssets: m.totalAssets,
+    })
   );
 };
 
@@ -868,13 +898,21 @@ export const useERC721Count = (
 export const useERC721List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  pageSize: number,
+  total: number | undefined
+): ContractListResults<ERC721ContractMatch> | undefined => {
+  return useGenericContractSearch(
     provider,
-    "ots_getERC721Page",
+    "ots_getERC721List",
     pageNumber,
-    pageSize
+    pageSize,
+    total,
+    (m): ERC721ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+      name: m.name,
+      symbol: m.symbol,
+    })
   );
 };
 
@@ -887,13 +925,21 @@ export const useERC1155Count = (
 export const useERC1155List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  pageSize: number,
+  total: number | undefined
+): ContractListResults<ERC1155ContractMatch> | undefined => {
+  return useGenericContractSearch(
     provider,
-    "ots_getERC1155Page",
+    "ots_getERC1155List",
     pageNumber,
-    pageSize
+    pageSize,
+    total,
+    (m): ERC1155ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+      name: m.name,
+      symbol: m.symbol,
+    })
   );
 };
 
@@ -906,13 +952,20 @@ export const useERC1167Count = (
 export const useERC1167List = (
   provider: JsonRpcProvider | undefined,
   pageNumber: number,
-  pageSize: number
-): ContractMatch[] | undefined => {
-  return useGenericContractList(
+  pageSize: number,
+  total: number | undefined
+): ContractListResults<ERC1167ContractMatch> | undefined => {
+  return useGenericContractSearch(
     provider,
-    "ots_getERC1167Page",
+    "ots_getERC1167List",
     pageNumber,
-    pageSize
+    pageSize,
+    total,
+    (m): ERC1167ContractMatch => ({
+      blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+      address: m.address,
+      implementation: m.implementation,
+    })
   );
 };
 
@@ -1066,6 +1119,7 @@ export type ERC721Metadata = {
   symbol: string;
 };
 
+// TODO: remove?
 export const useERC721Metadata = (
   provider: JsonRpcProvider | undefined,
   address: ChecksummedAddress | undefined,
@@ -1137,6 +1191,7 @@ export type ERC20Metadata = {
   decimals: number | undefined;
 };
 
+// TODO: remove
 export const useERC20Metadata = (
   provider: JsonRpcProvider | undefined,
   address: ChecksummedAddress | undefined,
