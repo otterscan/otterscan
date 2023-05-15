@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "@chainlink/contracts": "^0.6.1",
     "@fontsource/fira-code": "^4.5.13",
