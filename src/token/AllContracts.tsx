@@ -9,6 +9,7 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
+import ContractHeader from "./ContractHeader";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
 import {
@@ -79,9 +80,7 @@ const AllContracts: FC = () => {
         </div>
         <StandardScrollableTable>
           <StandardTHead>
-            <th className="w-96">Address</th>
-            <th className="w-28">Block</th>
-            <th>Age</th>
+            <ContractHeader />
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>

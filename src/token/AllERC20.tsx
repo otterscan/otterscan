@@ -9,6 +9,7 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
+import ERC20Header from "./ERC20Header";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
 import {
@@ -82,12 +83,7 @@ const AllERC20: FC = () => {
         </div>
         <StandardScrollableTable>
           <StandardTHead>
-            <th className="w-96">Address</th>
-            <th className="w-28">Block</th>
-            <th className="w-40">Age</th>
-            <th className="w-96">Name</th>
-            <th className="w-48">Symbol</th>
-            <th className="w-20">Decimals</th>
+            <ERC20Header />
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>

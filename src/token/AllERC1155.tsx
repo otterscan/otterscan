@@ -9,6 +9,7 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
+import ERC1155Header from "./ERC1155Header";
 import ERC1155Item, { ERC1155ItemProps } from "./ERC1155Item";
 import { RuntimeContext } from "../useRuntime";
 import {
@@ -81,11 +82,7 @@ const AllERC1155: FC = () => {
         </div>
         <StandardScrollableTable>
           <StandardTHead>
-            <th className="w-96">Address</th>
-            <th className="w-28">Block</th>
-            <th className="w-40">Age</th>
-            <th>Name</th>
-            <th>Symbol</th>
+            <ERC1155Header />
           </StandardTHead>
           {page !== undefined ? (
             <StandardSelectionBoundary>
