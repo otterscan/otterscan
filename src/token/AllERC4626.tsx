@@ -18,6 +18,7 @@ import {
 } from "../ots2/usePrototypeHooks";
 import { erc4626MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 
 const AllERC4626: FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -60,60 +61,68 @@ const AllERC4626: FC = () => {
   document.title = `ERC4626 Tokens | Otterscan`;
 
   return (
-    <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex items-baseline space-x-1">
-          <span>ERC4626 tokens</span>
-        </div>
-      </StandardSubtitle>
-      <ContentFrame key={pageNumber}>
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined || total === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>A total of {commify(total)} contracts found</>
-            )}
-          </div>
-          {total !== undefined && (
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          )}
-        </div>
-        <StandardScrollableTable>
-          <StandardTHead>
-            <ERC4626Header />
-          </StandardTHead>
-          {page !== undefined ? (
-            <StandardSelectionBoundary>
-              <StandardTBody>
-                {page.map((m) => (
-                  <ERC4626Item key={m.address} {...m} />
-                ))}
-              </StandardTBody>
-            </StandardSelectionBoundary>
-          ) : (
-            // <PendingResults />
-            <></>
-          )}
-        </StandardScrollableTable>
-        {page !== undefined && total !== undefined && (
-          <div className="flex items-baseline justify-between py-3">
-            <div className="text-sm text-gray-500">
-              A total of {commify(total)} contracts found
-            </div>
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          </div>
-        )}
-      </ContentFrame>
-    </StandardFrame>
+    <GenericContractSearchResult
+      title="ERC4626 tokens"
+      header={<ERC4626Header />}
+      pageNumber={pageNumber}
+      total={total}
+      page={page}
+      item={(m) => <ERC4626Item {...m} />}
+    />
+    // <StandardFrame>
+    //   <StandardSubtitle>
+    //     <div className="flex items-baseline space-x-1">
+    //       <span>ERC4626 tokens</span>
+    //     </div>
+    //   </StandardSubtitle>
+    //   <ContentFrame key={pageNumber}>
+    //     <div className="flex items-baseline justify-between py-3">
+    //       <div className="text-sm text-gray-500">
+    //         {page === undefined || total === undefined ? (
+    //           <>Waiting for search results...</>
+    //         ) : (
+    //           <>A total of {commify(total)} contracts found</>
+    //         )}
+    //       </div>
+    //       {total !== undefined && (
+    //         <PageControl
+    //           pageNumber={pageNumber}
+    //           pageSize={PAGE_SIZE}
+    //           total={total}
+    //         />
+    //       )}
+    //     </div>
+    //     <StandardScrollableTable>
+    //       <StandardTHead>
+    //         <ERC4626Header />
+    //       </StandardTHead>
+    //       {page !== undefined ? (
+    //         <StandardSelectionBoundary>
+    //           <StandardTBody>
+    //             {page.map((m) => (
+    //               <ERC4626Item key={m.address} {...m} />
+    //             ))}
+    //           </StandardTBody>
+    //         </StandardSelectionBoundary>
+    //       ) : (
+    //         // <PendingResults />
+    //         <></>
+    //       )}
+    //     </StandardScrollableTable>
+    //     {page !== undefined && total !== undefined && (
+    //       <div className="flex items-baseline justify-between py-3">
+    //         <div className="text-sm text-gray-500">
+    //           A total of {commify(total)} contracts found
+    //         </div>
+    //         <PageControl
+    //           pageNumber={pageNumber}
+    //           pageSize={PAGE_SIZE}
+    //           total={total}
+    //         />
+    //       </div>
+    //     )}
+    //   </ContentFrame>
+    // </StandardFrame>
   );
 };
 
