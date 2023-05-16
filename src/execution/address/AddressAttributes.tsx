@@ -1,7 +1,7 @@
 import { FC, useContext } from "react";
 import { AddressAwareComponentProps } from "../types";
 import AddressLegend from "../../components/AddressLegend";
-import { useAddressAttributes } from "../../useErigonHooks";
+import { useAddressAttributes } from "../../ots2/usePrototypeTransferHooks";
 import { RuntimeContext } from "../../useRuntime";
 
 type AddressAttributesProps = AddressAwareComponentProps & {

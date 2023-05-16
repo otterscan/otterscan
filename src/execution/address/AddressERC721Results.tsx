@@ -14,7 +14,7 @@ import {
   useERC721TransferCount,
   useERC721TransferList,
   useTransactionsWithReceipts,
-} from "../../useErigonHooks";
+} from "../../ots2/usePrototypeTransferHooks";
 import { PAGE_SIZE } from "../../params";
 
 const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {

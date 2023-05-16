@@ -2,33 +2,36 @@ import { FC, memo } from "react";
 import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
-import AddressHighlighter from "../components/AddressHighlighter";
+import CanBeEmptyText from "../components/CanBeEmptyText";
 import { ChecksummedAddress } from "../types";
 import { ResultMapper } from "../ots2/useUIHooks";
 
-type ERC1167ItemProps = {
+type ERC1155ItemProps = {
   blockNumber: number;
   timestamp: number;
   address: ChecksummedAddress;
-  implementation: ChecksummedAddress;
+  name: string;
+  symbol: string;
 };
 
-export const mapper: ResultMapper<ERC1167ItemProps> = (m, blocksSummary) => ({
+export const mapper: ResultMapper<ERC1155ItemProps> = (m, blocksSummary) => ({
   blockNumber: m.blockNumber,
   timestamp: blocksSummary.get(m.blockNumber)!.timestamp,
   address: m.address,
-  implementation: m.implementation,
+  name: m.name,
+  symbol: m.symbol,
 });
 
-const ERC1167Item: FC<ERC1167ItemProps> = ({
+const ERC1155Item: FC<ERC1155ItemProps> = ({
   blockNumber,
   timestamp,
   address,
-  implementation,
+  name,
+  symbol,
 }) => (
   <>
     <td>
-      <DecoratedAddressLink address={address} eoa={false} plain />
+      <DecoratedAddressLink address={address} plain />
     </td>
     <td>
       <BlockLink blockTag={blockNumber} />
@@ -36,12 +39,13 @@ const ERC1167Item: FC<ERC1167ItemProps> = ({
     <td>
       <TimestampAge timestamp={timestamp} />
     </td>
-    <td className="inline-flex">
-      <AddressHighlighter address={implementation}>
-        <DecoratedAddressLink address={implementation} eoa={false} />
-      </AddressHighlighter>
+    <td>
+      <CanBeEmptyText text={name} />
+    </td>
+    <td>
+      <CanBeEmptyText text={symbol} />
     </td>
   </>
 );
 
-export default memo(ERC1167Item);
+export default memo(ERC1155Item);
