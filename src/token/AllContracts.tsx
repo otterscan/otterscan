@@ -1,9 +1,9 @@
 import { useContext, FC, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ContractHeader from "./ContractHeader";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
+import { usePageNumber } from "../ots2/useUIHooks";
 import {
   useGenericContractSearch,
   useGenericContractsCount,
@@ -14,15 +14,7 @@ import { PAGE_SIZE } from "../params";
 const AllContracts: FC = () => {
   const { provider } = useContext(RuntimeContext);
 
-  const [searchParams] = useSearchParams();
-  let pageNumber = 1;
-  const p = searchParams.get("p");
-  if (p) {
-    try {
-      pageNumber = parseInt(p);
-    } catch (err) {}
-  }
-
+  const pageNumber = usePageNumber();
   const total = useGenericContractsCount(provider, "AllContracts");
   const results = useGenericContractSearch(
     provider,

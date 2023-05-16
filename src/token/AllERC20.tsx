@@ -1,9 +1,9 @@
 import { useContext, FC, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC20Header from "./ERC20Header";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../useRuntime";
+import { usePageNumber } from "../ots2/useUIHooks";
 import {
   useGenericContractSearch,
   useGenericContractsCount,
@@ -14,15 +14,7 @@ import { PAGE_SIZE } from "../params";
 const AllERC20: FC = () => {
   const { provider } = useContext(RuntimeContext);
 
-  const [searchParams] = useSearchParams();
-  let pageNumber = 1;
-  const p = searchParams.get("p");
-  if (p) {
-    try {
-      pageNumber = parseInt(p);
-    } catch (err) {}
-  }
-
+  const pageNumber = usePageNumber();
   const total = useGenericContractsCount(provider, "ERC20");
   const results = useGenericContractSearch(
     provider,

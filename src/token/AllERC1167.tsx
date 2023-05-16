@@ -1,9 +1,9 @@
 import { useContext, FC, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC1167Header from "./ERC1167Header";
 import ERC1167Item, { ERC1167ItemProps } from "./ERC1167Item";
 import { RuntimeContext } from "../useRuntime";
+import { usePageNumber } from "../ots2/useUIHooks";
 import {
   useGenericContractSearch,
   useGenericContractsCount,
@@ -14,15 +14,7 @@ import { PAGE_SIZE } from "../params";
 const AllERC1167: FC = () => {
   const { provider } = useContext(RuntimeContext);
 
-  const [searchParams] = useSearchParams();
-  let pageNumber = 1;
-  const p = searchParams.get("p");
-  if (p) {
-    try {
-      pageNumber = parseInt(p);
-    } catch (err) {}
-  }
-
+  const pageNumber = usePageNumber();
   const total = useGenericContractsCount(provider, "ERC1167");
   const results = useGenericContractSearch(
     provider,
