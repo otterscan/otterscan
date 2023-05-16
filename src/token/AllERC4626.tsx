@@ -1,4 +1,4 @@
-import { useContext, FC } from "react";
+import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
@@ -9,7 +9,7 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import ERC4626Item from "./ERC4626Item";
+import ERC4626Item, { ERC4626ItemProps } from "./ERC4626Item";
 import { RuntimeContext } from "../useRuntime";
 import {
   erc4626MatchParser,
@@ -31,7 +31,7 @@ const AllERC4626: FC = () => {
   }
 
   const total = useGenericContractsCount(provider, "ERC4626");
-  const page = useGenericContractSearch(
+  const results = useGenericContractSearch(
     provider,
     "ERC4626",
     pageNumber,
@@ -39,6 +39,22 @@ const AllERC4626: FC = () => {
     total,
     erc4626MatchParser
   );
+  const page: ERC4626ItemProps[] | undefined = useMemo(() => {
+    return results?.results
+      .map(
+        (m): ERC4626ItemProps => ({
+          blockNumber: m.blockNumber,
+          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
+          address: m.address,
+          name: m.name,
+          symbol: m.symbol,
+          decimals: m.decimals,
+          asset: m.asset,
+          totalAssets: m.totalAssets,
+        })
+      )
+      .reverse();
+  }, [results]);
 
   document.title = `ERC4626 Tokens | Otterscan`;
 
@@ -80,8 +96,8 @@ const AllERC4626: FC = () => {
           {page !== undefined ? (
             <StandardSelectionBoundary>
               <StandardTBody>
-                {page.results.map((m) => (
-                  <ERC4626Item key={m.address} m={m} />
+                {page.map((m) => (
+                  <ERC4626Item key={m.address} {...m} />
                 ))}
               </StandardTBody>
             </StandardSelectionBoundary>
