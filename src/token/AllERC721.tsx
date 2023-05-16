@@ -15,7 +15,7 @@ import {
   erc721MatchParser,
   useGenericContractSearch,
   useGenericContractsCount,
-} from "../useErigonHooks";
+} from "../ots2/usePrototypeHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC721: FC = () => {

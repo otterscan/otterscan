@@ -15,7 +15,7 @@ import {
   erc20MatchParser,
   useGenericContractSearch,
   useGenericContractsCount,
-} from "../useErigonHooks";
+} from "../ots2/usePrototypeHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {

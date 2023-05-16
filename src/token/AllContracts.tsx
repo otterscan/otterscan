@@ -15,7 +15,7 @@ import {
   contractMatchParser,
   useGenericContractSearch,
   useGenericContractsCount,
-} from "../useErigonHooks";
+} from "../ots2/usePrototypeHooks";
 import { PAGE_SIZE } from "../params";
 
 const AllContracts: FC = () => {
