@@ -1,29 +1,17 @@
-import { useContext, FC, useMemo } from "react";
+import { FC, useMemo } from "react";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC1155Header from "./ERC1155Header";
 import ERC1155Item, { ERC1155ItemProps } from "./ERC1155Item";
-import { RuntimeContext } from "../useRuntime";
-import { usePageNumber } from "../ots2/useUIHooks";
-import {
-  useGenericContractSearch,
-  useGenericContractsCount,
-} from "../ots2/usePrototypeHooks";
+import { useContractSearch } from "../ots2/useUIHooks";
 import { erc1155MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllERC1155: FC = () => {
-  const { provider } = useContext(RuntimeContext);
-
-  const pageNumber = usePageNumber();
-  const total = useGenericContractsCount(provider, "ERC1155");
-  const results = useGenericContractSearch(
-    provider,
+  const { pageNumber, results, total } = useContractSearch(
     "ERC1155",
-    pageNumber,
-    PAGE_SIZE,
-    total,
     erc1155MatchParser
   );
+
   const page: ERC1155ItemProps[] | undefined = useMemo(() => {
     return results?.results
       .map(

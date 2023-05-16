@@ -1,29 +1,17 @@
-import { useContext, FC, useMemo } from "react";
+import { FC, useMemo } from "react";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC20Header from "./ERC20Header";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
-import { RuntimeContext } from "../useRuntime";
-import { usePageNumber } from "../ots2/useUIHooks";
-import {
-  useGenericContractSearch,
-  useGenericContractsCount,
-} from "../ots2/usePrototypeHooks";
+import { useContractSearch } from "../ots2/useUIHooks";
 import { erc20MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {
-  const { provider } = useContext(RuntimeContext);
-
-  const pageNumber = usePageNumber();
-  const total = useGenericContractsCount(provider, "ERC20");
-  const results = useGenericContractSearch(
-    provider,
+  const { pageNumber, results, total } = useContractSearch(
     "ERC20",
-    pageNumber,
-    PAGE_SIZE,
-    total,
     erc20MatchParser
   );
+
   const page: ERC20ItemProps[] | undefined = useMemo(() => {
     return results?.results
       .map(

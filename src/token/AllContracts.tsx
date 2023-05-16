@@ -1,29 +1,17 @@
-import { useContext, FC, useMemo } from "react";
+import { FC, useMemo } from "react";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ContractHeader from "./ContractHeader";
 import ContractItem, { ContractItemProps } from "./ContractItem";
-import { RuntimeContext } from "../useRuntime";
-import { usePageNumber } from "../ots2/useUIHooks";
-import {
-  useGenericContractSearch,
-  useGenericContractsCount,
-} from "../ots2/usePrototypeHooks";
+import { useContractSearch } from "../ots2/useUIHooks";
 import { contractMatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllContracts: FC = () => {
-  const { provider } = useContext(RuntimeContext);
-
-  const pageNumber = usePageNumber();
-  const total = useGenericContractsCount(provider, "AllContracts");
-  const results = useGenericContractSearch(
-    provider,
+  const { pageNumber, results, total } = useContractSearch(
     "AllContracts",
-    pageNumber,
-    PAGE_SIZE,
-    total,
     contractMatchParser
   );
+
   const page: ContractItemProps[] | undefined = useMemo(() => {
     return results?.results
       .map(
