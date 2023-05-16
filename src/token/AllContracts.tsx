@@ -12,10 +12,10 @@ import PageControl from "../search/PageControl";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
 import {
-  contractMatchParser,
   useGenericContractSearch,
   useGenericContractsCount,
 } from "../ots2/usePrototypeHooks";
+import { contractMatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllContracts: FC = () => {

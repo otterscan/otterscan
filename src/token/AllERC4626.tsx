@@ -12,10 +12,10 @@ import PageControl from "../search/PageControl";
 import ERC4626Item, { ERC4626ItemProps } from "./ERC4626Item";
 import { RuntimeContext } from "../useRuntime";
 import {
-  erc4626MatchParser,
   useGenericContractSearch,
   useGenericContractsCount,
 } from "../ots2/usePrototypeHooks";
+import { erc4626MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllERC4626: FC = () => {
