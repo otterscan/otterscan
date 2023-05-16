@@ -1,7 +1,8 @@
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { RuntimeContext } from "../useRuntime";
 import {
+  BlockSummary,
   ContractMatch,
   ContractResultParser,
   ContractSearchType,
@@ -28,7 +29,7 @@ export const usePageNumber = () => {
   return pageNumber;
 };
 
-export const useContractSearch = <T extends ContractMatch>(
+const useContractSearch = <T extends ContractMatch>(
   t: ContractSearchType,
   p: ContractResultParser<T>
 ) => {
@@ -48,6 +49,40 @@ export const useContractSearch = <T extends ContractMatch>(
   return {
     pageNumber,
     results,
+    total,
+  };
+};
+
+export type ResultMapper<T> = (
+  m: any,
+  blocksSummary: ReadonlyMap<number, BlockSummary>
+) => T;
+
+/**
+ * Basic building block for a generic contract search browsing page.
+ */
+export const useContractSearchPage = <
+  T extends ContractMatch,
+  U extends unknown
+>(
+  t: ContractSearchType,
+  p: ContractResultParser<T>,
+  mapper: ResultMapper<U>
+) => {
+  const { pageNumber, results, total } = useContractSearch(t, p);
+
+  const page: U[] | undefined = useMemo(() => {
+    if (results === undefined) {
+      return undefined;
+    }
+
+    const mapperWrapper = (m: any) => mapper(m, results.blocksSummary);
+    return results.results.map(mapperWrapper).reverse();
+  }, [results]);
+
+  return {
+    pageNumber,
+    page,
     total,
   };
 };

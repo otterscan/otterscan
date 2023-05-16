@@ -4,13 +4,21 @@ import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
 import AddressHighlighter from "../components/AddressHighlighter";
 import { ChecksummedAddress } from "../types";
+import { ResultMapper } from "../ots2/useUIHooks";
 
-export type ERC1167ItemProps = {
+type ERC1167ItemProps = {
   blockNumber: number;
   timestamp: number;
   address: ChecksummedAddress;
   implementation: ChecksummedAddress;
 };
+
+export const mapper: ResultMapper<ERC1167ItemProps> = (m, blocksSummary) => ({
+  blockNumber: m.blockNumber,
+  timestamp: blocksSummary.get(m.blockNumber)!.timestamp,
+  address: m.address,
+  implementation: m.implementation,
+});
 
 const ERC1167Item: FC<ERC1167ItemProps> = ({
   blockNumber,

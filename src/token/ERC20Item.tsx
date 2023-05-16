@@ -4,8 +4,9 @@ import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
 import CanBeEmptyText from "../components/CanBeEmptyText";
 import { ChecksummedAddress } from "../types";
+import { ResultMapper } from "../ots2/useUIHooks";
 
-export type ERC20ItemProps = {
+type ERC20ItemProps = {
   blockNumber: number;
   timestamp: number;
   address: ChecksummedAddress;
@@ -13,6 +14,15 @@ export type ERC20ItemProps = {
   symbol: string;
   decimals: number;
 };
+
+export const mapper: ResultMapper<ERC20ItemProps> = (m, blocksSummary) => ({
+  blockNumber: m.blockNumber,
+  timestamp: blocksSummary.get(m.blockNumber)!.timestamp,
+  address: m.address,
+  name: m.name,
+  symbol: m.symbol,
+  decimals: m.decimals,
+});
 
 const ERC20Item: FC<ERC20ItemProps> = ({
   blockNumber,

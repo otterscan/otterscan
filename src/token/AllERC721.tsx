@@ -1,30 +1,17 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC721Header from "./ERC721Header";
-import ERC721Item, { ERC721ItemProps } from "./ERC721Item";
-import { useContractSearch } from "../ots2/useUIHooks";
+import ERC721Item, { mapper } from "./ERC721Item";
+import { useContractSearchPage } from "../ots2/useUIHooks";
 import { erc721MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllERC721: FC = () => {
-  const { pageNumber, results, total } = useContractSearch(
+  const { pageNumber, page, total } = useContractSearchPage(
     "ERC721",
-    erc721MatchParser
+    erc721MatchParser,
+    mapper
   );
-
-  const page: ERC721ItemProps[] | undefined = useMemo(() => {
-    return results?.results
-      .map(
-        (m): ERC721ItemProps => ({
-          blockNumber: m.blockNumber,
-          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
-          address: m.address,
-          name: m.name,
-          symbol: m.symbol,
-        })
-      )
-      .reverse();
-  }, [results]);
 
   document.title = `ERC721 Tokens | Otterscan`;
 

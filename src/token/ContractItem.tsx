@@ -3,12 +3,19 @@ import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
 import { ChecksummedAddress } from "../types";
+import { ResultMapper } from "../ots2/useUIHooks";
 
-export type ContractItemProps = {
+type ContractItemProps = {
   blockNumber: number;
   timestamp: number;
   address: ChecksummedAddress;
 };
+
+export const mapper: ResultMapper<ContractItemProps> = (m, blocksSummary) => ({
+  blockNumber: m.blockNumber,
+  timestamp: blocksSummary.get(m.blockNumber)!.timestamp,
+  address: m.address,
+});
 
 const ContractItem: FC<ContractItemProps> = ({
   blockNumber,

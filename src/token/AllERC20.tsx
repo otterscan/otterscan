@@ -1,31 +1,17 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC20Header from "./ERC20Header";
-import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
-import { useContractSearch } from "../ots2/useUIHooks";
+import ERC20Item, { mapper } from "./ERC20Item";
+import { useContractSearchPage } from "../ots2/useUIHooks";
 import { erc20MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
 
 const AllERC20: FC = () => {
-  const { pageNumber, results, total } = useContractSearch(
+  const { pageNumber, page, total } = useContractSearchPage(
     "ERC20",
-    erc20MatchParser
+    erc20MatchParser,
+    mapper
   );
-
-  const page: ERC20ItemProps[] | undefined = useMemo(() => {
-    return results?.results
-      .map(
-        (m): ERC20ItemProps => ({
-          blockNumber: m.blockNumber,
-          timestamp: results!.blocksSummary.get(m.blockNumber)!.timestamp,
-          address: m.address,
-          name: m.name,
-          symbol: m.symbol,
-          decimals: m.decimals,
-        })
-      )
-      .reverse();
-  }, [results]);
 
   document.title = `ERC20 Tokens | Otterscan`;
 
