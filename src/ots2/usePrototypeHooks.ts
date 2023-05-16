@@ -1,8 +1,6 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
-import { ChecksummedAddress } from "../types";
 import { providerFetcher } from "../useErigonHooks";
 
 export type BlockSummary = {
@@ -15,39 +13,28 @@ export type ContractMatch = {
   address: string;
 };
 
-export type ERC20ContractMatch = ContractMatch & {
-  name: string;
-  symbol: string;
-  decimals: number;
-};
-
-export type ERC721ContractMatch = ContractMatch & {
-  name: string;
-  symbol: string;
-};
-
-export type ERC1155ContractMatch = ContractMatch & {
-  name: string;
-  symbol: string;
-};
-
-export type ERC1167ContractMatch = ContractMatch & {
-  implementation: ChecksummedAddress;
-};
-
-export type ERC4626ContractMatch = ERC20ContractMatch & {
-  asset: string;
-  totalAssets: number;
-};
+export type ContractResultParser<T> = (e: any) => T;
 
 export type ContractListResults<T> = {
   blocksSummary: Map<number, BlockSummary>;
   results: T[];
 };
 
-export type ContractResultParser<T> = (e: any) => T;
+/**
+ * All supported contract search types.
+ *
+ * Those are NOT arbitrary strings, they are used to compose RPC method
+ * names.
+ */
+export type ContractSearchType =
+  | "AllContracts"
+  | "ERC20"
+  | "ERC4626"
+  | "ERC721"
+  | "ERC1155"
+  | "ERC1167";
 
-export const useGenericContractSearch = <T>(
+export const useGenericContractSearch = <T extends ContractMatch>(
   provider: JsonRpcProvider | undefined,
   t: ContractSearchType,
   pageNumber: number,
@@ -94,20 +81,6 @@ export const useGenericContractSearch = <T>(
   };
 };
 
-/**
- * All supported contract search types.
- *
- * Those are NOT arbitrary strings, they are used to compose RPC method
- * names.
- */
-export type ContractSearchType =
-  | "AllContracts"
-  | "ERC20"
-  | "ERC4626"
-  | "ERC721"
-  | "ERC1155"
-  | "ERC1167";
-
 export const useGenericContractsCount = (
   provider: JsonRpcProvider | undefined,
   t: ContractSearchType
@@ -121,58 +94,3 @@ export const useGenericContractsCount = (
   }
   return data as number | undefined;
 };
-
-export const contractMatchParser: ContractResultParser<ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-});
-
-export const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-  name: m.name,
-  symbol: m.symbol,
-  decimals: m.decimals,
-});
-
-export const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-  name: m.name,
-  symbol: m.symbol,
-  decimals: m.decimals,
-  asset: m.asset,
-  totalAssets: m.totalAssets,
-});
-
-export const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-  name: m.name,
-  symbol: m.symbol,
-});
-
-export const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-  name: m.name,
-  symbol: m.symbol,
-});
-
-export const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (
-  m
-) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
-  address: m.address,
-  implementation: m.implementation,
-});
