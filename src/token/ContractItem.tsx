@@ -15,7 +15,7 @@ const ContractItem: FC<ContractItemProps> = ({
   timestamp,
   address,
 }) => (
-  <tr>
+  <>
     <td>
       <DecoratedAddressLink address={address} plain />
     </td>
@@ -25,7 +25,7 @@ const ContractItem: FC<ContractItemProps> = ({
     <td>
       <TimestampAge timestamp={timestamp} />
     </td>
-  </tr>
+  </>
 );
 
 export default memo(ContractItem);

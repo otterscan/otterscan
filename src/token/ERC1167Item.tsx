@@ -18,7 +18,7 @@ const ERC1167Item: FC<ERC1167ItemProps> = ({
   address,
   implementation,
 }) => (
-  <tr>
+  <>
     <td>
       <DecoratedAddressLink address={address} eoa={false} plain />
     </td>
@@ -33,7 +33,7 @@ const ERC1167Item: FC<ERC1167ItemProps> = ({
         <DecoratedAddressLink address={implementation} eoa={false} />
       </AddressHighlighter>
     </td>
-  </tr>
+  </>
 );
 
 export default memo(ERC1167Item);

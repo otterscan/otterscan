@@ -22,7 +22,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
   symbol,
   decimals,
 }) => (
-  <tr>
+  <>
     <td>
       <DecoratedAddressLink address={address} plain />
     </td>
@@ -39,7 +39,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
       <CanBeEmptyText text={symbol} />
     </td>
     <td>{decimals}</td>
-  </tr>
+  </>
 );
 
 export default memo(ERC20Item);

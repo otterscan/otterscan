@@ -1,14 +1,6 @@
 import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { commify } from "@ethersproject/units";
-import StandardFrame from "../components/StandardFrame";
-import StandardSubtitle from "../components/StandardSubtitle";
-import ContentFrame from "../components/ContentFrame";
-import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardScrollableTable from "../components/StandardScrollableTable";
-import StandardTHead from "../components/StandardTHead";
-import StandardTBody from "../components/StandardTBody";
-import PageControl from "../search/PageControl";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 import ContractHeader from "./ContractHeader";
 import ContractItem, { ContractItemProps } from "./ContractItem";
 import { RuntimeContext } from "../useRuntime";
@@ -55,60 +47,15 @@ const AllContracts: FC = () => {
   document.title = `All contracts | Otterscan`;
 
   return (
-    <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex items-baseline space-x-1">
-          <span>Contracts</span>
-        </div>
-      </StandardSubtitle>
-      <ContentFrame key={pageNumber}>
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined || total === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>A total of {commify(total)} contracts found</>
-            )}
-          </div>
-          {total !== undefined && (
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          )}
-        </div>
-        <StandardScrollableTable>
-          <StandardTHead>
-            <ContractHeader />
-          </StandardTHead>
-          {page !== undefined ? (
-            <StandardSelectionBoundary>
-              <StandardTBody>
-                {page.map((m) => (
-                  <ContractItem key={m.address} {...m} />
-                ))}
-              </StandardTBody>
-            </StandardSelectionBoundary>
-          ) : (
-            // <PendingResults />
-            <></>
-          )}
-        </StandardScrollableTable>
-        {page !== undefined && total !== undefined && (
-          <div className="flex items-baseline justify-between py-3">
-            <div className="text-sm text-gray-500">
-              A total of {commify(total)} contracts found
-            </div>
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          </div>
-        )}
-      </ContentFrame>
-    </StandardFrame>
+    <GenericContractSearchResult
+      title="ERC721 tokens"
+      header={<ContractHeader />}
+      pageNumber={pageNumber}
+      pageSize={PAGE_SIZE}
+      total={total}
+      page={page}
+      Item={(m) => <ContractItem {...m} />}
+    />
   );
 };
 

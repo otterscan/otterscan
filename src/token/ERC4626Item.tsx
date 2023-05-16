@@ -26,7 +26,7 @@ const ERC4626Item: FC<ERC4626ItemProps> = ({
   asset,
   totalAssets,
 }) => (
-  <tr>
+  <>
     <td>
       <DecoratedAddressLink address={address} plain />
     </td>
@@ -47,7 +47,7 @@ const ERC4626Item: FC<ERC4626ItemProps> = ({
       <DecoratedAddressLink address={asset} />
     </td>
     <td>{totalAssets}</td>
-  </tr>
+  </>
 );
 
 export default memo(ERC4626Item);

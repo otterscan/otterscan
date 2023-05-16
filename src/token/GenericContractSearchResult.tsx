@@ -8,25 +8,60 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
-import { PAGE_SIZE } from "../params";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
 
 type GenericContractSearchResultProps<T> = {
+  /**
+   * Title describing the contract search, i.e., "ERC20 tokens".
+   */
   title: string;
+
+  /**
+   * A control to be inserted into results's table header control;
+   * usually a fragment containing a series of <th>'s.
+   *
+   * The <th>'s may have a column width.
+   */
   header: ReactNode;
+
+  /**
+   * 1-based page number.
+   */
   pageNumber: number;
+
+  /**
+   * The max number of elements inside a page result. Used to calculate
+   * how many pages exist in navigation controls.
+   */
+  pageSize: number;
+
+  /**
+   * The total number of results in the scope of the search, i.e.,
+   * for an ERC20 search, it should represent the total number of
+   * existing ERC20 contracts so far.
+   */
   total: number | undefined;
+
+  /**
+   * Represents 1 page of search results. The entire page will be rendered
+   * by this component.
+   */
   page: T[] | undefined;
-  item: FC<T>;
+
+  /**
+   * Renders 1 page result. It should be a fragment with the result <td> columns.
+   */
+  Item: FC<T>;
 };
 
 const GenericContractSearchResult = <T extends ContractMatch>({
   title,
   header,
   pageNumber,
+  pageSize,
   total,
   page,
-  item: Item,
+  Item,
 }: GenericContractSearchResultProps<T>) => (
   <StandardFrame>
     <StandardSubtitle>
@@ -46,7 +81,7 @@ const GenericContractSearchResult = <T extends ContractMatch>({
         {total !== undefined && (
           <PageControl
             pageNumber={pageNumber}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             total={total}
           />
         )}
@@ -57,7 +92,9 @@ const GenericContractSearchResult = <T extends ContractMatch>({
           <StandardSelectionBoundary>
             <StandardTBody>
               {page.map((m) => (
-                <Item key={m.address} {...m} />
+                <tr key={m.address}>
+                  <Item {...m} />
+                </tr>
               ))}
             </StandardTBody>
           </StandardSelectionBoundary>
@@ -73,7 +110,7 @@ const GenericContractSearchResult = <T extends ContractMatch>({
           </div>
           <PageControl
             pageNumber={pageNumber}
-            pageSize={PAGE_SIZE}
+            pageSize={pageSize}
             total={total}
           />
         </div>

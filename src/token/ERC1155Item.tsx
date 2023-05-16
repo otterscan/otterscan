@@ -20,7 +20,7 @@ const ERC1155Item: FC<ERC1155ItemProps> = ({
   name,
   symbol,
 }) => (
-  <tr>
+  <>
     <td>
       <DecoratedAddressLink address={address} plain />
     </td>
@@ -36,7 +36,7 @@ const ERC1155Item: FC<ERC1155ItemProps> = ({
     <td>
       <CanBeEmptyText text={symbol} />
     </td>
-  </tr>
+  </>
 );
 
 export default memo(ERC1155Item);

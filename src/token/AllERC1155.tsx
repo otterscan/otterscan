@@ -1,14 +1,6 @@
 import { useContext, FC, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { commify } from "@ethersproject/units";
-import StandardFrame from "../components/StandardFrame";
-import StandardSubtitle from "../components/StandardSubtitle";
-import ContentFrame from "../components/ContentFrame";
-import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardScrollableTable from "../components/StandardScrollableTable";
-import StandardTHead from "../components/StandardTHead";
-import StandardTBody from "../components/StandardTBody";
-import PageControl from "../search/PageControl";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 import ERC1155Header from "./ERC1155Header";
 import ERC1155Item, { ERC1155ItemProps } from "./ERC1155Item";
 import { RuntimeContext } from "../useRuntime";
@@ -57,60 +49,15 @@ const AllERC1155: FC = () => {
   document.title = `ERC1155 Tokens | Otterscan`;
 
   return (
-    <StandardFrame>
-      <StandardSubtitle>
-        <div className="flex items-baseline space-x-1">
-          <span>ERC1155 tokens</span>
-        </div>
-      </StandardSubtitle>
-      <ContentFrame key={pageNumber}>
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            {page === undefined || total === undefined ? (
-              <>Waiting for search results...</>
-            ) : (
-              <>A total of {commify(total)} contracts found</>
-            )}
-          </div>
-          {total !== undefined && (
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          )}
-        </div>
-        <StandardScrollableTable>
-          <StandardTHead>
-            <ERC1155Header />
-          </StandardTHead>
-          {page !== undefined ? (
-            <StandardSelectionBoundary>
-              <StandardTBody>
-                {page.map((m) => (
-                  <ERC1155Item key={m.address} {...m} />
-                ))}
-              </StandardTBody>
-            </StandardSelectionBoundary>
-          ) : (
-            // <PendingResults />
-            <></>
-          )}
-        </StandardScrollableTable>
-        {page !== undefined && total !== undefined && (
-          <div className="flex items-baseline justify-between py-3">
-            <div className="text-sm text-gray-500">
-              A total of {commify(total)} contracts found
-            </div>
-            <PageControl
-              pageNumber={pageNumber}
-              pageSize={PAGE_SIZE}
-              total={total}
-            />
-          </div>
-        )}
-      </ContentFrame>
-    </StandardFrame>
+    <GenericContractSearchResult
+      title="ERC1155 tokens"
+      header={<ERC1155Header />}
+      pageNumber={pageNumber}
+      pageSize={PAGE_SIZE}
+      total={total}
+      page={page}
+      Item={(m) => <ERC1155Item {...m} />}
+    />
   );
 };
 
