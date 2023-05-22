@@ -7,7 +7,7 @@
     "@chainlink/contracts": "^0.6.1",
     "@fontsource/fira-code": "^4.5.13",
     "@fontsource/roboto": "^4.5.8",
-    "@fontsource/roboto-mono": "^4.5.10",
+    "@fontsource/roboto-mono": "^5.0.0",
     "@fontsource/space-grotesk": "^4.5.13",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
