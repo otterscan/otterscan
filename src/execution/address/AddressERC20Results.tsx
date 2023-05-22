@@ -1,5 +1,4 @@
 import { useContext, FC } from "react";
-import { useSearchParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { AddressAwareComponentProps } from "../types";
 import ContentFrame from "../../components/ContentFrame";
@@ -15,20 +14,13 @@ import {
   useGenericTransactionList,
   useTransactionsWithReceipts,
 } from "../../ots2/usePrototypeTransferHooks";
+import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 
 const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
-  const [searchParams] = useSearchParams();
-  let pageNumber = 1;
-  const p = searchParams.get("p");
-  if (p) {
-    try {
-      pageNumber = parseInt(p);
-    } catch (err) {}
-  }
-
+  const pageNumber = usePageNumber();
   const total = useGenericTransactionCount(provider, "ERC20", address);
   const page = useGenericTransactionList(
     provider,
