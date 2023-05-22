@@ -11,8 +11,8 @@ import PageControl from "../../search/PageControl";
 import ERC20Item from "./ERC20Item";
 import { RuntimeContext } from "../../useRuntime";
 import {
-  useERC721TransferCount,
-  useERC721TransferList,
+  useGenericTransactionCount,
+  useGenericTransactionList,
   useTransactionsWithReceipts,
 } from "../../ots2/usePrototypeTransferHooks";
 import { PAGE_SIZE } from "../../params";
@@ -29,8 +29,14 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
     } catch (err) {}
   }
 
-  const total = useERC721TransferCount(provider, address);
-  const page = useERC721TransferList(provider, address, pageNumber, PAGE_SIZE);
+  const total = useGenericTransactionCount(provider, "ERC721", address);
+  const page = useGenericTransactionList(
+    provider,
+    "ERC721",
+    address,
+    pageNumber,
+    PAGE_SIZE
+  );
   const matches = useTransactionsWithReceipts(
     provider,
     page?.map((p) => p.hash)

@@ -10,15 +10,24 @@ import { providerFetcher } from "../useErigonHooks";
 import { rawToProcessed } from "../search/search";
 import erc20 from "../erc20.json";
 
+/**
+ * All supported transaction search types.
+ *
+ * Those are NOT arbitrary strings, they are used to compose RPC method
+ * names.
+ */
+export type TransactionSearchType = "ERC20" | "ERC721";
+
 export type TransactionMatch = {
   hash: string;
 };
 
-const useGenericTransactionCount = (
+export const useGenericTransactionCount = (
   provider: JsonRpcProvider | undefined,
-  rpcMethod: string,
+  t: TransactionSearchType,
   address: ChecksummedAddress
 ): number | undefined => {
+  const rpcMethod = `ots_get${t}TransferCount`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
   if (error) {
@@ -27,16 +36,17 @@ const useGenericTransactionCount = (
   return data as number | undefined;
 };
 
-const useGenericTransactionList = (
+export const useGenericTransactionList = (
   provider: JsonRpcProvider | undefined,
-  rpcMethod: string,
+  t: TransactionSearchType,
   address: ChecksummedAddress,
   pageNumber: number,
   pageSize: number
 ): TransactionMatch[] | undefined => {
+  const rpcMethod = `ots_get${t}TransferList`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    [rpcMethod, address, pageNumber - 1, pageSize],
+    [rpcMethod, address, (pageNumber - 1) * pageSize, pageSize],
     fetcher
   );
   if (error) {
@@ -53,58 +63,6 @@ const useGenericTransactionList = (
     return t;
   });
   return converted;
-};
-
-export const useERC20TransferCount = (
-  provider: JsonRpcProvider | undefined,
-  address: ChecksummedAddress
-): number | undefined => {
-  return useGenericTransactionCount(
-    provider,
-    "ots_getERC20TransferCount",
-    address
-  );
-};
-
-export const useERC20TransferList = (
-  provider: JsonRpcProvider | undefined,
-  address: ChecksummedAddress,
-  pageNumber: number,
-  pageSize: number
-): TransactionMatch[] | undefined => {
-  return useGenericTransactionList(
-    provider,
-    "ots_getERC20TransferPage",
-    address,
-    pageNumber,
-    pageSize
-  );
-};
-
-export const useERC721TransferCount = (
-  provider: JsonRpcProvider | undefined,
-  address: ChecksummedAddress
-): number | undefined => {
-  return useGenericTransactionCount(
-    provider,
-    "ots_getERC721TransferCount",
-    address
-  );
-};
-
-export const useERC721TransferList = (
-  provider: JsonRpcProvider | undefined,
-  address: ChecksummedAddress,
-  pageNumber: number,
-  pageSize: number
-): TransactionMatch[] | undefined => {
-  return useGenericTransactionList(
-    provider,
-    "ots_getERC721TransferPage",
-    address,
-    pageNumber,
-    pageSize
-  );
 };
 
 // TODO: remove temporary prototype
