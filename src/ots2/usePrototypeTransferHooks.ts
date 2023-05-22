@@ -8,6 +8,7 @@ import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, ProcessedTransaction } from "../types";
 import { providerFetcher } from "../useErigonHooks";
 import { rawToProcessed } from "../search/search";
+import { pageToReverseIdx } from "./pagination";
 import erc20 from "../erc20.json";
 
 /**
@@ -41,12 +42,14 @@ export const useGenericTransactionList = (
   t: TransactionSearchType,
   address: ChecksummedAddress,
   pageNumber: number,
-  pageSize: number
+  pageSize: number,
+  total: number | undefined
 ): TransactionMatch[] | undefined => {
+  const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots_get${t}TransferList`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    [rpcMethod, address, (pageNumber - 1) * pageSize, pageSize],
+    page === undefined ? null : [rpcMethod, address, page.idx, page.count],
     fetcher
   );
   if (error) {
@@ -56,13 +59,14 @@ export const useGenericTransactionList = (
   if (data === undefined) {
     return undefined;
   }
-  const converted = (data as any[]).map((m) => {
+  // TODO: fix memo
+  const converted = (data.results as any[]).map((m) => {
     const t: TransactionMatch = {
       hash: m.hash,
     };
     return t;
   });
-  return converted;
+  return converted.reverse();
 };
 
 // TODO: remove temporary prototype

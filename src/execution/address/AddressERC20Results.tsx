@@ -27,7 +27,8 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
     "ERC20",
     address,
     pageNumber,
-    PAGE_SIZE
+    PAGE_SIZE,
+    total
   );
   const matches = useTransactionsWithReceipts(
     provider,
