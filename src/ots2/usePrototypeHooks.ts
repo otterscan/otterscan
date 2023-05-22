@@ -2,6 +2,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { providerFetcher } from "../useErigonHooks";
+import { pageToReverseIdx } from "./pagination";
 
 export type BlockSummary = {
   blockNumber: number;
@@ -42,23 +43,11 @@ export const useGenericContractSearch = <T extends ContractMatch>(
   total: number | undefined,
   parser: ContractResultParser<T>
 ): ContractListResults<T> | undefined => {
-  // Calculates the N-th page (1-based) backwards from the total
-  // of matches.
-  //
-  // i.e.: page 1 == [total - pageSize + 1, total]
-  let idx = total !== undefined ? total - pageSize * pageNumber + 1 : undefined;
-  let count = pageSize;
-
-  // Last page? [1, total % pageSize]
-  if (idx !== undefined && total !== undefined && idx < 1) {
-    idx = 1;
-    count = total % pageSize;
-  }
-
+  const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots_get${t}List`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
-    idx === undefined ? null : [rpcMethod, idx, count],
+    page === undefined ? null : [rpcMethod, page.idx, page.count],
     fetcher
   );
   if (error) {
