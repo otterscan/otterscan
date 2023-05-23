@@ -1,4 +1,4 @@
-import { useContext, FC } from "react";
+import { useContext, FC, useMemo } from "react";
 import { commify } from "@ethersproject/units";
 import { AddressAwareComponentProps } from "../types";
 import ContentFrame from "../../components/ContentFrame";
@@ -7,12 +7,11 @@ import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
 import PageControl from "../../search/PageControl";
-import ERC20Item from "./ERC20Item";
+import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../../useRuntime";
 import {
   useGenericTransactionCount,
   useGenericTransactionList,
-  useTransactionsWithReceipts,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
@@ -22,7 +21,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
 
   const pageNumber = usePageNumber();
   const total = useGenericTransactionCount(provider, "ERC721", address);
-  const page = useGenericTransactionList(
+  const results = useGenericTransactionList(
     provider,
     "ERC721",
     address,
@@ -30,9 +29,23 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
     PAGE_SIZE,
     total
   );
-  const matches = useTransactionsWithReceipts(
-    provider,
-    page?.map((p) => p.hash)
+  const items = useMemo(
+    () =>
+      results?.results.map(
+        (m): ERC20ItemProps => ({
+          address,
+          blockNumber: m.receipt.blockNumber,
+          timestamp:
+            results.blocksSummary.get(m.receipt.blockNumber)?.timestamp ?? 0, // TODO: fix get
+          hash: m.transaction.hash,
+          status: m.receipt.status!,
+          data: m.transaction.data,
+          from: m.receipt.from,
+          to: m.receipt.to,
+          value: m.transaction.value,
+        })
+      ),
+    [results]
   );
 
   document.title = `ERC721 Transfers | Otterscan`;
@@ -41,7 +54,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
     <ContentFrame key={pageNumber} tabs>
       <div className="flex items-baseline justify-between py-3">
         <div className="text-sm text-gray-500">
-          {page === undefined || total === undefined ? (
+          {results === undefined || total === undefined ? (
             <>Waiting for search results...</>
           ) : (
             <>A total of {commify(total)} transactions found</>
@@ -65,11 +78,11 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           <th>To</th>
           <th className="w-44">Value</th>
         </StandardTHead>
-        {matches !== undefined ? (
+        {items !== undefined ? (
           <StandardSelectionBoundary>
             <StandardTBody>
-              {matches.map((m) => (
-                <ERC20Item key={m.hash} address={address} p={m} />
+              {items.map((i) => (
+                <ERC20Item key={i.hash} {...i} />
               ))}
             </StandardTBody>
           </StandardSelectionBoundary>
@@ -78,7 +91,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           <></>
         )}
       </StandardTable>
-      {page !== undefined && total !== undefined && (
+      {results !== undefined && total !== undefined && (
         <div className="flex items-baseline justify-between py-3">
           <div className="text-sm text-gray-500">
             A total of {commify(total)} transactions found

@@ -1,13 +1,18 @@
 import { useMemo } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import {
+  JsonRpcProvider,
+  Formatter,
+  TransactionResponse,
+  TransactionReceipt,
+} from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import { ChecksummedAddress, ProcessedTransaction } from "../types";
+import { ChecksummedAddress } from "../types";
 import { providerFetcher } from "../useErigonHooks";
-import { rawToProcessed } from "../search/search";
+import { BlockSummary } from "./usePrototypeHooks";
 import { pageToReverseIdx } from "./pagination";
 import erc20 from "../erc20.json";
 
@@ -19,8 +24,15 @@ import erc20 from "../erc20.json";
  */
 export type TransactionSearchType = "ERC20" | "ERC721";
 
+export type TransactionListResults<T> = {
+  blocksSummary: Map<number, BlockSummary>;
+  results: T[];
+};
+
 export type TransactionMatch = {
   hash: string;
+  transaction: TransactionResponse;
+  receipt: TransactionReceipt;
 };
 
 export const useGenericTransactionCount = (
@@ -37,6 +49,41 @@ export const useGenericTransactionCount = (
   return data as number | undefined;
 };
 
+const formatter = new Formatter();
+
+const resultFetcher = (
+  provider: JsonRpcProvider | undefined
+): Fetcher<
+  TransactionListResults<TransactionMatch> | undefined,
+  [string, ...any]
+> => {
+  const fetcher = providerFetcher(provider);
+
+  return async (key) => {
+    const res = await fetcher(key);
+    if (res === undefined) {
+      return undefined;
+    }
+
+    const converted = (res.results as any[]).map(
+      (m): TransactionMatch => ({
+        hash: m.hash,
+        transaction: formatter.transactionResponse(m.transaction),
+        receipt: formatter.receipt(m.receipt),
+      })
+    );
+    const blockMap = new Map<number, BlockSummary>();
+    for (const [k, v] of Object.entries(res.blocksSummary as any)) {
+      blockMap.set(parseInt(k), v as any);
+    }
+
+    return {
+      blocksSummary: blockMap,
+      results: converted.reverse(),
+    };
+  };
+};
+
 export const useGenericTransactionList = (
   provider: JsonRpcProvider | undefined,
   t: TransactionSearchType,
@@ -44,10 +91,10 @@ export const useGenericTransactionList = (
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): TransactionMatch[] | undefined => {
+): TransactionListResults<TransactionMatch> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots_get${t}TransferList`;
-  const fetcher = providerFetcher(provider);
+  const fetcher = resultFetcher(provider);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
     fetcher
@@ -56,38 +103,7 @@ export const useGenericTransactionList = (
     return undefined;
   }
 
-  if (data === undefined) {
-    return undefined;
-  }
-  // TODO: fix memo
-  const converted = (data.results as any[]).map((m) => {
-    const t: TransactionMatch = {
-      hash: m.hash,
-    };
-    return t;
-  });
-  return converted.reverse();
-};
-
-// TODO: remove temporary prototype
-export const useTransactionsWithReceipts = (
-  provider: JsonRpcProvider | undefined,
-  hash: string[] | undefined
-): ProcessedTransaction[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    hash === undefined ? null : ["ots_getTransactionsWithReceipts", hash],
-    fetcher
-  );
-  if (error) {
-    return undefined;
-  }
-
-  if (!provider || data === undefined) {
-    return undefined;
-  }
-  const converted = rawToProcessed(provider, data);
-  return converted.txs;
+  return data;
 };
 
 export const useERC1167Impl = (

@@ -612,7 +612,9 @@ export const useAddressBalance = (
  * arguments.
  */
 export const providerFetcher =
-  (provider: JsonRpcProvider | undefined): Fetcher<any | undefined, any[]> =>
+  (
+    provider: JsonRpcProvider | undefined
+  ): Fetcher<any | undefined, [string, ...any]> =>
   async (key) => {
     if (provider === undefined) {
       return undefined;

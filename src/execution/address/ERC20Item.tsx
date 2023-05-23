@@ -1,4 +1,5 @@
 import { FC, memo } from "react";
+import { BigNumber } from "@ethersproject/bignumber";
 import TransactionLink from "../../components/TransactionLink";
 import MethodName from "../../components/MethodName";
 import BlockLink from "../../components/BlockLink";
@@ -6,36 +7,49 @@ import TimestampAge from "../../components/TimestampAge";
 import TransactionDirection from "../../components/TransactionDirection";
 import { AddressAwareComponentProps } from "../types";
 import TransactionValue from "../../components/TransactionValue";
-import { ProcessedTransaction } from "../../types";
 import TransactionAddress from "../components/TransactionAddress";
 import { BlockNumberContext } from "../../useBlockTagContext";
 
-type ERC20temProps = AddressAwareComponentProps & {
-  p: ProcessedTransaction;
+export type ERC20ItemProps = AddressAwareComponentProps & {
+  blockNumber: number;
+  timestamp: number;
+  hash: string;
+  status: number;
+  data: string;
+  from: string | undefined;
+  to: string | null;
+  value: BigNumber;
 };
 
-const ERC20Item: FC<ERC20temProps> = ({ address, p }) => {
+const ERC20Item: FC<ERC20ItemProps> = ({
+  address,
+  blockNumber,
+  timestamp,
+  hash,
+  status,
+  data,
+  from,
+  to,
+  value,
+}) => {
   return (
-    <BlockNumberContext.Provider value={p.blockNumber}>
+    <BlockNumberContext.Provider value={blockNumber}>
       <tr>
         <td>
-          <TransactionLink txHash={p.hash} fail={p.status === 0} />
+          <TransactionLink txHash={hash} fail={status === 0} />
         </td>
-        <td>{p.to !== null && <MethodName data={p.data} />}</td>
+        <td>{to !== null && <MethodName data={data} />}</td>
         <td>
-          <BlockLink blockTag={p.blockNumber} />
+          <BlockLink blockTag={blockNumber} />
         </td>
         <td>
-          <TimestampAge timestamp={p.timestamp} />
+          <TimestampAge timestamp={timestamp} />
         </td>
         <td>
           <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
-              {p.from && (
-                <TransactionAddress
-                  address={p.from}
-                  selectedAddress={address}
-                />
+              {from && (
+                <TransactionAddress address={from} selectedAddress={address} />
               )}
             </span>
             <span>
@@ -47,16 +61,16 @@ const ERC20Item: FC<ERC20temProps> = ({ address, p }) => {
           </span>
         </td>
         <td>
-          {p.to && (
+          {to && (
             <TransactionAddress
-              address={p.to}
+              address={to}
               selectedAddress={address}
               showCodeIndicator
             />
           )}
         </td>
         <td>
-          <TransactionValue value={p.value} />
+          <TransactionValue value={value} />
         </td>
       </tr>
     </BlockNumberContext.Provider>
