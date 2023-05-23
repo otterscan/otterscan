@@ -1,5 +1,3 @@
-const colors = require("tailwindcss/colors");
-
 function withOpacity(variableName) {
   return ({ opacityValue }) => {
     if (opacityValue !== undefined) {
@@ -10,7 +8,7 @@ function withOpacity(variableName) {
 }
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
   theme: {
     extend: {
