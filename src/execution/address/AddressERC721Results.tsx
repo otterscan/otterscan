@@ -54,7 +54,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
     <ContentFrame key={pageNumber} tabs>
       <div className="flex items-baseline justify-between py-3">
         <div className="text-sm text-gray-500">
-          {results === undefined || total === undefined ? (
+          {items === undefined || total === undefined ? (
             <>Waiting for search results...</>
           ) : (
             <>A total of {commify(total)} transactions found</>
@@ -91,7 +91,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           <></>
         )}
       </StandardTable>
-      {results !== undefined && total !== undefined && (
+      {items !== undefined && total !== undefined && (
         <div className="flex items-baseline justify-between py-3">
           <div className="text-sm text-gray-500">
             A total of {commify(total)} transactions found
