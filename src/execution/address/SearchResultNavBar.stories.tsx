@@ -13,21 +13,20 @@ export const Default: Story = {
     pageNumber: 1,
     pageSize: 25,
     total: 100,
+    totalFormatter: (total) => `Total results: ${total}`,
   },
 };
 
 export const Pending: Story = {
   args: {
-    pageNumber: 0,
-    pageSize: 25,
+    ...Default.args,
     total: undefined,
   },
 };
 
 export const SingleResult: Story = {
   args: {
-    pageNumber: 1,
-    pageSize: 25,
+    ...Default.args,
     total: 1,
   },
 };

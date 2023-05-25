@@ -1,5 +1,4 @@
-import { FC, memo } from "react";
-import { commify } from "@ethersproject/units";
+import { FC, ReactNode, memo } from "react";
 import PageControl from "../../search/PageControl";
 
 type SearchResultNavBarProps = {
@@ -20,23 +19,25 @@ type SearchResultNavBarProps = {
    * Undefined means the total is not still available (getting from the server).
    */
   total: number | undefined;
+
+  /**
+   * Callback used to format the text displayed inside this component given
+   * a formatted total.
+   */
+  totalFormatter: (total: number) => ReactNode;
 };
 
 const SearchResultNavBar: FC<SearchResultNavBarProps> = ({
   pageNumber,
   pageSize,
   total,
+  totalFormatter,
 }) => (
   <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
-      {total === undefined ? (
-        <>Waiting for search results...</>
-      ) : (
-        <>
-          A total of {commify(total)}{" "}
-          {total > 1 ? "transactions" : "transaction"} found
-        </>
-      )}
+      {total === undefined
+        ? "Waiting for search results..."
+        : totalFormatter(total)}
     </div>
     {total !== undefined && (
       <PageControl pageNumber={pageNumber} pageSize={pageSize} total={total} />

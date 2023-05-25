@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import StandardTable from "../../components/StandardTable";
@@ -47,6 +48,7 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
           pageNumber={pageNumber}
           pageSize={PAGE_SIZE}
           total={total}
+          totalFormatter={transactionTotalFormatter}
         />
         <StandardTable>
           <StandardTHead>
@@ -75,11 +77,17 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
             pageNumber={pageNumber}
             pageSize={PAGE_SIZE}
             total={total}
+            totalFormatter={transactionTotalFormatter}
           />
         )}
       </>
     )}
   </ContentFrame>
 );
+
+const transactionTotalFormatter = (total: number) =>
+  `A total of ${commify(total)} ${
+    total > 1 ? "transactions" : "transaction"
+  } found`;
 
 export default GenericTransactionSearchResult;
