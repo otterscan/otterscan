@@ -8,6 +8,7 @@ import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
 import PageControl from "../search/PageControl";
+import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
 
 type GenericContractSearchResultProps<T> = {
@@ -23,6 +24,11 @@ type GenericContractSearchResultProps<T> = {
    * The <th>'s may have a column width.
    */
   header: ReactNode;
+
+  /**
+   * Number of columns; used to render pending content.
+   */
+  cols: number;
 
   /**
    * 1-based page number.
@@ -99,8 +105,7 @@ const GenericContractSearchResult = <T extends ContractMatch>({
             </StandardTBody>
           </StandardSelectionBoundary>
         ) : (
-          // <PendingResults />
-          <></>
+          <PendingPage rows={pageSize} cols={3} />
         )}
       </StandardScrollableTable>
       {page !== undefined && total !== undefined && (

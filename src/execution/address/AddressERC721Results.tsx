@@ -7,6 +7,7 @@ import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
 import PageControl from "../../search/PageControl";
+import PendingPage from "./PendingPage";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../../useRuntime";
 import {
@@ -87,8 +88,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
             </StandardTBody>
           </StandardSelectionBoundary>
         ) : (
-          // <PendingResults />
-          <></>
+          <PendingPage rows={PAGE_SIZE} cols={7} />
         )}
       </StandardTable>
       {items !== undefined && total !== undefined && (
