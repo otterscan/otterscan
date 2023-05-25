@@ -6,7 +6,7 @@ import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
-import SearchResultNavBar from "../execution/address/SearchResultNavBar";
+import SearchResultNavBar from "../search/SearchResultNavBar";
 import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
 import { totalContractsFormatter } from "../search/messages";

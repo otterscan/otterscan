@@ -1,5 +1,5 @@
 import { FC, ReactNode, memo } from "react";
-import PageControl from "../../search/PageControl";
+import PageControl from "./PageControl";
 
 type SearchResultNavBarProps = {
   /**
