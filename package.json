@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "@chainlink/contracts": "^0.6.1",
     "@fontsource/fira-code": "^4.5.13",
@@ -95,8 +96,8 @@
     "tailwindcss": "^3.3.2",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
-    "vite": "^4.2.2",
-    "vite-imagetools": "^4.0.19",
+    "vite": "^4.3.5",
+    "vite-imagetools": "^5.0.4",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-rewrite-all": "^1.0.1"
   }
