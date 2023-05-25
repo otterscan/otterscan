@@ -7,6 +7,7 @@ import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary
 import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
+import SearchResultNavBar from "../../search/SearchResultNavBar";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../../useRuntime";
 import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
@@ -76,29 +77,23 @@ const TotalBar: FC<TotalBarProps> = ({
   filterApplied,
   applyFilter,
 }) => (
-  <div className="flex items-baseline justify-between py-3">
-    <div className="text-sm text-gray-500">
-      {erc20List === undefined || filteredList === undefined ? (
-        <>Waiting for search results...</>
-      ) : (
-        <>
-          {filterApplied ? filteredList.length : erc20List.length} tokens found
-          (
-          <Switch
-            className="hover:cursor-pointer hover:underline"
-            onChange={() => applyFilter(!filterApplied)}
-          >
-            {filterApplied ? (
-              <>{erc20List.length - filteredList.length} hidden</>
-            ) : (
-              <>hide spam</>
-            )}
-          </Switch>
-          )
-        </>
-      )}
-    </div>
-  </div>
+  <SearchResultNavBar
+    total={filterApplied ? filteredList?.length : erc20List?.length}
+    totalFormatter={(total: number) => (
+      <>
+        {`${total} ${total !== 1 ? "tokens" : "token"} found`} (
+        <Switch
+          className="hover:cursor-pointer hover:underline"
+          onChange={() => applyFilter(!filterApplied)}
+        >
+          {filterApplied
+            ? `${erc20List.length - filteredList.length} hidden`
+            : "hide spam"}
+        </Switch>
+        )
+      </>
+    )}
+  />
 );
 
 export default AddressTokens;
