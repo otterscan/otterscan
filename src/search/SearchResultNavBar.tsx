@@ -1,17 +1,21 @@
 import { FC, ReactNode, memo } from "react";
-import PageControl from "../../search/PageControl";
+import PageControl from "./PageControl";
 
 type SearchResultNavBarProps = {
   /**
    * 1-based page number.
+   * 
+   * If omitted, assumes 1 using default value.
    */
-  pageNumber: number;
+  pageNumber?: number;
 
   /**
    * The max number of elements inside a page result. Used to calculate
    * how many pages exist in navigation controls.
+   *
+   * If undefined, it doesn't display the page navigation controls.
    */
-  pageSize: number;
+  pageSize?: number | undefined;
 
   /**
    * The total number of results in the scope of the search.
@@ -28,7 +32,7 @@ type SearchResultNavBarProps = {
 };
 
 const SearchResultNavBar: FC<SearchResultNavBarProps> = ({
-  pageNumber,
+  pageNumber = 1,
   pageSize,
   total,
   totalFormatter,
@@ -39,7 +43,7 @@ const SearchResultNavBar: FC<SearchResultNavBarProps> = ({
         ? "Waiting for search results..."
         : totalFormatter(total)}
     </div>
-    {total !== undefined && (
+    {pageSize !== undefined && total !== undefined && (
       <PageControl pageNumber={pageNumber} pageSize={pageSize} total={total} />
     )}
   </div>

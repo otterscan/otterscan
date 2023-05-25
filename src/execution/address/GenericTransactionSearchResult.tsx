@@ -4,7 +4,7 @@ import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary
 import StandardTable from "../../components/StandardTable";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
-import SearchResultNavBar from "./SearchResultNavBar";
+import SearchResultNavBar from "../../search/SearchResultNavBar";
 import PendingPage from "./PendingPage";
 import { TransactionMatch } from "../../ots2/usePrototypeTransferHooks";
 import { totalTransactionsFormatter } from "../../search/messages";
