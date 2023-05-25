@@ -1,5 +1,4 @@
 import { FC, ReactNode } from "react";
-import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
@@ -10,6 +9,7 @@ import StandardTBody from "../components/StandardTBody";
 import SearchResultNavBar from "../execution/address/SearchResultNavBar";
 import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
+import { totalContractsFormatter } from "../search/messages";
 
 type GenericContractSearchResultProps<T> = {
   /**
@@ -80,7 +80,7 @@ const GenericContractSearchResult = <T extends ContractMatch>({
         pageNumber={pageNumber}
         pageSize={pageSize}
         total={total}
-        totalFormatter={totalFormatter}
+        totalFormatter={totalContractsFormatter}
       />
       <StandardScrollableTable>
         <StandardTHead>{header}</StandardTHead>
@@ -103,14 +103,11 @@ const GenericContractSearchResult = <T extends ContractMatch>({
           pageNumber={pageNumber}
           pageSize={pageSize}
           total={total}
-          totalFormatter={totalFormatter}
+          totalFormatter={totalContractsFormatter}
         />
       )}
     </ContentFrame>
   </StandardFrame>
 );
-
-const totalFormatter = (total: number) =>
-  `A total of ${commify(total)} ${total > 1 ? "contracts" : "contract"} found`;
 
 export default GenericContractSearchResult;

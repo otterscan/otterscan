@@ -1,5 +1,4 @@
 import React from "react";
-import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import SearchResultNavBar from "../address/SearchResultNavBar";
@@ -7,6 +6,7 @@ import ResultHeader from "../../search/ResultHeader";
 import PendingResults from "../../search/PendingResults";
 import TransactionItem from "../../search/TransactionItem";
 import { useFeeToggler } from "../../search/useFeeToggler";
+import { totalTransactionsFormatter } from "../../search/messages";
 import { ProcessedTransaction } from "../../types";
 import { PAGE_SIZE } from "../../params";
 
@@ -29,7 +29,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
         pageNumber={pageNumber}
         pageSize={PAGE_SIZE}
         total={total}
-        totalFormatter={totalFormatter}
+        totalFormatter={totalTransactionsFormatter}
       />
       <ResultHeader
         feeDisplay={feeDisplay}
@@ -44,7 +44,7 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
             pageNumber={pageNumber}
             pageSize={PAGE_SIZE}
             total={total}
-            totalFormatter={totalFormatter}
+            totalFormatter={totalTransactionsFormatter}
           />
         </StandardSelectionBoundary>
       ) : (
@@ -53,10 +53,5 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
     </ContentFrame>
   );
 };
-
-const totalFormatter = (total: number) =>
-  `A total of ${commify(total)} ${
-    total > 1 ? "transactions" : "transaction"
-  } found`;
 
 export default React.memo(BlockTransactionResults);

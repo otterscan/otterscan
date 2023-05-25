@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import StandardTable from "../../components/StandardTable";
@@ -8,6 +7,7 @@ import StandardTBody from "../../components/StandardTBody";
 import SearchResultNavBar from "./SearchResultNavBar";
 import PendingPage from "./PendingPage";
 import { TransactionMatch } from "../../ots2/usePrototypeTransferHooks";
+import { totalTransactionsFormatter } from "../../search/messages";
 import { PAGE_SIZE } from "../../params";
 
 type GenericTransactionSearchResultProps<T> = {
@@ -48,7 +48,7 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
           pageNumber={pageNumber}
           pageSize={PAGE_SIZE}
           total={total}
-          totalFormatter={totalFormatter}
+          totalFormatter={totalTransactionsFormatter}
         />
         <StandardTable>
           <StandardTHead>
@@ -77,17 +77,12 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
             pageNumber={pageNumber}
             pageSize={PAGE_SIZE}
             total={total}
-            totalFormatter={totalFormatter}
+            totalFormatter={totalTransactionsFormatter}
           />
         )}
       </>
     )}
   </ContentFrame>
 );
-
-const totalFormatter = (total: number) =>
-  `A total of ${commify(total)} ${
-    total > 1 ? "transactions" : "transaction"
-  } found`;
 
 export default GenericTransactionSearchResult;
