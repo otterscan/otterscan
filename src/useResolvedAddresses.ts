@@ -19,17 +19,12 @@ export const useAddressOrENS = (
   const { provider } = useContext(RuntimeContext);
   const [checksummedAddress, setChecksummedAddress] = useState<
     ChecksummedAddress | undefined
-  >();
+  >(isAddress(addressOrName) ? addressOrName : undefined);
   const [isENS, setENS] = useState<boolean>();
   const [error, setError] = useState<boolean>();
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
-    // Reset
-    setENS(false);
-    setError(false);
-    setChecksummedAddress(undefined);
-
     // TODO: handle and offer fallback to bad checksummed addresses
     if (isAddress(addressOrName)) {
       // Normalize to checksummed address

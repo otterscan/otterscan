@@ -19,6 +19,7 @@ const AllERC1155: FC = () => {
     <GenericContractSearchResult
       title="ERC1155 tokens"
       header={<ERC1155Header />}
+      cols={5}
       pageNumber={pageNumber}
       pageSize={PAGE_SIZE}
       total={total}

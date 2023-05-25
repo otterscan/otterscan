@@ -1,5 +1,4 @@
 import { FC, ReactNode } from "react";
-import { commify } from "@ethersproject/units";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
 import ContentFrame from "../components/ContentFrame";
@@ -7,8 +6,10 @@ import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
-import PageControl from "../search/PageControl";
+import SearchResultNavBar from "../execution/address/SearchResultNavBar";
+import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
+import { totalContractsFormatter } from "../search/messages";
 
 type GenericContractSearchResultProps<T> = {
   /**
@@ -23,6 +24,11 @@ type GenericContractSearchResultProps<T> = {
    * The <th>'s may have a column width.
    */
   header: ReactNode;
+
+  /**
+   * Number of columns; used to render pending content.
+   */
+  cols: number;
 
   /**
    * 1-based page number.
@@ -70,22 +76,12 @@ const GenericContractSearchResult = <T extends ContractMatch>({
       </div>
     </StandardSubtitle>
     <ContentFrame key={pageNumber}>
-      <div className="flex items-baseline justify-between py-3">
-        <div className="text-sm text-gray-500">
-          {page === undefined || total === undefined ? (
-            <>Waiting for search results...</>
-          ) : (
-            <>A total of {commify(total)} contracts found</>
-          )}
-        </div>
-        {total !== undefined && (
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={pageSize}
-            total={total}
-          />
-        )}
-      </div>
+      <SearchResultNavBar
+        pageNumber={pageNumber}
+        pageSize={pageSize}
+        total={total}
+        totalFormatter={totalContractsFormatter}
+      />
       <StandardScrollableTable>
         <StandardTHead>{header}</StandardTHead>
         {page !== undefined ? (
@@ -99,21 +95,16 @@ const GenericContractSearchResult = <T extends ContractMatch>({
             </StandardTBody>
           </StandardSelectionBoundary>
         ) : (
-          // <PendingResults />
-          <></>
+          <PendingPage rows={pageSize} cols={3} />
         )}
       </StandardScrollableTable>
-      {page !== undefined && total !== undefined && (
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            A total of {commify(total)} contracts found
-          </div>
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={pageSize}
-            total={total}
-          />
-        </div>
+      {total !== undefined && (
+        <SearchResultNavBar
+          pageNumber={pageNumber}
+          pageSize={pageSize}
+          total={total}
+          totalFormatter={totalContractsFormatter}
+        />
       )}
     </ContentFrame>
   </StandardFrame>
