@@ -53,55 +53,65 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
 
   return (
     <ContentFrame key={pageNumber} tabs>
-      <div className="flex items-baseline justify-between py-3">
-        <div className="text-sm text-gray-500">
-          {items === undefined || total === undefined ? (
-            <>Waiting for search results...</>
-          ) : (
-            <>A total of {commify(total)} transactions found</>
-          )}
-        </div>
-        {total !== undefined && (
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={PAGE_SIZE}
-            total={total}
-          />
-        )}
-      </div>
-      <StandardTable>
-        <StandardTHead>
-          <th className="w-56">Txn Hash</th>
-          <th className="w-28">Method</th>
-          <th className="w-28">Block</th>
-          <th className="w-28">Age</th>
-          <th>From</th>
-          <th>To</th>
-          <th className="w-44">Value</th>
-        </StandardTHead>
-        {items !== undefined ? (
-          <StandardSelectionBoundary>
-            <StandardTBody>
-              {items.map((i) => (
-                <ERC20Item key={i.hash} {...i} />
-              ))}
-            </StandardTBody>
-          </StandardSelectionBoundary>
-        ) : (
-          <PendingPage rows={PAGE_SIZE} cols={7} />
-        )}
-      </StandardTable>
-      {items !== undefined && total !== undefined && (
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            A total of {commify(total)} transactions found
+      {total === 0 ? (
+        <div className="py-3 text-sm text-gray-500">No transactions found</div>
+      ) : (
+        <>
+          <div className="flex items-baseline justify-between py-3">
+            <div className="text-sm text-gray-500">
+              {items === undefined || total === undefined ? (
+                <>Waiting for search results...</>
+              ) : (
+                <>
+                  A total of {commify(total)}{" "}
+                  {total > 1 ? "transactions" : "transaction"} found
+                </>
+              )}
+            </div>
+            {total !== undefined && (
+              <PageControl
+                pageNumber={pageNumber}
+                pageSize={PAGE_SIZE}
+                total={total}
+              />
+            )}
           </div>
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={PAGE_SIZE}
-            total={total}
-          />
-        </div>
+          <StandardTable>
+            <StandardTHead>
+              <th className="w-56">Txn Hash</th>
+              <th className="w-28">Method</th>
+              <th className="w-28">Block</th>
+              <th className="w-28">Age</th>
+              <th>From</th>
+              <th>To</th>
+              <th className="w-44">Value</th>
+            </StandardTHead>
+            {items !== undefined ? (
+              <StandardSelectionBoundary>
+                <StandardTBody>
+                  {items.map((i) => (
+                    <ERC20Item key={i.hash} {...i} />
+                  ))}
+                </StandardTBody>
+              </StandardSelectionBoundary>
+            ) : (
+              <PendingPage rows={PAGE_SIZE} cols={7} />
+            )}
+          </StandardTable>
+          {items !== undefined && total !== undefined && (
+            <div className="flex items-baseline justify-between py-3">
+              <div className="text-sm text-gray-500">
+                A total of {commify(total)}{" "}
+                {total > 1 ? "transactions" : "transaction"} found
+              </div>
+              <PageControl
+                pageNumber={pageNumber}
+                pageSize={PAGE_SIZE}
+                total={total}
+              />
+            </div>
+          )}
+        </>
       )}
     </ContentFrame>
   );
