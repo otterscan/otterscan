@@ -1,13 +1,5 @@
 import { useContext, FC, useMemo } from "react";
-import { commify } from "@ethersproject/units";
-import { AddressAwareComponentProps } from "../types";
-import ContentFrame from "../../components/ContentFrame";
-import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
-import StandardTable from "../../components/StandardTable";
-import StandardTHead from "../../components/StandardTHead";
-import StandardTBody from "../../components/StandardTBody";
-import PageControl from "../../search/PageControl";
-import PendingPage from "./PendingPage";
+import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import { RuntimeContext } from "../../useRuntime";
 import {
@@ -15,6 +7,7 @@ import {
   useGenericTransactionList,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
+import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
 
 const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
@@ -52,68 +45,12 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
   document.title = `ERC721 Transfers | Otterscan`;
 
   return (
-    <ContentFrame key={pageNumber} tabs>
-      {total === 0 ? (
-        <div className="py-3 text-sm text-gray-500">No transactions found</div>
-      ) : (
-        <>
-          <div className="flex items-baseline justify-between py-3">
-            <div className="text-sm text-gray-500">
-              {items === undefined || total === undefined ? (
-                <>Waiting for search results...</>
-              ) : (
-                <>
-                  A total of {commify(total)}{" "}
-                  {total > 1 ? "transactions" : "transaction"} found
-                </>
-              )}
-            </div>
-            {total !== undefined && (
-              <PageControl
-                pageNumber={pageNumber}
-                pageSize={PAGE_SIZE}
-                total={total}
-              />
-            )}
-          </div>
-          <StandardTable>
-            <StandardTHead>
-              <th className="w-56">Txn Hash</th>
-              <th className="w-28">Method</th>
-              <th className="w-28">Block</th>
-              <th className="w-28">Age</th>
-              <th>From</th>
-              <th>To</th>
-              <th className="w-44">Value</th>
-            </StandardTHead>
-            {items !== undefined ? (
-              <StandardSelectionBoundary>
-                <StandardTBody>
-                  {items.map((i) => (
-                    <ERC20Item key={i.hash} {...i} />
-                  ))}
-                </StandardTBody>
-              </StandardSelectionBoundary>
-            ) : (
-              <PendingPage rows={PAGE_SIZE} cols={7} />
-            )}
-          </StandardTable>
-          {items !== undefined && total !== undefined && (
-            <div className="flex items-baseline justify-between py-3">
-              <div className="text-sm text-gray-500">
-                A total of {commify(total)}{" "}
-                {total > 1 ? "transactions" : "transaction"} found
-              </div>
-              <PageControl
-                pageNumber={pageNumber}
-                pageSize={PAGE_SIZE}
-                total={total}
-              />
-            </div>
-          )}
-        </>
-      )}
-    </ContentFrame>
+    <GenericTransactionSearchResult
+      pageNumber={pageNumber}
+      total={total}
+      items={items}
+      Item={(i) => <ERC20Item {...i} />}
+    />
   );
 };
 

@@ -31,6 +31,9 @@ export type TransactionListResults<T> = {
 
 export type TransactionMatch = {
   hash: string;
+};
+
+export type TransactionMatchWithData = TransactionMatch & {
   transaction: TransactionResponse;
   receipt: TransactionReceipt;
 };
@@ -54,7 +57,7 @@ const formatter = new Formatter();
 const resultFetcher = (
   provider: JsonRpcProvider | undefined
 ): Fetcher<
-  TransactionListResults<TransactionMatch> | undefined,
+  TransactionListResults<TransactionMatchWithData> | undefined,
   [string, ...any]
 > => {
   const fetcher = providerFetcher(provider);
@@ -66,7 +69,7 @@ const resultFetcher = (
     }
 
     const converted = (res.results as any[]).map(
-      (m): TransactionMatch => ({
+      (m): TransactionMatchWithData => ({
         hash: m.hash,
         transaction: formatter.transactionResponse(m.transaction),
         receipt: formatter.receipt(m.receipt),
@@ -91,7 +94,7 @@ export const useGenericTransactionList = (
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): TransactionListResults<TransactionMatch> | undefined => {
+): TransactionListResults<TransactionMatchWithData> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots_get${t}TransferList`;
   const fetcher = resultFetcher(provider);
