@@ -9,7 +9,7 @@ import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
 import TokenBalance from "./TokenBalance";
 import { RuntimeContext } from "../../useRuntime";
-import { useERC20Holdings } from "../../useErigonHooks";
+import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
 import { useTokenSet } from "../../kleros/useTokenList";
 
 const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {

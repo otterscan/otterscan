@@ -3,7 +3,8 @@ import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
 import { ChecksummedAddress } from "../../types";
 import { RuntimeContext } from "../../useRuntime";
-import { useTokenBalance, useTokenMetadata } from "../../useErigonHooks";
+import { useTokenMetadata } from "../../useErigonHooks";
+import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
 import USDAmount from "../../components/USDAmount";
 
