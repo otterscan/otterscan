@@ -7,7 +7,7 @@ import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardScrollableTable from "../components/StandardScrollableTable";
 import StandardTHead from "../components/StandardTHead";
 import StandardTBody from "../components/StandardTBody";
-import PageControl from "../search/PageControl";
+import SearchResultNavBar from "../execution/address/SearchResultNavBar";
 import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
 
@@ -76,22 +76,12 @@ const GenericContractSearchResult = <T extends ContractMatch>({
       </div>
     </StandardSubtitle>
     <ContentFrame key={pageNumber}>
-      <div className="flex items-baseline justify-between py-3">
-        <div className="text-sm text-gray-500">
-          {page === undefined || total === undefined ? (
-            <>Waiting for search results...</>
-          ) : (
-            <>A total of {commify(total)} contracts found</>
-          )}
-        </div>
-        {total !== undefined && (
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={pageSize}
-            total={total}
-          />
-        )}
-      </div>
+      <SearchResultNavBar
+        pageNumber={pageNumber}
+        pageSize={pageSize}
+        total={total}
+        totalFormatter={totalFormatter}
+      />
       <StandardScrollableTable>
         <StandardTHead>{header}</StandardTHead>
         {page !== undefined ? (
@@ -108,20 +98,19 @@ const GenericContractSearchResult = <T extends ContractMatch>({
           <PendingPage rows={pageSize} cols={3} />
         )}
       </StandardScrollableTable>
-      {page !== undefined && total !== undefined && (
-        <div className="flex items-baseline justify-between py-3">
-          <div className="text-sm text-gray-500">
-            A total of {commify(total)} contracts found
-          </div>
-          <PageControl
-            pageNumber={pageNumber}
-            pageSize={pageSize}
-            total={total}
-          />
-        </div>
+      {total !== undefined && (
+        <SearchResultNavBar
+          pageNumber={pageNumber}
+          pageSize={pageSize}
+          total={total}
+          totalFormatter={totalFormatter}
+        />
       )}
     </ContentFrame>
   </StandardFrame>
 );
+
+const totalFormatter = (total: number) =>
+  `A total of ${commify(total)} ${total > 1 ? "contracts" : "contract"} found`;
 
 export default GenericContractSearchResult;

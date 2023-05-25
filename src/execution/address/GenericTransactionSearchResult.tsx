@@ -48,7 +48,7 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
           pageNumber={pageNumber}
           pageSize={PAGE_SIZE}
           total={total}
-          totalFormatter={transactionTotalFormatter}
+          totalFormatter={totalFormatter}
         />
         <StandardTable>
           <StandardTHead>
@@ -77,7 +77,7 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
             pageNumber={pageNumber}
             pageSize={PAGE_SIZE}
             total={total}
-            totalFormatter={transactionTotalFormatter}
+            totalFormatter={totalFormatter}
           />
         )}
       </>
@@ -85,7 +85,7 @@ const GenericTransactionSearchResult = <T extends TransactionMatch>({
   </ContentFrame>
 );
 
-const transactionTotalFormatter = (total: number) =>
+const totalFormatter = (total: number) =>
   `A total of ${commify(total)} ${
     total > 1 ? "transactions" : "transaction"
   } found`;
