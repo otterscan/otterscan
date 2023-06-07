@@ -1,7 +1,7 @@
 FROM node:18.16.0-alpine3.17 AS builder
 WORKDIR /otterscan-build
 COPY ["package.json", "package-lock.json", "/otterscan-build/"]
-RUN npm install
+RUN npm ci
 COPY ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "postcss.config.js", "tailwind.config.js", "vite.config.ts", "index.html", "/otterscan-build/"]
 COPY ["public", "/otterscan-build/public/"]
 COPY ["src", "/otterscan-build/src/"]
