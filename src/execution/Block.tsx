@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useContext } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { commify, formatUnits } from "@ethersproject/units";
-import { toUtf8String } from "@ethersproject/strings";
+import { toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "../components/StandardFrame";
@@ -44,12 +44,7 @@ const Block: React.FC = () => {
   }, [blockNumberOrHash, block]);
 
   const extraStr = useMemo(() => {
-    try {
-      return block && toUtf8String(block.extraData);
-    } catch (err) {
-      console.info("Error while converting block extra data to string");
-      console.info(err);
-    }
+    return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
   }, [block]);
   const burntFees =
     block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
