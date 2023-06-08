@@ -21,7 +21,6 @@ import InternalTransactionOperation from "../../components/InternalTransactionOp
 import MethodName from "../../components/MethodName";
 import TransactionDetailsValue from "../../components/TransactionDetailsValue";
 import TransactionType from "../../components/TransactionType";
-import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
 import NativeTokenPrice from "../../components/NativeTokenPrice";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -172,7 +171,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             </div>
             {expanded && (
               <Tab.Group>
-                <Tab.List className="mt-2 mb-1 flex space-x-1">
+                <Tab.List className="mb-1 mt-2 flex space-x-1">
                   <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
                   <ModeTab>Raw</ModeTab>
                 </Tab.List>
@@ -386,7 +385,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <TransactionFee confirmedData={txData.confirmedData} />
+                <TransactionDetailsValue
+                  value={txData.confirmedData.fee}
+                  blockTag={txData.confirmedData.blockNumber}
+                />
               </div>
               {hasEIP1559 && <RewardSplit txData={txData} />}
             </div>
