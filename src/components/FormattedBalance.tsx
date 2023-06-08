@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatValue } from "./formatter";
 
 const DEFAULT_DECIMALS = 18;
 
@@ -16,14 +16,11 @@ const FormattedBalance: FC<FormattedBalanceProps> = ({
   decimals = DEFAULT_DECIMALS,
   symbol,
 }) => {
-  const formatted = commify(formatUnits(value, decimals));
-  const stripZeroDec = formatted.endsWith(".0")
-    ? formatted.slice(0, formatted.length - 2)
-    : formatted;
+  const formattedValue = formatValue(value, decimals);
 
   return (
     <>
-      {stripZeroDec}
+      {formattedValue}
       {symbol != undefined ? " " + symbol : ""}
     </>
   );
