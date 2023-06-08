@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import TransactionValue from "../../components/TransactionValue";
+import NativeTokenAmount from "../../components/NativeTokenAmount";
 import FiatValue, { rewardPreset } from "../../components/FiatValue";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { useFiatValue } from "../../usePriceOracle";
@@ -16,12 +16,12 @@ const BlockReward: FC<BlockRewardProps> = ({ block }) => {
 
   return (
     <>
-      <TransactionValue value={block.blockReward.add(netFeeReward)} />
+      <NativeTokenAmount value={block.blockReward.add(netFeeReward)} />
       {!netFeeReward.isZero() && (
         <>
           {" "}
-          (<TransactionValue value={block.blockReward} hideUnit /> +{" "}
-          <TransactionValue value={netFeeReward} hideUnit />)
+          (<NativeTokenAmount value={block.blockReward} hideUnit /> +{" "}
+          <NativeTokenAmount value={netFeeReward} hideUnit />)
         </>
       )}
       {fiatValue && (

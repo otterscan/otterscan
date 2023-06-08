@@ -7,7 +7,7 @@ import TransactionDirection, {
   Direction,
   Flags,
 } from "../components/TransactionDirection";
-import TransactionValue from "../components/TransactionValue";
+import NativeTokenAmount from "../components/NativeTokenAmount";
 import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { ProcessedTransaction } from "../types";
 import { FeeDisplay } from "./useFeeToggler";
@@ -106,7 +106,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           </span>
         </span>
         <span className="col-span-2 truncate">
-          <TransactionValue value={tx.value} />
+          <NativeTokenAmount value={tx.value} />
         </span>
         <span className="truncate font-balance text-xs text-gray-500">
           {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}

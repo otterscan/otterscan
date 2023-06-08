@@ -6,7 +6,7 @@ import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
 import TransactionDirection from "../../components/TransactionDirection";
 import { AddressAwareComponentProps } from "../types";
-import TransactionValue from "../../components/TransactionValue";
+import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TransactionAddress from "../components/TransactionAddress";
 import { BlockNumberContext } from "../../useBlockTagContext";
 
@@ -70,7 +70,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
           )}
         </td>
         <td>
-          <TransactionValue value={value} />
+          <NativeTokenAmount value={value} />
         </td>
       </tr>
     </BlockNumberContext.Provider>

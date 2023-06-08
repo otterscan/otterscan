@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import { BigNumber } from "@ethersproject/bignumber";
-import TransactionValue from "./TransactionValue";
+import NativeTokenAmount from "./NativeTokenAmount";
 import FiatValue, { FiatBoxProps } from "./FiatValue";
 import { useFiatValue } from "../usePriceOracle";
 
@@ -24,7 +24,7 @@ const NativeTokenAmountAndFiat: FC<NativeTokenAmountAndFiatProps> = ({
 
   return (
     <span className="space-x-2">
-      <TransactionValue value={value} />
+      <NativeTokenAmount value={value} />
       {fiatValue && <FiatValue value={fiatValue} {...rest} />}
     </span>
   );

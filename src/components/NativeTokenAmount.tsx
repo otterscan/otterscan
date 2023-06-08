@@ -3,20 +3,21 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { useChainInfo } from "../useChainInfo";
 import FormattedBalance from "./FormattedBalance";
 
-type TransactionValueProps = {
+type NativeTokenAmountProps = {
   value: BigNumber;
   hideUnit?: boolean;
 };
 
 /**
- * Standard component for displaying balances. It:
+ * Standard component for displaying a certain amount of native chain token
+ * (i.e. ETH). It:
  *
  * - Commify non-decimal parts, i.e., 1,000,000.00
  * - Light gray absolute zero values
- * - Cut out decimal part is it is 0 to reduce UI clutter, i.e., show
+ * - Cut out decimal part if it is 0 to reduce UI clutter, i.e., show
  * 123 instead of 123.00
  */
-const TransactionValue: FC<TransactionValueProps> = ({ value, hideUnit }) => {
+const NativeTokenAmount: FC<NativeTokenAmountProps> = ({ value, hideUnit }) => {
   const {
     nativeCurrency: { symbol, decimals },
   } = useChainInfo();
@@ -32,4 +33,4 @@ const TransactionValue: FC<TransactionValueProps> = ({ value, hideUnit }) => {
   );
 };
 
-export default memo(TransactionValue);
+export default memo(NativeTokenAmount);

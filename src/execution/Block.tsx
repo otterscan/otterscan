@@ -16,7 +16,7 @@ import RelativePosition from "../components/RelativePosition";
 import PercentageBar from "../components/PercentageBar";
 import BlockLink from "../components/BlockLink";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
-import TransactionValue from "../components/TransactionValue";
+import NativeTokenAmount from "../components/NativeTokenAmount";
 import FormattedBalance from "../components/FormattedBalance";
 import NativeTokenPrice from "../components/NativeTokenPrice";
 import HexValue from "../components/HexValue";
@@ -95,7 +95,7 @@ const Block: React.FC = () => {
             <BlockReward block={block} />
           </InfoRow>
           <InfoRow title="Uncles Reward">
-            <TransactionValue value={block.unclesReward} />
+            <NativeTokenAmount value={block.unclesReward} />
           </InfoRow>
           <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
           {block.baseFeePerGas && (
