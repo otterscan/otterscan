@@ -16,6 +16,12 @@ export const feePreset = {
   fgColor: "text-skin-from",
 } satisfies FiatBoxProps;
 
+export const balancePreset = {
+  borderColor: "border-emerald-200",
+  bgColor: "bg-emerald-100",
+  fgColor: "text-emerald-600",
+} satisfies FiatBoxProps;
+
 type FiatValueProps = FiatBoxProps & {
   value: FixedNumber;
   decimals?: number;

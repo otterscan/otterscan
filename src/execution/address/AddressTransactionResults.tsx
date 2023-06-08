@@ -3,7 +3,8 @@ import { AddressAwareComponentProps } from "../types";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import InfoRow from "../../components/InfoRow";
-import AddressBalance from "./AddressBalance";
+import TransactionDetailsValue from "../../components/TransactionDetailsValue";
+import { balancePreset } from "../../components/FiatValue";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import TransactionLink from "../../components/TransactionLink";
 import PendingResults from "../../search/PendingResults";
@@ -99,7 +100,11 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
         <BlockNumberContext.Provider value="latest">
           {balance && (
             <InfoRow title="Balance">
-              <AddressBalance balance={balance} />
+              <TransactionDetailsValue
+                value={balance}
+                blockTag="latest"
+                {...balancePreset}
+              />
             </InfoRow>
           )}
           {creator && (
