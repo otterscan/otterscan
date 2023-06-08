@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, memo, useContext, useState } from "react";
 import { commify, formatUnits } from "@ethersproject/units";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -56,7 +56,7 @@ type DetailsProps = {
   txData: TransactionData;
 };
 
-const Details: React.FC<DetailsProps> = ({ txData }) => {
+const Details: FC<DetailsProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
 
@@ -412,4 +412,4 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
   );
 };
 
-export default React.memo(Details);
+export default memo(Details);
