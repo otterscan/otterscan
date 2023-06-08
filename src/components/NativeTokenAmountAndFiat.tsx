@@ -5,12 +5,17 @@ import TransactionValue from "./TransactionValue";
 import FiatValue, { FiatBoxProps } from "./FiatValue";
 import { useFiatValue } from "../usePriceOracle";
 
-type TransactionDetailsValueProps = FiatBoxProps & {
+type NativeTokenAmountAndFiatProps = FiatBoxProps & {
   value: BigNumber;
   blockTag: BlockTag | undefined;
 };
 
-const TransactionDetailsValue: FC<TransactionDetailsValueProps> = ({
+/**
+ * Standard box combining the display of a certain amount of native tokens
+ * (i.e. ETH) followed by its equivalent in fiat (given the chain has an on-chain
+ * oracle available).
+ */
+const NativeTokenAmountAndFiat: FC<NativeTokenAmountAndFiatProps> = ({
   value,
   blockTag,
   ...rest
@@ -25,4 +30,4 @@ const TransactionDetailsValue: FC<TransactionDetailsValueProps> = ({
   );
 };
 
-export default TransactionDetailsValue;
+export default NativeTokenAmountAndFiat;

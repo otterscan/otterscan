@@ -3,7 +3,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
-import TransactionDetailsValue from "../../components/TransactionDetailsValue";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import { balancePreset } from "../../components/FiatValue";
 import Timestamp from "../../components/Timestamp";
 import HexValue from "../../components/HexValue";
@@ -47,14 +47,14 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
             <HexValue value={validator.data.validator.pubkey} />
           </InfoRow>
           <InfoRow title="Balance">
-            <TransactionDetailsValue
+            <NativeTokenAmountAndFiat
               value={BigNumber.from(validator.data.balance).mul(GWEI)}
               blockTag="latest"
               {...balancePreset}
             />
           </InfoRow>
           <InfoRow title="Effective Balance">
-            <TransactionDetailsValue
+            <NativeTokenAmountAndFiat
               value={BigNumber.from(
                 validator.data.validator.effective_balance
               ).mul(GWEI)}

@@ -19,7 +19,7 @@ import NavNonce from "./NavNonce";
 import Timestamp from "../../components/Timestamp";
 import InternalTransactionOperation from "../../components/InternalTransactionOperation";
 import MethodName from "../../components/MethodName";
-import TransactionDetailsValue from "../../components/TransactionDetailsValue";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import TransactionType from "../../components/TransactionType";
 import RewardSplit from "./RewardSplit";
 import NativeTokenPrice from "../../components/NativeTokenPrice";
@@ -280,7 +280,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <TransactionDetailsValue
+        <NativeTokenAmountAndFiat
           blockTag={txData.confirmedData?.blockNumber}
           value={txData.value}
           {...feePreset}
@@ -387,7 +387,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <TransactionDetailsValue
+                <NativeTokenAmountAndFiat
                   value={txData.confirmedData.fee}
                   blockTag={txData.confirmedData.blockNumber}
                   {...feePreset}
