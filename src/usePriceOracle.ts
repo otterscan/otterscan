@@ -2,6 +2,7 @@ import { JsonRpcProvider, BlockTag } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
+import { commify } from "@ethersproject/units";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
 import { Fetcher } from "swr";
@@ -128,6 +129,25 @@ export const useFiatValue = (
   }
 
   return FixedNumber.fromValue(ethAmount.mul(eth2USDValue).div(10 ** 8), 18);
+};
+
+export const formatFiatValue = (
+  fiat: FixedNumber | undefined,
+  decimals = 2
+): string | undefined => {
+  if (!fiat) {
+    return undefined;
+  }
+
+  let value = commify(fiat.round(decimals).toString());
+
+  // little hack: commify removes trailing decimal zeros
+  const parts = value.split(".");
+  if (parts.length == 2) {
+    value = value + "0".repeat(decimals - parts[1].length);
+  }
+
+  return value;
 };
 
 export const useETHUSDRawOracle = (

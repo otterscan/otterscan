@@ -1,9 +1,8 @@
 import { FC, memo } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import { BigNumber } from "@ethersproject/bignumber";
-import { commify } from "@ethersproject/units";
 import { useChainInfo } from "../useChainInfo";
-import { useFiatValue } from "../usePriceOracle";
+import { formatFiatValue, useFiatValue } from "../usePriceOracle";
 
 const TEN = BigNumber.from(10);
 
@@ -24,17 +23,7 @@ const NativeTokenPrice: FC<NativeTokenPriceProps> = ({ blockTag }) => {
 
   // One unit of native token, considering decimals
   const nativeTokenPrice = useFiatValue(TEN.pow(decimals), blockTag);
-
-  let value: string | undefined;
-  if (nativeTokenPrice) {
-    value = commify(nativeTokenPrice.round(2).toString());
-
-    // little hack: commify removes trailing decimal zeros
-    const parts = value.split(".");
-    if (parts.length == 2) {
-      value = value + "0".repeat(2 - parts[1].length);
-    }
-  }
+  const value = formatFiatValue(nativeTokenPrice);
 
   return (
     <span className="text-sm">

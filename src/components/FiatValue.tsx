@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { FixedNumber } from "@ethersproject/bignumber";
-import { commify } from "@ethersproject/units";
+import { formatFiatValue } from "../usePriceOracle";
 
 const DEFAULT_DECIMALS = 2;
 
@@ -55,10 +55,7 @@ const FiatValue: FC<FiatValueProps> = ({
       bgColor ?? ""
     } text-xs ${fgColor ?? ""}`}
   >
-    $
-    <span className="font-balance">
-      {commify(value.round(decimals).toString())}
-    </span>
+    $<span className="font-balance">{formatFiatValue(value, decimals)}</span>
   </span>
 );
 
