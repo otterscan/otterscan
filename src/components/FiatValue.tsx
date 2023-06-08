@@ -22,6 +22,18 @@ export const balancePreset = {
   fgColor: "text-emerald-600",
 } satisfies FiatBoxProps;
 
+export const neutralPreset = {
+  borderColor: "border-gray-200",
+  bgColor: "bg-gray-100",
+  fgColor: "text-gray-600",
+} satisfies FiatBoxProps;
+
+export const rewardPreset = {
+  borderColor: "border-amber-200",
+  bgColor: "bg-amber-100",
+  fgColor: "text-amber-600",
+} satisfies FiatBoxProps;
+
 type FiatValueProps = FiatBoxProps & {
   value: FixedNumber;
   decimals?: number;

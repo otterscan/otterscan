@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import TransactionValue from "../../components/TransactionValue";
-import FiatValue from "../../components/FiatValue";
+import FiatValue, { rewardPreset } from "../../components/FiatValue";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { useFiatValue } from "../../usePriceOracle";
 
@@ -27,12 +27,7 @@ const BlockReward: FC<BlockRewardProps> = ({ block }) => {
       {fiatValue && (
         <>
           {" "}
-          <FiatValue
-            value={fiatValue}
-            borderColor="border-amber-200"
-            bgColor="bg-amber-100"
-            fgColor="text-amber-600"
-          />
+          <FiatValue value={fiatValue} {...rewardPreset} />
         </>
       )}
     </>
