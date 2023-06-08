@@ -25,14 +25,22 @@ const NativeTokenPrice: FC<NativeTokenPriceProps> = ({ blockTag }) => {
   // One unit of native token, considering decimals
   const nativeTokenPrice = useFiatValue(TEN.pow(decimals), blockTag);
 
+  let value: string | undefined;
+  if (nativeTokenPrice) {
+    value = commify(nativeTokenPrice.round(2).toString());
+
+    // little hack: commify removes trailing decimal zeros
+    const parts = value.split(".");
+    if (parts.length == 2) {
+      value = value + "0".repeat(2 - parts[1].length);
+    }
+  }
+
   return (
     <span className="text-sm">
-      {nativeTokenPrice ? (
+      {value ? (
         <>
-          $
-          <span className="font-balance">
-            {commify(nativeTokenPrice.round(2).toString())}
-          </span>
+          $<span className="font-balance">{value}</span>
           <span className="text-xs text-gray-500"> / {symbol}</span>
         </>
       ) : (
