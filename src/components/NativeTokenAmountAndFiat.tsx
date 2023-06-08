@@ -7,7 +7,7 @@ import { useFiatValue } from "../usePriceOracle";
 
 type NativeTokenAmountAndFiatProps = FiatBoxProps & {
   value: BigNumber;
-  blockTag: BlockTag | undefined;
+  blockTag?: BlockTag;
 };
 
 /**
@@ -17,7 +17,7 @@ type NativeTokenAmountAndFiatProps = FiatBoxProps & {
  */
 const NativeTokenAmountAndFiat: FC<NativeTokenAmountAndFiatProps> = ({
   value,
-  blockTag,
+  blockTag = "latest",
   ...rest
 }) => {
   const fiatValue = useFiatValue(value, blockTag);

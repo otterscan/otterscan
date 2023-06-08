@@ -49,7 +49,6 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
           <InfoRow title="Balance">
             <NativeTokenAmountAndFiat
               value={BigNumber.from(validator.data.balance).mul(GWEI)}
-              blockTag="latest"
               {...balancePreset}
             />
           </InfoRow>
@@ -58,7 +57,6 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
               value={BigNumber.from(
                 validator.data.validator.effective_balance
               ).mul(GWEI)}
-              blockTag="latest"
               {...balancePreset}
             />
           </InfoRow>

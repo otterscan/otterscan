@@ -100,11 +100,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
         <BlockNumberContext.Provider value="latest">
           {balance && (
             <InfoRow title="Balance">
-              <NativeTokenAmountAndFiat
-                value={balance}
-                blockTag="latest"
-                {...balancePreset}
-              />
+              <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
             </InfoRow>
           )}
           {creator && (

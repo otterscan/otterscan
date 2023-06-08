@@ -281,8 +281,8 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       )}
       <InfoRow title="Value">
         <NativeTokenAmountAndFiat
-          blockTag={txData.confirmedData?.blockNumber}
           value={txData.value}
+          blockTag={txData.confirmedData?.blockNumber}
           {...feePreset}
         />
       </InfoRow>
