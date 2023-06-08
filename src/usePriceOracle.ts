@@ -113,18 +113,21 @@ export const useETHUSDOracle = (
   return data !== undefined ? BigNumber.from(data.answer) : undefined;
 };
 
+/**
+ * Converts a certain amount of ETH to fiat using an oracle
+ */
 export const useFiatValue = (
   ethAmount: BigNumber,
   blockTag: BlockTag | undefined
 ) => {
   const { provider } = useContext(RuntimeContext);
   const eth2USDValue = useETHUSDOracle(provider, blockTag);
-  const fiatValue =
-    !ethAmount.isZero() && eth2USDValue !== undefined
-      ? FixedNumber.fromValue(ethAmount.mul(eth2USDValue).div(10 ** 8), 18)
-      : undefined;
 
-  return fiatValue;
+  if (ethAmount.isZero() || eth2USDValue === undefined) {
+    return undefined;
+  }
+
+  return FixedNumber.fromValue(ethAmount.mul(eth2USDValue).div(10 ** 8), 18);
 };
 
 export const useETHUSDRawOracle = (
