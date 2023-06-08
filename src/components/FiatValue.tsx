@@ -4,12 +4,21 @@ import { commify } from "@ethersproject/units";
 
 const DEFAULT_DECIMALS = 2;
 
-type FiatValueProps = {
-  value: FixedNumber;
-  decimals?: number;
+export type FiatBoxProps = {
   borderColor?: string;
   bgColor?: string;
   fgColor?: string;
+};
+
+export const feePreset = {
+  borderColor: "border-skin-from",
+  bgColor: "bg-skin-from",
+  fgColor: "text-skin-from",
+} satisfies FiatBoxProps;
+
+type FiatValueProps = FiatBoxProps & {
+  value: FixedNumber;
+  decimals?: number;
 };
 
 /**

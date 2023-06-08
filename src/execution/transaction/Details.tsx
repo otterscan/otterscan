@@ -33,6 +33,7 @@ import PercentagePosition from "../../components/PercentagePosition";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
 import StandardTextarea from "../../components/StandardTextarea";
+import { feePreset } from "../../components/FiatValue";
 import {
   extract4Bytes,
   use4Bytes,
@@ -282,6 +283,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         <TransactionDetailsValue
           blockTag={txData.confirmedData?.blockNumber}
           value={txData.value}
+          {...feePreset}
         />
       </InfoRow>
       <InfoRow
@@ -388,6 +390,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                 <TransactionDetailsValue
                   value={txData.confirmedData.fee}
                   blockTag={txData.confirmedData.blockNumber}
+                  {...feePreset}
                 />
               </div>
               {hasEIP1559 && <RewardSplit txData={txData} />}
