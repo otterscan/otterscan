@@ -41,7 +41,7 @@ const NativeTokenPrice: FC<NativeTokenPriceProps> = ({ blockTag }) => {
       {value ? (
         <>
           $<span className="font-balance">{value}</span>
-          <span className="text-xs text-gray-500"> / {symbol}</span>
+          <span className="text-xs opacity-50"> / {symbol}</span>
         </>
       ) : (
         "N/A"

@@ -1,28 +1,24 @@
 import { FC } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import { BigNumber } from "@ethersproject/bignumber";
-import FormattedBalance from "./FormattedBalance";
+import TransactionValue from "./TransactionValue";
 import FiatValue from "./FiatValue";
-import { useChainInfo } from "../useChainInfo";
 import { useFiatValue } from "../usePriceOracle";
 
 type TransactionDetailsValueProps = {
-  blockTag: BlockTag | undefined;
   value: BigNumber;
+  blockTag: BlockTag | undefined;
 };
 
 const TransactionDetailsValue: FC<TransactionDetailsValueProps> = ({
-  blockTag,
   value,
+  blockTag,
 }) => {
-  const {
-    nativeCurrency: { symbol },
-  } = useChainInfo();
   const fiatValue = useFiatValue(value, blockTag);
 
   return (
     <>
-      <FormattedBalance value={value} symbol={symbol} />{" "}
+      <TransactionValue value={value} />
       {fiatValue && (
         <FiatValue
           value={fiatValue}
