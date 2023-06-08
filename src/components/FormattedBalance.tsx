@@ -10,7 +10,6 @@ export type FormattedBalanceProps = {
   symbol?: string | undefined;
 };
 
-// TODO: remove duplication with TransactionValue component
 const FormattedBalance: FC<FormattedBalanceProps> = ({
   value,
   decimals = DEFAULT_DECIMALS,
@@ -19,10 +18,10 @@ const FormattedBalance: FC<FormattedBalanceProps> = ({
   const formattedValue = formatValue(value, decimals);
 
   return (
-    <>
-      {formattedValue}
-      {symbol != undefined ? " " + symbol : ""}
-    </>
+    <span title={`${formattedValue} ${symbol !== undefined ? symbol : ""}`}>
+      <span className={`font-balance`}>{formattedValue}</span>
+      {symbol !== undefined && ` ${symbol}`}
+    </span>
   );
 };
 
