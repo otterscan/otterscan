@@ -1,5 +1,6 @@
 import { FC, memo } from "react";
-import { formatValue } from "./formatter";
+import { BigNumber } from "@ethersproject/bignumber";
+import FormattedBalance from "./FormattedBalance";
 
 type RelevantNumericValueProps = {
   value: number;
@@ -11,17 +12,8 @@ type RelevantNumericValueProps = {
  * - Commify non-decimal parts, i.e., 1,000,000.00
  * - Light gray absolute zero values
  */
-const RelevantNumericValue: FC<RelevantNumericValueProps> = ({ value }) => {
-  const formattedValue = formatValue(value, 0);
-
-  return (
-    <span
-      className={`text-sm ${value === 0 ? "text-gray-400" : ""}`}
-      title={`${formattedValue}`}
-    >
-      {formattedValue}
-    </span>
-  );
-};
+const RelevantNumericValue: FC<RelevantNumericValueProps> = ({ value }) => (
+  <FormattedBalance value={BigNumber.from(value)} decimals={0} />
+);
 
 export default memo(RelevantNumericValue);

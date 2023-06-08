@@ -10,6 +10,7 @@ export type FormattedBalanceProps = {
   symbol?: string | undefined;
 };
 
+// TODO: rename it to more generic name, not for balances only
 const FormattedBalance: FC<FormattedBalanceProps> = ({
   value,
   decimals = DEFAULT_DECIMALS,
