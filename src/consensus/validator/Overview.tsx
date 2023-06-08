@@ -3,7 +3,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
-import AddressBalance from "../../execution/address/AddressBalance";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
+import { balancePreset } from "../../components/FiatValue";
 import Timestamp from "../../components/Timestamp";
 import HexValue from "../../components/HexValue";
 import EpochLink from "../components/EpochLink";
@@ -46,15 +47,17 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
             <HexValue value={validator.data.validator.pubkey} />
           </InfoRow>
           <InfoRow title="Balance">
-            <AddressBalance
-              balance={BigNumber.from(validator.data.balance).mul(GWEI)}
+            <NativeTokenAmountAndFiat
+              value={BigNumber.from(validator.data.balance).mul(GWEI)}
+              {...balancePreset}
             />
           </InfoRow>
           <InfoRow title="Effective Balance">
-            <AddressBalance
-              balance={BigNumber.from(
+            <NativeTokenAmountAndFiat
+              value={BigNumber.from(
                 validator.data.validator.effective_balance
               ).mul(GWEI)}
+              {...balancePreset}
             />
           </InfoRow>
           <InfoRow title="Status">{validator.data.status}</InfoRow>

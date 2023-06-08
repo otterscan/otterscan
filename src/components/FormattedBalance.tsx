@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatValue } from "./formatter";
 
 const DEFAULT_DECIMALS = 18;
 
@@ -10,22 +10,19 @@ export type FormattedBalanceProps = {
   symbol?: string | undefined;
 };
 
-// TODO: remove duplication with TransactionValue component
+// TODO: rename it to more generic name, not for balances only
 const FormattedBalance: FC<FormattedBalanceProps> = ({
   value,
   decimals = DEFAULT_DECIMALS,
   symbol,
 }) => {
-  const formatted = commify(formatUnits(value, decimals));
-  const stripZeroDec = formatted.endsWith(".0")
-    ? formatted.slice(0, formatted.length - 2)
-    : formatted;
+  const formattedValue = formatValue(value, decimals);
 
   return (
-    <>
-      {stripZeroDec}
-      {symbol != undefined ? " " + symbol : ""}
-    </>
+    <span title={`${formattedValue} ${symbol !== undefined ? symbol : ""}`}>
+      <span className={`font-balance`}>{formattedValue}</span>
+      {symbol !== undefined && ` ${symbol}`}
+    </span>
   );
 };
 

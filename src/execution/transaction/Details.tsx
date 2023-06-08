@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { FC, memo, useContext, useState } from "react";
 import { commify, formatUnits } from "@ethersproject/units";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,9 +19,8 @@ import NavNonce from "./NavNonce";
 import Timestamp from "../../components/Timestamp";
 import InternalTransactionOperation from "../../components/InternalTransactionOperation";
 import MethodName from "../../components/MethodName";
-import TransactionDetailsValue from "../../components/TransactionDetailsValue";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import TransactionType from "../../components/TransactionType";
-import TransactionFee from "./TransactionFee";
 import RewardSplit from "./RewardSplit";
 import NativeTokenPrice from "../../components/NativeTokenPrice";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -34,6 +33,7 @@ import PercentagePosition from "../../components/PercentagePosition";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
 import StandardTextarea from "../../components/StandardTextarea";
+import { feePreset } from "../../components/FiatValue";
 import {
   extract4Bytes,
   use4Bytes,
@@ -57,7 +57,7 @@ type DetailsProps = {
   txData: TransactionData;
 };
 
-const Details: React.FC<DetailsProps> = ({ txData }) => {
+const Details: FC<DetailsProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
 
@@ -172,7 +172,7 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
             </div>
             {expanded && (
               <Tab.Group>
-                <Tab.List className="mt-2 mb-1 flex space-x-1">
+                <Tab.List className="mb-1 mt-2 flex space-x-1">
                   <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
                   <ModeTab>Raw</ModeTab>
                 </Tab.List>
@@ -280,9 +280,10 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
         </InfoRow>
       )}
       <InfoRow title="Value">
-        <TransactionDetailsValue
-          blockTag={txData.confirmedData?.blockNumber}
+        <NativeTokenAmountAndFiat
           value={txData.value}
+          blockTag={txData.confirmedData?.blockNumber}
+          {...feePreset}
         />
       </InfoRow>
       <InfoRow
@@ -386,7 +387,11 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
-                <TransactionFee confirmedData={txData.confirmedData} />
+                <NativeTokenAmountAndFiat
+                  value={txData.confirmedData.fee}
+                  blockTag={txData.confirmedData.blockNumber}
+                  {...feePreset}
+                />
               </div>
               {hasEIP1559 && <RewardSplit txData={txData} />}
             </div>
@@ -410,4 +415,4 @@ const Details: React.FC<DetailsProps> = ({ txData }) => {
   );
 };
 
-export default React.memo(Details);
+export default memo(Details);

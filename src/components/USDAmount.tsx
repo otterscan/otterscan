@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
-import FiatValue from "./FiatValue";
+import FiatValue, { neutralPreset } from "./FiatValue";
 
 type USDAmountProps = {
   amount: BigNumber;
@@ -29,14 +29,7 @@ const USDAmount: FC<USDAmountProps> = ({
     `ufixed256x${decimals}`
   );
 
-  return (
-    <FiatValue
-      value={fiatAmount}
-      borderColor="border-gray-200"
-      bgColor="bg-gray-100"
-      fgColor="text-gray-600"
-    />
-  );
+  return <FiatValue value={fiatAmount} {...neutralPreset} />;
 };
 
 export default memo(USDAmount);
