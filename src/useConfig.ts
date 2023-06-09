@@ -7,6 +7,7 @@ export type OtterscanConfig = {
   erigonURL?: string;
   beaconAPI?: string;
   assetsURLPrefix?: string;
+  searchSuggestionsURLPrefix?: string;
   experimental?: boolean;
 };
 
