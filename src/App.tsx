@@ -28,7 +28,11 @@ const PageNotFound = lazy(() => import("./PageNotFound"));
 
 const App = () => {
   const runtime = useRuntime();
-  const chainInfo = useChainInfoFromMetadataFile(runtime);
+  // TODO: fix internal hack
+  let chainInfo = useChainInfoFromMetadataFile(runtime);
+  if (runtime.config?.chainInfo !== undefined) {
+    chainInfo = runtime.config.chainInfo;
+  }
 
   return (
     <Suspense fallback={null}>
@@ -65,7 +69,10 @@ const App = () => {
                       <>
                         <Route path="contracts/*" element={<AllContracts />} />
                         <Route path="token/erc20/*" element={<AllERC20 />} />
-                        <Route path="token/erc4626/*" element={<AllERC4626 />} />
+                        <Route
+                          path="token/erc4626/*"
+                          element={<AllERC4626 />}
+                        />
                         <Route path="token/erc721/*" element={<AllERC721 />} />
                         <Route
                           path="token/erc1155/*"

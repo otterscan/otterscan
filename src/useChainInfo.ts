@@ -3,54 +3,45 @@ import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { chainInfoURL } from "./url";
 import { OtterscanRuntime } from "./useRuntime";
-
-export type ChainInfo = {
-  network: string | undefined;
-  faucets: string[];
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-};
-
-export const defaultChainInfo: ChainInfo = {
-  network: undefined,
-  faucets: [],
-  nativeCurrency: {
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18,
-  },
-};
+import { ChainInfo, defaultChainInfo } from "./useConfig";
 
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
-const chainInfoFetcher: Fetcher<ChainInfo, [string, number]> = async ([
-  assetsURLPrefix,
-  chainId,
-]) => {
-  const url = chainInfoURL(assetsURLPrefix, chainId);
-  const res = await fetch(url);
-  if (!res.ok) {
-    return defaultChainInfo;
-  }
+const chainInfoFetcher: (
+  runtime: OtterscanRuntime | undefined
+) => Fetcher<ChainInfo, [string, number]> =
+  (runtime) =>
+  async ([assetsURLPrefix, chainId]) => {
+    // Hardcoded chainInfo; DON'T fetch it
+    if (runtime?.config?.chainInfo !== undefined) {
+      return runtime.config.chainInfo;
+    }
 
-  const info: ChainInfo = await res.json();
-  return info;
-};
+    const url = chainInfoURL(assetsURLPrefix, chainId);
+    const res = await fetch(url);
+    if (!res.ok) {
+      return defaultChainInfo;
+    }
+
+    const info: ChainInfo = await res.json();
+    return info;
+  };
 
 export const useChainInfoFromMetadataFile = (
   runtime: OtterscanRuntime | undefined
 ): ChainInfo | undefined => {
+  const hardcodedChainInfo = runtime?.config?.chainInfo !== undefined;
   const assetsURLPrefix = runtime?.config?.assetsURLPrefix;
-  const chainId = runtime?.provider?.network.chainId;
+  const chainId = runtime?.provider?.network?.chainId;
 
   const { data, error } = useSWRImmutable(
-    assetsURLPrefix !== undefined && chainId !== undefined
-      ? [assetsURLPrefix, chainId]
-      : null,
-    chainInfoFetcher
+    !hardcodedChainInfo &&
+      (assetsURLPrefix === undefined || chainId === undefined)
+      ? null
+      : [assetsURLPrefix, chainId],
+    hardcodedChainInfo
+      ? () => runtime?.config?.chainInfo
+      : chainInfoFetcher(runtime)
   );
   if (error) {
     return defaultChainInfo;
