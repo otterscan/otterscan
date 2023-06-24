@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useContext } from "react";
+import { useMemo, useContext, FC } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { commify, formatUnits } from "@ethersproject/units";
 import { toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
@@ -23,10 +23,11 @@ import HexValue from "../components/HexValue";
 import { RuntimeContext } from "../useRuntime";
 import { useLatestBlockNumber } from "../useLatestBlock";
 import { blockTxsURL, blockURL } from "../url";
+import { useBlockPageTitle } from "../useTitle";
 import { useBlockData } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 
-const Block: React.FC = () => {
+const Block: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { blockNumberOrHash } = useParams();
   if (blockNumberOrHash === undefined) {
@@ -36,12 +37,8 @@ const Block: React.FC = () => {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
 
-  const block = useBlockData(provider, blockNumberOrHash);
-  useEffect(() => {
-    if (block !== undefined) {
-      document.title = `Block #${blockNumberOrHash} | Otterscan`;
-    }
-  }, [blockNumberOrHash, block]);
+  const { data: block, isLoading } = useBlockData(provider, blockNumberOrHash);
+  useBlockPageTitle(parseInt(blockNumberOrHash));
 
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
@@ -71,8 +68,13 @@ const Block: React.FC = () => {
       {block === null && (
         <BlockNotFound blockNumberOrHash={blockNumberOrHash} />
       )}
-      {block && (
+      {block === undefined && (
         <ContentFrame>
+          <InfoRow title="Block Height">Loading block data...</InfoRow>
+        </ContentFrame>
+      )}
+      {block && (
+        <ContentFrame isLoading={isLoading}>
           <InfoRow title="Block Height">
             <span className="font-bold">{commify(block.number)}</span>
           </InfoRow>
