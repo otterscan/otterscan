@@ -1,17 +1,21 @@
-import React, { useMemo, useContext } from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router";
-import { BigNumber } from "@ethersproject/bignumber";
+import { useSearchParams } from "react-router-dom";
 import StandardFrame from "../components/StandardFrame";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
 import { PAGE_SIZE } from "../params";
+import { useBlockTransactionsPageTitle } from "../useTitle";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockTransactions } from "../useErigonHooks";
-import { useSearchParams } from "react-router-dom";
 
 const BlockTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const params = useParams();
+  if (params.blockNumber === undefined) {
+    throw new Error("blockNumber couldn't be undefined here");
+  }
+  const blockNumber = parseInt(params.blockNumber);
 
   const [searchParams] = useSearchParams();
   let pageNumber = 1;
@@ -22,27 +26,29 @@ const BlockTransactions: React.FC = () => {
     } catch (err) {}
   }
 
-  const blockNumber = useMemo(
-    () => BigNumber.from(params.blockNumber),
-    [params.blockNumber]
-  );
-
-  const [totalTxs, txs] = useBlockTransactions(
+  const { data, isLoading } = useBlockTransactions(
     provider,
-    blockNumber.toNumber(),
+    blockNumber,
     pageNumber - 1,
     PAGE_SIZE
   );
+  const txs = data?.txs;
+  const totalTxs = data?.total;
 
-  document.title = `Block #${blockNumber} Txns | Otterscan`;
+  useBlockTransactionsPageTitle(
+    blockNumber,
+    pageNumber,
+    totalTxs === undefined ? undefined : Math.ceil(totalTxs / PAGE_SIZE)
+  );
 
   return (
     <StandardFrame>
-      <BlockTransactionHeader blockTag={blockNumber.toNumber()} />
+      <BlockTransactionHeader blockTag={blockNumber} />
       <BlockTransactionResults
         page={txs}
         total={totalTxs ?? 0}
         pageNumber={pageNumber}
+        isLoading={isLoading}
       />
     </StandardFrame>
   );

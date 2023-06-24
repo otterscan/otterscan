@@ -80,72 +80,78 @@ export const readBlock = async (
   return extBlock;
 };
 
+export type BlockTransactionsPage = {
+  total: number;
+  txs: ProcessedTransaction[];
+};
+
+const blockTransactionsFetcher: Fetcher<
+  BlockTransactionsPage,
+  [JsonRpcProvider, number, number, number]
+> = async ([provider, blockNumber, pageNumber, pageSize]) => {
+  const result = await provider.send("ots_getBlockTransactions", [
+    blockNumber,
+    pageNumber,
+    pageSize,
+  ]);
+  const _block = provider.formatter.blockWithTransactions(
+    result.fullblock
+  ) as unknown as BlockWithTransactions;
+  const _receipts = result.receipts;
+
+  const rawTxs = _block.transactions
+    .map((t, i): ProcessedTransaction => {
+      const _rawReceipt = _receipts[i];
+      // Empty logs on purpose because of ethers formatter requires it
+      _rawReceipt.logs = [];
+      const _receipt = provider.formatter.receipt(_rawReceipt);
+
+      return {
+        blockNumber: blockNumber,
+        timestamp: _block.timestamp,
+        miner: _block.miner,
+        idx: i,
+        hash: t.hash,
+        from: t.from,
+        to: t.to ?? null,
+        createdContractAddress: _receipt.contractAddress,
+        value: t.value,
+        fee:
+          t.type !== 2
+            ? provider.formatter.bigNumber(_receipt.gasUsed).mul(t.gasPrice!)
+            : provider.formatter
+                .bigNumber(_receipt.gasUsed)
+                .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
+        gasPrice:
+          t.type !== 2
+            ? t.gasPrice!
+            : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
+        data: t.data,
+        status: provider.formatter.number(_receipt.status),
+      };
+    })
+    .reverse();
+
+  return { total: result.fullblock.transactionCount, txs: rawTxs };
+};
+
 export const useBlockTransactions = (
   provider: JsonRpcProvider | undefined,
   blockNumber: number,
   pageNumber: number,
   pageSize: number
-): [number | undefined, ProcessedTransaction[] | undefined] => {
-  const [totalTxs, setTotalTxs] = useState<number>();
-  const [txs, setTxs] = useState<ProcessedTransaction[]>();
-
-  useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
-    const readBlock = async () => {
-      const result = await provider.send("ots_getBlockTransactions", [
-        blockNumber,
-        pageNumber,
-        pageSize,
-      ]);
-      const _block = provider.formatter.blockWithTransactions(
-        result.fullblock
-      ) as unknown as BlockWithTransactions;
-      const _receipts = result.receipts;
-
-      const rawTxs = _block.transactions
-        .map((t, i): ProcessedTransaction => {
-          const _rawReceipt = _receipts[i];
-          // Empty logs on purpose because of ethers formatter requires it
-          _rawReceipt.logs = [];
-          const _receipt = provider.formatter.receipt(_rawReceipt);
-
-          return {
-            blockNumber: blockNumber,
-            timestamp: _block.timestamp,
-            miner: _block.miner,
-            idx: i,
-            hash: t.hash,
-            from: t.from,
-            to: t.to ?? null,
-            createdContractAddress: _receipt.contractAddress,
-            value: t.value,
-            fee:
-              t.type !== 2
-                ? provider.formatter
-                    .bigNumber(_receipt.gasUsed)
-                    .mul(t.gasPrice!)
-                : provider.formatter
-                    .bigNumber(_receipt.gasUsed)
-                    .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
-            gasPrice:
-              t.type !== 2
-                ? t.gasPrice!
-                : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
-            data: t.data,
-            status: provider.formatter.number(_receipt.status),
-          };
-        })
-        .reverse();
-      setTxs(rawTxs);
-      setTotalTxs(result.fullblock.transactionCount);
-    };
-    readBlock();
-  }, [provider, blockNumber, pageNumber, pageSize]);
-
-  return [totalTxs, txs];
+): { data: BlockTransactionsPage | undefined; isLoading: boolean } => {
+  const { data, error, isLoading } = useSWRImmutable(
+    provider !== undefined
+      ? [provider, blockNumber, pageNumber, pageSize]
+      : null,
+    blockTransactionsFetcher,
+    { keepPreviousData: true }
+  );
+  if (error) {
+    return { data: undefined, isLoading: false };
+  }
+  return { data, isLoading };
 };
 
 const blockDataFetcher: Fetcher<
