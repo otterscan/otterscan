@@ -13,10 +13,18 @@ export const useBlockPageTitle = (blockNumber: number) => {
 /**
  * Page title for 1 page of transactions results for a block.
  */
-export const useBlockTransactionsPageTitle = (blockNumber: number) => {
+export const useBlockTransactionsPageTitle = (
+  blockNumber: number,
+  pageNumber: number,
+  pageCount: number | undefined
+) => {
   useEffect(() => {
     if (blockNumber !== undefined) {
-      document.title = `Block #${commify(blockNumber)} Txns | Otterscan`;
+      document.title = `Block #${commify(
+        blockNumber
+      )} Txns | Page ${pageNumber}${
+        pageCount === undefined ? "" : "/" + pageCount
+      } | Otterscan`;
     }
   }, [blockNumber]);
 };
