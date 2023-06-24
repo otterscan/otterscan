@@ -159,24 +159,25 @@ const blockDataFetcher: Fetcher<
 export const useBlockData = (
   provider: JsonRpcProvider | undefined,
   blockNumberOrHash: string | undefined
-): ExtendedBlock | null | undefined => {
-  const { data, error } = useSWRImmutable(
+): { data: ExtendedBlock | null | undefined; isLoading: boolean } => {
+  const { data, error, isLoading } = useSWRImmutable(
     provider !== undefined && blockNumberOrHash !== undefined
       ? [provider, blockNumberOrHash]
       : null,
-    blockDataFetcher
+    blockDataFetcher,
+    { keepPreviousData: true }
   );
   if (error) {
-    return undefined;
+    return { data: undefined, isLoading: false };
   }
-  return data;
+  return { data, isLoading };
 };
 
 export const useBlockDataFromTransaction = (
   provider: JsonRpcProvider | undefined,
   txData: TransactionData | null | undefined
 ): ExtendedBlock | null | undefined => {
-  const block = useBlockData(
+  const { data: block } = useBlockData(
     provider,
     txData?.confirmedData
       ? txData.confirmedData.blockNumber.toString()

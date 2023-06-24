@@ -36,7 +36,7 @@ const Block: React.FC = () => {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
 
-  const block = useBlockData(provider, blockNumberOrHash);
+  const { data: block, isLoading } = useBlockData(provider, blockNumberOrHash);
   useEffect(() => {
     if (block !== undefined) {
       document.title = `Block #${blockNumberOrHash} | Otterscan`;
@@ -71,8 +71,13 @@ const Block: React.FC = () => {
       {block === null && (
         <BlockNotFound blockNumberOrHash={blockNumberOrHash} />
       )}
-      {block && (
+      {block === undefined && (
         <ContentFrame>
+          <InfoRow title="Block Height">Loading block data...</InfoRow>
+        </ContentFrame>
+      )}
+      {block && (
+        <ContentFrame isLoading={isLoading}>
           <InfoRow title="Block Height">
             <span className="font-bold">{commify(block.number)}</span>
           </InfoRow>
