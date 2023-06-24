@@ -13,7 +13,7 @@ const ContentFrame: FC<PropsWithChildren<ContentFrameProps>> = ({
   return tabs ? (
     <div
       className={`divide-y rounded-b-lg border bg-white px-3 ${
-        isLoading && "opacity-10 transition-opacity"
+        isLoading && "opacity-50 transition-opacity"
       }`}
     >
       {children}
@@ -21,7 +21,7 @@ const ContentFrame: FC<PropsWithChildren<ContentFrameProps>> = ({
   ) : (
     <div
       className={`divide-y rounded-lg border bg-white px-3 ${
-        isLoading && "opacity-10 transition-opacity"
+        isLoading && "opacity-50 transition-opacity"
       }`}
     >
       {children}
