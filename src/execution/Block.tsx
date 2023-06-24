@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useContext } from "react";
+import { useMemo, useContext, FC } from "react";
 import { useParams, NavLink } from "react-router-dom";
 import { commify, formatUnits } from "@ethersproject/units";
 import { toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
@@ -27,7 +27,7 @@ import { useBlockPageTitle } from "../useTitle";
 import { useBlockData } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 
-const Block: React.FC = () => {
+const Block: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { blockNumberOrHash } = useParams();
   if (blockNumberOrHash === undefined) {
