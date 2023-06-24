@@ -27,12 +27,14 @@ const BlockTransactions: React.FC = () => {
     [params.blockNumber]
   );
 
-  const [totalTxs, txs] = useBlockTransactions(
+  const { data, isLoading } = useBlockTransactions(
     provider,
     blockNumber.toNumber(),
     pageNumber - 1,
     PAGE_SIZE
   );
+  const txs = data?.txs;
+  const totalTxs = data?.total;
 
   document.title = `Block #${blockNumber} Txns | Otterscan`;
 
@@ -43,6 +45,7 @@ const BlockTransactions: React.FC = () => {
         page={txs}
         total={totalTxs ?? 0}
         pageNumber={pageNumber}
+        isLoading={isLoading}
       />
     </StandardFrame>
   );

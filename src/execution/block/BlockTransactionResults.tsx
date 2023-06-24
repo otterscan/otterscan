@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
@@ -14,17 +14,19 @@ type BlockTransactionResultsProps = {
   page?: ProcessedTransaction[];
   total: number;
   pageNumber: number;
+  isLoading: boolean;
 };
 
-const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
+const BlockTransactionResults: FC<BlockTransactionResultsProps> = ({
   page,
   total,
   pageNumber,
+  isLoading,
 }) => {
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   return (
-    <ContentFrame>
+    <ContentFrame isLoading={isLoading}>
       <SearchResultNavBar
         pageNumber={pageNumber}
         pageSize={PAGE_SIZE}
@@ -54,4 +56,4 @@ const BlockTransactionResults: React.FC<BlockTransactionResultsProps> = ({
   );
 };
 
-export default React.memo(BlockTransactionResults);
+export default memo(BlockTransactionResults);

@@ -80,8 +80,13 @@ export const readBlock = async (
   return extBlock;
 };
 
+export type BlockTransactionsPage = {
+  total: number;
+  txs: ProcessedTransaction[];
+};
+
 const blockTransactionsFetcher: Fetcher<
-  [number, ProcessedTransaction[]],
+  BlockTransactionsPage,
   [JsonRpcProvider, number, number, number]
 > = async ([provider, blockNumber, pageNumber, pageSize]) => {
   const result = await provider.send("ots_getBlockTransactions", [
@@ -127,7 +132,7 @@ const blockTransactionsFetcher: Fetcher<
     })
     .reverse();
 
-  return [result.fullblock.transactionCount, rawTxs];
+  return { total: result.fullblock.transactionCount, txs: rawTxs };
 };
 
 export const useBlockTransactions = (
@@ -135,7 +140,7 @@ export const useBlockTransactions = (
   blockNumber: number,
   pageNumber: number,
   pageSize: number
-): [number | undefined, ProcessedTransaction[] | undefined] => {
+): { data: BlockTransactionsPage | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
     provider !== undefined
       ? [provider, blockNumber, pageNumber, pageSize]
@@ -144,9 +149,9 @@ export const useBlockTransactions = (
     { keepPreviousData: true }
   );
   if (error) {
-    return [undefined, undefined];
+    return { data: undefined, isLoading: false };
   }
-  return [data?.[0], data?.[1]];
+  return { data, isLoading };
 };
 
 const blockDataFetcher: Fetcher<
