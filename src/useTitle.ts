@@ -6,3 +6,11 @@ export const useBlockPageTitle = (blockNumberOrHash: number) => {
     document.title = `Block #${commify(blockNumberOrHash)} | Otterscan`;
   }, [blockNumberOrHash]);
 };
+
+export const useBlockTransactionsPageTitle = (blockNumber: number) => {
+  useEffect(() => {
+    if (blockNumber !== undefined) {
+      document.title = `Block #${blockNumber} Txns | Otterscan`;
+    }
+  }, [blockNumber]);
+};
