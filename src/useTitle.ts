@@ -10,7 +10,7 @@ export const useBlockPageTitle = (blockNumberOrHash: number) => {
 export const useBlockTransactionsPageTitle = (blockNumber: number) => {
   useEffect(() => {
     if (blockNumber !== undefined) {
-      document.title = `Block #${blockNumber} Txns | Otterscan`;
+      document.title = `Block #${commify(blockNumber)} Txns | Otterscan`;
     }
   }, [blockNumber]);
 };
