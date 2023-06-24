@@ -23,6 +23,7 @@ import HexValue from "../components/HexValue";
 import { RuntimeContext } from "../useRuntime";
 import { useLatestBlockNumber } from "../useLatestBlock";
 import { blockTxsURL, blockURL } from "../url";
+import { useBlockPageTitle } from "../useTitle";
 import { useBlockData } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
 
@@ -37,11 +38,7 @@ const Block: React.FC = () => {
   } = useChainInfo();
 
   const { data: block, isLoading } = useBlockData(provider, blockNumberOrHash);
-  useEffect(() => {
-    if (block !== undefined) {
-      document.title = `Block #${blockNumberOrHash} | Otterscan`;
-    }
-  }, [blockNumberOrHash, block]);
+  useBlockPageTitle(parseInt(blockNumberOrHash));
 
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
