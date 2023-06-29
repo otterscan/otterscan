@@ -3,6 +3,7 @@ import Blockies from "react-blockies";
 import { AddressAwareComponentProps } from "../types";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import Copy from "../../components/Copy";
+import AddressSwap from "../../components/AddressSwap";
 import Faucet from "../../components/Faucet";
 import AddressAttributes from "./AddressAttributes";
 import { RuntimeContext } from "../../useRuntime";
@@ -30,7 +31,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           scale={3}
         />
         <span>Address</span>
-        <span className="font-address text-base text-gray-500">{address}</span>
+        <AddressSwap addr={address} />
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
         {network === "testnet" && faucets && faucets.length > 0 && (
