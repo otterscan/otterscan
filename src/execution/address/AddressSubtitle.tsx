@@ -8,6 +8,7 @@ import Faucet from "../../components/Faucet";
 import AddressAttributes from "./AddressAttributes";
 import { RuntimeContext } from "../../useRuntime";
 import { useChainInfo } from "../../useChainInfo";
+import { validation } from '@zilliqa-js/util'
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
   isENS: boolean | undefined;
@@ -31,8 +32,13 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           scale={3}
         />
         <span>Address</span>
-        <AddressSwap addr={address} />
+        {validation.isAddress(address) ? 
+        <AddressSwap addr={address} /> :
+        <>
+        <span className="font-address text-base text-gray-500">{address}</span>
         <Copy value={address} rounded />
+        </>
+        } 
         {/* Only display faucets for testnets who actually have any */}
         {network === "testnet" && faucets && faucets.length > 0 && (
           <Faucet address={address} rounded />

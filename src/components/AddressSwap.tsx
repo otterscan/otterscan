@@ -4,6 +4,7 @@ import { faRetweet } from "@fortawesome/free-solid-svg-icons";
 
 import { fromBech32Address, toBech32Address } from '@zilliqa-js/crypto'
 import { validation } from '@zilliqa-js/util'
+import Copy from "./Copy";
 
 type AddressSwapProps = {
   addr: string;
@@ -15,13 +16,10 @@ const AddressSwap: React.FC<AddressSwapProps> = ({addr}) => {
 
   useEffect(() => {
     try {
-      validation.isAddress(addr) ? 
-      setAddrPair([addr, toBech32Address(addr)]) : 
-      setAddrPair([addr, "Invalid hex-encoded address"])
-      //setAddrPair([toBech32Address(addr), addr])
+      setAddrPair([addr, toBech32Address(addr)])
     }
     catch(e) {
-      setAddrPair([addr, "toBech32Address(addr)"])
+      setAddrPair([addr, "Invalid hex-encoded address"])
     }
 
   }, [addr])
@@ -42,6 +40,7 @@ const AddressSwap: React.FC<AddressSwapProps> = ({addr}) => {
       >
       <FontAwesomeIcon size='sm' icon={faRetweet} />
       </button>
+      <Copy value={addrPair[toggle]} rounded />
     </>
 
   );
