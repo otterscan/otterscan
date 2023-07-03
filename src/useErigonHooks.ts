@@ -290,13 +290,15 @@ export const useInternalOperations = (
     }
 
     const _t: InternalOperation[] = [];
-    for (const t of data) {
-      _t.push({
-        type: t.type,
-        from: provider.formatter.address(getAddress(t.from)),
-        to: provider.formatter.address(getAddress(t.to)),
-        value: provider.formatter.bigNumber(t.value),
-      });
+    if(data){
+      for (const t of data) {
+        _t.push({
+          type: t.type,
+          from: provider.formatter.address(getAddress(t.from)),
+          to: provider.formatter.address(getAddress(t.to)),
+          value: provider.formatter.bigNumber(t.value),
+        });
+      }
     }
     return _t;
   }, [provider, data]);
