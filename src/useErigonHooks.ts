@@ -23,6 +23,7 @@ import {
   TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
+import { DataService } from "./zilliqa/services/dataService";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
@@ -197,6 +198,8 @@ export const useTxData = (
   txhash: string
 ): TransactionData | undefined | null => {
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
+  const [dataService, setdataService] = useState<DataService>();
+  setdataService(new DataService("https://devnet-920rc4-evm-api-filter.testnet.z7a.xyz/"));
 
   useEffect(() => {
     if (!provider) {
@@ -205,9 +208,10 @@ export const useTxData = (
 
     const readTxData = async () => {
       try {
-        const [_response, _receipt] = await Promise.all([
+        const [_response, _receipt, _contractAddress] = await Promise.all([
           provider.getTransaction(txhash),
           provider.getTransactionReceipt(txhash),
+          dataService?.getContractAddrFromTransaction(txhash)
         ]);
         if (_response === null) {
           setTxData(null);
@@ -234,7 +238,7 @@ export const useTxData = (
                   blockNumber: _receipt.blockNumber,
                   transactionIndex: _receipt.transactionIndex,
                   confirmations: _receipt.confirmations,
-                  createdContractAddress: _receipt.contractAddress,
+                  createdContractAddress: _contractAddress,
                   fee: _response.gasPrice!.mul(_receipt.gasUsed),
                   gasUsed: _receipt.gasUsed,
                   logs: _receipt.logs,
