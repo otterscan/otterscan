@@ -198,8 +198,7 @@ export const useTxData = (
   txhash: string
 ): TransactionData | undefined | null => {
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
-  const [dataService, setdataService] = useState<DataService>();
-  setdataService(new DataService("https://devnet-920rc4-evm-api-filter.testnet.z7a.xyz/"));
+  const dataService: DataService = new DataService("https://devnet-920rc4-evm-api-filter.testnet.z7a.xyz/");
 
   useEffect(() => {
     if (!provider) {
