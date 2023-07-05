@@ -261,13 +261,28 @@ export const useTokenTransfers = (
     }
 
     return txData.confirmedData.logs
-      .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
-      .map((l) => ({
-        token: l.address,
-        from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-        to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-        value: BigNumber.from(l.data),
-      }));
+      .filter(
+        (l) =>
+          (l.topics.length === 3 || l.topics.length === 4) &&
+          l.topics[0] === TRANSFER_TOPIC
+      )
+      .map((l) =>
+        l.topics.length === 3
+          ? {
+              token: l.address,
+              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+              value: BigNumber.from(l.data),
+              type: "erc20",
+            }
+          : {
+              token: l.address,
+              from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
+              to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
+              tokenId: BigNumber.from(l.topics[3]),
+              type: "erc721",
+            }
+      );
   }, [txData]);
 
   return transfers;

@@ -91,7 +91,9 @@ export type TokenTransfer = {
   token: string;
   from: string;
   to: string;
-  value: BigNumber;
+  type: string;
+  value?: BigNumber;
+  tokenId?: BigNumber;
 };
 
 export type TokenMeta = {
