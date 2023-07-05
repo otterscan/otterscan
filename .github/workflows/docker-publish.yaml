@@ -7,9 +7,6 @@ on:
     tags:
       - "*"
 
-env:
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
@@ -49,8 +46,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            otterscan/otterscan
-            ghcr.io/${{ env.IMAGE_NAME }}
+            zilliqa/otterscan
+            ghcr.io/zilliqa/otterscan
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
