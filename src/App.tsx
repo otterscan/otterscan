@@ -69,7 +69,7 @@ const App = () => {
                     />
                     <Route path="tx/:txhash/*" element={<Transaction />} />
                     <Route
-                      path="address/:addressOrName/*"
+                      path="address/:uncheckedAddressOrName/*"
                       element={<Address />}
                     />
                     {runtime.config?.experimental && (
