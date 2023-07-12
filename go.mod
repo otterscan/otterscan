@@ -3,6 +3,7 @@ module github.com/wmitsuda/otterscan
 go 1.19
 
 replace github.com/tendermint/tendermint => github.com/bnb-chain/tendermint v0.31.12
+replace github.com/wmitsuda/otterscan/lib/resources => ./lib/resources
 
 require (
 	gfx.cafe/open/4bytes v0.0.0-20221026030913-1f42cb43f802

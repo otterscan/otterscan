@@ -2,6 +2,7 @@ FROM golang:1.19-alpine as gobuilder
 RUN apk add alpine-sdk
 WORKDIR /wd
 COPY ["go.mod","go.sum","/wd/"]
+COPY lib lib
 COPY cmd cmd
 RUN go build -o otter ./cmd/otter
 
