@@ -1,12 +1,12 @@
-import React, { PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons/faExternalLinkAlt";
+import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 
 type ExternalLinkProps = {
   href: string;
 };
 
-const ExternalLink: React.FC<PropsWithChildren<ExternalLinkProps>> = ({
+const ExternalLink: FC<PropsWithChildren<ExternalLinkProps>> = ({
   href,
   children,
 }) => (

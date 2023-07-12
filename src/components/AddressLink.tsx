@@ -15,7 +15,7 @@ const AddressLink: React.FC<AddressLinkProps> = ({
   <NavLink
     className={`${
       dontOverrideColors ? "" : "text-link-blue hover:text-link-blue-hover"
-    } font-address truncate`}
+    } truncate font-address`}
     to={`/address/${address}`}
   >
     <span className="truncate" title={text ?? address}>

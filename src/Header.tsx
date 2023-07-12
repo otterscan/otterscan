@@ -1,16 +1,17 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext, memo, lazy, FC } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
 import { RuntimeContext } from "./useRuntime";
 import { useGenericSearch } from "./search/search";
-import Otter from "./otter.jpg";
+// @ts-expect-error
+import Otter from "./otter.png?w=64&h=64&webp";
 
-const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
+const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
-const Header: React.FC = () => {
+const Header: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
   const [isScanning, setScanning] = useState<boolean>(false);
@@ -18,9 +19,9 @@ const Header: React.FC = () => {
   return (
     <>
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="px-9 py-2 flex justify-between items-baseline">
+      <div className="flex items-baseline justify-between px-9 py-2">
         <Link className="self-center" to="/">
-          <div className="text-2xl text-link-blue font-title font-bold flex items-center space-x-2">
+          <div className="flex items-center space-x-2 font-title text-2xl font-bold text-link-blue">
             <img
               className="rounded-full"
               src={Otter}
@@ -41,7 +42,7 @@ const Header: React.FC = () => {
             spellCheck={false}
           >
             <input
-              className="w-full border-t border-b border-l rounded-l focus:outline-none px-2 py-1 text-sm"
+              className="w-full rounded-l border-t border-b border-l px-2 py-1 text-sm focus:outline-none"
               type="text"
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
@@ -51,7 +52,7 @@ const Header: React.FC = () => {
               ref={searchRef}
             />
             <button
-              className="border bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-sm text-skin-button"
+              className="border bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
               type="button"
               onClick={() => setScanning(true)}
               title="Scan an ETH address using your camera"
@@ -59,7 +60,7 @@ const Header: React.FC = () => {
               <FontAwesomeIcon icon={faQrcode} />
             </button>
             <button
-              className="rounded-r border-t border-b border-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-sm text-skin-button"
+              className="rounded-r border-t border-b border-r bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
               type="submit"
             >
               Search
@@ -72,4 +73,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default memo(Header);

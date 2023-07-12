@@ -1,8 +1,9 @@
 import React from "react";
-import Otter from "./otter.jpg";
+// @ts-expect-error
+import Otter from "./otter.png?w=128&h=128&webp";
 
 const Logo: React.FC = () => (
-  <div className="text-6xl text-link-blue font-title font-bold cursor-default flex items-center justify-center space-x-4">
+  <div className="flex cursor-default items-center justify-center space-x-4 font-title text-6xl font-bold text-link-blue">
     <img
       className="rounded-full"
       src={Otter}

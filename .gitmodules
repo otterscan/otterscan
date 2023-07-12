@@ -1,4 +1,0 @@
-[submodule "trustwallet"]
-	path = trustwallet
-	url = https://github.com/trustwallet/assets.git
-	ignore = dirty

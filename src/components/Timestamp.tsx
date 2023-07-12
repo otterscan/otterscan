@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-regular-svg-icons/faClock";
+import { faClock } from "@fortawesome/free-regular-svg-icons";
 import TimestampAge from "./TimestampAge";
 
 type TimestampProps = {
@@ -43,7 +43,7 @@ const Timestamp: React.FC<TimestampProps> = ({ value }) => {
   })} ${am ? "AM" : "PM"} +UTC`;
 
   return (
-    <div className="flex space-x-1 items-baseline">
+    <div className="flex items-baseline space-x-1">
       <FontAwesomeIcon className="self-center" icon={faClock} size="sm" />
       <span>
         <TimestampAge timestamp={value} /> ({tsString})

@@ -13,6 +13,35 @@ import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 
+export const rawToProcessed = (provider: JsonRpcProvider, _rawRes: any) => {
+  const _res: TransactionResponse[] = _rawRes.txs.map((t: any) =>
+    provider.formatter.transactionResponse(t)
+  );
+
+  return {
+    txs: _res.map((t, i): ProcessedTransaction => {
+      const _rawReceipt = _rawRes.receipts[i];
+      const _receipt = provider.formatter.receipt(_rawReceipt);
+      return {
+        blockNumber: t.blockNumber!,
+        timestamp: provider.formatter.number(_rawReceipt.timestamp),
+        idx: _receipt.transactionIndex,
+        hash: t.hash,
+        from: t.from,
+        to: t.to ?? null,
+        createdContractAddress: _receipt.contractAddress,
+        value: t.value,
+        fee: _receipt.gasUsed.mul(t.gasPrice!),
+        gasPrice: t.gasPrice!,
+        data: t.data,
+        status: _receipt.status!,
+      };
+    }),
+    firstPage: _rawRes.firstPage,
+    lastPage: _rawRes.lastPage,
+  };
+};
+
 export class SearchController {
   private txs: ProcessedTransaction[];
 
@@ -37,35 +66,6 @@ export class SearchController {
     }
   }
 
-  private static rawToProcessed = (provider: JsonRpcProvider, _rawRes: any) => {
-    const _res: TransactionResponse[] = _rawRes.txs.map((t: any) =>
-      provider.formatter.transactionResponse(t)
-    );
-
-    return {
-      txs: _res.map((t, i): ProcessedTransaction => {
-        const _rawReceipt = _rawRes.receipts[i];
-        const _receipt = provider.formatter.receipt(_rawReceipt);
-        return {
-          blockNumber: t.blockNumber!,
-          timestamp: provider.formatter.number(_rawReceipt.timestamp),
-          idx: _receipt.transactionIndex,
-          hash: t.hash,
-          from: t.from,
-          to: t.to ?? null,
-          createdContractAddress: _receipt.contractAddress,
-          value: t.value,
-          fee: _receipt.gasUsed.mul(t.gasPrice!),
-          gasPrice: t.gasPrice!,
-          data: t.data,
-          status: _receipt.status!,
-        };
-      }),
-      firstPage: _rawRes.firstPage,
-      lastPage: _rawRes.lastPage,
-    };
-  };
-
   private static async readBackPage(
     provider: JsonRpcProvider,
     address: string,
@@ -76,7 +76,7 @@ export class SearchController {
       baseBlock,
       PAGE_SIZE,
     ]);
-    return this.rawToProcessed(provider, _rawRes);
+    return rawToProcessed(provider, _rawRes);
   }
 
   private static async readForwardPage(
@@ -89,7 +89,7 @@ export class SearchController {
       baseBlock,
       PAGE_SIZE,
     ]);
-    return this.rawToProcessed(provider, _rawRes);
+    return rawToProcessed(provider, _rawRes);
   }
 
   static async firstPage(
@@ -223,31 +223,65 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     navigate(
       `/address/${maybeAddress}${
         maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-      }`,
-      { replace: true }
+      }`
     );
     return;
   }
 
   // Tx hash?
   if (isHexString(q, 32)) {
-    navigate(`/tx/${q}`, { replace: true });
+    navigate(`/tx/${q}`);
     return;
   }
 
   // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
-    navigate(`/block/${blockNumber}`, { replace: true });
+    navigate(`/block/${blockNumber}`);
     return;
+  }
+
+  // Epoch?
+  if (q.startsWith("epoch:")) {
+    const mayBeEpoch = q.substring(6);
+    const epoch = parseInt(mayBeEpoch);
+    if (!isNaN(epoch)) {
+      navigate(`/epoch/${epoch}`);
+      return;
+    }
+  }
+
+  // Slot?
+  if (q.startsWith("slot:")) {
+    const mayBeSlot = q.substring(5);
+    const slot = parseInt(mayBeSlot);
+    if (!isNaN(slot)) {
+      navigate(`/slot/${slot}`);
+      return;
+    }
+  }
+
+  // Validator?
+  if (q.startsWith("validator:")) {
+    const mayBeValidator = q.substring(10);
+
+    // Validator by index
+    if (mayBeValidator.match(/^\d+$/)) {
+      const validatorIndex = parseInt(mayBeValidator);
+      navigate(`/validator/${validatorIndex}`);
+      return;
+    }
+
+    // Validator by public key
+    if (mayBeValidator.length === 98 && isHexString(mayBeValidator, 48)) {
+      navigate(`/validator/${mayBeValidator}`);
+      return;
+    }
   }
 
   // Assume it is an ENS name
   navigate(
-    `/address/${maybeAddress}${
-      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-    }`,
-    { replace: true }
+    `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`
   );
 };
 

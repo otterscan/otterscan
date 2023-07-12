@@ -1,5 +1,7 @@
 import React from "react";
-import SelectionHighlighter, { addressSelector } from "./SelectionHighlighter";
+import SelectionHighlighter, {
+  addressSelector,
+} from "../selection/SelectionHighlighter";
 
 type AddressHighlighterProps = React.PropsWithChildren<{
   address: string;

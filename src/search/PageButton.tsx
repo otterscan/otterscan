@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
 
 type PageButtonProps = {
@@ -6,14 +6,14 @@ type PageButtonProps = {
   disabled?: boolean;
 };
 
-const PageButton: React.FC<PropsWithChildren<PageButtonProps>> = ({
+const PageButton: FC<PropsWithChildren<PageButtonProps>> = ({
   goToPage,
   disabled,
   children,
 }) => {
   if (disabled) {
     return (
-      <span className="bg-link-blue/10 text-gray-400 rounded-lg px-3 py-2 text-xs">
+      <span className="select-none rounded-lg bg-link-blue/10 px-3 py-2 text-xs text-gray-400">
         {children}
       </span>
     );
@@ -21,7 +21,7 @@ const PageButton: React.FC<PropsWithChildren<PageButtonProps>> = ({
 
   return (
     <NavLink
-      className="transition-colors bg-link-blue/10 text-link-blue hover:bg-link-blue/100 hover:text-white disabled:bg-link-blue disabled:text-gray-400 disabled:cursor-default rounded-lg px-3 py-2 text-xs"
+      className="select-none rounded-lg bg-link-blue/10 px-3 py-2 text-xs text-link-blue transition-colors hover:bg-link-blue/100 hover:text-white disabled:cursor-default disabled:bg-link-blue disabled:text-gray-400"
       to={`?p=${goToPage}`}
     >
       {children}

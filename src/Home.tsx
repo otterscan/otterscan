@@ -1,45 +1,44 @@
-import React, { useState, useContext } from "react";
+import { useState, useContext, lazy, FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn } from "@fortawesome/free-solid-svg-icons/faBurn";
-import { faQrcode } from "@fortawesome/free-solid-svg-icons/faQrcode";
+import { faBurn, faQrcode } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
 import { useLatestBlockHeader } from "./useLatestBlock";
-import { blockURL } from "./url";
+import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
-import { useFinalizedSlot, useSlotTime } from "./useBeacon";
+import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
 
-const CameraScanner = React.lazy(() => import("./search/CameraScanner"));
+const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
-const Home: React.FC = () => {
+const Home: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
   const latestBlock = useLatestBlockHeader(provider);
-  const beaconData = useFinalizedSlot();
-  const slotTime = useSlotTime(beaconData?.data.header.message.slot);
+  const finalizedSlotNumber = useFinalizedSlotNumber();
+  const slotTime = useSlotTimestamp(finalizedSlotNumber);
   const [isScanning, setScanning] = useState<boolean>(false);
 
   document.title = "Home | Otterscan";
 
   return (
-    <div className="flex flex-col items-center grow pb-5">
+    <div className="flex grow flex-col items-center pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="grow mt-5 mb-10 max-h-64 flex items-end">
+      <div className="mt-5 mb-10 flex max-h-64 grow items-end">
         <Logo />
       </div>
       <form
-        className="flex flex-col w-1/3"
+        className="flex w-1/3 flex-col"
         onSubmit={handleSubmit}
         autoComplete="off"
         spellCheck={false}
       >
-        <div className="flex mb-10">
+        <div className="mb-10 flex">
           <input
-            className="w-full border-l border-t border-b rounded-l focus:outline-none px-2 py-1"
+            className="w-full rounded-l border-l border-t border-b px-2 py-1 focus:outline-none"
             type="text"
             size={50}
             placeholder={`Search by address / txn hash / block number${
@@ -50,7 +49,7 @@ const Home: React.FC = () => {
             autoFocus
           />
           <button
-            className="border rounded-r bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none px-2 py-1 text-base text-skin-button flex justify-center items-center"
+            className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
             type="button"
             onClick={() => setScanning(true)}
             title="Scan an ETH address using your camera"
@@ -59,16 +58,16 @@ const Home: React.FC = () => {
           </button>
         </div>
         <button
-          className="mx-auto px-3 py-1 mb-10 rounded bg-skin-button-fill hover:bg-skin-button-hover-fill focus:outline-none"
+          className="mx-auto mb-10 rounded bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-none"
           type="submit"
         >
           Search
         </button>
       </form>
-      <div className="text-lg text-link-blue hover:text-link-blue-hover font-bold">
+      <div className="text-lg font-bold text-link-blue hover:text-link-blue-hover">
         {provider?.network.chainId !== 11155111 && (
           <NavLink to="/special/london">
-            <div className="flex space-x-2 items-baseline text-orange-500 hover:text-orange-700 hover:underline">
+            <div className="flex items-baseline space-x-2 text-orange-500 hover:text-orange-700 hover:underline">
               <span>
                 <FontAwesomeIcon icon={faBurn} />
               </span>
@@ -82,29 +81,24 @@ const Home: React.FC = () => {
       </div>
       {latestBlock && (
         <NavLink
-          className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500 hover:text-link-blue"
+          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
           to={blockURL(latestBlock.number)}
         >
           <div>Latest block: {commify(latestBlock.number)}</div>
           <Timestamp value={latestBlock.timestamp} />
         </NavLink>
       )}
-      {beaconData && (
-        <div className="flex flex-col items-center space-y-1 mt-5 text-sm text-gray-500">
-          <div>
-            Finalized slot: {commify(beaconData.data.header.message.slot)}
-          </div>
+      {finalizedSlotNumber !== undefined && (
+        <NavLink
+          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
+          to={slotURL(finalizedSlotNumber)}
+        >
+          <div>Finalized slot: {commify(finalizedSlotNumber)}</div>
           {slotTime && <Timestamp value={slotTime} />}
-          <div>
-            State root:{" "}
-            <span className="font-hash">
-              {beaconData.data.header.message.state_root}
-            </span>
-          </div>
-        </div>
+        </NavLink>
       )}
     </div>
   );
 };
 
-export default React.memo(Home);
+export default memo(Home);

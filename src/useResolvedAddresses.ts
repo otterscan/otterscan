@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { BaseProvider } from "@ethersproject/providers";
 import { getAddress, isAddress } from "@ethersproject/address";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
@@ -18,17 +19,12 @@ export const useAddressOrENS = (
   const { provider } = useContext(RuntimeContext);
   const [checksummedAddress, setChecksummedAddress] = useState<
     ChecksummedAddress | undefined
-  >();
+  >(isAddress(addressOrName) ? addressOrName : undefined);
   const [isENS, setENS] = useState<boolean>();
   const [error, setError] = useState<boolean>();
 
   // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
-    // Reset
-    setENS(false);
-    setError(false);
-    setChecksummedAddress(undefined);
-
     // TODO: handle and offer fallback to bad checksummed addresses
     if (isAddress(addressOrName)) {
       // Normalize to checksummed address
@@ -76,14 +72,15 @@ export const useResolvedAddress = (
   provider: BaseProvider | undefined,
   address: ChecksummedAddress
 ): SelectedResolvedName<any> | undefined => {
-  const fetcher = async (
-    key: string
-  ): Promise<SelectedResolvedName<any> | undefined> => {
+  const fetcher: Fetcher<
+    SelectedResolvedName<any> | undefined,
+    string
+  > = async (key) => {
     if (!provider) {
       return undefined;
     }
     const resolver = getResolver(provider.network.chainId);
-    return resolver.resolveAddress(provider, address);
+    return resolver.resolveAddress(provider, key);
   };
 
   const { data, error } = useSWRImmutable(address, fetcher);

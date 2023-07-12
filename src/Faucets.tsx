@@ -1,12 +1,14 @@
 import React, { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons/faTriangleExclamation";
-import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons/faFaucetDrip";
+import {
+  faFaucetDrip,
+  faTriangleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 import ExternalLink from "./components/ExternalLink";
-import ContentFrame from "./ContentFrame";
-import StandardFrame from "./StandardFrame";
-import StandardSubtitle from "./StandardSubtitle";
+import ContentFrame from "./components/ContentFrame";
+import StandardFrame from "./components/StandardFrame";
+import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
 
 const Faucets: React.FC = () => {
@@ -37,9 +39,9 @@ const Faucets: React.FC = () => {
     <StandardFrame>
       <StandardSubtitle>Faucets</StandardSubtitle>
       <ContentFrame>
-        <div className="py-4 space-y-3">
+        <div className="space-y-3 py-4">
           {urls.length > 0 && (
-            <div className="flex space-x-2 items-baseline rounded bg-amber-200 text-red-800 font-bold underline px-2 py-1">
+            <div className="flex items-baseline space-x-2 rounded bg-amber-200 px-2 py-1 font-bold text-red-800 underline">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}
@@ -54,7 +56,7 @@ const Faucets: React.FC = () => {
           )}
           {/* Display the shuffling notice only if there are 1+ faucets */}
           {urls.length > 1 && (
-            <div className="flex space-x-2 items-baseline rounded bg-amber-200 text-amber-700 px-2 py-1">
+            <div className="flex items-baseline space-x-2 rounded bg-amber-200 px-2 py-1 text-amber-700">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}
@@ -64,9 +66,9 @@ const Faucets: React.FC = () => {
             </div>
           )}
           {urls.length > 0 ? (
-            <div className="pt-2 space-y-3">
+            <div className="space-y-3 pt-2">
               {urls.map((url) => (
-                <div className="flex space-x-2 items-baseline">
+                <div className="flex items-baseline space-x-2">
                   <FontAwesomeIcon
                     className="text-gray-400"
                     icon={faFaucetDrip}

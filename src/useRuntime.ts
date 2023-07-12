@@ -1,30 +1,78 @@
-import React, { useMemo } from "react";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { createContext, useMemo } from "react";
+import {
+  JsonRpcProvider,
+  StaticJsonRpcProvider,
+} from "@ethersproject/providers";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
 import { ConnectionStatus } from "./types";
 
+/**
+ * A runtime comprises a OtterscanConfig read from somewhere, +
+ * ETH provider + status object built from the config.
+ */
 export type OtterscanRuntime = {
+  /**
+   * Config object; may be null if it is still fetching.
+   */
   config?: OtterscanConfig;
+
+  /**
+   * State machine for last known status of communication browse <-> node.
+   */
   connStatus: ConnectionStatus;
+
+  /**
+   * ETH provider; may be undefined if not ready because of config fetching,
+   * probing occurring, etc.
+   */
   provider?: JsonRpcProvider;
 };
 
 export const useRuntime = (): OtterscanRuntime => {
-  const [configOK, config] = useConfig();
+  const config = useConfig();
+
+  // TODO: fix internal hack
+  const hardCodedConfig = useMemo(() => {
+    if (import.meta.env.VITE_CONFIG_JSON === undefined) {
+      return undefined;
+    }
+
+    console.log("Using hardcoded config: ");
+    console.log(import.meta.env.VITE_CONFIG_JSON);
+    return JSON.parse(import.meta.env.VITE_CONFIG_JSON);
+  }, [import.meta.env.VITE_CONFIG_JSON]);
+
+  const effectiveConfig = hardCodedConfig ?? config;
+
   const [connStatus, provider] = useProvider(
-    configOK ? config?.erigonURL : undefined
+    effectiveConfig?.erigonURL,
+    effectiveConfig?.experimentalFixedChainId
   );
 
-  const runtime = useMemo(
-    (): OtterscanRuntime => ({ config, connStatus, provider }),
-    [config, connStatus, provider]
-  );
+  const runtime = useMemo((): OtterscanRuntime => {
+    if (effectiveConfig === undefined) {
+      return { connStatus: ConnectionStatus.CONNECTING };
+    }
 
-  if (!configOK) {
-    return { connStatus: ConnectionStatus.CONNECTING };
-  }
+    // Hardcoded config
+    if (effectiveConfig.experimentalFixedChainId !== undefined) {
+      return {
+        config: effectiveConfig,
+        connStatus: ConnectionStatus.CONNECTED,
+        provider: new StaticJsonRpcProvider(
+          effectiveConfig.erigonURL,
+          effectiveConfig.experimentalFixedChainId
+        ),
+      };
+    }
+    return { config: effectiveConfig, connStatus, provider };
+  }, [effectiveConfig, connStatus, provider]);
+
   return runtime;
 };
 
-export const RuntimeContext = React.createContext<OtterscanRuntime>(null!);
+/**
+ * App-level context holding the runtime data. Use it only once.
+ */
+export const RuntimeContext = createContext<OtterscanRuntime>(null!);

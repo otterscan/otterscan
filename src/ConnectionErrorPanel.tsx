@@ -1,8 +1,10 @@
 import React, { PropsWithChildren } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
+import {
+  faClock,
+  faCheckCircle,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { ConnectionStatus } from "./types";
 import { OtterscanConfig } from "./useConfig";
 
@@ -16,8 +18,8 @@ const ConnectionErrorPanel: React.FC<ConnectionErrorPanelProps> = ({
   config,
 }) => {
   return (
-    <div className="h-screen flex flex-col bg-gray-300 font-sans">
-      <div className="m-auto h-60 text-gray-700 text-lg min-w-lg max-w-lg">
+    <div className="flex h-screen flex-col bg-gray-300 font-sans">
+      <div className="min-w-lg m-auto h-60 max-w-lg text-lg text-gray-700">
         <Step type="wait" msg="Trying to connect to Erigon node..." />
         <div className="flex space-x-2">
           <span className="ml-7 text-base">{config?.erigonURL}</span>

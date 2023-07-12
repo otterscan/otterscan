@@ -1,18 +1,30 @@
-import React from "react";
+import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { transactionURL } from "../url";
 
 type TransactionLinkProps = {
   txHash: string;
+  fail?: boolean;
 };
 
-const TransactionLink: React.FC<TransactionLinkProps> = ({ txHash }) => (
-  <NavLink
-    className="text-link-blue hover:text-link-blue-hover font-hash"
-    to={transactionURL(txHash)}
-  >
-    <p className="truncate">{txHash}</p>
-  </NavLink>
+const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail }) => (
+  <span className="flex flex-no-wrap space-x-1">
+    {fail && (
+      <span className="text-red-600" title="Transaction reverted">
+        <FontAwesomeIcon icon={faExclamationCircle} />
+      </span>
+    )}
+    <span className="truncate">
+      <NavLink
+        className="font-hash text-link-blue hover:text-link-blue-hover"
+        to={transactionURL(txHash)}
+      >
+        <p className="truncate">{txHash}</p>
+      </NavLink>
+    </span>
+  </span>
 );
 
-export default React.memo(TransactionLink);
+export default memo(TransactionLink);

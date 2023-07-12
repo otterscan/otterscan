@@ -1,12 +1,15 @@
 import { JsonRpcProvider, BlockTag } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
+import { commify } from "@ethersproject/units";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress } from "./types";
+import { useContext } from "react";
+import { RuntimeContext } from "./useRuntime";
 
 const FEED_REGISTRY_MAINNET: ChecksummedAddress =
   "0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf";
@@ -36,7 +39,7 @@ const feedRegistryFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
-  async (tokenAddress, blockTag) => {
+  async ([tokenAddress, blockTag]) => {
     if (provider === undefined) {
       return [undefined, undefined];
     }
@@ -88,7 +91,7 @@ const ethUSDFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
-  async (_, blockTag) => {
+  async ([_, blockTag]) => {
     if (provider?.network.chainId !== 1) {
       return undefined;
     }
@@ -109,6 +112,42 @@ export const useETHUSDOracle = (
     return undefined;
   }
   return data !== undefined ? BigNumber.from(data.answer) : undefined;
+};
+
+/**
+ * Converts a certain amount of ETH to fiat using an oracle
+ */
+export const useFiatValue = (
+  ethAmount: BigNumber,
+  blockTag: BlockTag | undefined
+) => {
+  const { provider } = useContext(RuntimeContext);
+  const eth2USDValue = useETHUSDOracle(provider, blockTag);
+
+  if (ethAmount.isZero() || eth2USDValue === undefined) {
+    return undefined;
+  }
+
+  return FixedNumber.fromValue(ethAmount.mul(eth2USDValue).div(10 ** 8), 18);
+};
+
+export const formatFiatValue = (
+  fiat: FixedNumber | undefined,
+  decimals = 2
+): string | undefined => {
+  if (!fiat) {
+    return undefined;
+  }
+
+  let value = commify(fiat.round(decimals).toString());
+
+  // little hack: commify removes trailing decimal zeros
+  const parts = value.split(".");
+  if (parts.length == 2) {
+    value = value + "0".repeat(decimals - parts[1].length);
+  }
+
+  return value;
 };
 
 export const useETHUSDRawOracle = (
@@ -139,7 +178,7 @@ const fastGasFetcher =
   (
     provider: JsonRpcProvider | undefined
   ): Fetcher<any | undefined, ["gasgwei", BlockTag | undefined]> =>
-  async (_, blockTag) => {
+  async ([_, blockTag]) => {
     if (provider?.network.chainId !== 1) {
       return undefined;
     }

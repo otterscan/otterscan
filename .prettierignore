@@ -1,0 +1,12 @@
+build
+dist
+docs
+nginx
+public
+scripts
+
+# submodules
+4bytes
+chains
+topic0
+trustwallet

@@ -11,7 +11,7 @@ const ExpanderSwitch: React.FC<ExpanderSwitchProps> = ({
   setExpanded,
 }) => (
   <Switch
-    className="text-xs font-code"
+    className="font-code text-xs"
     checked={expanded}
     onChange={setExpanded}
   >

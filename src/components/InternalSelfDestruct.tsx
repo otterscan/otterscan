@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
+import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import DecoratedAddressLink from "./DecoratedAddressLink";
-import TransactionAddress from "./TransactionAddress";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
+import TransactionAddress from "../execution/components/TransactionAddress";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockDataFromTransaction } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
@@ -56,7 +56,7 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
             <AddressHighlighter address={internalOp.to}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                  toMiner ? "rounded bg-amber-100 px-2 py-1" : ""
                 }`}
               >
                 <DecoratedAddressLink address={internalOp.to} miner={toMiner} />

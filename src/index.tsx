@@ -1,6 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { HelmetProvider, Helmet } from "react-helmet-async";
+import "@fontsource/fira-code/index.css";
 import "@fontsource/space-grotesk/index.css";
 import "@fontsource/roboto/index.css";
 import "@fontsource/roboto-mono/index.css";
@@ -15,13 +16,7 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Helmet>
-        <link
-          rel="preload"
-          href={spaceGrotesk}
-          as="font"
-          type="font/woff2"
-          crossOrigin="true"
-        />
+        <link rel="preload" href={spaceGrotesk} as="font" type="font/woff2" />
       </Helmet>
       <App />
     </HelmetProvider>

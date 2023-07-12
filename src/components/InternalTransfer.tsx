@@ -1,11 +1,13 @@
-import React, { useContext } from "react";
+import { FC, useContext } from "react";
 import { formatEther } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons/faCaretRight";
-import { faSackDollar } from "@fortawesome/free-solid-svg-icons/faSackDollar";
+import {
+  faAngleRight,
+  faCaretRight,
+  faSackDollar,
+} from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
-import DecoratedAddressLink from "./DecoratedAddressLink";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import USDAmount from "./USDAmount";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
@@ -18,7 +20,7 @@ type InternalTransferProps = {
   internalOp: InternalOperation;
 };
 
-const InternalTransfer: React.FC<InternalTransferProps> = ({
+const InternalTransfer: FC<InternalTransferProps> = ({
   txData,
   internalOp,
 }) => {
@@ -49,7 +51,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
 
   return (
     <div className="flex items-baseline space-x-1 truncate">
-      <div className="grid grid-cols-6 gap-x-1 w-full items-baseline">
+      <div className="grid w-full grid-cols-6 items-baseline gap-x-1">
         <div className="col-span-2 flex items-baseline space-x-1">
           <span className="text-gray-500">
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER
@@ -58,7 +60,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
             <AddressHighlighter address={internalOp.from}>
               <div
                 className={`flex items-baseline space-x-1 ${
-                  fromMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                  fromMiner ? "rounded bg-amber-100 px-2 py-1" : ""
                 }`}
               >
                 <DecoratedAddressLink
@@ -79,7 +81,7 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
           <AddressHighlighter address={internalOp.to}>
             <div
               className={`flex items-baseline space-x-1 ${
-                toMiner ? "rounded px-2 py-1 bg-amber-100" : ""
+                toMiner ? "rounded bg-amber-100 px-2 py-1" : ""
               }`}
             >
               <DecoratedAddressLink
@@ -100,15 +102,13 @@ const InternalTransfer: React.FC<InternalTransferProps> = ({
             {formatEther(internalOp.value)} {symbol}
           </span>
           {blockETHUSDPrice && (
-            <span className="px-2 border-gray-200 border rounded-lg bg-gray-100 text-gray-600">
-              <USDAmount
-                amount={internalOp.value}
-                amountDecimals={decimals}
-                quote={blockETHUSDPrice}
-                // TODO: migrate to SWR and standardize this magic number
-                quoteDecimals={8}
-              />
-            </span>
+            <USDAmount
+              amount={internalOp.value}
+              amountDecimals={decimals}
+              quote={blockETHUSDPrice}
+              // TODO: migrate to SWR and standardize this magic number
+              quoteDecimals={8}
+            />
           )}
         </div>
       </div>

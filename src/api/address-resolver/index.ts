@@ -1,9 +1,9 @@
-import { ensRenderer } from "../../components/ENSName";
-import { plainStringRenderer } from "../../components/PlainString";
-import { tokenRenderer } from "../../components/TokenName";
-import { uniswapV1PairRenderer } from "../../components/UniswapV1ExchangeName";
-import { uniswapV2PairRenderer } from "../../components/UniswapV2PairName";
-import { uniswapV3PairRenderer } from "../../components/UniswapV3PoolName";
+import { ensRenderer } from "../../execution/address/renderer/ENSName";
+import { plainStringRenderer } from "../../execution/address/renderer/PlainString";
+import { tokenRenderer } from "../../execution/address/renderer/TokenName";
+import { uniswapV1PairRenderer } from "../../execution/address/renderer/UniswapV1ExchangeName";
+import { uniswapV2PairRenderer } from "../../execution/address/renderer/UniswapV2PairName";
+import { uniswapV3PairRenderer } from "../../execution/address/renderer/UniswapV3PoolName";
 import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
   CompositeAddressResolver,
@@ -35,6 +35,7 @@ _mainnetResolver.addResolver(ercTokenResolver);
 _mainnetResolver.addResolver(hardcodedResolver);
 
 const _defaultResolver = new CompositeAddressResolver();
+_defaultResolver.addResolver(ercTokenResolver);
 _defaultResolver.addResolver(hardcodedResolver);
 
 const resolvers: Record<number, IAddressResolver<SelectedResolvedName<any>>> = {

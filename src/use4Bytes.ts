@@ -38,7 +38,7 @@ type FourBytesFetcher = Fetcher<
 
 const fourBytesFetcher =
   (assetsURLPrefix: string): FourBytesFetcher =>
-  async (_, key) => {
+  async ([_, key]) => {
     if (key === null || key === "0x") {
       return undefined;
     }
@@ -137,7 +137,11 @@ export const useTransactionDescription = (
     const sig = fourBytesEntry?.signature;
     const functionFragment = Fragment.fromString(`function ${sig}`);
     const intf = new Interface([functionFragment]);
-    return intf.parseTransaction({ data, value });
+    try {
+      return intf.parseTransaction({ data, value });
+    } catch {
+      return undefined;
+    }
   }, [fourBytesEntry, data, value]);
 
   return txDesc;
