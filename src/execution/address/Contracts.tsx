@@ -12,6 +12,8 @@ import { commify } from "../../utils/utils";
 import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
 import ContractABI from "./contract/ContractABI";
+import { useGetCode } from "../../useErigonHooks";
+import StandardTextarea from "../../components/StandardTextarea";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -20,6 +22,7 @@ type ContractsProps = {
 
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
+  const code = useGetCode(provider, checksummedAddress);
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
@@ -140,6 +143,15 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 </>
               )}
             </div>
+          </>
+        )}
+      </div>
+      <div className="py-5">
+        {code === undefined && <span>Getting contract bytecode...</span>}
+        {code && (
+          <>
+            <div className="pb-2">Contract Bytecode</div>
+            <StandardTextarea value={code} />
           </>
         )}
       </div>
