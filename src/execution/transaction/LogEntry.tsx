@@ -11,6 +11,11 @@ import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import LogIndex from "./log/LogIndex";
 import RawLog from "./log/RawLog";
 import TwoColumnPanel from "./log/TwoColumnPanel";
+import { useTopic0 } from "../../useTopic0";
+import { RuntimeContext } from "../../useRuntime";
+import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { useGetCode } from "../../useErigonHooks";
+import { EventFragment, LogDescription, defaultAbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
 
 type LogEntryProps = {
   log: Log;
@@ -19,6 +24,24 @@ type LogEntryProps = {
 const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(log.address, provider?._network.chainId);
+
+  const scillaLogDesc = useMemo(() => {
+    // Scilla logs are encoded as a single JSON string.
+    try {
+      const data = JSON.parse(defaultAbiCoder.decode(["string"], log.data)[0]);
+      const params: any[] = data.params;
+      return new LogDescription({
+        eventFragment: EventFragment.fromObject({type: "event", name: data._eventname, inputs: params.map(p => ({ name: p.vname, type: p.type }))}),
+        name: data._eventname,
+        signature: "",
+        topic: "",
+        args: params.map(p => (p.value)),
+      });
+    } catch (err) {
+      // Silently ignore on purpose
+      return undefined;
+    }
+  }, [log]);
 
   const logDesc = useMemo(() => {
     if (!match) {
@@ -65,7 +88,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     return undefined;
   }, [topic0, log]);
 
-  const resolvedLogDesc = logDesc ?? topic0LogDesc;
+  const resolvedLogDesc = scillaLogDesc ?? logDesc ?? topic0LogDesc;
 
   return (
     <div className="flex space-x-10 py-5">
@@ -96,8 +119,8 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
                   <DecodedLogSignature event={resolvedLogDesc.fragment} />
                   <DecodedParamsTable
                     args={resolvedLogDesc.args}
-                    paramTypes={resolvedLogDesc.fragment.inputs}
-                    hasParamNames={resolvedLogDesc === logDesc}
+                    paramTypes={resolvedLogDesc.eventFragment.inputs}
+                    hasParamNames={resolvedLogDesc === logDesc || resolvedLogDesc === scillaLogDesc}
                   />
                 </TwoColumnPanel>
               )}
