@@ -6,7 +6,7 @@ export type ResultHeaderProps = {
   feeDisplayToggler: () => void;
 };
 
-const ResultHeader: React.FC<ResultHeaderProps> = ({
+const TransactionResultHeader: React.FC<ResultHeaderProps> = ({
   feeDisplay,
   feeDisplayToggler,
 }) => (
@@ -31,4 +31,4 @@ const ResultHeader: React.FC<ResultHeaderProps> = ({
   </div>
 );
 
-export default React.memo(ResultHeader);
+export default React.memo(TransactionResultHeader);

@@ -8,6 +8,9 @@ import TransactionLink from "../../components/TransactionLink";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
+import PendingTransactionResults from "../../search/PendingTransactionResults";
+import TransactionResultHeader from "../../search/TransactionResultHeader";
+import { SearchController } from "../../search/search";
 import TransactionItem from "../../search/TransactionItem";
 import UndefinedPageControl from "../../search/UndefinedPageControl";
 import { SearchController } from "../../search/search";
@@ -134,7 +137,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           )}
         </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
-        <ResultHeader
+        <TransactionResultHeader
           feeDisplay={feeDisplay}
           feeDisplayToggler={feeDisplayToggler}
         />
@@ -151,7 +154,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
             <NavBar address={address} page={page} controller={controller} />
           </>
         ) : (
-          <PendingResults />
+          <PendingTransactionResults />
         )}
       </StandardSelectionBoundary>
     </ContentFrame>

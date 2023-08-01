@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "./erc20.json";
+import useSWRInfinite from "swr/infinite";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -178,6 +179,34 @@ export const useBlockData = (
       : null,
     blockDataFetcher,
     { keepPreviousData: true },
+  );
+  if (error) {
+    return { data: undefined, isLoading: false };
+  }
+  return { data, isLoading };
+};
+
+export const useRecentBlocks = (
+  provider: JsonRpcProvider | undefined,
+  blockNumber: number | undefined,
+  pageNumber: number
+): { data: (ExtendedBlock | null)[] | undefined; isLoading: boolean } => {
+
+  // This function is used by SWR to get the key which we pass to the fetcher function
+  // It also searches the cache for the presence of this key and if found returns the 
+  // cached value
+  const getKey = (pageIndex : number) 
+  : [ JsonRpcProvider , string] | null =>  {
+    if((provider == undefined || blockNumber == undefined) 
+    || (blockNumber - pageIndex < 0)) return null;
+
+    return [provider, (blockNumber - pageIndex).toString() ]
+  }
+
+  // Calls the fetcher to fetch the most recent pageNumber of blocks in parallel
+  const { data, error, isLoading } = useSWRInfinite(getKey,
+    blockDataFetcher,
+    { keepPreviousData: true, revalidateFirstPage : false, initialSize : pageNumber, parallel : true}
   );
   if (error) {
     return { data: undefined, isLoading: false };

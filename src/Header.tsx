@@ -10,8 +10,9 @@ import { RuntimeContext } from "./useRuntime";
 import Otter from "./otter.png?w=128&h=128&webp";
 
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
+type HeaderProps = {sourcifyPresent : boolean };
 
-const Header: FC = () => {
+const Header: FC<HeaderProps> = ({sourcifyPresent}) => {
   const { config, provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
   const [isScanning, setScanning] = useState<boolean>(false);
@@ -85,7 +86,7 @@ const Header: FC = () => {
             </button>
           </form>
           <div className="hidden sm:inline self-stretch">
-            <SourcifyMenu />
+            <sourcifyPresent && SourcifyMenu />
           </div>
         </div>
       </div>

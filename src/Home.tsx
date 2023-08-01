@@ -1,5 +1,4 @@
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, lazy, memo, useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
@@ -11,8 +10,11 @@ import { useLatestBlockHeader } from "./useLatestBlock";
 import { RuntimeContext } from "./useRuntime";
 import { usePageTitle } from "./useTitle";
 import { commify } from "./utils/utils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBurn } from "@fortawesome/free-solid-svg-icons";
+import Header from "./Header";
+import RecentBlocks from "./execution/block/recentBlocks";
 
-const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
 const Home: FC = () => {
   const { provider, config } = useContext(RuntimeContext);
@@ -21,11 +23,13 @@ const Home: FC = () => {
   const latestBlock = useLatestBlockHeader(provider);
   const finalizedSlotNumber = useFinalizedSlotNumber();
   const slotTime = useSlotTimestamp(finalizedSlotNumber);
-  const [isScanning, setScanning] = useState<boolean>(false);
 
   usePageTitle("Home");
 
   return (
+      <>
+      <Header sourcifyPresent= {false} />
+      <RecentBlocks />
     <div className="flex grow flex-col items-center pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
       <div className="mb-10 mt-5 flex max-h-64 grow items-end">
@@ -98,6 +102,7 @@ const Home: FC = () => {
         </NavLink>
       )}
     </div>
+      </>
   );
 };
 
