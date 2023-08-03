@@ -81,7 +81,7 @@
     "@storybook/addon-essentials": "7.0.22",
     "@storybook/addon-interactions": "7.0.22",
     "@storybook/addon-links": "7.0.22",
-    "@storybook/blocks": "7.0.22",
+    "@storybook/blocks": "7.2.1",
     "@storybook/react": "7.0.22",
     "@storybook/react-vite": "7.0.22",
     "@storybook/testing-library": "0.1.0",
