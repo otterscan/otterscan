@@ -2,7 +2,7 @@ import { useState, useContext, lazy, FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBurn, faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
 import { RuntimeContext } from "./useRuntime";
@@ -27,7 +27,7 @@ const Home: FC = () => {
   return (
     <div className="flex grow flex-col items-center pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="mt-5 mb-10 flex max-h-64 grow items-end">
+      <div className="mb-10 mt-5 flex max-h-64 grow items-end">
         <Logo />
       </div>
       <form
@@ -38,7 +38,7 @@ const Home: FC = () => {
       >
         <div className="mb-10 flex">
           <input
-            className="w-full rounded-l border-l border-t border-b px-2 py-1 focus:outline-none"
+            className="w-full rounded-l border-b border-l border-t px-2 py-1 focus:outline-none"
             type="text"
             size={50}
             placeholder={`Search by address / txn hash / block number${
@@ -64,21 +64,6 @@ const Home: FC = () => {
           Search
         </button>
       </form>
-      <div className="text-lg font-bold text-link-blue hover:text-link-blue-hover">
-        {provider?.network.chainId !== 11155111 && (
-          <NavLink to="/special/london">
-            <div className="flex items-baseline space-x-2 text-orange-500 hover:text-orange-700 hover:underline">
-              <span>
-                <FontAwesomeIcon icon={faBurn} />
-              </span>
-              <span>Check out the special dashboard for EIP-1559</span>
-              <span>
-                <FontAwesomeIcon icon={faBurn} />
-              </span>
-            </div>
-          </NavLink>
-        )}
-      </div>
       {latestBlock && (
         <NavLink
           className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
