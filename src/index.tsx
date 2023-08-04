@@ -16,13 +16,7 @@ root.render(
   <React.StrictMode>
     <HelmetProvider>
       <Helmet>
-        <link
-          rel="preload"
-          href={spaceGrotesk}
-          as="font"
-          type="font/woff2"
-          crossOrigin="true"
-        />
+        <link rel="preload" href={spaceGrotesk} as="font" type="font/woff2" />
       </Helmet>
       <App />
     </HelmetProvider>

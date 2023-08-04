@@ -30,16 +30,16 @@ const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
 
   return (
     <Dialog
-      className="fixed z-10 inset-0 overflow-y-auto"
+      className="fixed inset-0 z-10 overflow-y-auto"
       open={true}
       onClose={turnOffScan}
     >
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-        <Dialog.Title className="absolute top-0 w-full text-center bg-white text-lg">
+        <Dialog.Title className="absolute top-0 w-full bg-white text-center text-lg">
           Point an ETH address QR code to camera
         </Dialog.Title>
-        <div className="absolute inset-0 bg-transparent rounded min-w-max max-w-3xl w-full h-screen max-h-screen m-auto">
+        <div className="absolute inset-0 m-auto h-screen max-h-screen w-full min-w-max max-w-3xl rounded bg-transparent">
           <QrReader
             className="m-auto"
             constraints={{}}

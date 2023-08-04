@@ -1,5 +1,6 @@
-import React from "react";
+import { FC, memo } from "react";
 import PageButton from "./PageButton";
+import { commify } from "@ethersproject/units";
 
 type PageControlProps = {
   pageNumber: number;
@@ -7,11 +8,7 @@ type PageControlProps = {
   total: number;
 };
 
-const PageControl: React.FC<PageControlProps> = ({
-  pageNumber,
-  pageSize,
-  total,
-}) => {
+const PageControl: FC<PageControlProps> = ({ pageNumber, pageSize, total }) => {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   const isFirst = pageNumber === 1;
   const isLast = pageNumber === totalPages;
@@ -25,7 +22,7 @@ const PageControl: React.FC<PageControlProps> = ({
         {"<"}
       </PageButton>
       <PageButton goToPage={1} disabled>
-        Page {pageNumber} of {totalPages}
+        Page {commify(pageNumber)} of {commify(totalPages)}
       </PageButton>
       <PageButton goToPage={pageNumber + 1} disabled={isLast}>
         {">"}
@@ -37,4 +34,4 @@ const PageControl: React.FC<PageControlProps> = ({
   );
 };
 
-export default React.memo(PageControl);
+export default memo(PageControl);

@@ -4,7 +4,7 @@ import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import BlockLink from "../../components/BlockLink";
 import SlotTimestamp from "./SlotTimestamp";
-import ValidatorLink from "../components/ValidatorLink";
+import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import BlockRoot from "../slot/BlockRoot";
 import SlotAttestationsLink from "../components/SlotAttestationsLink";
 import AggregationParticipation from "../slot/AggregationParticipation";
@@ -40,7 +40,7 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
         <SlotTimestamp slotNumber={slotNumber} />
       </td>
       <td>
-        <ValidatorLink validatorIndex={slot.data.message.proposer_index} />
+        <CheckedValidatorLink validatorIndex={slot.data.message.proposer_index} />
       </td>
       <td>
         <BlockRoot slotNumber={slotNumber} />

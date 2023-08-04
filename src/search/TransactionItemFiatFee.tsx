@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
-import FiatValue from "../components/FiatValue";
+import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { commify } from "@ethersproject/units";
 import { RuntimeContext } from "../useRuntime";
 import { useETHUSDOracle } from "../usePriceOracle";
 
@@ -19,7 +19,16 @@ const TransactionItemFiatFee: React.FC<TransactionItemFiatFeeProps> = ({
   const fiatValue =
     eth2USDValue !== undefined ? fee.mul(eth2USDValue).div(10 ** 8) : undefined;
 
-  return fiatValue ? <FiatValue value={fiatValue} /> : <>N/A</>;
+  return fiatValue ? (
+    <span className="text-xs">
+      $
+      <span className="font-balance">
+        {commify(FixedNumber.fromValue(fiatValue, 18).round(2).toString())}
+      </span>
+    </span>
+  ) : (
+    <>N/A</>
+  );
 };
 
 export default TransactionItemFiatFee;

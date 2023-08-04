@@ -1,9 +1,10 @@
 import { FC, useEffect } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { commify } from "@ethersproject/units";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
-import AddressBalance from "../../address/AddressBalance";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
+import { balancePreset } from "../../components/FiatValue";
 import Timestamp from "../../components/Timestamp";
 import HexValue from "../../components/HexValue";
 import EpochLink from "../components/EpochLink";
@@ -46,20 +47,18 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
             <HexValue value={validator.data.validator.pubkey} />
           </InfoRow>
           <InfoRow title="Balance">
-            <div className="space-x-2">
-              <AddressBalance
-                balance={BigNumber.from(validator.data.balance).mul(GWEI)}
-              />
-            </div>
+            <NativeTokenAmountAndFiat
+              value={BigNumber.from(validator.data.balance).mul(GWEI)}
+              {...balancePreset}
+            />
           </InfoRow>
           <InfoRow title="Effective Balance">
-            <div className="space-x-2">
-              <AddressBalance
-                balance={BigNumber.from(
-                  validator.data.validator.effective_balance
-                ).mul(GWEI)}
-              />
-            </div>
+            <NativeTokenAmountAndFiat
+              value={BigNumber.from(
+                validator.data.validator.effective_balance
+              ).mul(GWEI)}
+              {...balancePreset}
+            />
           </InfoRow>
           <InfoRow title="Status">{validator.data.status}</InfoRow>
           <InfoRow title="Eligible Epoch">

@@ -125,9 +125,9 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   return (
     <div className="w-full grow">
-      <div className="px-9 pt-3 pb-12 divide-y-2">
+      <div className="divide-y-2 px-9 pt-3 pb-12">
         <div className="relative">
-          <div className="flex justify-center items-baseline space-x-2 px-3 pb-2 text-lg text-orange-500 ">
+          <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-lg text-orange-500 ">
             <span>
               <FontAwesomeIcon icon={faBurn} />
             </span>
@@ -136,7 +136,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               <FontAwesomeIcon icon={faBurn} />
             </span>
           </div>
-          <div className="absolute right-0 top-0 border rounded shadow-md px-2 py-1 text-sm text-link-blue hover:bg-gray-50 hover:text-link-blue-hover">
+          <div className="absolute right-0 top-0 rounded border px-2 py-1 text-sm text-link-blue shadow-md hover:bg-gray-50 hover:text-link-blue-hover">
             <button onClick={() => setToggleChart(!toggleChart)}>
               {toggleChart ? "Gas usage" : "Burnt fees"}
             </button>
@@ -146,13 +146,13 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           <Line data={data} height={100} options={chartOptions} />
         </div>
         <div className="mt-5 grid grid-cols-9 gap-x-2 px-3 py-2">
-          <div className="flex space-x-1 items-baseline">
+          <div className="flex items-baseline space-x-1">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faCube} />
             </span>
             <span>Block</span>
           </div>
-          <div className="text-right flex space-x-1 justify-end items-baseline">
+          <div className="flex items-baseline justify-end space-x-1 text-right">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faGasPump} />
             </span>
@@ -160,19 +160,19 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
           </div>
           <div className="text-right">Gas target</div>
           <div className="text-right">Base fee</div>
-          <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
+          <div className="col-span-2 flex items-baseline justify-end space-x-1 text-right">
             <span className="text-amber-400">
               <FontAwesomeIcon icon={faCoins} />
             </span>
             <span>Rewards</span>
           </div>
-          <div className="text-right col-span-2 flex space-x-1 justify-end items-baseline">
+          <div className="col-span-2 flex items-baseline justify-end space-x-1 text-right">
             <span className="text-orange-500">
               <FontAwesomeIcon icon={faBurn} />
             </span>
             <span>Burnt fees</span>
           </div>
-          <div className="text-right flex space-x-1 justify-end items-baseline">
+          <div className="flex items-baseline justify-end space-x-1 text-right">
             <span className="text-gray-500">
               <FontAwesomeIcon icon={faHistory} />
             </span>

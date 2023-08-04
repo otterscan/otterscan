@@ -1,13 +1,13 @@
 import { FC, Suspense } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import StandardFrame from "../StandardFrame";
+import StandardFrame from "../components/StandardFrame";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import SlotSubtitle from "./slot/SlotSubtitle";
 import NavTab from "../components/NavTab";
 import AttestationsTabTitle from "./slot/AttestationsTabTitle";
 import Overview from "./slot/Overview";
 import Attestations from "./slot/Attestations";
-import { SelectionContext, useSelection } from "../useSelection";
 
 const Slot: FC = () => {
   const { slotNumber } = useParams();
@@ -15,14 +15,13 @@ const Slot: FC = () => {
     throw new Error("slotNumber couldn't be undefined here");
   }
   const slotAsNumber = parseInt(slotNumber);
-  const selectionCtx = useSelection();
 
   return (
     <StandardFrame>
       <SlotSubtitle slotNumber={slotAsNumber} />
-      <SelectionContext.Provider key={slotAsNumber} value={selectionCtx}>
+      <StandardSelectionBoundary>
         <Tab.Group>
-          <Tab.List className="flex space-x-2 border-l border-r border-t rounded-t-lg bg-white">
+          <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
             <NavTab href=".">Overview</NavTab>
             <NavTab href="attestations">
               <AttestationsTabTitle slotNumber={slotAsNumber} />
@@ -35,7 +34,7 @@ const Slot: FC = () => {
             <Route path="attestations" element={<Attestations />} />
           </Routes>
         </Suspense>
-      </SelectionContext.Provider>
+      </StandardSelectionBoundary>
     </StandardFrame>
   );
 };

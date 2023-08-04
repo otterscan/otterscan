@@ -1,23 +1,29 @@
-import React from "react";
+import { FC, memo } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatValue } from "./formatter";
 
-type FormatterBalanceProps = {
+const DEFAULT_DECIMALS = 18;
+
+export type FormattedBalanceProps = {
   value: BigNumber;
   decimals?: number;
+  symbol?: string | undefined;
 };
 
-// TODO: remove duplication with TransactionValue component
-const FormattedBalance: React.FC<FormatterBalanceProps> = ({
+// TODO: rename it to more generic name, not for balances only
+const FormattedBalance: FC<FormattedBalanceProps> = ({
   value,
-  decimals = 18,
+  decimals = DEFAULT_DECIMALS,
+  symbol,
 }) => {
-  const formatted = commify(formatUnits(value, decimals));
-  const stripZeroDec = formatted.endsWith(".0")
-    ? formatted.slice(0, formatted.length - 2)
-    : formatted;
+  const formattedValue = formatValue(value, decimals);
 
-  return <>{stripZeroDec}</>;
+  return (
+    <span title={`${formattedValue} ${symbol !== undefined ? symbol : ""}`}>
+      <span className={`font-balance`}>{formattedValue}</span>
+      {symbol !== undefined && ` ${symbol}`}
+    </span>
+  );
 };
 
-export default React.memo(FormattedBalance);
+export default memo(FormattedBalance);

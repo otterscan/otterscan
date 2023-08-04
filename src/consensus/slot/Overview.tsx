@@ -2,14 +2,14 @@ import { FC, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
 import InfoRow from "../../components/InfoRow";
 import Timestamp from "../../components/Timestamp";
 import EpochLink from "../components/EpochLink";
 import BlockLink from "../../components/BlockLink";
-import ValidatorLink from "../components/ValidatorLink";
+import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import BlockRoot from "./BlockRoot";
 import HexValue from "../../components/HexValue";
 import RelevantNumericValue from "../../components/RelevantNumericValue";
@@ -65,7 +65,7 @@ const Overview: FC = () => {
             </InfoRow>
           )}
           <InfoRow title="Proposer">
-            <ValidatorLink validatorIndex={slot.data.message.proposer_index} />
+            <CheckedValidatorLink validatorIndex={slot.data.message.proposer_index} />
           </InfoRow>
           <InfoRow title="Block Root">
             <BlockRoot slotNumber={slotAsNumber} />

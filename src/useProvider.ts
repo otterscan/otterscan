@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   JsonRpcProvider,
   JsonRpcBatchProvider,
+  StaticJsonRpcProvider,
   WebSocketProvider,
 } from "@ethersproject/providers";
 import { ConnectionStatus } from "./types";
@@ -10,7 +11,8 @@ import { MIN_API_LEVEL } from "./params";
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
 export const useProvider = (
-  erigonURL?: string
+  erigonURL?: string,
+  experimentalFixedChainId?: number
 ): [ConnectionStatus, JsonRpcProvider | undefined] => {
   const [connStatus, setConnStatus] = useState<ConnectionStatus>(
     ConnectionStatus.CONNECTING
@@ -27,11 +29,22 @@ export const useProvider = (
 
   const [provider, setProvider] = useState<JsonRpcProvider | undefined>();
   useEffect(() => {
+    // Skip probing?
+    if (experimentalFixedChainId !== undefined) {
+      console.log("Skipping node probe");
+      setConnStatus(ConnectionStatus.CONNECTED);
+      setProvider(
+        new StaticJsonRpcProvider(erigonURL, experimentalFixedChainId)
+      );
+      return;
+    }
+
     if (erigonURL === undefined) {
       setConnStatus(ConnectionStatus.NOT_ETH_NODE);
       setProvider(undefined);
       return;
     }
+
     setConnStatus(ConnectionStatus.CONNECTING);
 
     const tryToConnect = async () => {
@@ -80,7 +93,7 @@ export const useProvider = (
       }
     };
     tryToConnect();
-  }, [erigonURL]);
+  }, [erigonURL, experimentalFixedChainId]);
 
   return [connStatus, provider];
 };

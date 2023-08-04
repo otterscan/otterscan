@@ -1,6 +1,6 @@
 import React from "react";
-import StandardSubtitle from "../StandardSubtitle";
-import ContentFrame from "../ContentFrame";
+import StandardSubtitle from "./StandardSubtitle";
+import ContentFrame from "./ContentFrame";
 
 type AddressOrENSNameNotFoundProps = {
   addressOrENSName: string;

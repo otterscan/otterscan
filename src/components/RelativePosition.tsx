@@ -1,15 +1,15 @@
-import React from "react";
+import { FC, memo, ReactNode } from "react";
 
 type RelativePositionProps = {
-  pos: React.ReactNode;
-  total: React.ReactNode;
+  pos: ReactNode;
+  total: ReactNode;
 };
 
-const RelativePosition: React.FC<RelativePositionProps> = ({ pos, total }) => (
+const RelativePosition: FC<RelativePositionProps> = ({ pos, total }) => (
   <span className="text-xs">
     {pos}
-    <span className="text-gray-600 text-sm"> / {total}</span>
+    <span className="text-sm text-gray-600"> / {total}</span>
   </span>
 );
 
-export default React.memo(RelativePosition);
+export default memo(RelativePosition);

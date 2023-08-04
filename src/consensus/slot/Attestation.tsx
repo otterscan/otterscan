@@ -18,11 +18,11 @@ const Attestation: FC<AttestationProps> = ({ idx, att }) => {
   return (
     <div className="flex space-x-10 py-5" ref={ref}>
       <div>
-        <span className="rounded-full w-12 h-12 flex items-center justify-center bg-emerald-50 text-emerald-500">
+        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
           {idx}
         </span>
       </div>
-      <div className="divide-y px-3 bg-white w-full">
+      <div className="w-full divide-y bg-white px-3">
         <InfoRow title="Slot">{commify(att.data.slot.toString())}</InfoRow>
         <InfoRow title="Committee Index">
           {commify(att.data.index.toString())}

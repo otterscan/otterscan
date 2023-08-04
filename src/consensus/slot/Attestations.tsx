@@ -1,6 +1,6 @@
 import { FC, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import ContentFrame from "../../ContentFrame";
+import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
 import Attestation from "./Attestation";

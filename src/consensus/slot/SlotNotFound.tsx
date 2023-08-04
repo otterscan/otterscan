@@ -8,7 +8,7 @@ const SlotNotFound: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const headSlotNumber = useHeadSlotNumber();
 
   return (
-    <div className="py-4 text-sm space-y-2">
+    <div className="space-y-2 py-4 text-sm">
       <p>Slot {commify(slotNumber)} data not found.</p>
       {headSlotNumber !== undefined && slotNumber > headSlotNumber ? (
         <p className="flex space-x-2">
@@ -18,7 +18,7 @@ const SlotNotFound: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
       ) : (
         <>
           <p>Possible causes:</p>
-          <ul className="list-disc list-inside">
+          <ul className="list-inside list-disc">
             <li>Missed slot</li>
             <li>CL does not have the slot data</li>
           </ul>
