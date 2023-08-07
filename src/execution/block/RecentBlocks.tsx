@@ -6,8 +6,8 @@ import { RuntimeContext } from "../../useRuntime";
 import { useRecentBlocks } from "../../useErigonHooks";
 import { useLatestBlockHeader } from "../../useLatestBlock";
 import { RECENT_SIZE } from "../../params";
-import BlockItem from "../../search/BlockItem";
-import BlockResultHeader from "../../search/BlockResultHeader";
+import RecentBlockItem from "../../search/RecentBlockItem";
+import RecentBlockResultHeader from "../../search/RecentBlockResultHeader";
 import PendingBlockResults from "../../search/PendingBlockResults";
 import RecentNavBar from "../../search/RecentNavBar";
 
@@ -23,6 +23,7 @@ const RecentBlocks: FC = () => {
   const { data, isLoading } = useRecentBlocks(
     provider,
     latestBlockNum,
+    0,
     RECENT_SIZE
   );
 
@@ -30,14 +31,14 @@ const RecentBlocks: FC = () => {
   return (
     <ContentFrame isLoading={isLoading}>
       <RecentNavBar isLoading={ data === undefined }/>
-      <BlockResultHeader
+      <RecentBlockResultHeader
         feeDisplay={feeDisplay}
         feeDisplayToggler={feeDisplayToggler}
       />
       {data ? (
         <StandardSelectionBoundary>
           {data.map((block) => (
-            block ? <BlockItem key={block.number} block={block} feeDisplay={feeDisplay} /> : <></> 
+            block ? <RecentBlockItem key={block.number} block={block} feeDisplay={feeDisplay} /> : <></> 
           ))}
         </StandardSelectionBoundary>
       ) : (

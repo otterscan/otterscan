@@ -1,5 +1,5 @@
-import { FC, ReactNode, memo } from "react";
-import PageControl from "./PageControl";
+import { FC, memo } from "react";
+import { NavLink } from "react-router-dom";
 
 type RecentNavBarProps = {
     isLoading : boolean
@@ -12,6 +12,13 @@ const RecentNavBar: FC<RecentNavBarProps> = ({ isLoading }) => (
         ? "Waiting for blocks..."
         : "Transaction Blocks"}
     </div>
+    <NavLink
+        className={"text-link-blue hover:text-link-blue-hover truncate"}
+        to={`/blocklist`}
+        title={"View All"}
+      >
+        {"View All"}
+      </NavLink>
   </div>
 );
 

@@ -3,23 +3,23 @@ import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
 import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { FeeDisplay } from "./useFeeToggler";
+import { RuntimeContext } from "../useRuntime";
 import { ExtendedBlock } from "../useErigonHooks";
 import { formatValue } from "../components/formatter";
 import { blockTxsURL } from "../url";
 import { NavLink } from "react-router-dom";
 import BlockReward from "../execution/components/BlockReward";
-import HexValue from "../components/HexValue";
 
 type BlockItemProps = {
   block: ExtendedBlock,
   feeDisplay: FeeDisplay
 };
 
-const BlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
+const RecentBlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
 
   return (
     <div
-    className="grid grid-cols-9 items-baseline gap-x-1 border-t border-gray-200 text-sm 
+    className="grid grid-cols-5 items-baseline gap-x-1 border-t border-gray-200 text-sm 
     hover:bg-skin-table-hover px-2 py-3"
     >
     <span>
@@ -32,9 +32,6 @@ const BlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
     >
         {block.transactionCount} transactions
     </NavLink>{" "}
-    </span>
-    <span className="col-span-4">
-    <HexValue value={block.hash} />
     </span>
     <span className="truncate font-balance text-xs text-gray-500">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(block.feeReward, 18)}
@@ -51,4 +48,4 @@ const BlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
   );
 };
 
-export default BlockItem;
+export default RecentBlockItem;

@@ -32,3 +32,8 @@ export const getTotalFormatter = (
       return (total: number) => `A total of ${total} found`;
   }
 };
+
+export const totalBlocksFormatter = (total: number) =>
+  `A total of ${commify(total)} ${
+    total > 1 ? "blocks" : "block"
+  } found`;

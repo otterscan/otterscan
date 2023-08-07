@@ -189,29 +189,32 @@ export const useBlockData = (
 export const useRecentBlocks = (
   provider: JsonRpcProvider | undefined,
   blockNumber: number | undefined,
-  pageNumber: number
+  pageNumber: number,
+  pageSize: number
 ): { data: (ExtendedBlock | null)[] | undefined; isLoading: boolean } => {
+  const startBlockNum : number | undefined = blockNumber ? blockNumber - ( pageSize * pageNumber) : undefined;
 
   // This function is used by SWR to get the key which we pass to the fetcher function
   // It also searches the cache for the presence of this key and if found returns the 
-  // cached value
+  // cached value. The pageSize differenciates the cache between components so that different components
+  // do not display incorrect number of displays
   const getKey = (pageIndex : number) 
-  : [ JsonRpcProvider , string] | null =>  {
-    if((provider == undefined || blockNumber == undefined) 
-    || (blockNumber - pageIndex < 0)) return null;
+  : [ JsonRpcProvider , string, number] | null =>  {
+    if((provider == undefined || startBlockNum == undefined) 
+    || (startBlockNum - pageIndex < 0)) return null;
 
-    return [provider, (blockNumber - pageIndex).toString() ]
+    return [provider, (startBlockNum - pageIndex).toString(), pageSize]
   }
 
   // Calls the fetcher to fetch the most recent pageNumber of blocks in parallel
-  const { data, error, isLoading } = useSWRInfinite(getKey,
+  const { data, error, isLoading, isValidating } = useSWRInfinite(getKey,
     blockDataFetcher,
-    { keepPreviousData: true, revalidateFirstPage : false, initialSize : pageNumber, parallel : true}
+    { keepPreviousData: true, revalidateFirstPage : false, initialSize : pageSize, parallel : true }
   );
   if (error) {
     return { data: undefined, isLoading: false };
   }
-  return { data, isLoading };
+  return { data, isLoading :  isLoading || isValidating};
 };
 
 export const useBlockDataFromTransaction = (

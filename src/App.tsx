@@ -10,6 +10,7 @@ import { RuntimeContext, useRuntime } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
 const Block = lazy(() => import("./execution/Block"));
+const BlockList = lazy(() => import("./execution/BlockList"));
 const BlockTransactions = lazy(() => import("./execution/BlockTransactions"));
 const BlockTransactionByIndex = lazy(
   () => import("./execution/block/BlockTransactionByIndex"),
@@ -28,6 +29,7 @@ const Validator = lazy(() => import("./consensus/Validator"));
 const London = lazy(() => import("./special/london/London"));
 const Faucets = lazy(() => import("./Faucets"));
 const PageNotFound = lazy(() => import("./PageNotFound"));
+
 
 const App = () => {
   const runtime = useRuntime();
@@ -58,6 +60,9 @@ const App = () => {
                     <Route
                       path="block/:blockNumberOrHash"
                       element={<Block />}
+                    />
+                    <Route
+                      path="blocklist" element={ <BlockList/>}
                     />
                     <Route
                       path="block/:blockNumber/txs"
