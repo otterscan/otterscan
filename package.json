@@ -22,7 +22,7 @@
     "@testing-library/user-event": "^12.1.10",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.8",
-    "@types/react": "^18.2.13",
+    "@types/react": "^18.2.20",
     "@types/react-blockies": "^1.4.1",
     "@types/react-dom": "^18.2.7",
     "@types/react-highlight": "^0.12.5",
