@@ -20,6 +20,7 @@ import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
+import ReadContract from "./address/contract/ReadContract";
 import { RuntimeContext } from "../useRuntime";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
@@ -125,6 +126,13 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
+                {hasCode && match && (
+                  <NavTab href={`/address/${addressOrName}/readContract`}>
+                    <span className={`flex items-baseline space-x-2`}>
+                      <span>Read Contract</span>
+                    </span>
+                  </NavTab>
+                )}
               </Tab.List>
               <Tab.Panels>
                 <Routes>
@@ -164,6 +172,15 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     path="contract"
                     element={
                       <Contracts
+                        checksummedAddress={checksummedAddress}
+                        match={match}
+                      />
+                    }
+                  />
+                  <Route
+                    path="readContract"
+                    element={
+                      <ReadContract
                         checksummedAddress={checksummedAddress}
                         match={match}
                       />

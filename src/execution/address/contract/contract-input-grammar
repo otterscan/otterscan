@@ -1,0 +1,46 @@
+Start := _ values=Values _ $
+    .value = any[] { return this.values.value; }
+
+ValuesArray := '\[' _ elements=Values? _ '\]'
+    .value = any[] { return this.elements ? this.elements.value : []; }
+
+Values := head=Value _ tail={',' _ vals=Values}?
+    .value = any[] { return (this.tail !== null) ? [this.head.value, ...this.tail.vals.value] : [this.head.value]; }
+
+HexValue := value={'0x[a-f0-9]*'i}
+
+UnsignedInteger := value={'[0-9]+'}
+Integer := parts={sign='-'? abs=UnsignedInteger}
+    .value = bigint { return BigInt((this.parts.sign ?? '') + this.parts.abs.value); }
+FixedBig := integer=Integer decimal={'\.' value=UnsignedInteger}? 'e' exponent=UnsignedInteger
+    .value = bigint {
+        return (this.integer.value * 10n ** BigInt(this.exponent.value)) + (this.decimal !== null ? (BigInt(this.decimal.value.value) * 10n ** BigInt(BigInt(this.exponent.value) - BigInt(this.decimal.value.value.length))) * (this.integer.parts.sign === '-' ? -1n : 1n) : 0n);
+    }
+
+EscapeSequence := escaped={'\\' label='[n"\'\\]'}
+    .char = string {
+        switch (escaped.label) {
+            case 'n':
+                return '\n';
+            case '"':
+                return '"';
+            case '\'':
+                return '\'';
+            case '\\':
+                return '\\';
+        }
+        throw new Error('Unknown escape');
+    }
+Character := !'["\n\\]' char='.' | EscapeSequence
+
+UnquotedString := chars={Character}*
+    .value = string { return chars.map(c => c.char).join(''); }
+QuotedString := '"' str=UnquotedString '"'
+    .value = string { return str.value; }
+
+Boolean := boolVal={'true' | 'false'}
+    .value = boolean { return boolVal === 'true'; }
+
+Value := ValuesArray | HexValue | FixedBig | Integer | QuotedString | Boolean
+
+_ := '[ \t]*'

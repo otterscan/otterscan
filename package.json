@@ -57,7 +57,8 @@
     "docker-stop": "docker stop otterscan",
     "docker-hub-start": "docker run --rm -p 5273:80 --pull always --name otterscan -d otterscan/otterscan:develop",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "build-parsers": "npx tspeg ./src/execution/address/contract/contract-input-grammar | npx prettier --stdin-filepath contractInput.ts > ./src/execution/address/contract/contractInputDataParser.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -95,6 +96,8 @@
     "storybook": "7.2.2",
     "tailwindcss": "^3.3.3",
     "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "tspeg": "^3.3.0",
     "typescript": "^5.1.6",
     "vite": "^4.2.2",
     "vite-imagetools": "^5.0.7",
