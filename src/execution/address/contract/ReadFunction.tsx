@@ -1,6 +1,11 @@
 import { FC, memo, useContext, useState, FormEvent } from "react";
 import { SyntaxHighlighter, docco } from "../../../highlight-init";
-import { FunctionFragment, Result, Interface } from "@ethersproject/abi";
+import {
+  FunctionFragment,
+  Result,
+  Interface,
+  type ParamType,
+} from "@ethersproject/abi";
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
@@ -8,6 +13,55 @@ import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
 interface ReadFunctionProps {
   address: string;
   func: FunctionFragment;
+}
+
+function validateArgument(arg: any, argType: ParamType) {
+  // Check only those types which ethers might parse incorrectly
+  if (argType.baseType === "string" && typeof arg !== "string") {
+    throw new Error(`Invalid string "${arg}": got type ${typeof arg}`);
+  } else if (argType.baseType === "bool" && typeof arg !== "boolean") {
+    throw new Error(`Invalid bool "${arg}": got type ${typeof arg}`);
+  } else if (argType.baseType === "array") {
+    if (!Array.isArray(arg)) {
+      throw new Error(`Invalid array "${arg}": got type ${typeof arg}`);
+    }
+    arg.map((childArg) => validateArgument(childArg, argType.arrayChildren));
+  } else if (argType.baseType === "tuple") {
+    if (!Array.isArray(arg)) {
+      throw new Error(`Invalid tuple "${arg}": got type ${typeof arg}`);
+    }
+    if (arg.length !== argType.components.length) {
+      throw new Error(
+        `Expected tuple length ${argType.components.length}, got ${arg.length}: [${arg}]`
+      );
+    }
+    arg.map((childArg, i) => validateArgument(childArg, argType.components[i]));
+  }
+}
+
+function parseArgument(
+  arg: string,
+  argType: ParamType
+): string | bigint | boolean | any[] {
+  let finalArg = arg;
+  // Add quotes around input for strings
+  if (argType.baseType === "string" && arg.length > 0 && arg[0] !== '"') {
+    finalArg = `"${finalArg}"`;
+  }
+  const parsed = parse(finalArg);
+  if (parsed.ast) {
+    validateArgument(parsed.ast.value, argType);
+    return parsed.ast.value;
+  } else {
+    throw new Error(
+      parsed.errs
+        .map(
+          (err) =>
+            `${err.toString()}\n${finalArg}\n${"-".repeat(err.pos.overallPos)}^`
+        )
+        .join("\n")
+    );
+  }
 }
 
 const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
@@ -25,7 +79,9 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
         // The parser can be recompiled with `npm run recompile-parsers`
         let encodedData = int.encodeFunctionData(
           func.name,
-          inputs.map((input) => parse(input).ast?.values?.value[0])
+          inputs.map((input: string, i: number) =>
+            parseArgument(input, func.inputs[i])
+          )
         );
         let resultData = await provider.call({
           to: address,
@@ -85,7 +141,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
           )}
         </div>
-        {error && <div className="text-red-500">{error}</div>}
+        {error && <pre className="text-red-500">{error}</pre>}
       </form>
     </li>
   );

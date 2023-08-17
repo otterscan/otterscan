@@ -1,5 +1,6 @@
-Start := _ values=Values _ $
-    .value = any[] { return this.values.value; }
+// To parse all arguments at once, separated by commas, start with Values instead
+Start := _ valueObj=Value _ $
+    .value = string | bigint | boolean | any[] { return this.valueObj.value; }
 
 ValuesArray := '\[' _ elements=Values? _ '\]'
     .value = any[] { return this.elements ? this.elements.value : []; }
