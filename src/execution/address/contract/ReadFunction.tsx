@@ -41,10 +41,14 @@ function validateArgument(arg: any, argType: ParamType) {
 
 function parseArgument(
   arg: string,
-  argType: ParamType
+  argType: ParamType,
+  argIndex: number
 ): string | bigint | boolean | any[] {
   let finalArg = arg;
   // Add quotes around input for strings
+  if (arg.length === 0) {
+    throw new Error(`Argument ${argIndex} missing`);
+  }
   if (argType.baseType === "string" && arg.length > 0 && arg[0] !== '"') {
     finalArg = `"${finalArg}"`;
   }
@@ -80,7 +84,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
         let encodedData = int.encodeFunctionData(
           func.name,
           inputs.map((input: string, i: number) =>
-            parseArgument(input, func.inputs[i])
+            parseArgument(input, func.inputs[i], i)
           )
         );
         let resultData = await provider.call({
