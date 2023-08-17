@@ -9,6 +9,8 @@ import {
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 interface ReadFunctionProps {
   address: string;
@@ -69,7 +71,7 @@ function parseArgument(
 }
 
 const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
-  let [result, setResult] = useState<Result | null>(null);
+  let [result, setResult] = useState<Result | null | undefined>(null);
   let [error, setError] = useState<string | null>(null);
   let [inputs, setInputs] = useState<string[]>(
     new Array(func.inputs.length).fill("")
@@ -87,6 +89,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             parseArgument(input, func.inputs[i], i)
           )
         );
+        setResult(undefined);
         let resultData = await provider.call({
           to: address,
           data: encodedData,
@@ -139,7 +142,12 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           type="submit"
         >
           Query
-        </button>
+        </button>{" "}
+        {result === undefined && (
+          <span className="self-center">
+            <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
+          </span>
+        )}
         <div className="mt-2 pl-2">
           {result && (
             <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
