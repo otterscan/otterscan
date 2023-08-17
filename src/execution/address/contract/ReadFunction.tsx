@@ -148,17 +148,17 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
           </span>
         )}
-        <div className="mt-2 pl-2">
-          {result && (
-            <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
-          )}
-        </div>
+      </form>
+      <div className="mt-2 pl-6">
+        {result && (
+          <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
+        )}
         {error && (
           <p className="whitespace-break-spaces font-mono text-red-500">
             {error}
           </p>
         )}
-      </form>
+      </div>
     </li>
   );
 };
