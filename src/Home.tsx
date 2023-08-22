@@ -1,6 +1,5 @@
 import { useState, useContext, lazy, FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
@@ -10,6 +9,7 @@ import { useLatestBlockHeader } from "./useLatestBlock";
 import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
 import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
+import { commify } from "./utils/utils";
 
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
 

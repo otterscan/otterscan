@@ -1,11 +1,11 @@
 import { FC } from "react";
-import { commify } from "@ethersproject/units";
 import { useInView } from "react-intersection-observer";
 import InfoRow from "../../components/InfoRow";
 import HexValue from "../../components/HexValue";
 import AggregationBits from "./AggregationBits";
 import ValidatorList from "./ValidatorList";
 import EpochLink from "../components/EpochLink";
+import { commify } from "../../utils/utils";
 
 type AttestationProps = {
   idx: number;

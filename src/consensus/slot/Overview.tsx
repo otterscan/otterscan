@@ -1,6 +1,5 @@
 import { FC, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { commify } from "@ethersproject/units";
 import { toUtf8String } from "@ethersproject/strings";
 import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
@@ -17,6 +16,7 @@ import AggregationParticipation from "./AggregationParticipation";
 import AggregationBits from "./AggregationBits";
 import SlashingCount from "../components/SlashingCount";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
+import { commify } from "../../utils/utils";
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();

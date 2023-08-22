@@ -1,5 +1,5 @@
 import React, { useMemo, useContext } from "react";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { RuntimeContext } from "./useRuntime";
@@ -7,6 +7,7 @@ import { formatValue } from "./components/formatter";
 import { useLatestBlockHeader } from "./useLatestBlock";
 import { useChainInfo } from "./useChainInfo";
 import { useETHUSDRawOracle, useFastGasRawOracle } from "./usePriceOracle";
+import { commify } from "./utils/utils";
 
 // TODO: encapsulate this magic number
 const ETH_FEED_DECIMALS = 8;

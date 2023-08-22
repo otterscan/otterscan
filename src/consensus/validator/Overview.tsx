@@ -1,6 +1,5 @@
 import { FC, useEffect } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { commify } from "@ethersproject/units";
 import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
@@ -9,6 +8,7 @@ import Timestamp from "../../components/Timestamp";
 import HexValue from "../../components/HexValue";
 import EpochLink from "../components/EpochLink";
 import { useEpochTimestamp, useValidator } from "../../useConsensus";
+import { commify } from "../../utils/utils";
 
 const GWEI = BigNumber.from(10).pow(9);
 

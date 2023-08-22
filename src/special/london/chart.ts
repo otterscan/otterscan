@@ -1,4 +1,4 @@
-import { commify } from "@ethersproject/units";
+import { commify } from "../../utils/utils";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 

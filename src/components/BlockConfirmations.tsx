@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { commify } from "@ethersproject/units";
+import { commify } from "../utils/utils";
 
 type BlockConfirmationsProps = {
   confirmations: number;

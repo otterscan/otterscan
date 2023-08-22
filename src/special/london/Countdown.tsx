@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { JsonRpcProvider, Block } from "@ethersproject/providers";
-import { commify } from "@ethersproject/units";
+import { commify } from "../../utils/utils";
 
 type CountdownProps = {
   provider: JsonRpcProvider;

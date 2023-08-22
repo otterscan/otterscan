@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import PageButton from "./PageButton";
-import { commify } from "@ethersproject/units";
+import { commify } from "../utils/utils";
 
 type PageControlProps = {
   pageNumber: number;
