@@ -1,9 +1,5 @@
 import { createContext, useMemo } from "react";
-import {
-  JsonRpcProvider,
-  JsonRpcApiProvider,
-  Network
-} from "ethers";
+import { JsonRpcProvider, JsonRpcApiProvider, Network } from "ethers";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
 import { ConnectionStatus } from "./types";
@@ -62,11 +58,9 @@ export const useRuntime = (): OtterscanRuntime => {
       return {
         config: effectiveConfig,
         connStatus: ConnectionStatus.CONNECTED,
-        provider: new JsonRpcProvider(
-          effectiveConfig.erigonURL,
-          network,
-          { staticNetwork: network }
-        ),
+        provider: new JsonRpcProvider(effectiveConfig.erigonURL, network, {
+          staticNetwork: network,
+        }),
       };
     }
     return { config: effectiveConfig, connStatus, provider };

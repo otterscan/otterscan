@@ -53,9 +53,7 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
           </InfoRow>
           <InfoRow title="Effective Balance">
             <NativeTokenAmountAndFiat
-              value={BigInt(
-                validator.data.validator.effective_balance
-              ) * GWEI}
+              value={BigInt(validator.data.validator.effective_balance) * GWEI}
               {...balancePreset}
             />
           </InfoRow>

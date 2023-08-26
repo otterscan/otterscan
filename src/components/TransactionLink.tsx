@@ -10,7 +10,7 @@ type TransactionLinkProps = {
 };
 
 const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail }) => (
-  <span className="flex flex-no-wrap space-x-1">
+  <span className="flex-no-wrap flex space-x-1">
     {fail && (
       <span className="text-red-600" title="Transaction reverted">
         <FontAwesomeIcon icon={faExclamationCircle} />

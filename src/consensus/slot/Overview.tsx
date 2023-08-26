@@ -65,7 +65,9 @@ const Overview: FC = () => {
             </InfoRow>
           )}
           <InfoRow title="Proposer">
-            <CheckedValidatorLink validatorIndex={slot.data.message.proposer_index} />
+            <CheckedValidatorLink
+              validatorIndex={slot.data.message.proposer_index}
+            />
           </InfoRow>
           <InfoRow title="Block Root">
             <BlockRoot slotNumber={slotAsNumber} />

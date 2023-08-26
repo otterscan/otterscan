@@ -19,8 +19,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
     nativeCurrency: { symbol },
   } = useChainInfo();
   const gasTarget = block.gasLimit / ELASTICITY_MULTIPLIER;
-  const burntFees =
-    block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
+  const burntFees = block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
   const netFeeReward = block && block.feeReward - (burntFees ?? 0n);
   const totalReward = block.blockReward + (netFeeReward ?? 0n);
 
@@ -31,9 +30,9 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
       </div>
       <div
         className={`text-right ${
-          (block.gasUsed > gasTarget)
+          block.gasUsed > gasTarget
             ? "text-emerald-500"
-            : (block.gasUsed < gasTarget)
+            : block.gasUsed < gasTarget
             ? "text-red-500"
             : ""
         }`}

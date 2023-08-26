@@ -53,7 +53,7 @@ export const burntFeesChartData = (
     {
       label: "Burnt fees (Gwei)",
       data: blocks
-        .map((b) => Number(b.gasUsed * b.baseFeePerGas! / (10n ** 9n)))
+        .map((b) => Number((b.gasUsed * b.baseFeePerGas!) / 10n ** 9n))
         .reverse(),
       fill: true,
       backgroundColor: "#FDBA7470",

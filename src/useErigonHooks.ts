@@ -74,12 +74,8 @@ export const readBlock = async (
     size: formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,
     stateRoot: _rawBlock.block.stateRoot,
-    totalDifficulty: formatter.bigInt(
-      _rawBlock.block.totalDifficulty
-    ),
-    transactionCount: formatter.number(
-      _rawBlock.block.transactionCount
-    ),
+    totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
+    transactionCount: formatter.number(_rawBlock.block.transactionCount),
     ..._block,
   };
   return extBlock;
@@ -99,9 +95,7 @@ const blockTransactionsFetcher: Fetcher<
     pageNumber,
     pageSize,
   ]);
-  const _block = formatter.blockParamsWithTransactions(
-    result.fullblock
-  );
+  const _block = formatter.blockParamsWithTransactions(result.fullblock);
   const _receipts = result.receipts;
 
   const rawTxs = _block.transactions
@@ -109,8 +103,9 @@ const blockTransactionsFetcher: Fetcher<
       const _rawReceipt = _receipts[i];
       // Empty logs on purpose because of ethers formatter requires it
       _rawReceipt.logs = [];
-      const _receipt: TransactionReceiptParams = formatter.transactionReceiptParams(_rawReceipt);
-      
+      const _receipt: TransactionReceiptParams =
+        formatter.transactionReceiptParams(_rawReceipt);
+
       if (t.hash === null) {
         throw new Error("blockTransactionsFetcher: unknown tx hash");
       }
@@ -128,8 +123,8 @@ const blockTransactionsFetcher: Fetcher<
         fee:
           t.type !== 2
             ? formatter.bigInt(_receipt.gasUsed) * t.gasPrice!
-            : formatter
-                .bigInt(_receipt.gasUsed) * (t.maxPriorityFeePerGas! + _block.baseFeePerGas!),
+            : formatter.bigInt(_receipt.gasUsed) *
+              (t.maxPriorityFeePerGas! + _block.baseFeePerGas!),
         gasPrice:
           t.type !== 2
             ? t.gasPrice!
@@ -365,9 +360,7 @@ export const useTraceTransaction = (
         results[i].from = formatter.address(results[i].from);
         results[i].to = formatter.address(results[i].to);
         results[i].value =
-          results[i].value === null
-            ? null
-            : formatter.bigInt(results[i].value);
+          results[i].value === null ? null : formatter.bigInt(results[i].value);
       }
 
       // Build trace tree
@@ -673,9 +666,11 @@ const tokenMetadataFetcher =
     if (provider === undefined) {
       return null;
     }
-    
+
     // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const erc20Contract: Contract = ERC20_PROTOTYPE.connect(provider).attach(address) as Contract;
+    const erc20Contract: Contract = ERC20_PROTOTYPE.connect(provider).attach(
+      address
+    ) as Contract;
     try {
       const name = (await erc20Contract.name()) as string;
       if (!name.trim()) {

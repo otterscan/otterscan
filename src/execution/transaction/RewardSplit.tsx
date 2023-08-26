@@ -25,7 +25,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
     : 0n;
 
   const minerReward = paidFees - burntFees;
-  const burntPerc = Number(burntFees * 10000n / paidFees) / 100;
+  const burntPerc = Number((burntFees * 10000n) / paidFees) / 100;
   const minerPerc = Math.round((100 - burntPerc) * 100) / 100;
 
   return (

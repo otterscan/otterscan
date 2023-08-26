@@ -6,7 +6,11 @@ import {
   useState,
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
-import { JsonRpcApiProvider, TransactionResponse,  TransactionReceiptParams } from "ethers";
+import {
+  JsonRpcApiProvider,
+  TransactionResponse,
+  TransactionReceiptParams,
+} from "ethers";
 import { isAddress } from "ethers";
 import { isHexString } from "ethers";
 import useKeyboardShortcut from "use-keyboard-shortcut";
@@ -15,14 +19,16 @@ import { ProcessedTransaction, TransactionChunk } from "../types";
 import { formatter } from "../utils/formatter";
 
 export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
-  const _res: TransactionResponse[] = _rawRes.txs.map((t: any) =>
-    new TransactionResponse(formatter.transactionResponse(t), provider)
+  const _res: TransactionResponse[] = _rawRes.txs.map(
+    (t: any) =>
+      new TransactionResponse(formatter.transactionResponse(t), provider)
   );
 
   return {
     txs: _res.map((t, i): ProcessedTransaction => {
       const _rawReceipt = _rawRes.receipts[i];
-      const _receipt: TransactionReceiptParams = formatter.transactionReceiptParams(_rawReceipt);
+      const _receipt: TransactionReceiptParams =
+        formatter.transactionReceiptParams(_rawReceipt);
       return {
         blockNumber: t.blockNumber!,
         timestamp: formatter.number(_rawReceipt.timestamp),

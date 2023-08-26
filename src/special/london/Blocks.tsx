@@ -124,7 +124,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   return (
     <div className="w-full grow">
-      <div className="divide-y-2 px-9 pt-3 pb-12">
+      <div className="divide-y-2 px-9 pb-12 pt-3">
         <div className="relative">
           <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-lg text-orange-500 ">
             <span>

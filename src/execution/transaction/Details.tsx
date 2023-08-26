@@ -357,8 +357,9 @@ const Details: FC<DetailsProps> = ({ txData }) => {
             </div>
             <PercentageBar
               perc={
-                Number(txData.confirmedData.gasUsed * 10000n /
-                    txData.gasLimit) / 100
+                Number(
+                  (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit
+                ) / 100
               }
             />
           </div>

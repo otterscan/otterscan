@@ -44,10 +44,9 @@ const Block: FC = () => {
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
   }, [block]);
-  const burntFees =
-    block?.baseFeePerGas && (block.baseFeePerGas * block.gasUsed);
+  const burntFees = block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
   const gasUsedPerc =
-    block && Number(block.gasUsed * 10000n / block.gasLimit) / 100;
+    block && Number((block.gasUsed * 10000n) / block.gasLimit) / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
 
@@ -101,25 +100,26 @@ const Block: FC = () => {
             <NativeTokenAmount value={block.unclesReward} />
           </InfoRow>
           <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
-          {(block.baseFeePerGas !== null && block.baseFeePerGas !== undefined) && (
-            <InfoRow title="Base Fee">
-              <span>
-                <FormattedBalance
-                  value={block.baseFeePerGas}
-                  decimals={9}
-                  symbol="Gwei"
-                />{" "}
-                (
-                <FormattedBalance
-                  value={block.baseFeePerGas}
-                  decimals={0}
-                  symbol="wei"
-                />
-                )
-              </span>
-            </InfoRow>
-          )}
-          {(burntFees !== null && burntFees !== undefined) && (
+          {block.baseFeePerGas !== null &&
+            block.baseFeePerGas !== undefined && (
+              <InfoRow title="Base Fee">
+                <span>
+                  <FormattedBalance
+                    value={block.baseFeePerGas}
+                    decimals={9}
+                    symbol="Gwei"
+                  />{" "}
+                  (
+                  <FormattedBalance
+                    value={block.baseFeePerGas}
+                    decimals={0}
+                    symbol="wei"
+                  />
+                  )
+                </span>
+              </InfoRow>
+            )}
+          {burntFees !== null && burntFees !== undefined && (
             <InfoRow title="Burnt Fees">
               <div className="flex items-baseline space-x-1">
                 <span className="flex space-x-1 text-orange-500">

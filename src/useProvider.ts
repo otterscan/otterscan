@@ -37,7 +37,7 @@ export const useProvider = (
       const network = Network.from(experimentalFixedChainId);
       network.attachPlugin(new EnsPlugin(null, experimentalFixedChainId));
       setProvider(
-        new JsonRpcProvider(erigonURL, network, {staticNetwork: network})
+        new JsonRpcProvider(erigonURL, network, { staticNetwork: network })
       );
       return;
     }

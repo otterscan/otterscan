@@ -101,7 +101,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
           <span>
             {formatEther(internalOp.value)} {symbol}
           </span>
-          {(blockETHUSDPrice !== undefined) && (
+          {blockETHUSDPrice !== undefined && (
             <USDAmount
               amount={internalOp.value}
               amountDecimals={decimals}

@@ -73,7 +73,10 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
       {error ? (
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
-          supportsENS={provider?._network.getPlugin("org.ethers.plugins.network.Ens") !== null}
+          supportsENS={
+            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            null
+          }
         />
       ) : (
         checksummedAddress && (

@@ -70,8 +70,14 @@ const resultFetcher = (
       (m): TransactionMatchWithData => ({
         hash: m.hash,
         // provider is a JsonRpcApiProvider; fetcher/res would be undefined otherwise
-        transaction: new TransactionResponse(formatter.transactionResponse(m.transaction), provider as JsonRpcApiProvider),
-        receipt: new TransactionReceipt(formatter.transactionReceiptParams(m.receipt), provider as JsonRpcApiProvider),
+        transaction: new TransactionResponse(
+          formatter.transactionResponse(m.transaction),
+          provider as JsonRpcApiProvider
+        ),
+        receipt: new TransactionReceipt(
+          formatter.transactionReceiptParams(m.receipt),
+          provider as JsonRpcApiProvider
+        ),
       })
     );
     const blockMap = new Map<number, BlockSummary>();
@@ -158,7 +164,9 @@ const erc20BalanceFetcher =
     }
 
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const contract = ERC20_PROTOTYPE.connect(provider).attach(tokenAddress) as Contract;
+    const contract = ERC20_PROTOTYPE.connect(provider).attach(
+      tokenAddress
+    ) as Contract;
     return contract.balanceOf(address);
   };
 

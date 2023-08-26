@@ -51,7 +51,9 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     }
 
     const readTxCount = async () => {
-      const count = BigInt(await provider.getTransactionCount(checksummedAddress));
+      const count = BigInt(
+        await provider.getTransactionCount(checksummedAddress)
+      );
       setTxCount(count);
     };
     readTxCount();
@@ -85,7 +87,10 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
       <StandardFrame>
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
-          supportsENS={provider?._network.getPlugin("org.ethers.plugins.network.Ens") !== null}
+          supportsENS={
+            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            null
+          }
         />
       </StandardFrame>
     );

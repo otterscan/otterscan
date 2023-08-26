@@ -45,10 +45,13 @@ export class UniswapV2Resolver implements IAddressResolver<UniswapV2PairMeta> {
     address: string
   ): Promise<UniswapV2PairMeta | undefined> {
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const pairContract =
-      UNISWAP_V2_PAIR_PROTOTYPE.connect(provider).attach(address) as Contract;
+    const pairContract = UNISWAP_V2_PAIR_PROTOTYPE.connect(provider).attach(
+      address
+    ) as Contract;
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const factoryContract = UNISWAP_V2_FACTORY_PROTOTYPE.connect(provider) as Contract;
+    const factoryContract = UNISWAP_V2_FACTORY_PROTOTYPE.connect(
+      provider
+    ) as Contract;
 
     try {
       // First, probe the factory() function; if it responds with UniswapV2 factory

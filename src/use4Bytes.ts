@@ -1,9 +1,5 @@
 import { useContext, useMemo } from "react";
-import {
-  Fragment,
-  Interface,
-  TransactionDescription,
-} from "ethers";
+import { Fragment, Interface, TransactionDescription } from "ethers";
 import { BigNumberish } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";

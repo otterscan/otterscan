@@ -34,7 +34,9 @@ export class UniswapV1Resolver implements IAddressResolver<UniswapV1PairMeta> {
     address: string
   ): Promise<UniswapV1PairMeta | undefined> {
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(provider) as Contract;
+    const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(
+      provider
+    ) as Contract;
 
     try {
       // First, probe the getToken() function; if it responds with an UniswapV1 exchange

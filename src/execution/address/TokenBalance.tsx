@@ -34,7 +34,8 @@ const TokenBalance: FC<TokenBalanceProps> = ({
             decimals={metadata?.decimals ?? 0}
           />
         )}
-        {balance !== null && balance !== undefined &&
+        {balance !== null &&
+          balance !== undefined &&
           metadata &&
           quote !== undefined &&
           decimals !== undefined && (

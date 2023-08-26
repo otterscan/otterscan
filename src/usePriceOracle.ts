@@ -52,7 +52,9 @@ const feedRegistryFetcher =
 
     // Let SWR handle error
     // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(provider) as Contract;
+    const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(
+      provider
+    ) as Contract;
     const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
       blockTag,
     });
@@ -98,8 +100,9 @@ const ethUSDFetcher =
     }
 
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const c =
-      ETH_USD_FEED_PROTOTYPE.connect(provider).attach("eth-usd.data.eth") as Contract;
+    const c = ETH_USD_FEED_PROTOTYPE.connect(provider).attach(
+      "eth-usd.data.eth"
+    ) as Contract;
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
   };
@@ -130,7 +133,7 @@ export const useFiatValue = (
     return undefined;
   }
 
-  return FixedNumber.fromValue(ethAmount * eth2USDValue / (10n ** 8n), 18);
+  return FixedNumber.fromValue((ethAmount * eth2USDValue) / 10n ** 8n, 18);
 };
 
 export const formatFiatValue = (
