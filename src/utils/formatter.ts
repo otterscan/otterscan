@@ -24,7 +24,9 @@ type FormatObject<T> = {
   [K in keyof T]: T[K] extends FormatFunc<infer U> ? U : never;
 };
 
-type BlockParamsWithTransactions = BlockParams & { transactions: ReadonlyArray<TransactionResponseParams> };
+type BlockParamsWithTransactions = BlockParams & {
+  transactions: ReadonlyArray<TransactionResponseParams>;
+};
 
 class Formatter {
   static formats = {
@@ -43,7 +45,9 @@ class Formatter {
       miner: Formatter.address,
       extraData: Formatter.data,
 
-      transactions: Formatter.arrayOf(Formatter.hash),
+      // TODO: Are there any situations where fetching only the block header
+      // might cause ethers to believe the block has no transactions?
+      transactions: Formatter.allowNull(Formatter.arrayOf(Formatter.hash), []),
 
       baseFeePerGas: Formatter.allowNull(Formatter.bigInt),
     },
@@ -57,7 +61,8 @@ class Formatter {
       root: Formatter.allowNull(Formatter.hex),
       gasPrice: Formatter.allowNull(Formatter.bigInt, null),
       gasUsed: Formatter.bigInt,
-      logsBloom: Formatter.data,
+      // TODO: Is this an acceptable default value?
+      logsBloom: Formatter.allowNull(Formatter.data, "0x"),
       blockHash: Formatter.hash,
       transactionHash: Formatter.hash,
       logs: Formatter.arrayOf(Formatter.logParams),
@@ -108,6 +113,7 @@ class Formatter {
       s: Formatter.allowNull(Formatter.uint256),
       v: Formatter.allowNull(Formatter.number),
 
+      // TODO: Removed in ethers v6
       creates: Formatter.allowNull(Formatter.address, null),
 
       raw: Formatter.allowNull(Formatter.data),
@@ -144,7 +150,10 @@ class Formatter {
         return false;
       }
     }
-    throw new Error("invalid boolean - " + value);
+    throw makeError("invalid boolean", "INVALID_ARGUMENT", {
+      argument: "value",
+      value,
+    });
   }
 
   // if value is null-ish, nullValue is returned
@@ -186,7 +195,7 @@ class Formatter {
         return value.toLowerCase();
       }
     }
-    throw makeError("invalid hash", "INVALID_ARGUMENT", {
+    throw makeError("invalid hex", "INVALID_ARGUMENT", {
       argument: "value",
       value,
     });
@@ -237,9 +246,10 @@ class Formatter {
           result[key] = value;
         }
       } catch (error: any) {
-        error.checkKey = key;
-        error.checkValue = object[key];
-        throw error;
+        throw makeError("check failed", "INVALID_ARGUMENT", {
+          argument: key,
+          value: object[key],
+        });
       }
     }
     return result;
@@ -249,7 +259,9 @@ class Formatter {
     return Formatter.check(Formatter.formats.block, blockObj);
   }
 
-  static blockParamsWithTransactions(blockObj: any): BlockParamsWithTransactions {
+  static blockParamsWithTransactions(
+    blockObj: any
+  ): BlockParamsWithTransactions {
     let blockWithTxsFormat = {
       ...Formatter.formats.block,
       transactions: Formatter.arrayOf(Formatter.transactionResponse),
@@ -301,9 +313,11 @@ class Formatter {
 
     // Removed in ethers v6
     // If to and creates are empty, populate the creates from the transaction
-    /*if (transaction.to == null && transaction.creates == null) {
-            transaction.creates = this.contractAddress(transaction);
-        }*/
+    /*
+    if (transaction.to == null && transaction.creates == null) {
+        transaction.creates = this.contractAddress(transaction);
+    }
+    */
 
     if (
       (transaction.type === 1 || transaction.type === 2) &&
@@ -321,7 +335,7 @@ class Formatter {
       signature: Signature;
     };
     const parsedTx: ParsedTransactionType = Formatter.check(
-      this.formats.transaction,
+      Formatter.formats.transaction,
       transaction
     );
 
@@ -336,25 +350,18 @@ class Formatter {
     } else {
       chainId = transaction.networkId;
 
-      // geth-etc returns chainId
-      /*
-            if (chainId == null && result.v == null) {
-                chainId = transaction.chainId;
-            }
-            */
-
       if (isHexString(chainId)) {
         chainId = BigInt(chainId);
       }
 
       // TODO: v shouldn't exist on this type, so double check that removing this doesn't break anything
       /*
-            if (typeof(chainId) !== "bigint" && result.v != null) {
-                chainId = (result.v - 35) / 2;
-                if (chainId < 0) { chainId = 0; }
-                chainId = parseInt(chainId);
-            }
-            */
+      if (typeof(chainId) !== "bigint" && result.v != null) {
+          chainId = (result.v - 35) / 2;
+          if (chainId < 0) { chainId = 0; }
+          chainId = parseInt(chainId);
+      }
+      */
 
       if (typeof chainId !== "bigint") {
         chainId = 0n;
@@ -363,9 +370,11 @@ class Formatter {
 
     // 0x0000... should actually be null
     // TODO: Remove?
-    /*if (result.blockHash && result.blockHash.replace(/0/g, "") === "x") {
-            result.blockHash = null;
-        }*/
+    /*
+    if (result.blockHash && result.blockHash.replace(/0/g, "") === "x") {
+        result.blockHash = null;
+    }
+    */
 
     const signature = Signature.from({
       r: parsedTx.r,
