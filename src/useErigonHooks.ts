@@ -14,6 +14,7 @@ import {
   isHexString,
   ZeroAddress,
   Transaction,
+  toNumber,
 } from "ethers";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
@@ -508,7 +509,7 @@ const getTransactionBySenderAndNonceFetcher =
 
     const result = (await provider.send("ots_getTransactionBySenderAndNonce", [
       sender,
-      nonce,
+      toNumber(nonce),
     ])) as string;
 
     // Empty or success
