@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import {
+  EnsPlugin,
   JsonRpcProvider,
-  JsonRpcBatchProvider,
-  StaticJsonRpcProvider,
+  JsonRpcApiProvider,
+  Network,
   WebSocketProvider,
-} from "@ethersproject/providers";
+} from "ethers";
 import { ConnectionStatus } from "./types";
 import { MIN_API_LEVEL } from "./params";
 
@@ -13,7 +14,7 @@ export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 export const useProvider = (
   erigonURL?: string,
   experimentalFixedChainId?: number
-): [ConnectionStatus, JsonRpcProvider | undefined] => {
+): [ConnectionStatus, JsonRpcApiProvider | undefined] => {
   const [connStatus, setConnStatus] = useState<ConnectionStatus>(
     ConnectionStatus.CONNECTING
   );
@@ -27,14 +28,16 @@ export const useProvider = (
     }
   }
 
-  const [provider, setProvider] = useState<JsonRpcProvider | undefined>();
+  const [provider, setProvider] = useState<JsonRpcApiProvider | undefined>();
   useEffect(() => {
     // Skip probing?
     if (experimentalFixedChainId !== undefined) {
       console.log("Skipping node probe");
       setConnStatus(ConnectionStatus.CONNECTED);
+      const network = Network.from(experimentalFixedChainId);
+      network.attachPlugin(new EnsPlugin(null, experimentalFixedChainId));
       setProvider(
-        new StaticJsonRpcProvider(erigonURL, experimentalFixedChainId)
+        new JsonRpcProvider(erigonURL, network, {staticNetwork: network})
       );
       return;
     }
@@ -48,11 +51,12 @@ export const useProvider = (
     setConnStatus(ConnectionStatus.CONNECTING);
 
     const tryToConnect = async () => {
-      let provider: JsonRpcProvider;
+      let provider: JsonRpcApiProvider;
       if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
         provider = new WebSocketProvider(erigonURL);
       } else {
-        provider = new JsonRpcBatchProvider(erigonURL);
+        // Batching takes place by default
+        provider = new JsonRpcProvider(erigonURL);
       }
 
       // Check if it is at least a regular ETH node

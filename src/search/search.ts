@@ -6,32 +6,33 @@ import {
   useState,
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
-import { JsonRpcProvider, TransactionResponse } from "@ethersproject/providers";
-import { isAddress } from "@ethersproject/address";
-import { isHexString } from "@ethersproject/bytes";
+import { JsonRpcApiProvider, TransactionResponse,  TransactionReceiptParams } from "ethers";
+import { isAddress } from "ethers";
+import { isHexString } from "ethers";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
+import { formatter } from "../utils/formatter";
 
-export const rawToProcessed = (provider: JsonRpcProvider, _rawRes: any) => {
+export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
   const _res: TransactionResponse[] = _rawRes.txs.map((t: any) =>
-    provider.formatter.transactionResponse(t)
+    new TransactionResponse(formatter.transactionResponse(t), provider)
   );
 
   return {
     txs: _res.map((t, i): ProcessedTransaction => {
       const _rawReceipt = _rawRes.receipts[i];
-      const _receipt = provider.formatter.receipt(_rawReceipt);
+      const _receipt: TransactionReceiptParams = formatter.transactionReceiptParams(_rawReceipt);
       return {
         blockNumber: t.blockNumber!,
-        timestamp: provider.formatter.number(_rawReceipt.timestamp),
-        idx: _receipt.transactionIndex,
+        timestamp: formatter.number(_rawReceipt.timestamp),
+        idx: _receipt.index,
         hash: t.hash,
         from: t.from,
         to: t.to ?? null,
-        createdContractAddress: _receipt.contractAddress,
+        createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
-        fee: _receipt.gasUsed.mul(t.gasPrice!),
+        fee: _receipt.gasUsed * t.gasPrice!,
         gasPrice: t.gasPrice!,
         data: t.data,
         status: _receipt.status!,
@@ -67,7 +68,7 @@ export class SearchController {
   }
 
   private static async readBackPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -80,7 +81,7 @@ export class SearchController {
   }
 
   private static async readForwardPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     address: string,
     baseBlock: number
   ): Promise<TransactionChunk> {
@@ -93,7 +94,7 @@ export class SearchController {
   }
 
   static async firstPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     address: string
   ): Promise<SearchController> {
     const newTxs = await SearchController.readBackPage(provider, address, 0);
@@ -107,18 +108,19 @@ export class SearchController {
   }
 
   static async middlePage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     address: string,
     hash: string,
     next: boolean
   ): Promise<SearchController> {
     const tx = await provider.getTransaction(hash);
+    // TODO: Can we actually infer that this transaction is not null?
     const newTxs = next
-      ? await SearchController.readBackPage(provider, address, tx.blockNumber!)
+      ? await SearchController.readBackPage(provider, address, tx!.blockNumber!)
       : await SearchController.readForwardPage(
           provider,
           address,
-          tx.blockNumber!
+          tx!.blockNumber!
         );
     return new SearchController(
       address,
@@ -130,7 +132,7 @@ export class SearchController {
   }
 
   static async lastPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     address: string
   ): Promise<SearchController> {
     const newTxs = await SearchController.readForwardPage(provider, address, 0);
@@ -148,7 +150,7 @@ export class SearchController {
   }
 
   async prevPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     hash: string
   ): Promise<SearchController> {
     // Already on this page
@@ -177,7 +179,7 @@ export class SearchController {
   }
 
   async nextPage(
-    provider: JsonRpcProvider,
+    provider: JsonRpcApiProvider,
     hash: string
   ): Promise<SearchController> {
     // Already on this page

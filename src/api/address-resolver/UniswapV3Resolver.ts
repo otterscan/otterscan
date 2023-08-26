@@ -1,6 +1,6 @@
-import { BaseProvider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
-import { AddressZero } from "@ethersproject/constants";
+import { AbstractProvider } from "ethers";
+import { Contract } from "ethers";
+import { ZeroAddress } from "ethers";
 import { IAddressResolver } from "./address-resolver";
 import { ChecksummedAddress, TokenMeta } from "../../types";
 import { ERCTokenResolver } from "./ERCTokenResolver";
@@ -24,7 +24,7 @@ const UNISWAP_V3_FACTORY_PROTOTYPE = new Contract(
 );
 
 const UNISWAP_V3_PAIR_PROTOTYPE = new Contract(
-  AddressZero,
+  ZeroAddress,
   UNISWAP_V3_PAIR_ABI
 );
 
@@ -43,12 +43,14 @@ const ercResolver = new ERCTokenResolver();
 
 export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
   async resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<UniswapV3PairMeta | undefined> {
+    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const poolContract =
-      UNISWAP_V3_PAIR_PROTOTYPE.connect(provider).attach(address);
-    const factoryContract = UNISWAP_V3_FACTORY_PROTOTYPE.connect(provider);
+      UNISWAP_V3_PAIR_PROTOTYPE.connect(provider).attach(address) as Contract;
+    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const factoryContract = UNISWAP_V3_FACTORY_PROTOTYPE.connect(provider) as Contract;
 
     try {
       // First, probe the factory() function; if it responds with UniswapV2 factory
@@ -60,9 +62,9 @@ export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
 
       // Probe the token0/token1/fee
       const [token0, token1, fee] = await Promise.all([
-        poolContract.token0() as string,
-        poolContract.token1() as string,
-        poolContract.fee() as number,
+        poolContract.token0() as Promise<string>,
+        poolContract.token1() as Promise<string>,
+        poolContract.fee() as Promise<number>,
       ]);
 
       // Probe the factory to ensure it is a legit pair

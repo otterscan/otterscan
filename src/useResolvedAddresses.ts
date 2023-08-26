@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { BaseProvider } from "@ethersproject/providers";
-import { getAddress, isAddress } from "@ethersproject/address";
+import { JsonRpcApiProvider, EnsPlugin, getAddress, isAddress } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getResolver } from "./api/address-resolver";
@@ -44,7 +43,7 @@ export const useAddressOrENS = (
     if (!provider) {
       return;
     }
-    if (provider.network.ensAddress) {
+    if ((provider._network.getPlugin("org.ethers.plugins.network.Ens") as EnsPlugin).address) {
       const resolveName = async () => {
         const resolvedAddress = await provider.resolveName(addressOrName);
         if (resolvedAddress !== null) {
@@ -69,7 +68,7 @@ export const useAddressOrENS = (
 };
 
 export const useResolvedAddress = (
-  provider: BaseProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress
 ): SelectedResolvedName<any> | undefined => {
   const fetcher: Fetcher<
@@ -79,7 +78,7 @@ export const useResolvedAddress = (
     if (!provider) {
       return undefined;
     }
-    const resolver = getResolver(provider.network.chainId);
+    const resolver = getResolver(provider._network.chainId);
     return resolver.resolveAddress(provider, key);
   };
 

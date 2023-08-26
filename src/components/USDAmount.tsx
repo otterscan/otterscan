@@ -1,11 +1,11 @@
 import { FC, memo } from "react";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { FixedNumber } from "ethers";
 import FiatValue, { neutralPreset } from "./FiatValue";
 
 type USDAmountProps = {
-  amount: BigNumber;
+  amount: bigint;
   amountDecimals: number;
-  quote: BigNumber;
+  quote: bigint;
   quoteDecimals: number;
 };
 
@@ -21,7 +21,7 @@ const USDAmount: FC<USDAmountProps> = ({
   quote,
   quoteDecimals,
 }) => {
-  const value = amount.mul(quote);
+  const value = amount * quote;
   const decimals = amountDecimals + quoteDecimals;
   const fiatAmount = FixedNumber.fromValue(
     value,

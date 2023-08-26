@@ -46,7 +46,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
   plain,
 }) => {
   const { config, provider } = useContext(RuntimeContext);
-  const match = useSourcifyMetadata(address, provider?.network.chainId);
+  const match = useSourcifyMetadata(address, provider?._network.chainId);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -163,7 +163,7 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
   }
 
   return renderer(
-    provider.network.chainId,
+    provider._network.chainId,
     address,
     resolvedName,
     linkable,

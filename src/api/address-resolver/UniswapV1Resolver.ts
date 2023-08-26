@@ -1,5 +1,5 @@
-import { BaseProvider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
+import { AbstractProvider } from "ethers";
+import { Contract } from "ethers";
 import { IAddressResolver } from "./address-resolver";
 import { ChecksummedAddress, TokenMeta } from "../../types";
 import { ERCTokenResolver } from "./ERCTokenResolver";
@@ -30,10 +30,11 @@ const ercResolver = new ERCTokenResolver();
 
 export class UniswapV1Resolver implements IAddressResolver<UniswapV1PairMeta> {
   async resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<UniswapV1PairMeta | undefined> {
-    const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(provider);
+    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(provider) as Contract;
 
     try {
       // First, probe the getToken() function; if it responds with an UniswapV1 exchange

@@ -1,6 +1,6 @@
 import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
-import { getAddress } from "@ethersproject/address";
+import { getAddress } from "ethers";
 import { AddressAwareComponentProps } from "../types";
 import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
@@ -18,7 +18,7 @@ const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   const erc20List = useERC20Holdings(provider, address);
 
   const [enabled, setEnabled] = useState<boolean>(true);
-  const tokenSet = useTokenSet(provider?.network.chainId);
+  const tokenSet = useTokenSet(provider?._network.chainId);
   const filteredList = useMemo(() => {
     if (erc20List === undefined) {
       return undefined;

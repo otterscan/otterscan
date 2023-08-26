@@ -1,5 +1,5 @@
 import React, { useMemo, useContext } from "react";
-import { formatUnits } from "@ethersproject/units";
+import { formatUnits } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { RuntimeContext } from "./useRuntime";

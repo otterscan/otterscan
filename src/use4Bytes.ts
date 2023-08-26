@@ -3,8 +3,8 @@ import {
   Fragment,
   Interface,
   TransactionDescription,
-} from "@ethersproject/abi";
-import { BigNumberish } from "@ethersproject/bignumber";
+} from "ethers";
+import { BigNumberish } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { RuntimeContext } from "./useRuntime";
@@ -135,7 +135,7 @@ export const useTransactionDescription = (
     }
 
     const sig = fourBytesEntry?.signature;
-    const functionFragment = Fragment.fromString(`function ${sig}`);
+    const functionFragment = Fragment.from(`function ${sig}`);
     const intf = new Interface([functionFragment]);
     try {
       return intf.parseTransaction({ data, value });

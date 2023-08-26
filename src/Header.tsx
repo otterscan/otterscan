@@ -34,7 +34,7 @@ const Header: FC = () => {
           </div>
         </Link>
         <div className="flex items-baseline space-x-3">
-          {provider?.network.chainId === 1 && <PriceBox />}
+          {provider?._network.chainId === 1n && <PriceBox />}
           <form
             className="flex"
             onSubmit={handleSubmit}
@@ -46,7 +46,7 @@ const Header: FC = () => {
               type="text"
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
-                provider?.network.ensAddress ? " / ENS name" : ""
+                provider?._network.getPlugin("org.ethers.plugins.network.Ens") !== null ? " / ENS name" : ""
               }`}
               onChange={handleChange}
               ref={searchRef}

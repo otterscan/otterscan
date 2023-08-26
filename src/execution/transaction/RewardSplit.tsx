@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -20,14 +19,13 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const paidFees = txData.gasPrice.mul(txData.confirmedData!.gasUsed);
+  const paidFees = txData.gasPrice * txData.confirmedData!.gasUsed;
   const burntFees = block
-    ? block.baseFeePerGas!.mul(txData.confirmedData!.gasUsed)
-    : BigNumber.from(0);
+    ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
+    : 0n;
 
-  const minerReward = paidFees.sub(burntFees);
-  const burntPerc =
-    Math.round(burntFees.mul(10000).div(paidFees).toNumber()) / 100;
+  const minerReward = paidFees - burntFees;
+  const burntPerc = Number(burntFees * 10000n / paidFees) / 100;
   const minerPerc = Math.round((100 - burntPerc) * 100) / 100;
 
   return (

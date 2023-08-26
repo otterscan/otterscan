@@ -1,18 +1,19 @@
-import { BaseProvider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
-import { AddressZero } from "@ethersproject/constants";
+import { AbstractProvider } from "ethers";
+import { Contract } from "ethers";
+import { ZeroAddress } from "ethers";
 import { IAddressResolver } from "./address-resolver";
 import erc20 from "../../erc20.json";
 import { TokenMeta } from "../../types";
 
-const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 export class ERCTokenResolver implements IAddressResolver<TokenMeta> {
   async resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<TokenMeta | undefined> {
-    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address);
+    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address) as Contract;
     try {
       const name = (await erc20Contract.name()) as string;
       if (!name.trim()) {

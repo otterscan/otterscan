@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BlockTag } from "@ethersproject/abstract-provider";
+import { BlockTag } from "ethers";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import BlockLink from "../../components/BlockLink";
 import NavBlock from "../../components/NavBlock";

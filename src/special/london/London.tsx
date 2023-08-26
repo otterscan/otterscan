@@ -14,7 +14,7 @@ const London: React.FC = () => {
 
   // Display countdown
   const targetBlockNumber =
-    londonBlockNumber[provider.network.chainId.toString()];
+    londonBlockNumber[provider._network.chainId.toString()];
   if (block.number < targetBlockNumber) {
     return (
       <Countdown

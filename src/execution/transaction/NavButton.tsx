@@ -8,7 +8,7 @@ import { addressByNonceURL } from "../../url";
 // TODO: extract common component with block/NavButton
 type NavButtonProps = {
   sender: ChecksummedAddress;
-  nonce: number;
+  nonce: bigint;
   disabled?: boolean;
 };
 
@@ -43,7 +43,7 @@ const NavButton: FC<PropsWithChildren<NavButtonProps>> = ({
 
 type PrefetcherProps = {
   checksummedAddress: ChecksummedAddress;
-  nonce: number;
+  nonce: bigint;
 };
 
 const Prefetcher: FC<PrefetcherProps> = ({ checksummedAddress, nonce }) => {

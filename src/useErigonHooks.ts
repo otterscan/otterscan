@@ -1,16 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   Block,
-  BlockWithTransactions,
+  BlockParams,
   BlockTag,
-} from "@ethersproject/abstract-provider";
-import { JsonRpcProvider } from "@ethersproject/providers";
-import { getAddress } from "@ethersproject/address";
-import { Contract } from "@ethersproject/contracts";
-import { defaultAbiCoder } from "@ethersproject/abi";
-import { BigNumber } from "@ethersproject/bignumber";
-import { arrayify, hexDataSlice, isHexString } from "@ethersproject/bytes";
-import { AddressZero } from "@ethersproject/constants";
+  JsonRpcApiProvider,
+  TransactionReceiptParams,
+  TransactionResponseParams,
+  getAddress,
+  Contract,
+  AbiCoder,
+  getBytes,
+  dataSlice,
+  isHexString,
+  ZeroAddress,
+  Transaction,
+} from "ethers";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import {
@@ -23,23 +27,24 @@ import {
   TokenMeta,
 } from "./types";
 import erc20 from "./erc20.json";
+import { formatter } from "./utils/formatter";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
-export interface ExtendedBlock extends Block {
-  blockReward: BigNumber;
-  unclesReward: BigNumber;
-  feeReward: BigNumber;
+export interface ExtendedBlock extends BlockParams {
+  blockReward: bigint;
+  unclesReward: bigint;
+  feeReward: bigint;
   size: number;
   sha3Uncles: string;
   stateRoot: string;
-  totalDifficulty: BigNumber;
+  totalDifficulty: bigint;
   transactionCount: number;
 }
 
 export const readBlock = async (
-  provider: JsonRpcProvider,
+  provider: JsonRpcApiProvider,
   blockNumberOrHash: string
 ): Promise<ExtendedBlock | null> => {
   let blockPromise: Promise<any>;
@@ -59,20 +64,20 @@ export const readBlock = async (
   if (_rawBlock === null) {
     return null;
   }
-  const _block = provider.formatter.block(_rawBlock.block);
+  const _block: BlockParams = formatter.blockParams(_rawBlock.block);
   const _rawIssuance = _rawBlock.issuance;
 
   const extBlock: ExtendedBlock = {
-    blockReward: provider.formatter.bigNumber(_rawIssuance.blockReward ?? 0),
-    unclesReward: provider.formatter.bigNumber(_rawIssuance.uncleReward ?? 0),
-    feeReward: provider.formatter.bigNumber(_rawBlock.totalFees),
-    size: provider.formatter.number(_rawBlock.block.size),
+    blockReward: formatter.bigInt(_rawIssuance.blockReward ?? 0),
+    unclesReward: formatter.bigInt(_rawIssuance.uncleReward ?? 0),
+    feeReward: formatter.bigInt(_rawBlock.totalFees),
+    size: formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,
     stateRoot: _rawBlock.block.stateRoot,
-    totalDifficulty: provider.formatter.bigNumber(
+    totalDifficulty: formatter.bigInt(
       _rawBlock.block.totalDifficulty
     ),
-    transactionCount: provider.formatter.number(
+    transactionCount: formatter.number(
       _rawBlock.block.transactionCount
     ),
     ..._block,
@@ -87,24 +92,28 @@ export type BlockTransactionsPage = {
 
 const blockTransactionsFetcher: Fetcher<
   BlockTransactionsPage,
-  [JsonRpcProvider, number, number, number]
+  [JsonRpcApiProvider, number, number, number]
 > = async ([provider, blockNumber, pageNumber, pageSize]) => {
   const result = await provider.send("ots_getBlockTransactions", [
     blockNumber,
     pageNumber,
     pageSize,
   ]);
-  const _block = provider.formatter.blockWithTransactions(
+  const _block = formatter.blockParamsWithTransactions(
     result.fullblock
-  ) as unknown as BlockWithTransactions;
+  );
   const _receipts = result.receipts;
 
   const rawTxs = _block.transactions
-    .map((t, i): ProcessedTransaction => {
+    .map((t: TransactionResponseParams, i: number): ProcessedTransaction => {
       const _rawReceipt = _receipts[i];
       // Empty logs on purpose because of ethers formatter requires it
       _rawReceipt.logs = [];
-      const _receipt = provider.formatter.receipt(_rawReceipt);
+      const _receipt: TransactionReceiptParams = formatter.transactionReceiptParams(_rawReceipt);
+      
+      if (t.hash === null) {
+        throw new Error("blockTransactionsFetcher: unknown tx hash");
+      }
 
       return {
         blockNumber: blockNumber,
@@ -112,22 +121,21 @@ const blockTransactionsFetcher: Fetcher<
         miner: _block.miner,
         idx: i,
         hash: t.hash,
-        from: t.from,
+        from: t.from ?? undefined,
         to: t.to ?? null,
-        createdContractAddress: _receipt.contractAddress,
+        createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
         fee:
           t.type !== 2
-            ? provider.formatter.bigNumber(_receipt.gasUsed).mul(t.gasPrice!)
-            : provider.formatter
-                .bigNumber(_receipt.gasUsed)
-                .mul(t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!)),
+            ? formatter.bigInt(_receipt.gasUsed) * t.gasPrice!
+            : formatter
+                .bigInt(_receipt.gasUsed) * (t.maxPriorityFeePerGas! + _block.baseFeePerGas!),
         gasPrice:
           t.type !== 2
             ? t.gasPrice!
-            : t.maxPriorityFeePerGas!.add(_block.baseFeePerGas!),
+            : t.maxPriorityFeePerGas! + _block.baseFeePerGas!,
         data: t.data,
-        status: provider.formatter.number(_receipt.status),
+        status: formatter.number(_receipt.status),
       };
     })
     .reverse();
@@ -136,7 +144,7 @@ const blockTransactionsFetcher: Fetcher<
 };
 
 export const useBlockTransactions = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   blockNumber: number,
   pageNumber: number,
   pageSize: number
@@ -156,14 +164,14 @@ export const useBlockTransactions = (
 
 const blockDataFetcher: Fetcher<
   ExtendedBlock | null,
-  [JsonRpcProvider, string]
+  [JsonRpcApiProvider, string]
 > = async ([provider, blockNumberOrHash]) => {
   return readBlock(provider, blockNumberOrHash);
 };
 
 // TODO: some callers may use only block headers?
 export const useBlockData = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   blockNumberOrHash: string | undefined
 ): { data: ExtendedBlock | null | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
@@ -180,7 +188,7 @@ export const useBlockData = (
 };
 
 export const useBlockDataFromTransaction = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txData: TransactionData | null | undefined
 ): ExtendedBlock | null | undefined => {
   const { data: block } = useBlockData(
@@ -193,7 +201,7 @@ export const useBlockDataFromTransaction = (
 };
 
 export const useTxData = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txhash: string
 ): TransactionData | undefined | null => {
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
@@ -217,14 +225,14 @@ export const useTxData = (
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
-          to: _response.to,
+          to: _response.to ?? undefined,
           value: _response.value,
           type: _response.type ?? 0,
-          maxFeePerGas: _response.maxFeePerGas,
-          maxPriorityFeePerGas: _response.maxPriorityFeePerGas,
+          maxFeePerGas: _response.maxFeePerGas ?? undefined,
+          maxPriorityFeePerGas: _response.maxPriorityFeePerGas ?? undefined,
           gasPrice: _response.gasPrice!,
           gasLimit: _response.gasLimit,
-          nonce: _response.nonce,
+          nonce: BigInt(_response.nonce),
           data: _response.data,
           confirmedData:
             _receipt === null
@@ -232,12 +240,13 @@ export const useTxData = (
               : {
                   status: _receipt.status === 1,
                   blockNumber: _receipt.blockNumber,
-                  transactionIndex: _receipt.transactionIndex,
-                  confirmations: _receipt.confirmations,
-                  createdContractAddress: _receipt.contractAddress,
-                  fee: _response.gasPrice!.mul(_receipt.gasUsed),
+                  transactionIndex: _receipt.index,
+                  // TODO: Does awaiting this Promise induce another RPC call?
+                  confirmations: await _receipt.confirmations(),
+                  createdContractAddress: _receipt.contractAddress ?? undefined,
+                  fee: _response.gasPrice! * _receipt.gasUsed,
                   gasUsed: _receipt.gasUsed,
-                  logs: _receipt.logs,
+                  logs: Array.from(_receipt.logs),
                 },
         });
       } catch (err) {
@@ -264,9 +273,9 @@ export const useTokenTransfers = (
       .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
       .map((l) => ({
         token: l.address,
-        from: getAddress(hexDataSlice(arrayify(l.topics[1]), 12)),
-        to: getAddress(hexDataSlice(arrayify(l.topics[2]), 12)),
-        value: BigNumber.from(l.data),
+        from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
+        to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
+        value: BigInt(l.data),
       }));
   }, [txData]);
 
@@ -274,7 +283,7 @@ export const useTokenTransfers = (
 };
 
 export const useInternalOperations = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txHash: string | undefined
 ): InternalOperation[] | undefined => {
   const { data, error } = useSWRImmutable(
@@ -293,9 +302,9 @@ export const useInternalOperations = (
     for (const t of data) {
       _t.push({
         type: t.type,
-        from: provider.formatter.address(getAddress(t.from)),
-        to: provider.formatter.address(getAddress(t.to)),
-        value: provider.formatter.bigNumber(t.value),
+        from: formatter.address(getAddress(t.from)),
+        to: formatter.address(getAddress(t.to)),
+        value: formatter.bigInt(t.value),
       });
     }
     return _t;
@@ -304,7 +313,7 @@ export const useInternalOperations = (
 };
 
 export const useSendsToMiner = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txHash: string | undefined,
   miner: string | undefined
 ): [boolean, InternalOperation[]] | [undefined, undefined] => {
@@ -328,7 +337,7 @@ export type TraceEntry = {
   depth: number;
   from: string;
   to: string;
-  value: BigNumber;
+  value: bigint;
   input: string;
 };
 
@@ -337,7 +346,7 @@ export type TraceGroup = TraceEntry & {
 };
 
 export const useTraceTransaction = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txHash: string
 ): TraceGroup[] | undefined => {
   const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
@@ -353,12 +362,12 @@ export const useTraceTransaction = (
 
       // Implement better formatter
       for (let i = 0; i < results.length; i++) {
-        results[i].from = provider.formatter.address(results[i].from);
-        results[i].to = provider.formatter.address(results[i].to);
+        results[i].from = formatter.address(results[i].from);
+        results[i].to = formatter.address(results[i].to);
         results[i].value =
           results[i].value === null
             ? null
-            : provider.formatter.bigNumber(results[i].value);
+            : formatter.bigInt(results[i].value);
       }
 
       // Build trace tree
@@ -417,7 +426,7 @@ export const useTraceTransaction = (
 const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
 
 export const useTransactionError = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   txHash: string
 ): [string | undefined, string | undefined, boolean | undefined] => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
@@ -451,7 +460,7 @@ export const useTransactionError = (
       // construct it
       const selector = result.substr(0, 10);
       if (selector === ERROR_MESSAGE_SELECTOR) {
-        const msg = defaultAbiCoder.decode(
+        const msg = AbiCoder.defaultAbiCoder().decode(
           ["string"],
           "0x" + result.substr(10)
         );
@@ -472,13 +481,13 @@ export const useTransactionError = (
 };
 
 export const useTransactionCount = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   sender: ChecksummedAddress | undefined
-): number | undefined => {
+): bigint | undefined => {
   const { data, error } = useSWR(
     provider && sender ? { provider, sender } : null,
-    async ({ provider, sender }): Promise<number | undefined> =>
-      provider.getTransactionCount(sender)
+    async ({ provider, sender }): Promise<bigint | undefined> =>
+      provider.getTransactionCount(sender).then(BigInt)
   );
 
   if (error) {
@@ -488,13 +497,13 @@ export const useTransactionCount = (
 };
 
 type TransactionBySenderAndNonceKey = {
-  network: number;
+  network: bigint;
   sender: ChecksummedAddress;
-  nonce: number;
+  nonce: bigint;
 };
 
 const getTransactionBySenderAndNonceFetcher =
-  (provider: JsonRpcProvider) =>
+  (provider: JsonRpcApiProvider) =>
   async ({
     network,
     sender,
@@ -514,9 +523,9 @@ const getTransactionBySenderAndNonceFetcher =
   };
 
 export const useTransactionBySenderAndNonce = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   sender: ChecksummedAddress | undefined,
-  nonce: number | undefined
+  nonce: bigint | undefined
 ): string | null | undefined => {
   const { data, error } = useSWR<
     string | null | undefined,
@@ -525,7 +534,7 @@ export const useTransactionBySenderAndNonce = (
   >(
     provider && sender && nonce !== undefined
       ? {
-          network: provider.network.chainId,
+          network: provider._network.chainId,
           sender,
           nonce,
         }
@@ -541,7 +550,7 @@ export const useTransactionBySenderAndNonce = (
 
 type ContractCreatorKey = {
   type: "cc";
-  network: number;
+  network: bigint;
   address: ChecksummedAddress;
 };
 
@@ -551,7 +560,7 @@ type ContractCreator = {
 };
 
 export const useContractCreator = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined
 ): ContractCreator | null | undefined => {
   const { data, error } = useSWR<
@@ -562,7 +571,7 @@ export const useContractCreator = (
     provider && address
       ? {
           type: "cc",
-          network: provider.network.chainId,
+          network: provider._network.chainId,
           address,
         }
       : null,
@@ -576,7 +585,7 @@ export const useContractCreator = (
 };
 
 const getContractCreatorFetcher =
-  (provider: JsonRpcProvider) =>
+  (provider: JsonRpcApiProvider) =>
   async ({
     network,
     address,
@@ -587,16 +596,16 @@ const getContractCreatorFetcher =
 
     // Empty or success
     if (result) {
-      result.creator = provider.formatter.address(result.creator);
+      result.creator = formatter.address(result.creator);
     }
     return result;
   };
 
 export const useAddressBalance = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined
-): BigNumber | null | undefined => {
-  const [balance, setBalance] = useState<BigNumber | undefined>();
+): bigint | null | undefined => {
+  const [balance, setBalance] = useState<bigint | undefined>();
 
   useEffect(() => {
     if (!provider || !address) {
@@ -620,7 +629,7 @@ export const useAddressBalance = (
  */
 export const providerFetcher =
   (
-    provider: JsonRpcProvider | undefined
+    provider: JsonRpcApiProvider | undefined
   ): Fetcher<any | undefined, [string, ...any]> =>
   async (key) => {
     if (provider === undefined) {
@@ -639,7 +648,7 @@ export const providerFetcher =
   };
 
 export const useHasCode = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest"
 ): boolean | undefined => {
@@ -654,18 +663,19 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
-const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const tokenMetadataFetcher =
   (
-    provider: JsonRpcProvider | undefined
+    provider: JsonRpcApiProvider | undefined
   ): Fetcher<TokenMeta | null, ["tokenmeta", ChecksummedAddress]> =>
   async ([_, address]) => {
     if (provider === undefined) {
       return null;
     }
-
-    const erc20Contract = ERC20_PROTOTYPE.connect(provider).attach(address);
+    
+    // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const erc20Contract: Contract = ERC20_PROTOTYPE.connect(provider).attach(address) as Contract;
     try {
       const name = (await erc20Contract.name()) as string;
       if (!name.trim()) {
@@ -695,7 +705,7 @@ const tokenMetadataFetcher =
   };
 
 export const useTokenMetadata = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined
 ): TokenMeta | null | undefined => {
   const fetcher = tokenMetadataFetcher(provider);

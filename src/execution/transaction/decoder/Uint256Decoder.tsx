@@ -1,7 +1,5 @@
 import { FC, memo, useState } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
-import { hexlify, hexZeroPad } from "@ethersproject/bytes";
-import { formatEther } from "@ethersproject/units";
+import { hexlify, zeroPadValue, formatEther } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
 import { commify } from "../../../utils/utils";
@@ -17,11 +15,11 @@ enum DisplayMode {
   _LAST,
 }
 
-const VERY_BIG_NUMBER = BigNumber.from(10).pow(BigNumber.from(36));
+const VERY_BIG_NUMBER = 10n ** 36n;
 
 const initDisplayMode = (r: any): DisplayMode => {
-  const n = BigNumber.from(r);
-  if (n.gte(VERY_BIG_NUMBER)) {
+  const n = BigInt(r);
+  if (n >= VERY_BIG_NUMBER) {
     return DisplayMode.HEX;
   }
   return DisplayMode.RAW;
@@ -58,7 +56,7 @@ const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
         {displayMode === DisplayMode.RAW ? (
           <>{commify(r.toString())}</>
         ) : displayMode === DisplayMode.HEX ? (
-          <>{hexZeroPad(hexlify(r), 32)}</>
+          <>{zeroPadValue(hexlify(r), 32)}</>
         ) : (
           <>{commify(formatEther(r))}</>
         )}

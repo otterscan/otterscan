@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Interface } from "@ethersproject/abi";
-import { ErrorDescription } from "@ethersproject/abi/lib/interface";
+import { Interface } from "ethers";
+import { ErrorDescription } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
@@ -112,7 +112,7 @@ const resolveSourcifySource = (source: SourcifySource) => {
  */
 export const sourcifyMetadata = (
   address: ChecksummedAddress,
-  chainId: number,
+  chainId: bigint,
   source: SourcifySource,
   type: MatchType
 ) =>
@@ -122,7 +122,7 @@ export const sourcifyMetadata = (
 
 export const sourcifySourceFile = (
   address: ChecksummedAddress,
-  chainId: number,
+  chainId: bigint,
   filepath: string,
   source: SourcifySource,
   type: MatchType
@@ -143,7 +143,7 @@ export type Match = {
 
 const sourcifyFetcher: Fetcher<
   Match | null | undefined,
-  ["sourcify", ChecksummedAddress, number, SourcifySource]
+  ["sourcify", ChecksummedAddress, bigint, SourcifySource]
 > = async ([_, address, chainId, sourcifySource]) => {
   // Try full match
   try {
@@ -192,7 +192,7 @@ const sourcifyFetcher: Fetcher<
 
 export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
-  chainId: number | undefined
+  chainId: bigint | undefined
 ): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
   const metadataURL = () =>
@@ -219,7 +219,7 @@ const contractFetcher: Fetcher<string | null, string> = async (url) => {
 
 export const useContract = (
   checksummedAddress: string,
-  networkId: number,
+  networkId: bigint,
   filename: string,
   sourcifySource: SourcifySource,
   type: MatchType

@@ -5,8 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Block } from "@ethersproject/abstract-provider";
-import { FixedNumber } from "@ethersproject/bignumber";
+import { Block, FixedNumber } from "ethers";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -195,12 +194,12 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               block={b}
               baseFeeDelta={
                 i < all.length - 1
-                  ? FixedNumber.from(b.baseFeePerGas!)
-                      .divUnsafe(FixedNumber.from(1e9))
+                  ? FixedNumber.fromValue(b.baseFeePerGas!)
+                      .divUnsafe(FixedNumber.fromValue(1e9))
                       .round(0)
                       .subUnsafe(
-                        FixedNumber.from(all[i + 1].baseFeePerGas!)
-                          .divUnsafe(FixedNumber.from(1e9))
+                        FixedNumber.fromValue(all[i + 1].baseFeePerGas!)
+                          .divUnsafe(FixedNumber.fromValue(1e9))
                           .round(0)
                       )
                       .toUnsafeFloat()

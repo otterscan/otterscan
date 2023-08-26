@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { Block } from "@ethersproject/abstract-provider";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Block, JsonRpcApiProvider } from "ethers";
+import { formatter } from "./utils/formatter";
 
 /**
  * Returns the latest block header AND hook an internal listener
  * that'll update and trigger a component render as a side effect
  * every time it is notified of a new block by the web3 provider.
  */
-export const useLatestBlockHeader = (provider?: JsonRpcProvider) => {
+export const useLatestBlockHeader = (provider?: JsonRpcApiProvider) => {
   const [latestBlock, setLatestBlock] = useState<Block>();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ export const useLatestBlockHeader = (provider?: JsonRpcProvider) => {
       const _raw = await provider.send("erigon_getHeaderByNumber", [
         blockNumber,
       ]);
-      const _block = provider.formatter.block(_raw);
+      const _block = new Block(formatter.blockParams(_raw), provider);
       setLatestBlock(_block);
     };
 
@@ -48,7 +48,7 @@ export const useLatestBlockHeader = (provider?: JsonRpcProvider) => {
  *
  * This hook is cheaper than useLatestBlockHeader.
  */
-export const useLatestBlockNumber = (provider?: JsonRpcProvider) => {
+export const useLatestBlockNumber = (provider?: JsonRpcApiProvider) => {
   const [latestBlock, setLatestBlock] = useState<number>();
 
   useEffect(() => {

@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
-import { BlockTag } from "@ethersproject/providers";
-import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
+import { BlockTag } from "ethers";
+import { FixedNumber } from "ethers";
 import { RuntimeContext } from "../useRuntime";
 import { useETHUSDOracle } from "../usePriceOracle";
 import { commify } from "../utils/utils";
 
 type TransactionItemFiatFeeProps = {
   blockTag: BlockTag;
-  fee: BigNumber;
+  fee: bigint;
 };
 
 const TransactionItemFiatFee: React.FC<TransactionItemFiatFeeProps> = ({
@@ -17,7 +17,7 @@ const TransactionItemFiatFee: React.FC<TransactionItemFiatFeeProps> = ({
   const { provider } = useContext(RuntimeContext);
   const eth2USDValue = useETHUSDOracle(provider, blockTag);
   const fiatValue =
-    eth2USDValue !== undefined ? fee.mul(eth2USDValue).div(10 ** 8) : undefined;
+    eth2USDValue !== undefined ? (fee * eth2USDValue / 100_000_000n) : undefined;
 
   return fiatValue ? (
     <span className="text-xs">

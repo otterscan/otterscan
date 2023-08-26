@@ -1,11 +1,10 @@
 import { FC, memo } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import { formatValue } from "./formatter";
 
 const DEFAULT_DECIMALS = 18;
 
 export type FormattedBalanceProps = {
-  value: BigNumber;
+  value: bigint;
   decimals?: number;
   symbol?: string | undefined;
 };

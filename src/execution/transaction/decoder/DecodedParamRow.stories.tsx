@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { ParamType } from "@ethersproject/abi";
+import { ParamType } from "ethers";
 import DecodedParamRow from "./DecodedParamRow";
 import { RuntimeContext } from "../../../useRuntime";
 import { ConnectionStatus } from "../../../types";

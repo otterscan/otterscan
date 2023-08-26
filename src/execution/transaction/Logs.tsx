@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { Log } from "@ethersproject/providers";
+import { Log } from "ethers";
 import ContentFrame from "../../components/ContentFrame";
 import LogEntry from "./LogEntry";
 

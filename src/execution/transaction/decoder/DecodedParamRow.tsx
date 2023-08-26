@@ -1,5 +1,5 @@
 import { FC, memo, ReactNode, useState } from "react";
-import { ParamType } from "@ethersproject/abi";
+import { ParamType } from "ethers";
 import { Switch } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
@@ -105,7 +105,7 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
             }
             i={idx}
             r={e}
-            paramType={paramType.components[idx]}
+            paramType={paramType.components![idx]}
           />
         ))}
       {paramType.baseType === "array" &&
@@ -114,7 +114,8 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
             key={idx}
             prefix={paramType.name ?? <span className="italic">param_{i}</span>}
             r={e}
-            paramType={paramType.arrayChildren}
+            // arrayChildren is not null when the baseType is array
+            paramType={paramType.arrayChildren!}
             arrayElem={idx}
           />
         ))}

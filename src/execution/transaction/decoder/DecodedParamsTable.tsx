@@ -1,11 +1,11 @@
 import { FC, memo } from "react";
-import { ParamType, Result } from "@ethersproject/abi";
+import { ParamType, Result } from "ethers";
 import DecodedParamRow from "./DecodedParamRow";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 
 type DecodedParamsTableProps = {
   args: Result;
-  paramTypes: ParamType[];
+  paramTypes: readonly ParamType[];
   hasParamNames?: boolean;
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;

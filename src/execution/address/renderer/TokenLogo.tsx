@@ -7,7 +7,7 @@ import { RuntimeContext } from "../../../useRuntime";
 import { ChecksummedAddress } from "../../../types";
 
 type TokenLogoProps = {
-  chainId: number;
+  chainId: bigint;
   address: ChecksummedAddress;
   name: string;
 };

@@ -11,7 +11,7 @@ import { useTransactionCount } from "../../useErigonHooks";
 
 type NavNonceProps = {
   sender: ChecksummedAddress;
-  nonce: number;
+  nonce: bigint;
 };
 
 const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
@@ -20,20 +20,20 @@ const NavNonce: React.FC<NavNonceProps> = ({ sender, nonce }) => {
 
   return (
     <div className="flex space-x-1 self-center pl-2">
-      <NavButton sender={sender} nonce={nonce - 1} disabled={nonce === 0}>
+      <NavButton sender={sender} nonce={nonce - 1n} disabled={nonce === 0n}>
         <FontAwesomeIcon icon={faChevronLeft} />
       </NavButton>
       <NavButton
         sender={sender}
-        nonce={nonce + 1}
-        disabled={count === undefined || nonce >= count - 1}
+        nonce={nonce + 1n}
+        disabled={count === undefined || nonce >= count - 1n}
       >
         <FontAwesomeIcon icon={faChevronRight} />
       </NavButton>
       <NavButton
         sender={sender}
-        nonce={count !== undefined ? count - 1 : -1}
-        disabled={count === undefined || nonce >= count - 1}
+        nonce={count !== undefined ? count - 1n : -1n}
+        disabled={count === undefined || nonce >= count - 1n}
       >
         <FontAwesomeIcon icon={faChevronRight} />
         <FontAwesomeIcon icon={faChevronRight} />

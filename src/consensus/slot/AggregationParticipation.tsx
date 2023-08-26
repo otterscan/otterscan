@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { arrayify } from "@ethersproject/bytes";
+import { getBytes } from "ethers";
 import PercentageBar from "../../components/PercentageBar";
 
 type AggregationParticipationProps = {
@@ -9,7 +9,7 @@ type AggregationParticipationProps = {
 const AggregationParticipation: FC<AggregationParticipationProps> = ({
   hex,
 }) => {
-  const bm = Array.from(arrayify(hex));
+  const bm = Array.from(getBytes(hex));
   const total = bm.length * 8;
   let participation = 0;
 

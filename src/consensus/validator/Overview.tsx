@@ -1,5 +1,4 @@
 import { FC, useEffect } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import ContentFrame from "../../components/ContentFrame";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
@@ -10,7 +9,7 @@ import EpochLink from "../components/EpochLink";
 import { useEpochTimestamp, useValidator } from "../../useConsensus";
 import { commify } from "../../utils/utils";
 
-const GWEI = BigNumber.from(10).pow(9);
+const GWEI = 10n ** 9n;
 
 type OverviewProps = {
   validatorIndex: string;
@@ -48,15 +47,15 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
           </InfoRow>
           <InfoRow title="Balance">
             <NativeTokenAmountAndFiat
-              value={BigNumber.from(validator.data.balance).mul(GWEI)}
+              value={BigInt(validator.data.balance) * GWEI}
               {...balancePreset}
             />
           </InfoRow>
           <InfoRow title="Effective Balance">
             <NativeTokenAmountAndFiat
-              value={BigNumber.from(
+              value={BigInt(
                 validator.data.validator.effective_balance
-              ).mul(GWEI)}
+              ) * GWEI}
               {...balancePreset}
             />
           </InfoRow>

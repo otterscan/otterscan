@@ -1,6 +1,6 @@
 import { FC, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { toUtf8String } from "@ethersproject/strings";
+import { toUtf8String } from "ethers";
 import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";

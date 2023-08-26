@@ -1,6 +1,6 @@
-import { commify } from "../../utils/utils";
 import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
+import { commify } from "../../utils/utils";
 
 export const burntFeesChartOptions: ChartOptions<"line"> = {
   animation: false,
@@ -53,7 +53,7 @@ export const burntFeesChartData = (
     {
       label: "Burnt fees (Gwei)",
       data: blocks
-        .map((b) => b.gasUsed.mul(b.baseFeePerGas!).div(1e9).toNumber())
+        .map((b) => Number(b.gasUsed * b.baseFeePerGas! / (10n ** 9n)))
         .reverse(),
       fill: true,
       backgroundColor: "#FDBA7470",
@@ -62,7 +62,7 @@ export const burntFeesChartData = (
     },
     {
       label: "Base fee (wei)",
-      data: blocks.map((b) => b.baseFeePerGas!.toNumber()).reverse(),
+      data: blocks.map((b) => Number(b.baseFeePerGas!)).reverse(),
       yAxisID: "yBaseFee",
       borderColor: "#38BDF8",
       tension: 0.2,
@@ -119,17 +119,17 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
   datasets: [
     {
       label: "Gas used",
-      data: blocks.map((b) => b.gasUsed.toNumber()).reverse(),
+      data: blocks.map((b) => Number(b.gasUsed)).reverse(),
       fill: true,
       segment: {
         backgroundColor: (ctx, x) =>
           ctx.p1.parsed.y >
-          Math.round(blocks[ctx.p1DataIndex].gasLimit.toNumber() / 2)
+          Math.round(Number(blocks[ctx.p1DataIndex].gasLimit) / 2)
             ? "#22C55E70"
             : "#EF444470",
         borderColor: (ctx) =>
           ctx.p1.parsed.y >
-          Math.round(blocks[ctx.p1DataIndex].gasLimit.toNumber() / 2)
+          Math.round(Number(blocks[ctx.p1DataIndex].gasLimit) / 2)
             ? "#22C55E"
             : "#EF4444",
       },
@@ -137,7 +137,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
     },
     {
       label: "Gas target",
-      data: blocks.map((b) => Math.round(b.gasLimit.toNumber() / 2)).reverse(),
+      data: blocks.map((b) => Math.round(Number(b.gasLimit) / 2)).reverse(),
       borderColor: "#FCA5A5",
       borderDash: [5, 5],
       borderWidth: 2,
@@ -146,7 +146,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
     },
     {
       label: "Gas limit",
-      data: blocks.map((b) => b.gasLimit.toNumber()).reverse(),
+      data: blocks.map((b) => Number(b.gasLimit)).reverse(),
       borderColor: "#B91C1CF0",
       tension: 0.2,
       pointStyle: "crossRot",
@@ -154,7 +154,7 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
     },
     {
       label: "Base fee (wei)",
-      data: blocks.map((b) => b.baseFeePerGas!.toNumber()).reverse(),
+      data: blocks.map((b) => Number(b.baseFeePerGas!)).reverse(),
       yAxisID: "yBaseFee",
       borderColor: "#38BDF8",
       tension: 0.2,

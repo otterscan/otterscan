@@ -28,13 +28,13 @@ const TokenBalance: FC<TokenBalanceProps> = ({
         <DecoratedAddressLink address={tokenAddress} />
       </td>
       <td>
-        {balance && (
+        {balance !== null && balance !== undefined && (
           <FormattedBalanceHighlighter
             value={balance}
             decimals={metadata?.decimals ?? 0}
           />
         )}
-        {balance &&
+        {balance !== null && balance !== undefined &&
           metadata &&
           quote !== undefined &&
           decimals !== undefined && (
