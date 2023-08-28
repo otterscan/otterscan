@@ -16,6 +16,7 @@ import {
   dataLength,
   zeroPadValue,
   Signature,
+  toBeHex,
 } from "ethers";
 
 export type FormatFunc<T> = (value: any) => T;
@@ -208,7 +209,7 @@ class Formatter {
         value,
       });
     }
-    return zeroPadValue(value, 32);
+    return zeroPadValue(toBeHex(value), 32);
   }
 
   // Requires a hash, optionally requires 0x prefix; returns prefixed lowercase hash.
