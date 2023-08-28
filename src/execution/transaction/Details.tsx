@@ -1,5 +1,5 @@
 import { FC, memo, useContext, useState } from "react";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -52,6 +52,7 @@ import {
   useTransactionError,
 } from "../../useErigonHooks";
 import { useChainInfo } from "../../useChainInfo";
+import { commify } from "../../utils/utils";
 
 type DetailsProps = {
   txData: TransactionData;

@@ -1,8 +1,8 @@
 import { FC, memo } from "react";
-import { commify } from "@ethersproject/units";
 import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import { useHeadSlotNumber } from "../../useConsensus";
+import { commify } from "../../utils/utils";
 
 const SlotNotFound: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const headSlotNumber = useHeadSlotNumber();

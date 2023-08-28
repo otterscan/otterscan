@@ -1,11 +1,12 @@
 import React from "react";
 import { FixedNumber } from "@ethersproject/bignumber";
-import { commify, formatEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
 import Blip from "./Blip";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { useChainInfo } from "../../useChainInfo";
+import { commify } from "../../utils/utils";
 
 const ELASTICITY_MULTIPLIER = 2;
 

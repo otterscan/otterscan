@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { BlockTag } from "@ethersproject/providers";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
-import { commify } from "@ethersproject/units";
 import { RuntimeContext } from "../useRuntime";
 import { useETHUSDOracle } from "../usePriceOracle";
+import { commify } from "../utils/utils";
 
 type TransactionItemFiatFeeProps = {
   blockTag: BlockTag;

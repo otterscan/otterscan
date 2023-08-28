@@ -2,7 +2,6 @@ import { JsonRpcProvider, BlockTag } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 import { BigNumber, FixedNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
-import { commify } from "@ethersproject/units";
 import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
 import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
 import { Fetcher } from "swr";
@@ -10,6 +9,7 @@ import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress } from "./types";
 import { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
+import { commify } from "./utils/utils";
 
 const FEED_REGISTRY_MAINNET: ChecksummedAddress =
   "0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf";

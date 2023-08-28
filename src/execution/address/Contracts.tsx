@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { commify } from "@ethersproject/units";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -12,6 +11,7 @@ import { Match, MatchType } from "../../sourcify/useSourcify";
 import ExternalLink from "../../components/ExternalLink";
 import { openInRemixURL } from "../../url";
 import ContractABI from "./contract/ContractABI";
+import { commify } from "../../utils/utils";
 
 type ContractsProps = {
   checksummedAddress: string;

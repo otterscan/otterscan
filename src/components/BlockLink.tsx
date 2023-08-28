@@ -1,10 +1,10 @@
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { BlockTag } from "@ethersproject/abstract-provider";
-import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { blockURL } from "../url";
+import { commify } from "../utils/utils";
 
 type BlockLinkProps = {
   blockTag: BlockTag;

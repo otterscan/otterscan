@@ -1,5 +1,4 @@
 import { FC, memo } from "react";
-import { commify } from "@ethersproject/units";
 import { SlotAwareComponentProps } from "../types";
 import SlotLink from "../components/SlotLink";
 import BlockLink from "../../components/BlockLink";
@@ -11,6 +10,7 @@ import AggregationParticipation from "../slot/AggregationParticipation";
 import RelevantNumericValue from "../../components/RelevantNumericValue";
 import SlashingCount from "../components/SlashingCount";
 import { useSlot } from "../../useConsensus";
+import { commify } from "../../utils/utils";
 
 const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const { slot } = useSlot(slotNumber);

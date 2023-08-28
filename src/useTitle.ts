@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { commify } from "@ethersproject/units";
+import { commify } from "./utils/utils";
 
 /**
  * Title for main block page.

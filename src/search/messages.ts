@@ -1,4 +1,4 @@
-import { commify } from "@ethersproject/units";
+import { commify } from "../utils/utils";
 
 export const totalTransactionsFormatter = (total: number) =>
   `A total of ${commify(total)} ${

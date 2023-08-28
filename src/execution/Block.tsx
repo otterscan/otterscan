@@ -1,6 +1,6 @@
 import { useMemo, useContext, FC } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatUnits } from "@ethersproject/units";
 import { toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
@@ -26,6 +26,7 @@ import { blockTxsURL, blockURL } from "../url";
 import { useBlockPageTitle } from "../useTitle";
 import { useBlockData } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { commify } from "../utils/utils";
 
 const Block: FC = () => {
   const { provider } = useContext(RuntimeContext);
