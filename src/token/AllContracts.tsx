@@ -17,7 +17,7 @@ const AllContracts: FC = () => {
 
   return (
     <GenericContractSearchResult
-      title="ERC721 tokens"
+      title="All contracts"
       header={<ContractHeader />}
       cols={3}
       pageNumber={pageNumber}

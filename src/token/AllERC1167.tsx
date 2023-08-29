@@ -17,7 +17,7 @@ const AllERC1167: FC = () => {
 
   return (
     <GenericContractSearchResult
-      title="ERC1167 contracts"
+      title="ERC1167 proxies"
       header={<ERC1167Header />}
       cols={4}
       pageNumber={pageNumber}
