@@ -71,8 +71,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
       const extBlock = await readBlock(provider, blockNumber.toString());
       setBlocks((_blocks) => {
-        if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
-          return _blocks;
+        for (let i = 0; i < _blocks.length; i++) {
+          if (_blocks[i].number === blockNumber) {
+            // Block already in list
+            return _blocks;
+          }
         }
         if (extBlock === null) {
           return _blocks;
