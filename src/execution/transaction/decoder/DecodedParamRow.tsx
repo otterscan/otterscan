@@ -46,7 +46,11 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
                 </span>
               ) : (
                 <>
-                  {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
+                  {paramType.name !== "" ? (
+                    paramType.name
+                  ) : (
+                    <span className="italic">param_{i}</span>
+                  )}{" "}
                   {i !== undefined && (
                     <span className="text-xs text-gray-400">({i})</span>
                   )}
@@ -97,7 +101,7 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
           <DecodedParamRow
             key={idx}
             prefix={
-              paramType.name ? (
+              paramType.name !== "" ? (
                 paramType.name + "."
               ) : (
                 <span className="italic">param_{i}.</span>
@@ -112,7 +116,13 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
         r.map((e: any, idx: number) => (
           <DecodedParamRow
             key={idx}
-            prefix={paramType.name ?? <span className="italic">param_{i}</span>}
+            prefix={
+              paramType.name !== "" ? (
+                paramType.name
+              ) : (
+                <span className="italic">param_{i}</span>
+              )
+            }
             r={e}
             // arrayChildren is not null when the baseType is array
             paramType={paramType.arrayChildren!}
