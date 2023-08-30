@@ -47,11 +47,12 @@ const ReadContract: React.FC<ContractsProps> = ({
             <div>
               <ul className="list-inside list-decimal">
                 {match.metadata.output.abi.map(
-                  (fn) =>
+                  (fn, i) =>
                     isReadFunction(fn) && (
                       <ReadFunction
                         func={FunctionFragment.from(fn)}
                         address={checksummedAddress}
+                        key={i}
                       />
                     )
                 )}
