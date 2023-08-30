@@ -12,7 +12,7 @@ type BlockLinkProps = {
 
 const BlockLink: FC<BlockLinkProps> = ({ blockTag }) => {
   let text = blockTag;
-  let isNum = typeof blockTag === "bigint";
+  let isNum = typeof blockTag === "bigint" || typeof blockTag === "number";
   if (isNum) {
     text = commify(blockTag);
   }
