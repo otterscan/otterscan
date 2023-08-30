@@ -1,5 +1,5 @@
 import { FC, memo, useState } from "react";
-import { hexlify, zeroPadValue, formatEther } from "ethers";
+import { toBeHex, zeroPadValue, formatEther } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
 import { commify } from "../../../utils/utils";
@@ -56,7 +56,7 @@ const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
         {displayMode === DisplayMode.RAW ? (
           <>{commify(r.toString())}</>
         ) : displayMode === DisplayMode.HEX ? (
-          <>{zeroPadValue(hexlify(r), 32)}</>
+          <>{zeroPadValue(toBeHex(r), 32)}</>
         ) : (
           <>{commify(formatEther(r))}</>
         )}
