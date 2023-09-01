@@ -24,7 +24,12 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
     if (match) {
-      setSelected(Object.keys(match.metadata.sources)[0]);
+      const targetSource = match.metadata.settings?.compilationTarget;
+      if (targetSource !== undefined && Object.keys(targetSource)[0] !== "") {
+        setSelected(Object.keys(targetSource)[0]);
+      } else {
+        setSelected(Object.keys(match.metadata.sources)[0]);
+      }
     }
   }, [match]);
   const optimizer = match?.metadata.settings?.optimizer;
