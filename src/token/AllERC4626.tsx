@@ -17,7 +17,7 @@ const AllERC4626: FC = () => {
 
   return (
     <GenericContractSearchResult
-      title="ERC4626 tokens"
+      title="ERC4626 vaults"
       header={<ERC4626Header />}
       cols={8}
       pageNumber={pageNumber}

@@ -1,6 +1,7 @@
 import { FC, ReactNode } from "react";
 import StandardFrame from "../components/StandardFrame";
 import StandardSubtitle from "../components/StandardSubtitle";
+import ContractFilterMenu from "./ContractFilterMenu";
 import ContentFrame from "../components/ContentFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import StandardScrollableTable from "../components/StandardScrollableTable";
@@ -71,9 +72,7 @@ const GenericContractSearchResult = <T extends ContractMatch>({
 }: GenericContractSearchResultProps<T>) => (
   <StandardFrame>
     <StandardSubtitle>
-      <div className="flex items-baseline space-x-1">
-        <span>{title}</span>
-      </div>
+      <ContractFilterMenu title={title} />
     </StandardSubtitle>
     <ContentFrame key={pageNumber}>
       <SearchResultNavBar
