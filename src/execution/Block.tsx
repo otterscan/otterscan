@@ -1,7 +1,6 @@
 import { useMemo, useContext, FC } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { formatUnits } from "ethers";
-import { toUtf8String, Utf8ErrorFuncs } from "ethers";
+import { formatUnits, toUtf8String, Utf8ErrorFuncs } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "../components/StandardFrame";
@@ -39,7 +38,7 @@ const Block: FC = () => {
   } = useChainInfo();
 
   const { data: block, isLoading } = useBlockData(provider, blockNumberOrHash);
-  useBlockPageTitle(parseInt(blockNumberOrHash));
+  useBlockPageTitle(blockNumberOrHash);
 
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
