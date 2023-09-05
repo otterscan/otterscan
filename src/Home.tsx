@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
-import { RuntimeContext } from "./useRuntime";
+import { RuntimeContext, useRuntime } from "./useRuntime";
 import { useLatestBlockHeader } from "./useLatestBlock";
 import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
@@ -14,7 +14,7 @@ import { commify } from "./utils/utils";
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
 const Home: FC = () => {
-  const { provider } = useContext(RuntimeContext);
+  const { provider, config } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
 
   const latestBlock = useLatestBlockHeader(provider);
@@ -67,6 +67,14 @@ const Home: FC = () => {
           Search
         </button>
       </form>
+      {config?.experimental && (
+        <NavLink
+          className="text-md font-bold text-green-600 hover:text-green-800"
+          to="contracts/all"
+        >
+          🧪 EXPERIMENTAL CONTRACT BROWSER 🧪
+        </NavLink>
+      )}
       {latestBlock && (
         <NavLink
           className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
