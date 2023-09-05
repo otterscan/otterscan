@@ -9,6 +9,7 @@ type DecodedParamsTableProps = {
   hasParamNames?: boolean;
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;
+  defaultNameBase?: string;
 };
 
 const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
@@ -16,6 +17,7 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
   paramTypes,
   hasParamNames = true,
   devMethod,
+  defaultNameBase = "param",
 }) => (
   <table className="w-full border">
     <thead>
@@ -44,6 +46,7 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
           r={r}
           paramType={paramTypes[i]}
           help={devMethod?.params?.[paramTypes[i].name]}
+          defaultNameBase={defaultNameBase}
         />
       ))}
     </tbody>

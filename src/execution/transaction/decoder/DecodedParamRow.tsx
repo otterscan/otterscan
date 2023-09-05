@@ -20,6 +20,7 @@ type DecodedParamRowProps = {
   paramType: ParamType;
   arrayElem?: number | undefined;
   help?: string | undefined;
+  defaultNameBase?: string;
 };
 
 const DecodedParamRow: FC<DecodedParamRowProps> = ({
@@ -29,6 +30,7 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
   paramType,
   arrayElem,
   help,
+  defaultNameBase = "param",
 }) => {
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
@@ -49,7 +51,9 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
                   {paramType.name !== "" ? (
                     paramType.name
                   ) : (
-                    <span className="italic">param_{i}</span>
+                    <span className="italic">
+                      {defaultNameBase}_{i}
+                    </span>
                   )}{" "}
                   {i !== undefined && (
                     <span className="text-xs text-gray-400">({i})</span>
@@ -104,12 +108,15 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
               paramType.name !== "" ? (
                 paramType.name + "."
               ) : (
-                <span className="italic">param_{i}.</span>
+                <span className="italic">
+                  {defaultNameBase}_{i}.
+                </span>
               )
             }
             i={idx}
             r={e}
             paramType={paramType.components![idx]}
+            defaultNameBase={defaultNameBase}
           />
         ))}
       {paramType.baseType === "array" &&
@@ -120,13 +127,16 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
               paramType.name !== "" ? (
                 paramType.name
               ) : (
-                <span className="italic">param_{i}</span>
+                <span className="italic">
+                  {defaultNameBase}_{i}
+                </span>
               )
             }
             r={e}
             // arrayChildren is not null when the baseType is array
             paramType={paramType.arrayChildren!}
             arrayElem={idx}
+            defaultNameBase={defaultNameBase}
           />
         ))}
     </>

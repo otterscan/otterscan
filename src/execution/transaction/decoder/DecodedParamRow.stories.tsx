@@ -134,3 +134,11 @@ export const ArrayOfTupleWithHelp: Story = {
     help: "Help for array of tuple param",
   },
 };
+
+export const UnnamedTupleReturnValue: Story = {
+  args: {
+    paramType: ParamType.from("tuple(uint8,bool,uint256[])"),
+    r: [23, false, [34, 45, 56]],
+    defaultNameBase: "ret",
+  },
+};
