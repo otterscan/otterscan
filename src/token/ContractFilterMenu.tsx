@@ -26,14 +26,16 @@ const ContractFilterMenu: FC<ContractFilterMenuProps> = ({ title }) => (
       {contractFilters.map((f) => (
         <Menu.Item key={f.url}>
           {({ active }) => (
-            <NavLink to={f.url}>
-              <div
-                className={`${
-                  active ? "bg-gray-200" : ""
-                } text-md rounded px-2 py-1 font-normal`}
-              >
-                {f.label}
-              </div>
+            <NavLink to={f.url} end>
+              {({ isActive }) => (
+                <div
+                  className={`${active && !isActive ? "bg-gray-200" : ""} ${
+                    isActive ? "opacity-40" : ""
+                  } text-md rounded px-2 py-1 font-normal`}
+                >
+                  {f.label}
+                </div>
+              )}
             </NavLink>
           )}
         </Menu.Item>
