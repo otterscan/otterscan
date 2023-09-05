@@ -13,16 +13,16 @@ export const contractFilters: ContractFilter[] = [
     label: "ERC20 tokens",
   },
   {
-    url: "/contracts/erc4626",
-    label: "ERC4626 vaults",
-  },
-  {
     url: "/contracts/erc721",
     label: "ERC721 tokens",
   },
   {
     url: "/contracts/erc1155",
     label: "ERC1155 tokens",
+  },
+  {
+    url: "/contracts/erc4626",
+    label: "ERC4626 vaults",
   },
   {
     url: "/contracts/erc1167",
