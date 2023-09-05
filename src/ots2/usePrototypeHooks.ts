@@ -44,7 +44,7 @@ export const useGenericContractSearch = <T extends ContractMatch>(
   parser: ContractResultParser<T>
 ): ContractListResults<T> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const rpcMethod = `ots_get${t}List`;
+  const rpcMethod = `ots2_get${t}List`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
     page === undefined ? null : [rpcMethod, page.idx, page.count],
@@ -76,7 +76,7 @@ export const useGenericContractsCount = (
   provider: JsonRpcApiProvider | undefined,
   t: ContractSearchType
 ): number | undefined => {
-  const rpcMethod = `ots_get${t}Count`;
+  const rpcMethod = `ots2_get${t}Count`;
   const fetcher = providerFetcher(provider);
 
   const { data, error } = useSWRImmutable([rpcMethod], fetcher);

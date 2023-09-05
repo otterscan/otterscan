@@ -43,7 +43,7 @@ export const useGenericTransactionCount = (
   t: TransactionSearchType,
   address: ChecksummedAddress
 ): number | undefined => {
-  const rpcMethod = `ots_get${t}TransferCount`;
+  const rpcMethod = `ots2_get${t}TransferCount`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
   if (error) {
@@ -101,7 +101,7 @@ export const useGenericTransactionList = (
   total: number | undefined
 ): TransactionListResults<TransactionMatchWithData> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const rpcMethod = `ots_get${t}TransferList`;
+  const rpcMethod = `ots2_get${t}TransferList`;
   const fetcher = resultFetcher(provider);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
@@ -120,7 +120,7 @@ export const useERC1167Impl = (
 ): ChecksummedAddress | undefined | null => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    ["ots_getERC1167Impl", address],
+    ["ots2_getERC1167Impl", address],
     fetcher
   );
   if (error) {
@@ -134,7 +134,7 @@ export const useERC20Holdings = (
   address: ChecksummedAddress
 ): ChecksummedAddress[] | undefined => {
   const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(["ots_getERC20Holdings", address], fetcher);
+  const { data, error } = useSWR(["ots2_getERC20Holdings", address], fetcher);
   const converted = useMemo(() => {
     if (error) {
       return undefined;
@@ -205,7 +205,7 @@ export const useAddressAttributes = (
 ): AddressAttributes | undefined => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
-    ["ots_getAddressAttributes", address],
+    ["ots2_getAddressAttributes", address],
     fetcher
   );
   if (error) {
