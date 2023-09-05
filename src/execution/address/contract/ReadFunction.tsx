@@ -150,7 +150,11 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       </form>
       <div className="mt-2 pl-6">
         {result && (
-          <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
+          <DecodedParamsTable
+            args={result}
+            paramTypes={func.outputs || []}
+            defaultNameBase="ret"
+          />
         )}
         {error && (
           <p className="whitespace-break-spaces font-mono text-red-500">
