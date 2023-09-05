@@ -1,12 +1,17 @@
 import { useEffect } from "react";
+import { BlockTag, isHexString } from "ethers";
 import { commify } from "./utils/utils";
 
 /**
  * Title for main block page.
  */
-export const useBlockPageTitle = (blockNumber: number) => {
+export const useBlockPageTitle = (blockNumber: BlockTag) => {
+  let blockStr = blockNumber;
+  if (!isHexString(blockNumber)) {
+    blockStr = `#${commify(blockNumber)}`;
+  }
   useEffect(() => {
-    document.title = `Block #${commify(blockNumber)} | Otterscan`;
+    document.title = `Block ${blockStr} | Otterscan`;
   }, [blockNumber]);
 };
 
