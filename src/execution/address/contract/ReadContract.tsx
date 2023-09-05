@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { commify } from "@ethersproject/units";
-import { FunctionFragment } from "@ethersproject/abi";
+import { FunctionFragment } from "ethers";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +10,7 @@ import { Match, MatchType } from "../../../sourcify/useSourcify";
 import ContractABI from "../contract/ContractABI";
 import ReadFunction from "./ReadFunction";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
+import { commify } from "../../../utils/utils";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -47,11 +47,12 @@ const ReadContract: React.FC<ContractsProps> = ({
             <div>
               <ul className="list-inside list-decimal">
                 {match.metadata.output.abi.map(
-                  (fn) =>
+                  (fn, i) =>
                     isReadFunction(fn) && (
                       <ReadFunction
                         func={FunctionFragment.from(fn)}
                         address={checksummedAddress}
+                        key={i}
                       />
                     )
                 )}

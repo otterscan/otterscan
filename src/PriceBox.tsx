@@ -1,5 +1,5 @@
 import React, { useMemo, useContext } from "react";
-import { formatUnits } from "@ethersproject/units";
+import { formatUnits } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { RuntimeContext } from "./useRuntime";
@@ -10,7 +10,7 @@ import { useETHUSDRawOracle, useFastGasRawOracle } from "./usePriceOracle";
 import { commify } from "./utils/utils";
 
 // TODO: encapsulate this magic number
-const ETH_FEED_DECIMALS = 8;
+const ETH_FEED_DECIMALS = 8n;
 
 const PriceBox: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -29,10 +29,11 @@ const PriceBox: React.FC = () => {
       return [undefined, undefined];
     }
 
-    const price = latestPriceData.answer.div(10 ** (ETH_FEED_DECIMALS - 2));
+    const price: bigint =
+      latestPriceData.answer / 10n ** (ETH_FEED_DECIMALS - 2n);
     const formattedPrice = commify(formatUnits(price, 2));
 
-    const timestamp = new Date(latestPriceData.updatedAt * 1000);
+    const timestamp = new Date(Number(latestPriceData.updatedAt) * 1000);
     return [formattedPrice, timestamp];
   }, [latestPriceData]);
 
@@ -43,7 +44,7 @@ const PriceBox: React.FC = () => {
     }
 
     const formattedGas = formatValue(latestGasData.answer, 9);
-    const timestamp = new Date(latestGasData.updatedAt * 1000);
+    const timestamp = new Date(Number(latestGasData.updatedAt) * 1000);
     return [formattedGas, timestamp];
   }, [latestGasData]);
 

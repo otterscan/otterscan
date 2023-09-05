@@ -1,23 +1,23 @@
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { JsonRpcApiProvider } from "ethers";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 import { providerFetcher } from "../useErigonHooks";
 import { pageToReverseIdx } from "./pagination";
 
 export type BlockSummary = {
-  blockNumber: number;
+  blockNumber: bigint;
   timestamp: number;
 };
 
 export type ContractMatch = {
-  blockNumber: number;
+  blockNumber: bigint;
   address: string;
 };
 
 export type ContractResultParser<T> = (e: any) => T;
 
 export type ContractListResults<T> = {
-  blocksSummary: Map<number, BlockSummary>;
+  blocksSummary: Map<bigint, BlockSummary>;
   results: T[];
 };
 
@@ -36,7 +36,7 @@ export type ContractSearchType =
   | "ERC1167";
 
 export const useGenericContractSearch = <T extends ContractMatch>(
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   t: ContractSearchType,
   pageNumber: number,
   pageSize: number,
@@ -60,9 +60,11 @@ export const useGenericContractSearch = <T extends ContractMatch>(
   }
   const results = (data.results as any[]).map((m) => parser(m));
 
-  const blockMap = new Map<number, BlockSummary>();
+  const blockMap = new Map<bigint, BlockSummary>();
   for (const [k, v] of Object.entries(data.blocksSummary as any)) {
-    blockMap.set(parseInt(k), v as any);
+    // TODO: parseInt -> BigInt won't work when the int is followed
+    // by non-numeric characters
+    blockMap.set(BigInt(k), v as any);
   }
   return {
     blocksSummary: blockMap,
@@ -71,7 +73,7 @@ export const useGenericContractSearch = <T extends ContractMatch>(
 };
 
 export const useGenericContractsCount = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   t: ContractSearchType
 ): number | undefined => {
   const rpcMethod = `ots_get${t}Count`;

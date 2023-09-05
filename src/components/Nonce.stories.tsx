@@ -10,18 +10,18 @@ type Story = StoryObj<typeof meta>;
 
 export const NeverSent: Story = {
   args: {
-    value: 0,
+    value: 0n,
   },
 };
 
 export const BigNonce: Story = {
   args: {
-    value: 1_000,
+    value: 1_000n,
   },
 };
 
 export const ProbablyBot: Story = {
   args: {
-    value: 1_234_567,
+    value: 1_234_567n,
   },
 };

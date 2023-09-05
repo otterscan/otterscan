@@ -42,7 +42,10 @@ const Home: FC = () => {
             type="text"
             size={50}
             placeholder={`Search by address / txn hash / block number${
-              provider?.network.ensAddress ? " / ENS name" : ""
+              provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+              null
+                ? " / ENS name"
+                : ""
             }`}
             onChange={handleChange}
             ref={searchRef}

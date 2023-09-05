@@ -38,17 +38,17 @@ const _defaultResolver = new CompositeAddressResolver();
 _defaultResolver.addResolver(ercTokenResolver);
 _defaultResolver.addResolver(hardcodedResolver);
 
-const resolvers: Record<number, IAddressResolver<SelectedResolvedName<any>>> = {
-  1: _mainnetResolver,
-  0: _defaultResolver,
+const resolvers: Record<string, IAddressResolver<SelectedResolvedName<any>>> = {
+  "1": _mainnetResolver,
+  "0": _defaultResolver,
 };
 
 export const getResolver = (
-  chainId: number
+  chainId: bigint
 ): IAddressResolver<SelectedResolvedName<any>> => {
-  const res = resolvers[chainId];
+  const res = resolvers[chainId.toString()];
   if (res === undefined) {
-    return resolvers[0]; // default MAGIC NUMBER
+    return resolvers["0"]; // default MAGIC NUMBER
   }
   return res;
 };

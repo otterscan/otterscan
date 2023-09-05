@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import { formatEther } from "@ethersproject/units";
+import { formatEther } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
@@ -34,7 +34,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
     block?.miner !== undefined && internalOp.from === block.miner;
   const toMiner = block?.miner !== undefined && internalOp.to === block.miner;
 
-  const blockETHUSDPrice = useETHUSDOracle(
+  const blockETHUSDPrice: bigint | undefined = useETHUSDOracle(
     provider,
     txData.confirmedData?.blockNumber
   );
@@ -101,7 +101,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
           <span>
             {formatEther(internalOp.value)} {symbol}
           </span>
-          {blockETHUSDPrice && (
+          {blockETHUSDPrice !== undefined && (
             <USDAmount
               amount={internalOp.value}
               amountDecimals={decimals}

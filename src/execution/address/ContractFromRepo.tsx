@@ -5,7 +5,7 @@ import { useAppConfigContext } from "../../useAppConfig";
 
 type ContractFromRepoProps = {
   checksummedAddress: string;
-  networkId: number;
+  networkId: bigint;
   filename: string;
   type: MatchType;
 };

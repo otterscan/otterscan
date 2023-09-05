@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { BigNumber } from "@ethersproject/bignumber";
 import FormattedBalance from "./FormattedBalance";
 
 const meta = {
@@ -11,13 +10,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Zero: Story = {
   args: {
-    value: BigNumber.from(0),
+    value: 0n,
   },
 };
 
 export const OneGweiAsEther: Story = {
   args: {
-    value: BigNumber.from("1000000000"),
+    value: 1000000000n,
   },
 };
 
@@ -31,7 +30,7 @@ export const OneGweiWithSymbol: Story = {
 
 export const OneEther: Story = {
   args: {
-    value: BigNumber.from("1000000000000000000"),
+    value: 1000000000000000000n,
   },
 };
 
@@ -44,7 +43,7 @@ export const OneEtherWithSymbol: Story = {
 
 export const OneMillionEther: Story = {
   args: {
-    value: BigNumber.from("1000000000000000000000000"),
+    value: 1000000000000000000000000n,
     symbol: "ETH",
   },
 };

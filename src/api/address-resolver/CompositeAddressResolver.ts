@@ -1,4 +1,4 @@
-import { BaseProvider } from "@ethersproject/providers";
+import { AbstractProvider } from "ethers";
 import { IAddressResolver } from "./address-resolver";
 
 export type SelectedResolvedName<T> = [IAddressResolver<T>, T] | null;
@@ -13,7 +13,7 @@ export class CompositeAddressResolver<T = any>
   }
 
   async resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<SelectedResolvedName<T> | undefined> {
     for (const r of this.resolvers) {

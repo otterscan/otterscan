@@ -1,4 +1,3 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { ContractMatch, ContractResultParser } from "./usePrototypeHooks";
 import { ChecksummedAddress } from "../types";
 
@@ -29,14 +28,14 @@ export type ERC4626ContractMatch = ERC20ContractMatch & {
 export const contractMatchParser: ContractResultParser<ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
 });
 
 export const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
@@ -46,7 +45,7 @@ export const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (
 export const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
@@ -58,7 +57,7 @@ export const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (
 export const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
@@ -67,7 +66,7 @@ export const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (
 export const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
   name: m.name,
   symbol: m.symbol,
@@ -76,7 +75,7 @@ export const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (
 export const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (
   m
 ) => ({
-  blockNumber: BigNumber.from(m.blockNumber).toNumber(),
+  blockNumber: BigInt(m.blockNumber),
   address: m.address,
   implementation: m.implementation,
 });

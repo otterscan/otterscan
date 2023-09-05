@@ -1,15 +1,15 @@
 import React from "react";
-import { BaseProvider } from "@ethersproject/providers";
+import { AbstractProvider } from "ethers";
 
 export interface IAddressResolver<T> {
   resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<T | undefined>;
 }
 
 export type ResolvedAddressRenderer<T> = (
-  chainId: number,
+  chainId: bigint,
   address: string,
   resolvedAddress: T,
   linkable: boolean,

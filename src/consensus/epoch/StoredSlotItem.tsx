@@ -40,7 +40,9 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
         <SlotTimestamp slotNumber={slotNumber} />
       </td>
       <td>
-        <CheckedValidatorLink validatorIndex={slot.data.message.proposer_index} />
+        <CheckedValidatorLink
+          validatorIndex={slot.data.message.proposer_index}
+        />
       </td>
       <td>
         <BlockRoot slotNumber={slotNumber} />

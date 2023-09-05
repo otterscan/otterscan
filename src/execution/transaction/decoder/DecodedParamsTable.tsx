@@ -1,11 +1,11 @@
 import { FC, memo } from "react";
-import { ParamType, Result } from "@ethersproject/abi";
+import { ParamType, Result } from "ethers";
 import DecodedParamRow from "./DecodedParamRow";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 
 type DecodedParamsTableProps = {
   args: Result;
-  paramTypes: ParamType[];
+  paramTypes: readonly ParamType[];
   hasParamNames?: boolean;
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;
@@ -29,7 +29,7 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
       {!hasParamNames && (
         <tr className="grid grid-cols-12 gap-x-2 bg-amber-100 py-2 text-left text-red-700">
           <th className="col-span-12 px-1">
-            {paramTypes.length > 0 && paramTypes[0].name !== null
+            {paramTypes.length > 0 && paramTypes[0].name !== ""
               ? "Parameter names are estimated."
               : "Parameter names are not available."}
           </th>

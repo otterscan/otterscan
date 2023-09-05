@@ -5,8 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { Block } from "@ethersproject/abstract-provider";
-import { FixedNumber } from "@ethersproject/bignumber";
+import { Block, FixedNumber } from "ethers";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -72,8 +71,11 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
       const extBlock = await readBlock(provider, blockNumber.toString());
       setBlocks((_blocks) => {
-        if (_blocks.length > 0 && blockNumber === _blocks[0].number) {
-          return _blocks;
+        for (let i = 0; i < _blocks.length; i++) {
+          if (_blocks[i].number === blockNumber) {
+            // Block already in list
+            return _blocks;
+          }
         }
         if (extBlock === null) {
           return _blocks;
@@ -125,7 +127,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   return (
     <div className="w-full grow">
-      <div className="divide-y-2 px-9 pt-3 pb-12">
+      <div className="divide-y-2 px-9 pb-12 pt-3">
         <div className="relative">
           <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-lg text-orange-500 ">
             <span>
@@ -195,12 +197,12 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
               block={b}
               baseFeeDelta={
                 i < all.length - 1
-                  ? FixedNumber.from(b.baseFeePerGas!)
-                      .divUnsafe(FixedNumber.from(1e9))
+                  ? FixedNumber.fromValue(b.baseFeePerGas!)
+                      .divUnsafe(FixedNumber.fromValue(1e9))
                       .round(0)
                       .subUnsafe(
-                        FixedNumber.from(all[i + 1].baseFeePerGas!)
-                          .divUnsafe(FixedNumber.from(1e9))
+                        FixedNumber.fromValue(all[i + 1].baseFeePerGas!)
+                          .divUnsafe(FixedNumber.fromValue(1e9))
                           .round(0)
                       )
                       .toUnsafeFloat()

@@ -1,9 +1,9 @@
-import { BaseProvider } from "@ethersproject/providers";
+import { AbstractProvider } from "ethers";
 import { IAddressResolver } from "./address-resolver";
 
 export class ENSAddressResolver implements IAddressResolver<string> {
   async resolveAddress(
-    provider: BaseProvider,
+    provider: AbstractProvider,
     address: string
   ): Promise<string | undefined> {
     const name = await provider.lookupAddress(address);

@@ -1,12 +1,11 @@
 import { FC } from "react";
-import { BlockTag } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BlockTag } from "ethers";
 import NativeTokenAmount from "./NativeTokenAmount";
 import FiatValue, { FiatBoxProps } from "./FiatValue";
 import { useFiatValue } from "../usePriceOracle";
 
 type NativeTokenAmountAndFiatProps = FiatBoxProps & {
-  value: BigNumber;
+  value: bigint;
   blockTag?: BlockTag;
 };
 

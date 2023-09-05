@@ -1,6 +1,5 @@
 import React, { FC, memo, useContext, useMemo } from "react";
-import { Log } from "@ethersproject/abstract-provider";
-import { Fragment, Interface } from "@ethersproject/abi";
+import { Fragment, Interface, Log } from "ethers";
 import { Tab } from "@headlessui/react";
 import LogIndex from "./log/LogIndex";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
@@ -19,7 +18,7 @@ type LogEntryProps = {
 
 const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
-  const match = useSourcifyMetadata(log.address, provider?.network.chainId);
+  const match = useSourcifyMetadata(log.address, provider?._network.chainId);
 
   const logDesc = useMemo(() => {
     if (!match) {
@@ -30,7 +29,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     const intf = new Interface(abi as any);
     try {
       return intf.parseLog({
-        topics: log.topics,
+        topics: Array.from(log.topics),
         data: log.data,
       });
     } catch (err) {
@@ -52,10 +51,13 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
 
     const sigs = topic0.signatures;
     for (const sig of sigs) {
-      const logFragment = Fragment.fromString(`event ${sig}`);
+      const logFragment = Fragment.from(`event ${sig}`);
       const intf = new Interface([logFragment]);
       try {
-        return intf.parseLog(log);
+        return intf.parseLog({
+          topics: Array.from(log.topics),
+          data: log.data,
+        });
       } catch (err) {
         // Ignore on purpose; try to match other sigs
       }
@@ -68,7 +70,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
   return (
     <div className="flex space-x-10 py-5">
       <div>
-        <LogIndex idx={log.logIndex} />
+        <LogIndex idx={log.index} />
       </div>
       <div className="w-full space-y-2">
         <TwoColumnPanel leftPanel={<span className="font-bold">Address</span>}>
@@ -91,10 +93,10 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
                 <TwoColumnPanel>Can't decode data</TwoColumnPanel>
               ) : (
                 <TwoColumnPanel>
-                  <DecodedLogSignature event={resolvedLogDesc.eventFragment} />
+                  <DecodedLogSignature event={resolvedLogDesc.fragment} />
                   <DecodedParamsTable
                     args={resolvedLogDesc.args}
-                    paramTypes={resolvedLogDesc.eventFragment.inputs}
+                    paramTypes={resolvedLogDesc.fragment.inputs}
                     hasParamNames={resolvedLogDesc === logDesc}
                   />
                 </TwoColumnPanel>

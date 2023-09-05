@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { formatEther } from "@ethersproject/units";
+import { formatEther } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import AddressHighlighter from "./AddressHighlighter";
@@ -37,13 +37,13 @@ const InternalSelfDestruct: React.FC<InternalSelfDestructProps> = ({
             <DecoratedAddressLink address={internalOp.from} selfDestruct />
           </AddressHighlighter>
         </div>
-        {internalOp.value.isZero() && (
+        {internalOp.value === 0n && (
           <div className="flex items-baseline text-gray-400">
             (To: <TransactionAddress address={internalOp.to} />)
           </div>
         )}
       </div>
-      {!internalOp.value.isZero() && (
+      {internalOp.value !== 0n && (
         <div className="ml-5 flex items-baseline space-x-1">
           <span className="text-gray-500">
             <FontAwesomeIcon icon={faAngleRight} size="1x" /> TRANSFER

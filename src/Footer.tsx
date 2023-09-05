@@ -2,18 +2,18 @@ import React, { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
 
 const Footer: React.FC = () => {
-  const { provider } = useContext(RuntimeContext);
+  const { provider, config } = useContext(RuntimeContext);
 
   return (
     <div
       className={`w-full border-t border-t-gray-100 px-2 py-1 text-xs ${
-        provider?.network.chainId === 1
+        provider?._network.chainId === 1n
           ? "bg-link-blue text-gray-200"
           : "bg-orange-400 text-white"
       } text-center`}
     >
       {provider ? (
-        <>Using Erigon node at {provider.connection.url}</>
+        <>Using Erigon node at {config?.erigonURL}</>
       ) : (
         <>Waiting for the provider...</>
       )}

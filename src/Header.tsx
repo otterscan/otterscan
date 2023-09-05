@@ -34,7 +34,7 @@ const Header: FC = () => {
           </div>
         </Link>
         <div className="flex items-baseline space-x-3">
-          {provider?.network.chainId === 1 && <PriceBox />}
+          {provider?._network.chainId === 1n && <PriceBox />}
           <form
             className="flex"
             onSubmit={handleSubmit}
@@ -42,11 +42,15 @@ const Header: FC = () => {
             spellCheck={false}
           >
             <input
-              className="w-full rounded-l border-t border-b border-l px-2 py-1 text-sm focus:outline-none"
+              className="w-full rounded-l border-b border-l border-t px-2 py-1 text-sm focus:outline-none"
               type="text"
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
-                provider?.network.ensAddress ? " / ENS name" : ""
+                provider?._network.getPlugin(
+                  "org.ethers.plugins.network.Ens"
+                ) !== null
+                  ? " / ENS name"
+                  : ""
               }`}
               onChange={handleChange}
               ref={searchRef}
@@ -60,7 +64,7 @@ const Header: FC = () => {
               <FontAwesomeIcon icon={faQrcode} />
             </button>
             <button
-              className="rounded-r border-t border-b border-r bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+              className="rounded-r border-b border-r border-t bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
               type="submit"
             >
               Search

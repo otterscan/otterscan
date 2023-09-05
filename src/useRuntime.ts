@@ -1,8 +1,5 @@
 import { createContext, useMemo } from "react";
-import {
-  JsonRpcProvider,
-  StaticJsonRpcProvider,
-} from "@ethersproject/providers";
+import { JsonRpcProvider, JsonRpcApiProvider, Network } from "ethers";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
 import { ConnectionStatus } from "./types";
@@ -26,7 +23,7 @@ export type OtterscanRuntime = {
    * ETH provider; may be undefined if not ready because of config fetching,
    * probing occurring, etc.
    */
-  provider?: JsonRpcProvider;
+  provider?: JsonRpcApiProvider;
 };
 
 export const useRuntime = (): OtterscanRuntime => {
@@ -57,13 +54,13 @@ export const useRuntime = (): OtterscanRuntime => {
 
     // Hardcoded config
     if (effectiveConfig.experimentalFixedChainId !== undefined) {
+      const network = Network.from(effectiveConfig.experimentalFixedChainId);
       return {
         config: effectiveConfig,
         connStatus: ConnectionStatus.CONNECTED,
-        provider: new StaticJsonRpcProvider(
-          effectiveConfig.erigonURL,
-          effectiveConfig.experimentalFixedChainId
-        ),
+        provider: new JsonRpcProvider(effectiveConfig.erigonURL, network, {
+          staticNetwork: network,
+        }),
       };
     }
     return { config: effectiveConfig, connStatus, provider };

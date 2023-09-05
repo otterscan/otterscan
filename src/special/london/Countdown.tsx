@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { JsonRpcProvider, Block } from "@ethersproject/providers";
+import { JsonRpcApiProvider, Block } from "ethers";
 import { commify } from "../../utils/utils";
 
 type CountdownProps = {
-  provider: JsonRpcProvider;
+  provider: JsonRpcApiProvider;
   currentBlock: Block;
   targetBlock: number;
 };
@@ -21,7 +21,7 @@ const Countdown: React.FC<CountdownProps> = ({
       const _prevBlock = await provider.getBlock(currentBlock.number - diff);
       const _targetTimestamp =
         currentBlock.timestamp +
-        (currentBlock.timestamp - _prevBlock.timestamp);
+        (currentBlock.timestamp - (_prevBlock?.timestamp ?? 0));
       setTargetTimestamp(_targetTimestamp);
     };
     calcTime();

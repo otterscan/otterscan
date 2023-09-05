@@ -1,10 +1,7 @@
 import { FC, memo } from "react";
-import { BlockTag } from "@ethersproject/providers";
-import { BigNumber } from "@ethersproject/bignumber";
+import { BlockTag } from "ethers";
 import { useChainInfo } from "../useChainInfo";
 import { formatFiatValue, useFiatValue } from "../usePriceOracle";
-
-const TEN = BigNumber.from(10);
 
 type NativeTokenPriceProps = {
   blockTag: BlockTag | undefined;
@@ -22,7 +19,7 @@ const NativeTokenPrice: FC<NativeTokenPriceProps> = ({ blockTag }) => {
   } = useChainInfo();
 
   // One unit of native token, considering decimals
-  const nativeTokenPrice = useFiatValue(TEN.pow(decimals), blockTag);
+  const nativeTokenPrice = useFiatValue(10n ** BigInt(decimals), blockTag);
   const value = formatFiatValue(nativeTokenPrice);
 
   return (

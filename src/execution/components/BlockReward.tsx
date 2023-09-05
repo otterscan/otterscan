@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import NativeTokenAmount from "../../components/NativeTokenAmount";
 import FiatValue, { rewardPreset } from "../../components/FiatValue";
 import { ExtendedBlock } from "../../useErigonHooks";
@@ -10,14 +9,14 @@ type BlockRewardProps = {
 };
 
 const BlockReward: FC<BlockRewardProps> = ({ block }) => {
-  const netFeeReward = block?.feeReward ?? BigNumber.from(0);
-  const totalReward = block.blockReward.add(netFeeReward);
+  const netFeeReward = block?.feeReward ?? 0n;
+  const totalReward = block.blockReward + netFeeReward;
   const fiatValue = useFiatValue(totalReward, block.number);
 
   return (
     <>
-      <NativeTokenAmount value={block.blockReward.add(netFeeReward)} />
-      {!netFeeReward.isZero() && (
+      <NativeTokenAmount value={totalReward} />
+      {netFeeReward !== 0n && (
         <>
           {" "}
           (<NativeTokenAmount value={block.blockReward} hideUnit /> +{" "}

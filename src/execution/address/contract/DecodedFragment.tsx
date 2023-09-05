@@ -5,7 +5,7 @@ import {
   Fragment,
   FunctionFragment,
   Interface,
-} from "@ethersproject/abi";
+} from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 
@@ -21,19 +21,19 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
   let letterBg: string | undefined;
   let hashBg: string | undefined;
 
-  if (FunctionFragment.isFunctionFragment(fragment)) {
+  if (FunctionFragment.isFunction(fragment)) {
     fragmentType = "function";
-    sig = intf.getSighash(fragment);
+    sig = fragment.selector;
     letter = "F";
     letterBg = "bg-violet-500";
     hashBg = "bg-violet-50";
-  } else if (EventFragment.isEventFragment(fragment)) {
+  } else if (EventFragment.isEvent(fragment)) {
     fragmentType = "event";
-    sig = intf.getEventTopic(fragment);
+    sig = fragment.topicHash;
     letter = "E";
     letterBg = "bg-emerald-300";
     hashBg = "bg-emerald-50";
-  } else if (ConstructorFragment.isConstructorFragment(fragment)) {
+  } else if (ConstructorFragment.isConstructor(fragment)) {
     fragmentType = "constructor";
     letter = "C";
     letterBg = "bg-blue-500";

@@ -1,5 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import { Log } from "@ethersproject/providers";
+import { Log } from "ethers";
 
 export enum ConnectionStatus {
   CONNECTING,
@@ -18,9 +17,9 @@ export type ProcessedTransaction = {
   from?: string;
   to: string | null;
   createdContractAddress?: string;
-  value: BigNumber;
-  fee: BigNumber;
-  gasPrice: BigNumber;
+  value: bigint;
+  fee: bigint;
+  gasPrice: bigint;
   data: string;
   status: number;
 };
@@ -35,13 +34,13 @@ export type TransactionData = {
   transactionHash: string;
   from: string;
   to?: string;
-  value: BigNumber;
+  value: bigint;
   type: number;
-  maxFeePerGas?: BigNumber | undefined;
-  maxPriorityFeePerGas?: BigNumber | undefined;
-  gasPrice: BigNumber;
-  gasLimit: BigNumber;
-  nonce: number;
+  maxFeePerGas?: bigint | undefined;
+  maxPriorityFeePerGas?: bigint | undefined;
+  gasPrice: bigint;
+  gasLimit: bigint;
+  nonce: bigint;
   data: string;
   confirmedData?: ConfirmedTransactionData | undefined;
 };
@@ -52,8 +51,8 @@ export type ConfirmedTransactionData = {
   transactionIndex: number;
   confirmations: number;
   createdContractAddress?: string;
-  fee: BigNumber;
-  gasUsed: BigNumber;
+  fee: bigint;
+  gasUsed: bigint;
   logs: Log[];
 };
 
@@ -84,14 +83,14 @@ export type InternalOperation = {
   type: OperationType;
   from: string;
   to: string;
-  value: BigNumber;
+  value: bigint;
 };
 
 export type TokenTransfer = {
   token: string;
   from: string;
   to: string;
-  value: BigNumber;
+  value: bigint;
 };
 
 export type TokenMeta = {

@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { Interface } from "@ethersproject/abi";
+import { Interface } from "ethers";
 import DecodedFragment from "./DecodedFragment";
 import { ABIAwareComponentProps } from "../../types";
 

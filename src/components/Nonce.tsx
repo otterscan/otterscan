@@ -4,7 +4,7 @@ import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
 import { commify } from "../utils/utils";
 
 type NonceProps = {
-  value: number;
+  value: bigint;
 };
 
 const Nonce: FC<NonceProps> = ({ value }) => (

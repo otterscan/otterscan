@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
+import { Result } from "ethers";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
 import { SourcifySource } from "../../../sourcify/useSourcify";
 import { ConnectionStatus } from "../../../types";
@@ -42,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    args: [
+    args: Result.fromItems([
       Uint8WithHelp.args.r,
       Uint256WithHelp.args.r,
       BooleanWithHelp.args.r,
@@ -50,7 +51,7 @@ export const Default: Story = {
       ArrayWithHelp.args.r,
       TupleWithHelp.args.r,
       ArrayOfTupleWithHelp.args.r,
-    ],
+    ]),
     paramTypes: [
       Uint8WithHelp.args.paramType,
       Uint256WithHelp.args.paramType,

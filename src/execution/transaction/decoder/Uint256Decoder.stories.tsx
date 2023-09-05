@@ -1,5 +1,4 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { BigNumber } from "@ethersproject/bignumber";
 import Uint256Decoder from "./Uint256Decoder";
 
 const meta = {
@@ -11,13 +10,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Zero: Story = {
   args: {
-    r: BigNumber.from(0),
+    r: 0n,
   },
 };
 
 export const Max: Story = {
   args: {
-    r: BigNumber.from(
+    r: BigInt(
       "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
     ),
   },

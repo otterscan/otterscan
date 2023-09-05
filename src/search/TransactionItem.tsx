@@ -47,7 +47,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
     }
   }
 
-  const flash = tx.gasPrice.isZero() && sendsToMiner;
+  const flash = tx.gasPrice === 0n && sendsToMiner;
 
   return (
     <BlockNumberContext.Provider value={tx.blockNumber}>

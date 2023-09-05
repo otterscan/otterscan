@@ -43,7 +43,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   );
 
   // Calculate txCount ONLY when asked for latest nonce
-  const [txCount, setTxCount] = useState<number | undefined>();
+  const [txCount, setTxCount] = useState<bigint | undefined>();
   useEffect(() => {
     if (!provider || !checksummedAddress || rawNonce !== "latest") {
       setTxCount(undefined);
@@ -51,7 +51,9 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     }
 
     const readTxCount = async () => {
-      const count = await provider.getTransactionCount(checksummedAddress);
+      const count = BigInt(
+        await provider.getTransactionCount(checksummedAddress)
+      );
       setTxCount(count);
     };
     readTxCount();
@@ -59,15 +61,16 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
 
   // Determine desired nonce from parse int query param or txCount - 1 nonce
   // in case of latest
-  let nonce: number | undefined;
+  // TODO: Double check behavior
+  let nonce: bigint | undefined | null;
   if (rawNonce === "latest") {
     if (txCount !== undefined) {
-      nonce = txCount - 1;
+      nonce = txCount - 1n;
     }
   } else {
-    nonce = parseInt(rawNonce, 10);
-    if (nonce < 0) {
-      nonce = NaN;
+    nonce = BigInt(parseInt(rawNonce, 10));
+    if (nonce < 0n) {
+      nonce = null;
     }
   }
 
@@ -75,7 +78,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   const txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    nonce !== undefined && isNaN(nonce) ? undefined : nonce
+    nonce !== undefined && nonce === null ? undefined : nonce
   );
 
   // Invalid ENS
@@ -84,7 +87,10 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
       <StandardFrame>
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
-          supportsENS={provider?.network.ensAddress !== undefined}
+          supportsENS={
+            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            null
+          }
         />
       </StandardFrame>
     );
@@ -96,7 +102,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   }
 
   // Address hasn't made the first outbound tx yet
-  if (nonce < 0) {
+  if (nonce !== null && nonce !== undefined && nonce < 0n) {
     return (
       <StandardFrame>
         <AddressOrENSNameNoTx addressOrENSName={checksummedAddress} />
@@ -105,7 +111,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   }
 
   // Garbage nonce
-  if (isNaN(nonce)) {
+  if (nonce === null) {
     return (
       <StandardFrame>
         <AddressOrENSNameInvalidNonce

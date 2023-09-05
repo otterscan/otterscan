@@ -7,7 +7,7 @@ import { ChecksummedAddress } from "../types";
 import { ResultMapper } from "../ots2/useUIHooks";
 
 type ERC4626ItemProps = {
-  blockNumber: number;
+  blockNumber: bigint;
   timestamp: number;
   address: ChecksummedAddress;
   name: string;
