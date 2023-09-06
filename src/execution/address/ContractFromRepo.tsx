@@ -2,6 +2,7 @@ import React from "react";
 import { SyntaxHighlighter, docco } from "../../highlight-init";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
+import PendingItem from "./PendingItem";
 
 type ContractFromRepoProps = {
   checksummedAddress: string;
@@ -26,14 +27,24 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   );
 
   return (
-    <SyntaxHighlighter
-      className="h-full w-full border font-code text-base"
-      language="solidity"
-      style={docco}
-      showLineNumbers
-    >
-      {content ?? ""}
-    </SyntaxHighlighter>
+    <>
+      {content === undefined && (
+        <>
+          <PendingItem large={true} />
+          <div className="h-screen"></div>
+        </>
+      )}
+      {content !== undefined && (
+        <SyntaxHighlighter
+          className="h-full w-full border font-code text-base"
+          language="solidity"
+          style={docco}
+          showLineNumbers
+        >
+          {content ?? ""}
+        </SyntaxHighlighter>
+      )}
+    </>
   );
 };
 
