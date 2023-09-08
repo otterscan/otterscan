@@ -4,7 +4,7 @@ import PageControl from "./PageControl";
 type SearchResultNavBarProps = {
   /**
    * 1-based page number.
-   * 
+   *
    * If omitted, assumes 1 using default value.
    */
   pageNumber?: number;

@@ -5,7 +5,7 @@ import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-r
 import { TokenMeta } from "../../../types";
 
 type TokenNameProps = {
-  chainId: number;
+  chainId: bigint;
   address: string;
   name: string;
   symbol: string;
@@ -58,7 +58,7 @@ const TokenName: FC<TokenNameProps> = ({
 };
 
 type ContentProps = {
-  chainId: number;
+  chainId: bigint;
   address: string;
   name: string;
   symbol: string;

@@ -1,5 +1,6 @@
-import { BigNumberish } from "@ethersproject/bignumber";
-import { commify, formatUnits } from "@ethersproject/units";
+import { BigNumberish } from "ethers";
+import { formatUnits } from "ethers";
+import { commify } from "../utils/utils";
 
 export const formatValue = (value: BigNumberish, decimals: number): string => {
   const formatted = commify(formatUnits(value, decimals));

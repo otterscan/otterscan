@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { ParamType } from "@ethersproject/abi";
+import { ParamType } from "ethers";
 import DecodedParamRow from "./DecodedParamRow";
 import { RuntimeContext } from "../../../useRuntime";
 import { ConnectionStatus } from "../../../types";
@@ -132,5 +132,13 @@ export const ArrayOfTupleWithHelp: Story = {
   args: {
     ...ArrayOfTuple.args,
     help: "Help for array of tuple param",
+  },
+};
+
+export const UnnamedTupleReturnValue: Story = {
+  args: {
+    paramType: ParamType.from("tuple(uint8,bool,uint256[])"),
+    r: [23, false, [34, 45, 56]],
+    defaultNameBase: "ret",
   },
 };

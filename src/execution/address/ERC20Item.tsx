@@ -1,5 +1,4 @@
 import { FC, memo } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import TransactionLink from "../../components/TransactionLink";
 import MethodName from "../../components/MethodName";
 import BlockLink from "../../components/BlockLink";
@@ -18,7 +17,7 @@ export type ERC20ItemProps = AddressAwareComponentProps & {
   data: string;
   from: string | undefined;
   to: string | null;
-  value: BigNumber;
+  value: bigint;
 };
 
 const ERC20Item: FC<ERC20ItemProps> = ({

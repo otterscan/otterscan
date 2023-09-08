@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { EventFragment } from "@ethersproject/abi";
+import { EventFragment } from "ethers";
 import DecodedLogSignature from "./DecodedLogSignature";
 
 const meta = {
@@ -25,7 +25,7 @@ export const Numbers: Story = {
 
 export const Test: Story = {
   args: {
-    event: EventFragment.fromString(
+    event: EventFragment.from(
       "OrderFulfilled(bytes32 orderHash, address indexed offerer, address indexed zone, address recipient, tuple(uint8 itemType, address token, uint256 identifier, uint256 amount)[] offer, tuple(uint8 itemType, address token, uint256 identifier, uint256 amount, address recipient)[] consideration)"
     ),
   },

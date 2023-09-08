@@ -1,13 +1,13 @@
 import React from "react";
-import { FixedNumber } from "@ethersproject/bignumber";
-import { commify, formatEther } from "@ethersproject/units";
+import { FixedNumber, formatEther } from "ethers";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
 import Blip from "./Blip";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { useChainInfo } from "../../useChainInfo";
+import { commify } from "../../utils/utils";
 
-const ELASTICITY_MULTIPLIER = 2;
+const ELASTICITY_MULTIPLIER = 2n;
 
 type BlockRowProps = {
   block: ExtendedBlock;
@@ -18,11 +18,10 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const gasTarget = block.gasLimit.div(ELASTICITY_MULTIPLIER);
-  const burntFees =
-    block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
-  const netFeeReward = block && block.feeReward.sub(burntFees ?? 0);
-  const totalReward = block.blockReward.add(netFeeReward ?? 0);
+  const gasTarget = block.gasLimit / ELASTICITY_MULTIPLIER;
+  const burntFees = block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
+  const netFeeReward = block && block.feeReward - (burntFees ?? 0n);
+  const totalReward = block.blockReward + (netFeeReward ?? 0n);
 
   return (
     <div className="grid grid-cols-9 gap-x-2 px-3 py-2 hover:bg-skin-table-hover">
@@ -31,9 +30,9 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
       </div>
       <div
         className={`text-right ${
-          block.gasUsed.gt(gasTarget)
+          block.gasUsed > gasTarget
             ? "text-emerald-500"
-            : block.gasUsed.lt(gasTarget)
+            : block.gasUsed < gasTarget
             ? "text-red-500"
             : ""
         }`}
@@ -46,8 +45,8 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
       <div className="text-right">
         <div className="relative">
           <span>
-            {FixedNumber.from(block.baseFeePerGas)
-              .divUnsafe(FixedNumber.from(1e9))
+            {FixedNumber.fromValue(block.baseFeePerGas ?? 0n)
+              .divUnsafe(FixedNumber.fromValue(1_000_000_000n))
               .round(0)
               .toUnsafeFloat()}{" "}
             Gwei
@@ -59,7 +58,7 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
         {commify(formatEther(totalReward))} {symbol}
       </div>
       <div className="col-span-2 text-right text-orange-500 line-through">
-        {commify(formatEther(block.gasUsed.mul(block.baseFeePerGas!)))} {symbol}
+        {commify(formatEther(block.gasUsed * block.baseFeePerGas!))} {symbol}
       </div>
       <div className="text-right text-gray-400">
         <TimestampAge timestamp={block.timestamp} />

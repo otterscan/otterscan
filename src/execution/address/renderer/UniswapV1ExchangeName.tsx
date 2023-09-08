@@ -9,7 +9,7 @@ import {
 } from "../../../api/address-resolver/UniswapV1Resolver";
 
 type UniswapV1ExchangeNameProps = {
-  chainId: number;
+  chainId: bigint;
   address: string;
   token: UniswapV1TokenMeta;
   linkable: boolean;
@@ -61,7 +61,7 @@ const UniswapV1ExchangeName: FC<UniswapV1ExchangeNameProps> = ({
 };
 
 type ContentProps = {
-  chainId: number;
+  chainId: bigint;
   address: ChecksummedAddress;
   name: string;
   symbol: string;

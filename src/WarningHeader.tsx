@@ -3,21 +3,21 @@ import { RuntimeContext } from "./useRuntime";
 
 const WarningHeader: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
-  const chainId = provider?.network.chainId;
-  if (chainId === 1) {
+  const chainId = provider?._network.chainId;
+  if (chainId === 1n) {
     return <></>;
   }
 
   let chainMsg = `ChainID: ${chainId}`;
-  if (chainId === 3) {
+  if (chainId === 3n) {
     chainMsg = "Ropsten Testnet";
-  } else if (chainId === 4) {
+  } else if (chainId === 4n) {
     chainMsg = "Rinkeby Testnet";
-  } else if (chainId === 5) {
+  } else if (chainId === 5n) {
     chainMsg = "Görli Testnet";
-  } else if (chainId === 42) {
+  } else if (chainId === 42n) {
     chainMsg = "Kovan Testnet";
-  } else if (chainId === 11155111) {
+  } else if (chainId === 11155111n) {
     chainMsg = "Sepolia Testnet";
   }
   return (

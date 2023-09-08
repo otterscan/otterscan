@@ -31,3 +31,10 @@ export const BigBlockNumber: Story = {
     blockTag: 16_500_123_456,
   },
 };
+
+export const BlockHash: Story = {
+  args: {
+    blockTag:
+      "0xf75189cac9fa1017fd7ddcacfb75e2d77ce5bd40cf2cfeff9203ec156b650a34",
+  },
+};

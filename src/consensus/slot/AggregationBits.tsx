@@ -1,12 +1,12 @@
 import { FC } from "react";
-import { arrayify } from "@ethersproject/bytes";
+import { getBytes } from "ethers";
 
 type AggregationBitsProps = {
   hex: string;
 };
 
 const AggregationBits: FC<AggregationBitsProps> = ({ hex }) => {
-  const bm = Array.from(arrayify(hex));
+  const bm = Array.from(getBytes(hex));
   return (
     <div className="grid w-fit grid-cols-8 gap-2 font-hash">
       {bm.map((b, i) => (

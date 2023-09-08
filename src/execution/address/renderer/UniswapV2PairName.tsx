@@ -9,7 +9,7 @@ import {
 import { ChecksummedAddress } from "../../../types";
 
 type UniswapV2PairNameProps = {
-  chainId: number;
+  chainId: bigint;
   address: string;
   token0: UniswapV2TokenMeta;
   token1: UniswapV2TokenMeta;
@@ -78,7 +78,7 @@ const UniswapV2PairName: FC<UniswapV2PairNameProps> = ({
 };
 
 type ContentProps = {
-  chainId: number;
+  chainId: bigint;
   address: ChecksummedAddress;
   name: string;
   symbol: string;

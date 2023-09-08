@@ -1,5 +1,5 @@
 import { FC, memo, useContext, useState } from "react";
-import { commify, formatUnits } from "@ethersproject/units";
+import { formatUnits } from "ethers";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -52,6 +52,7 @@ import {
   useTransactionError,
 } from "../../useErigonHooks";
 import { useChainInfo } from "../../useChainInfo";
+import { commify } from "../../utils/utils";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -81,7 +82,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
 
   const tokenTransfers = useTokenTransfers(txData);
 
-  const match = useSourcifyMetadata(txData?.to, provider?.network.chainId);
+  const match = useSourcifyMetadata(txData?.to, provider?._network.chainId);
   const metadata = match?.metadata;
 
   const txDesc = useSourcifyTransactionDescription(metadata, txData);
@@ -187,7 +188,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                     ) : (
                       <DecodedParamsTable
                         args={errorDescription.args}
-                        paramTypes={errorDescription.errorFragment.inputs}
+                        paramTypes={errorDescription.fragment.inputs}
                         hasParamNames
                         userMethod={userError}
                         devMethod={devError}
@@ -325,7 +326,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           </InfoRow>
         </>
       )}
-      {txData.gasPrice && (
+      {txData.gasPrice !== null && (
         <InfoRow title="Gas Price">
           <div className="flex items-baseline space-x-1">
             <span>
@@ -356,10 +357,8 @@ const Details: FC<DetailsProps> = ({ txData }) => {
             </div>
             <PercentageBar
               perc={
-                Math.round(
-                  (txData.confirmedData.gasUsed.toNumber() /
-                    txData.gasLimit.toNumber()) *
-                    10000
+                Number(
+                  (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit
                 ) / 100
               }
             />

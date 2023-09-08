@@ -1,7 +1,6 @@
 import { FC, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { commify } from "@ethersproject/units";
-import { toUtf8String } from "@ethersproject/strings";
+import { toUtf8String } from "ethers";
 import ContentFrame from "../../components/ContentFrame";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
@@ -17,6 +16,7 @@ import AggregationParticipation from "./AggregationParticipation";
 import AggregationBits from "./AggregationBits";
 import SlashingCount from "../components/SlashingCount";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
+import { commify } from "../../utils/utils";
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();
@@ -65,7 +65,9 @@ const Overview: FC = () => {
             </InfoRow>
           )}
           <InfoRow title="Proposer">
-            <CheckedValidatorLink validatorIndex={slot.data.message.proposer_index} />
+            <CheckedValidatorLink
+              validatorIndex={slot.data.message.proposer_index}
+            />
           </InfoRow>
           <InfoRow title="Block Root">
             <BlockRoot slotNumber={slotAsNumber} />

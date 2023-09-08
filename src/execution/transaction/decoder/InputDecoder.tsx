@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { TransactionDescription } from "@ethersproject/abi";
-import { toUtf8String } from "@ethersproject/strings";
+import { TransactionDescription } from "ethers";
+import { toUtf8String } from "ethers";
 import { Tab } from "@headlessui/react";
 import ModeTab from "../../../components/ModeTab";
 import DecodedParamsTable from "./DecodedParamsTable";
@@ -51,7 +51,7 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
           ) : (
             <DecodedParamsTable
               args={resolvedTxDesc.args}
-              paramTypes={resolvedTxDesc.functionFragment.inputs}
+              paramTypes={resolvedTxDesc.fragment.inputs}
               hasParamNames={hasParamNames}
               userMethod={userMethod}
               devMethod={devMethod}

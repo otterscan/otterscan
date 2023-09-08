@@ -1,13 +1,12 @@
 import { useMemo } from "react";
 import {
-  JsonRpcProvider,
-  Formatter,
+  JsonRpcApiProvider,
   TransactionResponse,
   TransactionReceipt,
-} from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
-import { BigNumber } from "@ethersproject/bignumber";
-import { AddressZero } from "@ethersproject/constants";
+  TransactionReceiptParams,
+} from "ethers";
+import { Contract } from "ethers";
+import { ZeroAddress } from "ethers";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress } from "../types";
@@ -15,6 +14,7 @@ import { providerFetcher } from "../useErigonHooks";
 import { BlockSummary } from "./usePrototypeHooks";
 import { pageToReverseIdx } from "./pagination";
 import erc20 from "../erc20.json";
+import { formatter } from "../utils/formatter";
 
 /**
  * All supported transaction search types.
@@ -39,11 +39,11 @@ export type TransactionMatchWithData = TransactionMatch & {
 };
 
 export const useGenericTransactionCount = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   t: TransactionSearchType,
   address: ChecksummedAddress
 ): number | undefined => {
-  const rpcMethod = `ots_get${t}TransferCount`;
+  const rpcMethod = `ots2_get${t}TransferCount`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
   if (error) {
@@ -52,10 +52,8 @@ export const useGenericTransactionCount = (
   return data as number | undefined;
 };
 
-const formatter = new Formatter();
-
 const resultFetcher = (
-  provider: JsonRpcProvider | undefined
+  provider: JsonRpcApiProvider | undefined
 ): Fetcher<
   TransactionListResults<TransactionMatchWithData> | undefined,
   [string, ...any]
@@ -71,8 +69,15 @@ const resultFetcher = (
     const converted = (res.results as any[]).map(
       (m): TransactionMatchWithData => ({
         hash: m.hash,
-        transaction: formatter.transactionResponse(m.transaction),
-        receipt: formatter.receipt(m.receipt),
+        // provider is a JsonRpcApiProvider; fetcher/res would be undefined otherwise
+        transaction: new TransactionResponse(
+          formatter.transactionResponse(m.transaction),
+          provider as JsonRpcApiProvider
+        ),
+        receipt: new TransactionReceipt(
+          formatter.transactionReceiptParams(m.receipt),
+          provider as JsonRpcApiProvider
+        ),
       })
     );
     const blockMap = new Map<number, BlockSummary>();
@@ -88,7 +93,7 @@ const resultFetcher = (
 };
 
 export const useGenericTransactionList = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   t: TransactionSearchType,
   address: ChecksummedAddress,
   pageNumber: number,
@@ -96,7 +101,7 @@ export const useGenericTransactionList = (
   total: number | undefined
 ): TransactionListResults<TransactionMatchWithData> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const rpcMethod = `ots_get${t}TransferList`;
+  const rpcMethod = `ots2_get${t}TransferList`;
   const fetcher = resultFetcher(provider);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
@@ -110,12 +115,12 @@ export const useGenericTransactionList = (
 };
 
 export const useERC1167Impl = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined
 ): ChecksummedAddress | undefined | null => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable(
-    ["ots_getERC1167Impl", address],
+    ["ots2_getERC1167Impl", address],
     fetcher
   );
   if (error) {
@@ -125,11 +130,11 @@ export const useERC1167Impl = (
 };
 
 export const useERC20Holdings = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress
 ): ChecksummedAddress[] | undefined => {
   const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(["ots_getERC20Holdings", address], fetcher);
+  const { data, error } = useSWR(["ots2_getERC20Holdings", address], fetcher);
   const converted = useMemo(() => {
     if (error) {
       return undefined;
@@ -144,13 +149,13 @@ export const useERC20Holdings = (
   return converted;
 };
 
-const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const erc20BalanceFetcher =
   (
-    provider: JsonRpcProvider | undefined
+    provider: JsonRpcApiProvider | undefined
   ): Fetcher<
-    BigNumber | null,
+    bigint | null,
     ["erc20balance", ChecksummedAddress, ChecksummedAddress]
   > =>
   async ([_, address, tokenAddress]) => {
@@ -158,15 +163,18 @@ const erc20BalanceFetcher =
       return null;
     }
 
-    const contract = ERC20_PROTOTYPE.connect(provider).attach(tokenAddress);
+    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const contract = ERC20_PROTOTYPE.connect(provider).attach(
+      tokenAddress
+    ) as Contract;
     return contract.balanceOf(address);
   };
 
 export const useTokenBalance = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
   tokenAddress: ChecksummedAddress | undefined
-): BigNumber | null | undefined => {
+): bigint | null | undefined => {
   const fetcher = erc20BalanceFetcher(provider);
   const { data, error } = useSWR(
     ["erc20balance", address, tokenAddress],
@@ -192,12 +200,12 @@ export type AddressAttributes = {
 };
 
 export const useAddressAttributes = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress
 ): AddressAttributes | undefined => {
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
-    ["ots_getAddressAttributes", address],
+    ["ots2_getAddressAttributes", address],
     fetcher
   );
   if (error) {

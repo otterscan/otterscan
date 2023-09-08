@@ -58,6 +58,8 @@ However, you will see that we made many UI improvements.
 
 [Here](./docs/install.md).
 
+> **NEW**: if you want to opt-in into testing Otterscan v2 ALPHA features, [follow these instructions](./docs/ots2.md).
+
 ## Contract verification
 
 We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info. More info [here](docs/sourcify.md).

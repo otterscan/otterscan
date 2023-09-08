@@ -1,5 +1,5 @@
 import { FC, memo, ReactNode, useState } from "react";
-import { ParamType } from "@ethersproject/abi";
+import { ParamType } from "ethers";
 import { Switch } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
@@ -20,6 +20,7 @@ type DecodedParamRowProps = {
   paramType: ParamType;
   arrayElem?: number | undefined;
   help?: string | undefined;
+  defaultNameBase?: string;
 };
 
 const DecodedParamRow: FC<DecodedParamRowProps> = ({
@@ -29,6 +30,7 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
   paramType,
   arrayElem,
   help,
+  defaultNameBase = "param",
 }) => {
   const [showHelp, setShowHelp] = useState<boolean>(false);
 
@@ -46,7 +48,13 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
                 </span>
               ) : (
                 <>
-                  {paramType.name ?? <span className="italic">param_{i}</span>}{" "}
+                  {paramType.name !== "" ? (
+                    paramType.name
+                  ) : (
+                    <span className="italic">
+                      {defaultNameBase}_{i}
+                    </span>
+                  )}{" "}
                   {i !== undefined && (
                     <span className="text-xs text-gray-400">({i})</span>
                   )}
@@ -97,25 +105,38 @@ const DecodedParamRow: FC<DecodedParamRowProps> = ({
           <DecodedParamRow
             key={idx}
             prefix={
-              paramType.name ? (
+              paramType.name !== "" ? (
                 paramType.name + "."
               ) : (
-                <span className="italic">param_{i}.</span>
+                <span className="italic">
+                  {defaultNameBase}_{i}.
+                </span>
               )
             }
             i={idx}
             r={e}
-            paramType={paramType.components[idx]}
+            paramType={paramType.components![idx]}
+            defaultNameBase={defaultNameBase}
           />
         ))}
       {paramType.baseType === "array" &&
         r.map((e: any, idx: number) => (
           <DecodedParamRow
             key={idx}
-            prefix={paramType.name ?? <span className="italic">param_{i}</span>}
+            prefix={
+              paramType.name !== "" ? (
+                paramType.name
+              ) : (
+                <span className="italic">
+                  {defaultNameBase}_{i}
+                </span>
+              )
+            }
             r={e}
-            paramType={paramType.arrayChildren}
+            // arrayChildren is not null when the baseType is array
+            paramType={paramType.arrayChildren!}
             arrayElem={idx}
+            defaultNameBase={defaultNameBase}
           />
         ))}
     </>

@@ -57,7 +57,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?.network.chainId
+    provider?._network.chainId
   );
 
   useEffect(() => {
@@ -73,7 +73,10 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
       {error ? (
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
-          supportsENS={provider?.network.ensAddress !== undefined}
+          supportsENS={
+            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            null
+          }
         />
       ) : (
         checksummedAddress && (

@@ -1,11 +1,6 @@
 import { FC, memo, useContext, useState, FormEvent } from "react";
 import { SyntaxHighlighter, docco } from "../../../highlight-init";
-import {
-  FunctionFragment,
-  Result,
-  Interface,
-  type ParamType,
-} from "@ethersproject/abi";
+import { FunctionFragment, Result, Interface, type ParamType } from "ethers";
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
@@ -27,17 +22,21 @@ function validateArgument(arg: any, argType: ParamType) {
     if (!Array.isArray(arg)) {
       throw new Error(`Invalid array "${arg}": got type ${typeof arg}`);
     }
-    arg.map((childArg) => validateArgument(childArg, argType.arrayChildren));
+    arg.map((childArg) => validateArgument(childArg, argType.arrayChildren!));
   } else if (argType.baseType === "tuple") {
     if (!Array.isArray(arg)) {
       throw new Error(`Invalid tuple "${arg}": got type ${typeof arg}`);
     }
-    if (arg.length !== argType.components.length) {
+    if (arg.length !== argType.components!.length) {
       throw new Error(
-        `Expected tuple length ${argType.components.length}, got ${arg.length}: [${arg}]`
+        `Expected tuple length ${argType.components!.length}, got ${
+          arg.length
+        }: [${arg}]`
       );
     }
-    arg.map((childArg, i) => validateArgument(childArg, argType.components[i]));
+    arg.map((childArg, i) =>
+      validateArgument(childArg, argType.components![i])
+    );
   }
 }
 
@@ -151,7 +150,11 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       </form>
       <div className="mt-2 pl-6">
         {result && (
-          <DecodedParamsTable args={result} paramTypes={func.outputs || []} />
+          <DecodedParamsTable
+            args={result}
+            paramTypes={func.outputs || []}
+            defaultNameBase="ret"
+          />
         )}
         {error && (
           <p className="whitespace-break-spaces font-mono text-red-500">

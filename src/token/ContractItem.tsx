@@ -6,7 +6,7 @@ import { ChecksummedAddress } from "../types";
 import { ResultMapper } from "../ots2/useUIHooks";
 
 type ContractItemProps = {
-  blockNumber: number;
+  blockNumber: bigint;
   timestamp: number;
   address: ChecksummedAddress;
 };

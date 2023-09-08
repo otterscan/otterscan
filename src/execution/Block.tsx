@@ -1,7 +1,6 @@
 import { useMemo, useContext, FC } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { commify, formatUnits } from "@ethersproject/units";
-import { toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
+import { formatUnits, toUtf8String, Utf8ErrorFuncs } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import StandardFrame from "../components/StandardFrame";
@@ -26,6 +25,7 @@ import { blockTxsURL, blockURL } from "../url";
 import { useBlockPageTitle } from "../useTitle";
 import { useBlockData } from "../useErigonHooks";
 import { useChainInfo } from "../useChainInfo";
+import { commify } from "../utils/utils";
 
 const Block: FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -38,15 +38,14 @@ const Block: FC = () => {
   } = useChainInfo();
 
   const { data: block, isLoading } = useBlockData(provider, blockNumberOrHash);
-  useBlockPageTitle(parseInt(blockNumberOrHash));
+  useBlockPageTitle(blockNumberOrHash);
 
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
   }, [block]);
-  const burntFees =
-    block?.baseFeePerGas && block.baseFeePerGas.mul(block.gasUsed);
+  const burntFees = block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
   const gasUsedPerc =
-    block && block.gasUsed.mul(10000).div(block.gasLimit).toNumber() / 100;
+    block && Number((block.gasUsed * 10000n) / block.gasLimit) / 100;
 
   const latestBlockNumber = useLatestBlockNumber(provider);
 
@@ -100,25 +99,26 @@ const Block: FC = () => {
             <NativeTokenAmount value={block.unclesReward} />
           </InfoRow>
           <InfoRow title="Size">{commify(block.size)} bytes</InfoRow>
-          {block.baseFeePerGas && (
-            <InfoRow title="Base Fee">
-              <span>
-                <FormattedBalance
-                  value={block.baseFeePerGas}
-                  decimals={9}
-                  symbol="Gwei"
-                />{" "}
-                (
-                <FormattedBalance
-                  value={block.baseFeePerGas}
-                  decimals={0}
-                  symbol="wei"
-                />
-                )
-              </span>
-            </InfoRow>
-          )}
-          {burntFees && (
+          {block.baseFeePerGas !== null &&
+            block.baseFeePerGas !== undefined && (
+              <InfoRow title="Base Fee">
+                <span>
+                  <FormattedBalance
+                    value={block.baseFeePerGas}
+                    decimals={9}
+                    symbol="Gwei"
+                  />{" "}
+                  (
+                  <FormattedBalance
+                    value={block.baseFeePerGas}
+                    decimals={0}
+                    symbol="wei"
+                  />
+                  )
+                </span>
+              </InfoRow>
+            )}
+          {burntFees !== null && burntFees !== undefined && (
             <InfoRow title="Burnt Fees">
               <div className="flex items-baseline space-x-1">
                 <span className="flex space-x-1 text-orange-500">
@@ -154,13 +154,13 @@ const Block: FC = () => {
             <NativeTokenPrice blockTag={block.number} />
           </InfoRow>
           <InfoRow title="Difficulty">
-            {commify(block._difficulty.toString())}
+            {commify(block.difficulty.toString())}
           </InfoRow>
           <InfoRow title="Total Difficulty">
             {commify(block.totalDifficulty.toString())}
           </InfoRow>
           <InfoRow title="Hash">
-            <HexValue value={block.hash} />
+            <HexValue value={block.hash ?? "<unknown>"} />
           </InfoRow>
           <InfoRow title="Parent Hash">
             <BlockLink blockTag={block.parentHash} />

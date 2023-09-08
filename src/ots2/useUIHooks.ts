@@ -55,7 +55,7 @@ const useContractSearch = <T extends ContractMatch>(
 
 export type ResultMapper<T> = (
   m: any,
-  blocksSummary: ReadonlyMap<number, BlockSummary>
+  blocksSummary: ReadonlyMap<bigint, BlockSummary>
 ) => T;
 
 /**

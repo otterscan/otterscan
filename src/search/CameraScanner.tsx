@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { isAddress } from "@ethersproject/address";
+import { isAddress } from "ethers";
 import { QrReader } from "@otterscan/react-qr-reader";
 import { OnResultFunction } from "@otterscan/react-qr-reader/dist-types/types";
 import { BarcodeFormat } from "@zxing/library";

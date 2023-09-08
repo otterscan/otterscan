@@ -98,7 +98,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
     <ContentFrame tabs>
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
-          {balance && (
+          {balance !== null && balance !== undefined && (
             <InfoRow title="Balance">
               <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
             </InfoRow>

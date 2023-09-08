@@ -9,7 +9,7 @@ export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
 const chainInfoFetcher: (
   runtime: OtterscanRuntime | undefined
-) => Fetcher<ChainInfo, [string, number]> =
+) => Fetcher<ChainInfo, [string, bigint]> =
   (runtime) =>
   async ([assetsURLPrefix, chainId]) => {
     // Hardcoded chainInfo; DON'T fetch it
@@ -32,7 +32,7 @@ export const useChainInfoFromMetadataFile = (
 ): ChainInfo | undefined => {
   const hardcodedChainInfo = runtime?.config?.chainInfo !== undefined;
   const assetsURLPrefix = runtime?.config?.assetsURLPrefix;
-  const chainId = runtime?.provider?.network?.chainId;
+  const chainId = runtime?.provider?._network?.chainId;
 
   const { data, error } = useSWRImmutable(
     !hardcodedChainInfo &&

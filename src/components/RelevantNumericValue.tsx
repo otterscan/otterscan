@@ -1,5 +1,4 @@
 import { FC, memo } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import FormattedBalance from "./FormattedBalance";
 
 type RelevantNumericValueProps = {
@@ -13,7 +12,7 @@ type RelevantNumericValueProps = {
  * - Light gray absolute zero values
  */
 const RelevantNumericValue: FC<RelevantNumericValueProps> = ({ value }) => (
-  <FormattedBalance value={BigNumber.from(value)} decimals={0} />
+  <FormattedBalance value={BigInt(value)} decimals={0} />
 );
 
 export default memo(RelevantNumericValue);

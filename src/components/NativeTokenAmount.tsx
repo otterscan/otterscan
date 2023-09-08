@@ -1,10 +1,9 @@
 import { FC, memo } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
 import { useChainInfo } from "../useChainInfo";
 import FormattedBalance from "./FormattedBalance";
 
 type NativeTokenAmountProps = {
-  value: BigNumber;
+  value: bigint;
   hideUnit?: boolean;
 };
 
@@ -23,7 +22,7 @@ const NativeTokenAmount: FC<NativeTokenAmountProps> = ({ value, hideUnit }) => {
   } = useChainInfo();
 
   return (
-    <span className={`text-sm ${value.isZero() ? "opacity-30" : ""}`}>
+    <span className={`text-sm ${value === 0n ? "opacity-30" : ""}`}>
       <FormattedBalance
         value={value}
         decimals={decimals}

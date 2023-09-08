@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react";
-import { Interface } from "@ethersproject/abi";
+import { Interface } from "ethers";
 import DecodedFragment from "./DecodedFragment";
 
 const meta = {

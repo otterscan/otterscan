@@ -1,9 +1,9 @@
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { validatorURL } from "../../url";
+import { commify } from "../../utils/utils";
 
 type ValidatorLinkProps = {
   validatorIndex: number;

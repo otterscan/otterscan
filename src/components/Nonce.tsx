@@ -1,10 +1,10 @@
 import { FC, memo } from "react";
-import { commify } from "@ethersproject/units";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { commify } from "../utils/utils";
 
 type NonceProps = {
-  value: number;
+  value: bigint;
 };
 
 const Nonce: FC<NonceProps> = ({ value }) => (

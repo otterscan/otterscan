@@ -4,7 +4,7 @@ import Topic from "./Topic";
 import StandardTextarea from "../../../components/StandardTextarea";
 
 type RawLogProps = {
-  topics: string[];
+  topics: readonly string[];
   data: string;
 };
 

@@ -1,18 +1,18 @@
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { BlockTag } from "@ethersproject/abstract-provider";
-import { commify } from "@ethersproject/units";
+import { BlockTag } from "ethers";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { blockURL } from "../url";
+import { commify } from "../utils/utils";
 
 type BlockLinkProps = {
   blockTag: BlockTag;
 };
 
 const BlockLink: FC<BlockLinkProps> = ({ blockTag }) => {
-  const isNum = typeof blockTag === "number";
   let text = blockTag;
+  let isNum = typeof blockTag === "bigint" || typeof blockTag === "number";
   if (isNum) {
     text = commify(blockTag);
   }
@@ -27,7 +27,7 @@ const BlockLink: FC<BlockLinkProps> = ({ blockTag }) => {
       <span className="text-orange-500">
         <FontAwesomeIcon className="self-center" icon={faCube} size="1x" />
       </span>
-      <span>{text}</span>
+      <span>{text.toString()}</span>
     </NavLink>
   );
 };
