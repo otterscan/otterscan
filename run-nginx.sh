@@ -5,10 +5,12 @@ PARAMS=$(jq -n \
   --arg erigonURL "$ERIGON_URL" \
   --arg beaconAPI "$BEACON_API_URL" \
   --arg assetsURLPrefix "" \
+  --arg experimental "$OTS2" \
   '{
     erigonURL: $erigonURL,
     beaconAPI: $beaconAPI,
-    assetsURLPrefix: $assetsURLPrefix
+    assetsURLPrefix: $assetsURLPrefix,
+    experimental: $experimental,
   }')
 
 # Overwrite base image config.json with our own and let nginx do the rest

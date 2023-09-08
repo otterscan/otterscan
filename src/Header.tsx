@@ -12,7 +12,7 @@ import Otter from "./otter.png?w=64&h=64&webp";
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
 const Header: FC = () => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const [searchRef, handleChange, handleSubmit] = useGenericSearch();
   const [isScanning, setScanning] = useState<boolean>(false);
 
@@ -30,7 +30,10 @@ const Header: FC = () => {
               alt="An otter scanning"
               title="An otter scanning"
             />
-            <span>Otterscan</span>
+            <span>
+              Otterscan
+              {config?.experimental && <span className="text-red-400">2</span>}
+            </span>
           </div>
         </Link>
         <div className="flex items-baseline space-x-3">

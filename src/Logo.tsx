@@ -1,19 +1,27 @@
-import React from "react";
+import React, { FC, memo, useContext } from "react";
 // @ts-expect-error
 import Otter from "./otter.png?w=128&h=128&webp";
+import { RuntimeContext } from "./useRuntime";
 
-const Logo: React.FC = () => (
-  <div className="flex cursor-default items-center justify-center space-x-4 font-title text-6xl font-bold text-link-blue">
-    <img
-      className="rounded-full"
-      src={Otter}
-      width={96}
-      height={96}
-      alt="An otter scanning"
-      title="An otter scanning"
-    />
-    <span>Otterscan</span>
-  </div>
-);
+const Logo: FC = () => {
+  const { config } = useContext(RuntimeContext);
 
-export default React.memo(Logo);
+  return (
+    <div className="flex cursor-default items-center justify-center space-x-4 font-title text-6xl font-bold text-link-blue">
+      <img
+        className="rounded-full"
+        src={Otter}
+        width={96}
+        height={96}
+        alt="An otter scanning"
+        title="An otter scanning"
+      />
+      <span>
+        Otterscan
+        {config?.experimental && <span className="text-red-400">2</span>}
+      </span>
+    </div>
+  );
+};
+
+export default memo(Logo);
