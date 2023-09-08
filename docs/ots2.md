@@ -4,6 +4,12 @@ During the alpha period, running Otterscan 2 requires some opt-in extra steps.
 
 Be sure to have a working Otterscan/Erigon installation first, following the [install instructions](./install.md).
 
+## Clone and build Erigon + OTS2 support
+
+Checkout the `ots2-alpha1` branch from Erigon repository: https://github.com/ledgerwatch/erigon/tree/ots2-alpha1
+
+Build it as usual with `make` command.
+
 ## Enable OTS2 indexers inside Erigon
 
 Change Erigon CLI args to:
