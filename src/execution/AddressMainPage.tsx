@@ -20,6 +20,7 @@ import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
+import AddressBalance from "./address/AddressBalance";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
 import AddressSubtitle from "./address/AddressSubtitle";
@@ -153,6 +154,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     <span>Read as Proxy</span>
                   </NavTab>
                 )}
+                <NavTab href={`/address/${addressOrName}/balance`}>
+                  Balance
+                </NavTab>
               </Tab.List>
               <Tab.Panels>
                 <Routes>
@@ -240,6 +244,10 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       }
                     />
                   )}
+                  <Route
+                    path="balance"
+                    element={<AddressBalance address={checksummedAddress} />}
+                  />
                 </Routes>
               </Tab.Panels>
             </Tab.Group>
