@@ -6,7 +6,19 @@ import { type ExtendedBlock } from "../../useErigonHooks";
 
 import HistoricalDataGraph, { BlockVal } from "./HistoricalDataGraph";
 
-function balanceChartOptions(symbol: string): ChartOptions<"line"> {
+function formatAmount(amt: string | number, symbol: string, decimals: number) {
+  // Hack so commify can work with number values like 8e-6
+  return `${commify(
+    typeof amt === "number" && amt.toString().includes("e")
+      ? amt.toFixed(decimals)
+      : amt
+  )} ${symbol}`;
+}
+
+function balanceChartOptions(
+  symbol: string,
+  decimals: number
+): ChartOptions<"line"> {
   return {
     animation: false,
     plugins: {
@@ -15,7 +27,7 @@ function balanceChartOptions(symbol: string): ChartOptions<"line"> {
       },
       tooltip: {
         callbacks: {
-          label: (context) => context.parsed.y + " " + symbol,
+          label: (context) => formatAmount(context.parsed.y, symbol, decimals),
         },
       },
     },
@@ -31,8 +43,7 @@ function balanceChartOptions(symbol: string): ChartOptions<"line"> {
           text: `${symbol} Balance`,
         },
         ticks: {
-          // TODO: FixedNumber so commify works
-          callback: (v) => `${v} ${symbol}`,
+          callback: (v) => formatAmount(v, symbol, decimals),
         },
       },
     },
@@ -73,7 +84,7 @@ const BalanceGraph: FC<BalanceGraphProps> = ({
     <ContentFrame tabs>
       <HistoricalDataGraph
         perBlockFetch={(provider, block) => balanceAtBlock(provider, block)}
-        chartOptions={balanceChartOptions(currencySymbol)}
+        chartOptions={balanceChartOptions(currencySymbol, currencyDecimals)}
         chartData={(blockVals) =>
           balanceChartData(blockVals, Number(currencyDecimals))
         }
