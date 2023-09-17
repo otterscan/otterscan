@@ -3,6 +3,7 @@ import { JsonRpcApiProvider } from "ethers";
 import { FC } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import { type ExtendedBlock } from "../../useErigonHooks";
+import { commify } from "../../utils/utils";
 
 import HistoricalDataGraph, { BlockVal } from "./HistoricalDataGraph";
 
@@ -10,14 +11,17 @@ function formatAmount(amt: string | number, symbol: string, decimals: number) {
   // Hack so commify can work with number values like 8e-6
   return `${commify(
     typeof amt === "number" && amt.toString().includes("e")
-      ? amt.toFixed(decimals)
-      : amt
+      ? amt.toLocaleString("fullwide", {
+          useGrouping: false,
+          maximumSignificantDigits: 21,
+        })
+      : amt,
   )} ${symbol}`;
 }
 
 function balanceChartOptions(
   symbol: string,
-  decimals: number
+  decimals: number,
 ): ChartOptions<"line"> {
   return {
     animation: false,
