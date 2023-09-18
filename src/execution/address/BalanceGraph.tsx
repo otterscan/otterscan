@@ -1,7 +1,6 @@
 import { ChartData, ChartOptions } from "chart.js";
 import { JsonRpcApiProvider } from "ethers";
 import { FC } from "react";
-import ContentFrame from "../../components/ContentFrame";
 import { type ExtendedBlock } from "../../useErigonHooks";
 import { commify } from "../../utils/utils";
 
@@ -85,15 +84,13 @@ const BalanceGraph: FC<BalanceGraphProps> = ({
   balanceAtBlock,
 }) => {
   return (
-    <ContentFrame tabs>
-      <HistoricalDataGraph
-        perBlockFetch={(provider, block) => balanceAtBlock(provider, block)}
-        chartOptions={balanceChartOptions(currencySymbol, currencyDecimals)}
-        chartData={(blockVals) =>
-          balanceChartData(blockVals, Number(currencyDecimals))
-        }
-      />
-    </ContentFrame>
+    <HistoricalDataGraph
+      perBlockFetch={(provider, block) => balanceAtBlock(provider, block)}
+      chartOptions={balanceChartOptions(currencySymbol, currencyDecimals)}
+      chartData={(blockVals) =>
+        balanceChartData(blockVals, Number(currencyDecimals))
+      }
+    />
   );
 };
 

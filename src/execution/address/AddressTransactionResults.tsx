@@ -1,3 +1,7 @@
+import { faChartLine } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Disclosure } from "@headlessui/react";
+import { JsonRpcApiProvider } from "ethers";
 import { FC, useContext, useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
@@ -13,21 +17,38 @@ import UndefinedPageControl from "../../search/UndefinedPageControl";
 import { SearchController } from "../../search/search";
 import { useFeeToggler } from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
-import { ProcessedTransaction } from "../../types";
+import { ChecksummedAddress, ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
+import { useChainInfo } from "../../useChainInfo";
+import {
+  useAddressBalance,
+  useContractCreator,
+  type ExtendedBlock,
+} from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
+import BalanceGraph from "./BalanceGraph";
 import PendingItem from "./PendingItem";
+
+async function balanceAtBlock(
+  provider: JsonRpcApiProvider,
+  block: ExtendedBlock,
+  address: ChecksummedAddress,
+) {
+  return provider.getBalance(address, block.number);
+}
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+  const {
+    nativeCurrency: { symbol: currencySymbol, decimals: currencyDecimals },
+  } = useChainInfo();
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -107,7 +128,27 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
         <BlockNumberContext.Provider value="latest">
           <InfoRow title="Balance">
             {balance !== null && balance !== undefined ? (
-              <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
+              <Disclosure>
+                <div className="flex justify-between">
+                  <NativeTokenAmountAndFiat
+                    value={balance}
+                    {...balancePreset}
+                  />
+                  <Disclosure.Button className="rounded border bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none">
+                    <FontAwesomeIcon icon={faChartLine} />
+                  </Disclosure.Button>
+                </div>
+
+                <Disclosure.Panel className="mt-2 max-w-4xl">
+                  <BalanceGraph
+                    balanceAtBlock={(provider, block) =>
+                      balanceAtBlock(provider, block, address)
+                    }
+                    currencySymbol={currencySymbol}
+                    currencyDecimals={currencyDecimals}
+                  />
+                </Disclosure.Panel>
+              </Disclosure>
             ) : (
               <div className="w-80">
                 <PendingItem />
