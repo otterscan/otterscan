@@ -3,6 +3,8 @@ import { createContext, useMemo } from "react";
 import { ConnectionStatus } from "./types";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
+import { Zilliqa } from "@zilliqa-js/zilliqa";
+import { useZilliqa } from "./useZilliqa";
 
 /**
  * A runtime comprises a OtterscanConfig read from somewhere, +
@@ -24,6 +26,12 @@ export type OtterscanRuntime = {
    * probing occurring, etc.
    */
   provider?: JsonRpcApiProvider;
+
+  /**
+    * Zilliqa object; may be undefined if not ready because of config fetching,
+    * probing occurring, etc.
+  */
+  zilliqa?: Zilliqa;
 };
 
 export const useRuntime = (): OtterscanRuntime => {
@@ -47,6 +55,8 @@ export const useRuntime = (): OtterscanRuntime => {
     effectiveConfig?.experimentalFixedChainId,
   );
 
+  const zilliqa = useZilliqa(effectiveConfig?.erigonURL);
+
   const runtime = useMemo((): OtterscanRuntime => {
     if (effectiveConfig === undefined) {
       return { connStatus: ConnectionStatus.CONNECTING };
@@ -61,10 +71,11 @@ export const useRuntime = (): OtterscanRuntime => {
         provider: new JsonRpcProvider(effectiveConfig.erigonURL, network, {
           staticNetwork: network,
         }),
+        zilliqa : zilliqa,
       };
     }
-    return { config: effectiveConfig, connStatus, provider };
-  }, [effectiveConfig, connStatus, provider]);
+    return { config: effectiveConfig, connStatus, provider, zilliqa };
+  }, [effectiveConfig, connStatus, provider, zilliqa]);
 
   return runtime;
 };

@@ -8,7 +8,7 @@ import TransactionLink from "../../components/TransactionLink";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
-import PendingTransactionResults from "../../search/PendingTransactionResults";
+import { PendingTransactionResults } from "../../search/PendingResults";
 import TransactionResultHeader from "../../search/TransactionResultHeader";
 import { SearchController } from "../../search/search";
 import TransactionItem from "../../search/TransactionItem";

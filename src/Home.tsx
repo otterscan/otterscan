@@ -13,7 +13,8 @@ import { commify } from "./utils/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import Header from "./Header";
-import RecentBlocks from "./execution/block/recentBlocks";
+import RecentBlocks from "./execution/block/RecentBlocks";
+import RecentDSBlocks from "./execution/block/RecentDSBlocks";
 
 
 const Home: FC = () => {
@@ -29,8 +30,15 @@ const Home: FC = () => {
   return (
       <>
       <Header sourcifyPresent= {false} />
-      <RecentBlocks />
-    <div className="flex grow flex-col items-center pb-5">
+<     <div className="grid grid-cols-5 gap-x-1 mx-1">
+        <span className="col-span-2">
+          <RecentDSBlocks />
+        </span>
+        <span className="col-span-3">
+            <RecentBlocks />
+        </span>
+      </div>
+     <div className="flex grow flex-col items-center pb-5">
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
       <div className="mb-10 mt-5 flex max-h-64 grow items-end">
         <Logo />

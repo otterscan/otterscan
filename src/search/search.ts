@@ -249,6 +249,15 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     return;
   }
 
+  // DS Block number?
+  if(q.charAt(0) === "#"){
+    const dsBlockNumber = parseInt(q.substring(1));
+    if(!isNaN(dsBlockNumber)) {
+      navigate(`/dsblock/${dsBlockNumber}`);
+      return;
+    }
+  }
+
   // Epoch?
   if (q.startsWith("epoch:")) {
     const mayBeEpoch = q.substring(6);

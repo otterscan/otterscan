@@ -4,11 +4,11 @@ import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary
 import { useFeeToggler } from "../../search/useFeeToggler";
 import { RuntimeContext } from "../../useRuntime";
 import { useRecentBlocks } from "../../useErigonHooks";
-import { useLatestBlockHeader } from "../../useLatestBlock";
+import { useLatestBlockNumber } from "../../useLatestBlock";
 import { RECENT_SIZE } from "../../params";
 import RecentBlockItem from "../../search/RecentBlockItem";
 import RecentBlockResultHeader from "../../search/RecentBlockResultHeader";
-import PendingBlockResults from "../../search/PendingBlockResults";
+import { PendingRecentBlockResults } from "../../search/PendingResults";
 import RecentNavBar from "../../search/RecentNavBar";
 
 
@@ -16,8 +16,7 @@ const RecentBlocks: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
-  const latestBlock = useLatestBlockHeader(provider);
-  const latestBlockNum = latestBlock?.number;
+  const latestBlockNum = useLatestBlockNumber(provider);
 
   // Uses hook to get the most recent blocks
   const { data, isLoading } = useRecentBlocks(
@@ -42,7 +41,7 @@ const RecentBlocks: FC = () => {
           ))}
         </StandardSelectionBoundary>
       ) : (
-        <PendingBlockResults />
+        <PendingRecentBlockResults />
       )}
     </ContentFrame>
   );

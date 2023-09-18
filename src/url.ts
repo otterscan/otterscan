@@ -30,6 +30,8 @@ export const slotAttestationsURL = (slotNumber: number) =>
 export const validatorURL = (validatorIndex: number) =>
   `/validator/${validatorIndex}`;
 
+export const dsBlockURL = (blockNum: BlockTag) => `/dsblock/${blockNum}`;
+
 export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;

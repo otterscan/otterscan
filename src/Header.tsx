@@ -60,12 +60,13 @@ const Header: FC<HeaderProps> = ({sourcifyPresent}) => {
               className="w-full rounded-l border-b border-l border-t px-2 py-1 text-sm focus:outline-none"
               type="text"
               size={60}
-              placeholder={`Type "/" to search by address / txn hash / block number${
+              placeholder={`Type "/" to search by address / txn hash / # ds block number${
                 provider?._network.getPlugin(
                   "org.ethers.plugins.network.Ens",
                 ) !== null
                   ? " / ENS name"
                   : ""
+              size={80}
               }`}
               onChange={handleChange}
               ref={searchRef}

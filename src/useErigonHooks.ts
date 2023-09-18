@@ -28,6 +28,9 @@ import {
   TransactionData,
 } from "./types";
 import { formatter } from "./utils/formatter";
+import erc20 from "./erc20.json";
+import { DsBlockObj } from '@zilliqa-js/core/dist/types/src/types'
+import { Zilliqa } from "@zilliqa-js/zilliqa";
 
 const TRANSFER_TOPIC =
   "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";

@@ -3,7 +3,7 @@ import ContentFrame from "../../components/ContentFrame";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import TransactionResultHeader from "../../search/TransactionResultHeader";
-import PendingTransactionResults from "../../search/PendingTransactionResults";
+import { PendingTransactionResults } from "../../search/PendingResults";
 import TransactionItem from "../../search/TransactionItem";
 import { useFeeToggler } from "../../search/useFeeToggler";
 import { totalTransactionsFormatter } from "../../search/messages";

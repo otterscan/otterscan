@@ -10,11 +10,13 @@ import { RuntimeContext, useRuntime } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
 const Block = lazy(() => import("./execution/Block"));
-const BlockList = lazy(() => import("./execution/BlockList"));
 const BlockTransactions = lazy(() => import("./execution/BlockTransactions"));
 const BlockTransactionByIndex = lazy(
   () => import("./execution/block/BlockTransactionByIndex"),
 );
+const DSBlock = lazy(() => import("./execution/DSBlock"));
+const BlockList = lazy(() => import("./execution/BlockList"));
+const DSBlockList = lazy(() => import("./execution/DSBlockList"));
 const Address = lazy(() => import("./execution/Address"));
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
@@ -62,11 +64,18 @@ const App = () => {
                       element={<Block />}
                     />
                     <Route
+                      path="block/:blockNumber/txs"
+                      element={<BlockTransactions />}
+                    />
+                    <Route
+                      path="dsblock/:dsBlockNumberOrHash"
+                      element={<DSBlock />}
+                    />
+                    <Route
                       path="blocklist" element={ <BlockList/>}
                     />
                     <Route
-                      path="block/:blockNumber/txs"
-                      element={<BlockTransactions />}
+                      path="dsblocklist" element={ <DSBlockList/>}
                     />
                     <Route
                       path="block/:blockNumberOrHash/tx/:txIndex"

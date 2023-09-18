@@ -31,7 +31,7 @@ const RecentBlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
         to={blockTxsURL(block.number)}
     >
         {block.transactionCount} transactions
-    </NavLink>{" "}
+    </NavLink>
     </span>
     <span className="truncate font-balance text-xs text-gray-500">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(block.feeReward, 18)}

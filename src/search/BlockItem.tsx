@@ -31,7 +31,7 @@ const BlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
         to={blockTxsURL(block.number)}
     >
         {block.transactionCount} transactions
-    </NavLink>{" "}
+    </NavLink>
     </span>
     <span className="col-span-4">
     <HexValue value={block.hash} />

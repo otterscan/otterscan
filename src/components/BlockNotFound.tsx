@@ -7,7 +7,7 @@ type BlockNotFoundProps = {
 
 const BlockNotFound: React.FC<BlockNotFoundProps> = ({ blockNumberOrHash }) => (
   <ContentFrame>
-    <div className="py-4 text-sm">Block "{blockNumberOrHash}" not found.</div>
+    <div className="py-4 text-sm">Tx Block "{blockNumberOrHash}" not found.</div>
   </ContentFrame>
 );
 
