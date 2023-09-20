@@ -5,6 +5,7 @@ import Faucet from "../../components/Faucet";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import { useChainInfo } from "../../useChainInfo";
 import { RuntimeContext } from "../../useRuntime";
+import FavoriteStar from "../components/FavoriteStar";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
 
@@ -30,6 +31,9 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           scale={3}
         />
         <span>Address</span>
+        <span className="text-base">
+          <FavoriteStar address={address} />
+        </span>
         <span className="font-address text-base text-gray-500">{address}</span>
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
