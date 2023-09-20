@@ -8,19 +8,19 @@ export abstract class FavoritesSource {
 }
 
 class LocalFavoritesSource extends FavoritesSource {
-  private readonly key = "favoriteAddresses"; // key for storing favorite addresses in local storage
+  private readonly key = "favoriteAddresses";
 
   async isFavorite(address: string): Promise<boolean> {
     const favorites = await this.getFavorites();
     return favorites.includes(address);
   }
 
-  async getFavorites(): Promise<string[]> {
-    if (this.favorites !== null) {
-      return this.favorites; // use cached list of favorites if available
+  async getFavorites(forceFetch: boolean = false): Promise<string[]> {
+    if (this.favorites !== null && !forceFetch) {
+      return this.favorites;
     } else {
       const favoritesJSON = localStorage.getItem(this.key);
-      const favorites = JSON.parse(favoritesJSON || "[]"); // initialize as empty array if not found in storage
+      const favorites = JSON.parse(favoritesJSON || "[]");
       if (!Array.isArray(favorites)) {
         throw new Error("Favorites not an array");
       }
@@ -30,7 +30,7 @@ class LocalFavoritesSource extends FavoritesSource {
   }
 
   async addFavorite(address: string): Promise<void> {
-    const favorites = await this.getFavorites();
+    const favorites = await this.getFavorites(true);
     if (!favorites.includes(address)) {
       favorites.push(address);
       this.favorites = favorites;
@@ -39,7 +39,7 @@ class LocalFavoritesSource extends FavoritesSource {
   }
 
   async removeFavorite(addressToRemove: string): Promise<void> {
-    const favorites = await this.getFavorites();
+    const favorites = await this.getFavorites(true);
     if (favorites.includes(addressToRemove)) {
       this.favorites = favorites.filter(
         (address) => address !== addressToRemove,
