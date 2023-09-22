@@ -30,8 +30,9 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
     <>
       {content === undefined && (
         <>
-          <PendingItem large={true} />
-          <div className="h-screen"></div>
+          <div className="h-screen w-full border">
+            <PendingItem large={true} />
+          </div>
         </>
       )}
       {content !== undefined && (
