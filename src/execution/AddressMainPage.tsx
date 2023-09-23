@@ -6,6 +6,7 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { getAddress } from "ethers";
 import { Tab } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +28,10 @@ import { useAddressOrENS } from "../useResolvedAddresses";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
 import { usePageTitle } from "../useTitle";
+import {
+  useAddressAttributes,
+  useERC1167Impl,
+} from "../ots2/usePrototypeTransferHooks";
 
 type AddressMainPageProps = {};
 
@@ -58,6 +63,20 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
+    provider?._network.chainId
+  );
+  const attr = useAddressAttributes(provider, checksummedAddress);
+  const proxyAddress =
+    useERC1167Impl(
+      provider,
+      attr && attr.erc1167 ? checksummedAddress : undefined
+    ) ?? undefined;
+  const checksummedProxyAddress = proxyAddress
+    ? getAddress(proxyAddress)
+    : undefined;
+  const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
+  const proxyMatch = useSourcifyMetadata(
+    proxyHasCode ? checksummedProxyAddress : undefined,
     provider?._network.chainId
   );
 
@@ -128,11 +147,26 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
+                {proxyHasCode && proxyMatch && (
+                  <NavTab href={`/address/${addressOrName}/contractAsProxy`}>
+                    <span className={`flex items-baseline space-x-2`}>
+                      <span>Contract as Proxy</span>
+                      <SourcifyLogo />
+                    </span>
+                  </NavTab>
+                )}
                 {hasCode && match && (
                   <NavTab href={`/address/${addressOrName}/readContract`}>
                     <span className={`flex items-baseline space-x-2`}>
                       <span>Read Contract</span>
                     </span>
+                  </NavTab>
+                )}
+                {proxyHasCode && proxyMatch && (
+                  <NavTab
+                    href={`/address/${addressOrName}/readContractAsProxy`}
+                  >
+                    <span>Read as Proxy</span>
                   </NavTab>
                 )}
               </Tab.List>
@@ -179,6 +213,17 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
+                  {checksummedProxyAddress && proxyMatch && (
+                    <Route
+                      path="contractAsProxy"
+                      element={
+                        <Contracts
+                          checksummedAddress={checksummedProxyAddress}
+                          match={proxyMatch}
+                        />
+                      }
+                    />
+                  )}
                   <Route
                     path="readContract"
                     element={
@@ -188,6 +233,17 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
+                  {checksummedProxyAddress && proxyMatch && (
+                    <Route
+                      path="readContractAsProxy"
+                      element={
+                        <ReadContract
+                          checksummedAddress={checksummedAddress}
+                          match={proxyMatch}
+                        />
+                      }
+                    />
+                  )}
                 </Routes>
               </Tab.Panels>
             </Tab.Group>
