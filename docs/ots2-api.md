@@ -31,3 +31,5 @@ All methods are prefixed with the `ots2_` namespace in order to make it clear it
 | `ots2_getERC721TransferList` | Gets a paginated list of transactions that contain ERC721 transfers from/to a certain address. |
 | `ots2_getERC721TransferCount` | Gets the total count of transactions that contain ERC721 transfers from/to a certain address. |
 | `ots2_getERC20Holdings` | Given a certain address, returns all ERC20 that have interacted with it. |
+| `ots2_getWithdrawalsList` (since alpha 2.1) | Gets a paginated list of consensus layer withdrawals to a certain recipient address. Note that 1 block can have multiple withdrawals for the same address, each one is counted individually |
+| `ots2_getWithdrawalsCount` (since alpha 2.1) | Gets the total count of consensus layer withdrawals to a certain recipient address. |
