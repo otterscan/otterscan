@@ -1,6 +1,19 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { BlockTag, isHexString } from "ethers";
 import { commify } from "./utils/utils";
+import { RuntimeContext } from "./useRuntime";
+
+/**
+ * Set the page title.
+ */
+export const usePageTitle = (title: string | undefined) => {
+  if (title === undefined) {
+    return;
+  }
+  const { config } = useContext(RuntimeContext);
+  const siteName = config?.branding?.siteName || "Otterscan";
+  document.title = `${title} | ${siteName}`;
+};
 
 /**
  * Title for main block page.
@@ -10,9 +23,7 @@ export const useBlockPageTitle = (blockNumber: BlockTag) => {
   if (!isHexString(blockNumber)) {
     blockStr = `#${commify(blockNumber)}`;
   }
-  useEffect(() => {
-    document.title = `Block ${blockStr} | Otterscan`;
-  }, [blockNumber]);
+  usePageTitle(`Block ${blockStr}`);
 };
 
 /**
@@ -23,13 +34,11 @@ export const useBlockTransactionsPageTitle = (
   pageNumber: number,
   pageCount: number | undefined
 ) => {
-  useEffect(() => {
-    if (blockNumber !== undefined) {
-      document.title = `Block #${commify(
-        blockNumber
-      )} Txns | Page ${pageNumber}${
+  if (blockNumber !== undefined) {
+    usePageTitle(
+      `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
         pageCount === undefined ? "" : "/" + pageCount
-      } | Otterscan`;
-    }
-  }, [blockNumber]);
+      }`
+    );
+  }
 };

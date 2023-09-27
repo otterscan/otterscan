@@ -26,6 +26,7 @@ import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
+import { usePageTitle } from "../useTitle";
 
 type AddressMainPageProps = {};
 
@@ -60,13 +61,11 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     provider?._network.chainId
   );
 
-  useEffect(() => {
-    if (isENS || checksummedAddress === undefined) {
-      document.title = `Address ${addressOrName} | Otterscan`;
-    } else {
-      document.title = `Address ${checksummedAddress} | Otterscan`;
-    }
-  }, [addressOrName, checksummedAddress, isENS]);
+  if (isENS || checksummedAddress === undefined) {
+    usePageTitle(`Address ${addressOrName}`);
+  } else {
+    usePageTitle(`Address ${checksummedAddress}`);
+  }
 
   return (
     <StandardFrame>

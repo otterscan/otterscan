@@ -5,6 +5,7 @@ import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
 import Attestation from "./Attestation";
 import { useSlot } from "../../useConsensus";
+import { usePageTitle } from "../../useTitle";
 
 const Attestations: FC = () => {
   const { slotNumber } = useParams();
@@ -13,11 +14,9 @@ const Attestations: FC = () => {
   }
   const slotAsNumber = parseInt(slotNumber);
   const { slot, error, isLoading } = useSlot(slotAsNumber);
-  useEffect(() => {
-    if (slot !== undefined) {
-      document.title = `Attestations for #${slotNumber} | Otterscan`;
-    }
-  }, [slotNumber, slot]);
+  if (slot !== undefined) {
+    usePageTitle(`Attestations for #${slotNumber}`);
+  }
 
   return (
     <ContentFrame tabs>

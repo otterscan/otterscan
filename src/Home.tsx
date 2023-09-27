@@ -9,6 +9,7 @@ import { useLatestBlockHeader } from "./useLatestBlock";
 import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
 import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
+import { usePageTitle } from "./useTitle";
 import { commify } from "./utils/utils";
 
 const CameraScanner = lazy(() => import("./search/CameraScanner"));
@@ -22,7 +23,7 @@ const Home: FC = () => {
   const slotTime = useSlotTimestamp(finalizedSlotNumber);
   const [isScanning, setScanning] = useState<boolean>(false);
 
-  document.title = "Home | Otterscan";
+  usePageTitle("Home");
 
   return (
     <div className="flex grow flex-col items-center pb-5">

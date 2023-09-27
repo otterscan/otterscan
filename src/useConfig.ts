@@ -95,6 +95,16 @@ export type OtterscanConfig = {
    * initialization.
    */
   chainInfo?: ChainInfo;
+
+  /**
+   * Optional site customization options
+   */
+  branding?: {
+    /**
+     * Site name shown in page titles, home, and header
+     */
+    siteName: string;
+  };
 };
 
 /**

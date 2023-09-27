@@ -18,6 +18,7 @@ import {
   useFinalizedSlotNumber,
   useReversedSlotsFromEpoch,
 } from "../useConsensus";
+import { usePageTitle } from "../useTitle";
 
 const Epoch: FC = () => {
   const { epochNumber } = useParams();
@@ -25,11 +26,10 @@ const Epoch: FC = () => {
     throw new Error("epochNumber couldn't be undefined here");
   }
   const epochAsNumber = parseInt(epochNumber);
-  useEffect(() => {
-    if (!isNaN(epochAsNumber)) {
-      document.title = `Epoch #${epochAsNumber} | Otterscan`;
-    }
-  }, [epochAsNumber]);
+
+  if (!isNaN(epochAsNumber)) {
+    usePageTitle(`Epoch #${epochAsNumber}`);
+  }
 
   const epochTimestamp = useEpochTimestamp(epochNumber);
   const slots = useReversedSlotsFromEpoch(epochAsNumber);
