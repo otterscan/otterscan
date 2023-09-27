@@ -56,7 +56,6 @@ Some components in the user interface can be customized in the config under the 
 
 ```json
 {
-  ...
   "branding": {
     "siteName": "Otterscan"
   }
