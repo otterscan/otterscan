@@ -19,6 +19,8 @@ const WarningHeader: React.FC = () => {
     chainMsg = "Kovan Testnet";
   } else if (chainId === 11155111n) {
     chainMsg = "Sepolia Testnet";
+  } else if (chainId === 17000n) {
+    chainMsg = "Holesky Testnet";
   }
   return (
     <div className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white">
