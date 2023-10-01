@@ -49,3 +49,17 @@ That file can be overwritten on server-side and changes will be reflected when u
 You are free to define the best way to do that depending on how you package your Otterscan distribution.
 
 For reference, our official Docker image accepts initialization parameters that overwrite that file on container initialization.
+
+## Customization
+
+Some components in the user interface can be customized in the config under the `branding` key:
+
+```json
+{
+  "branding": {
+    "siteName": "Otterscan"
+  }
+}
+```
+
+* `siteName`: Sets the name displayed on the home page, header, and page titles.

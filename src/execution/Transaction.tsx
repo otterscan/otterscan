@@ -10,6 +10,7 @@ import { RuntimeContext } from "../useRuntime";
 import { useTxData } from "../useErigonHooks";
 import { SelectedTransactionContext } from "../useSelectedTransaction";
 import { BlockNumberContext } from "../useBlockTagContext";
+import { usePageTitle } from "../useTitle";
 
 const Details = lazy(() => import("./transaction/Details"));
 const Logs = lazy(() => import("./transaction/Logs"));
@@ -24,11 +25,9 @@ const Transaction: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const txData = useTxData(provider, txHash);
 
-  useEffect(() => {
-    if (txData) {
-      document.title = `Transaction ${txData.transactionHash} | Otterscan`;
-    }
-  }, [txData]);
+  if (txData) {
+    usePageTitle(`Transaction ${txData.transactionHash}`);
+  }
 
   return (
     <SelectedTransactionContext.Provider value={txData}>

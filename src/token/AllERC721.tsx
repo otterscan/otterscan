@@ -5,6 +5,7 @@ import ERC721Item, { mapper } from "./ERC721Item";
 import { useContractSearchPage } from "../ots2/useUIHooks";
 import { erc721MatchParser } from "../ots2/contractMatchParsers";
 import { PAGE_SIZE } from "../params";
+import { usePageTitle } from "../useTitle";
 
 const AllERC721: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
@@ -13,7 +14,7 @@ const AllERC721: FC = () => {
     mapper
   );
 
-  document.title = `ERC721 Tokens | Otterscan`;
+  usePageTitle("ERC721 Tokens");
 
   return (
     <GenericContractSearchResult

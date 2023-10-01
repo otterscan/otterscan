@@ -9,6 +9,7 @@ import {
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
+import { usePageTitle } from "../../useTitle";
 
 const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
@@ -42,7 +43,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
     [results]
   );
 
-  document.title = `ERC721 Transfers | Otterscan`;
+  usePageTitle("ERC721 Transfers");
 
   return (
     <GenericTransactionSearchResult

@@ -17,6 +17,7 @@ import AggregationBits from "./AggregationBits";
 import SlashingCount from "../components/SlashingCount";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
 import { commify } from "../../utils/utils";
+import { usePageTitle } from "../../useTitle";
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();
@@ -25,11 +26,9 @@ const Overview: FC = () => {
   }
   const slotAsNumber = parseInt(slotNumber);
   const { slot, error, isLoading } = useSlot(slotAsNumber);
-  useEffect(() => {
-    if (slot !== undefined) {
-      document.title = `Slot #${slotNumber} | Otterscan`;
-    }
-  }, [slotNumber, slot]);
+  if (slot !== undefined) {
+    usePageTitle(`Slot #${slotNumber}`);
+  }
 
   const epoch = slot2Epoch(slotAsNumber);
   const slotTimestamp = useSlotTimestamp(slotAsNumber);
