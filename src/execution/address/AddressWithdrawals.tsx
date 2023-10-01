@@ -16,7 +16,7 @@ const withdrawalSearchHeader = (
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
     <th className="w-32">Validator</th>
-    <th>To</th>
+    <th className="w-52">To</th>
     <th className="w-44">Value</th>
   </StandardTHead>
 );
