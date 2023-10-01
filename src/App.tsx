@@ -68,12 +68,18 @@ const App = () => {
                     {runtime.config?.experimental && (
                       <>
                         <Route path="contracts/*" element={<AllContracts />} />
-                        <Route path="contracts/erc20/*" element={<AllERC20 />} />
+                        <Route
+                          path="contracts/erc20/*"
+                          element={<AllERC20 />}
+                        />
                         <Route
                           path="contracts/erc4626/*"
                           element={<AllERC4626 />}
                         />
-                        <Route path="contracts/erc721/*" element={<AllERC721 />} />
+                        <Route
+                          path="contracts/erc721/*"
+                          element={<AllERC721 />}
+                        />
                         <Route
                           path="contracts/erc1155/*"
                           element={<AllERC1155 />}

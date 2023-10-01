@@ -22,7 +22,7 @@ import { formatter } from "../utils/formatter";
  * Those are NOT arbitrary strings, they are used to compose RPC method
  * names.
  */
-export type TransactionSearchType = "ERC20" | "ERC721";
+export type TransactionSearchType = "ERC20" | "ERC721" | "Withdrawals";
 
 export type TransactionListResults<T> = {
   blocksSummary: Map<number, BlockSummary>;
@@ -38,12 +38,24 @@ export type TransactionMatchWithData = TransactionMatch & {
   receipt: TransactionReceipt;
 };
 
+export type WithdrawalMatch = {
+  index: bigint;
+  blockNumber: number;
+  validatorIndex: number;
+  amount: bigint;
+};
+
+type returnType<T extends TransactionSearchType> = T extends "Withdrawals"
+  ? WithdrawalMatch
+  : TransactionMatchWithData;
+
 export const useGenericTransactionCount = (
   provider: JsonRpcApiProvider | undefined,
   t: TransactionSearchType,
   address: ChecksummedAddress
 ): number | undefined => {
-  const rpcMethod = `ots2_get${t}TransferCount`;
+  const transfer = t !== "Withdrawals" ? "Transfer" : "";
+  const rpcMethod = `ots2_get${t}${transfer}Count`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
   if (error) {
@@ -52,33 +64,51 @@ export const useGenericTransactionCount = (
   return data as number | undefined;
 };
 
-const resultFetcher = (
-  provider: JsonRpcApiProvider | undefined
+function decodeResults<T extends TransactionSearchType>(
+  item: any,
+  provider: JsonRpcApiProvider,
+  t: T
+): returnType<T> {
+  if (t === "Withdrawals") {
+    return {
+      index: formatter.bigInt(item.index),
+      blockNumber: formatter.number(item.blockNumber),
+      validatorIndex: formatter.number(item.validatorIndex),
+      amount: formatter.bigInt(item.amount),
+    } as returnType<T>;
+  } else {
+    return {
+      hash: item.hash,
+      // provider is a JsonRpcApiProvider; fetcher/res would be undefined otherwise
+      transaction: new TransactionResponse(
+        formatter.transactionResponse(item.transaction),
+        provider as JsonRpcApiProvider
+      ),
+      receipt: new TransactionReceipt(
+        formatter.transactionReceiptParams(item.receipt),
+        provider as JsonRpcApiProvider
+      ),
+    } as returnType<T>;
+  }
+}
+
+const resultFetcher = <T extends TransactionSearchType>(
+  provider: JsonRpcApiProvider | undefined,
+  t: T
 ): Fetcher<
-  TransactionListResults<TransactionMatchWithData> | undefined,
+  TransactionListResults<returnType<T>> | undefined,
   [string, ...any]
 > => {
   const fetcher = providerFetcher(provider);
 
   return async (key) => {
     const res = await fetcher(key);
-    if (res === undefined) {
+    if (res === undefined || provider === undefined) {
       return undefined;
     }
 
     const converted = (res.results as any[]).map(
-      (m): TransactionMatchWithData => ({
-        hash: m.hash,
-        // provider is a JsonRpcApiProvider; fetcher/res would be undefined otherwise
-        transaction: new TransactionResponse(
-          formatter.transactionResponse(m.transaction),
-          provider as JsonRpcApiProvider
-        ),
-        receipt: new TransactionReceipt(
-          formatter.transactionReceiptParams(m.receipt),
-          provider as JsonRpcApiProvider
-        ),
-      })
+      (m): returnType<T> => decodeResults<T>(m, provider, t)
     );
     const blockMap = new Map<number, BlockSummary>();
     for (const [k, v] of Object.entries(res.blocksSummary as any)) {
@@ -92,17 +122,18 @@ const resultFetcher = (
   };
 };
 
-export const useGenericTransactionList = (
+export const useGenericTransactionList = <T extends TransactionSearchType>(
   provider: JsonRpcApiProvider | undefined,
-  t: TransactionSearchType,
+  t: T,
   address: ChecksummedAddress,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): TransactionListResults<TransactionMatchWithData> | undefined => {
+): TransactionListResults<returnType<T>> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const rpcMethod = `ots2_get${t}TransferList`;
-  const fetcher = resultFetcher(provider);
+  const transfer = t !== "Withdrawals" ? "Transfer" : "";
+  const rpcMethod = `ots2_get${t}${transfer}List`;
+  const fetcher = resultFetcher<T>(provider, t);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
     fetcher

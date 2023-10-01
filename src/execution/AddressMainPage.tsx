@@ -18,6 +18,7 @@ import SourcifyLogo from "../sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
+import AddressWithdrawals from "./address/AddressWithdrawals";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
@@ -99,6 +100,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     <NavTab href={`/address/${addressOrName}/tokens`}>
                       Token Balances
                     </NavTab>
+                    <NavTab href={`/address/${addressOrName}/withdrawals`}>
+                      Withdrawals
+                    </NavTab>
                   </>
                 )}
                 {hasCode && (
@@ -167,6 +171,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       <Route
                         path="tokens"
                         element={<AddressTokens address={checksummedAddress} />}
+                      />
+                      <Route
+                        path="withdrawals"
+                        element={
+                          <AddressWithdrawals address={checksummedAddress} />
+                        }
                       />
                     </>
                   )}
