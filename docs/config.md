@@ -63,3 +63,7 @@ Some components in the user interface can be customized in the config under the 
 ```
 
 * `siteName`: Sets the name displayed on the home page, header, and page titles.
+
+### Logo
+
+To replace the default Otterscan logo with your own, simply replace `src/otter.png` with a different PNG image. Rebuild Otterscan for the change to take effect.
