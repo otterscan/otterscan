@@ -38,6 +38,11 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
     <ContentFrame tabs>
       {match && (
         <>
+          {match.metadata.settings?.compilationTarget && (
+            <InfoRow title="Name">
+              {Object.values(match.metadata.settings.compilationTarget)[0]}
+            </InfoRow>
+          )}
           <InfoRow title="Match">
             {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
           </InfoRow>
