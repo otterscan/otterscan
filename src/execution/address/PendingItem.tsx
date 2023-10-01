@@ -1,14 +1,10 @@
 import { FC } from "react";
 import ContentLoader from "react-content-loader";
 
-interface PendingItemProps {
-  large?: boolean;
-}
-
-const PendingItem: FC<PendingItemProps> = ({ large = false }) => (
+const PendingItem: FC = () => (
   <div className="p-1">
     <ContentLoader
-      className={`${large ? "h-12" : "h-4"} w-full`}
+      className="h-4 w-full"
       viewBox="0 0 100 100"
       speed={2}
       backgroundColor="#f3f3f3"

@@ -100,7 +100,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                   )}
                 </div>
                 <div className="relative">
-                  <Menu.Items className="absolute flex flex-col rounded-b border bg-white p-1">
+                  <Menu.Items className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
                     {Object.entries(match.metadata.sources).map(([k]) => (
                       <Menu.Item key={k}>
                         <button
