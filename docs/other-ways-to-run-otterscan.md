@@ -39,13 +39,14 @@ These instructions are subjected to changes in future for the sake of simplifica
 
 Make sure you have a working node 16/npm 8 installation.
 
-By default, it assumes your `erigon` processs is serving requests at `http://localhost:8545` and it has a beacon chain REST API serving requests at `http://localhost:3500`.
+By default, it assumes your `erigon` process is serving requests at `http://localhost:8545`, a beacon chain REST API serves requests at `http://localhost:5052`, and assets are hosted at `http://localhost:5175`.
 
 You can customize these URLs by creating a `.env.development.local` file at the root of the repository (automatically git ignored) and adding the following entries:
 
 ```
 VITE_ERIGON_URL=<your-erigon-JSON-RPC-endpoint>
 VITE_BEACON_API_URL=<your-beacon-chain-REST-API-endpoint>
+VITE_ASSETS_URL=<your-assets-endpoint>
 ```
 
 Start serving the assets server by running the following Docker image:

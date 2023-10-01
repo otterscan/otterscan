@@ -134,6 +134,8 @@ export const useConfig = (
       _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
       _config.beaconAPI =
         import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
+      _config.assetsURLPrefix =
+        import.meta.env.VITE_ASSETS_URL ?? _config.assetsURLPrefix;
       _config.experimental =
         import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
       if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
