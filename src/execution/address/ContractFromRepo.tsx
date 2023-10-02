@@ -30,7 +30,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   return (
     <>
       {content === undefined && (
-        <div className="flex h-screen w-full flex-col justify-center border text-center text-gray-500">
+        <div className="flex h-80 w-full flex-col justify-center border text-center text-gray-500">
           <span>
             <FontAwesomeIcon
               className="animate-spin"
