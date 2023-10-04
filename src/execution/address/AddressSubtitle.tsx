@@ -19,7 +19,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
   addressOrName,
 }) => {
   const { config } = useContext(RuntimeContext);
-  const { network, faucets } = useChainInfo();
+  const { faucets } = useChainInfo();
 
   return (
     <StandardSubtitle>
@@ -33,9 +33,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         <span className="font-address text-base text-gray-500">{address}</span>
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
-        {network === "testnet" && faucets && faucets.length > 0 && (
-          <Faucet address={address} rounded />
-        )}
+        {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
         {isENS && (
           <span className="rounded-lg bg-gray-200 px-2 py-1 text-xs text-gray-500">
             ENS: {addressOrName}
