@@ -68,14 +68,15 @@ const Home: FC = () => {
           Search
         </button>
       </form>
-      {config?.experimental && (
-        <NavLink
-          className="text-md font-bold text-green-600 hover:text-green-800"
-          to="contracts/all"
-        >
-          🧪 EXPERIMENTAL CONTRACT BROWSER 🧪
-        </NavLink>
-      )}
+      {!(config?.branding?.hideAnnouncements ?? false) &&
+        config?.experimental && (
+          <NavLink
+            className="text-md font-bold text-green-600 hover:text-green-800"
+            to="contracts/all"
+          >
+            🧪 EXPERIMENTAL CONTRACT BROWSER 🧪
+          </NavLink>
+        )}
       {latestBlock && (
         <NavLink
           className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"

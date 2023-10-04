@@ -98,9 +98,13 @@ export type OtterscanConfig = {
    */
   branding?: {
     /**
-     * Site name shown in page titles, home, and header
+     * Site name shown in page titles, home, and header.
      */
-    siteName: string;
+    siteName?: string;
+    /**
+     * If set to true, hides new feature announcements on the home page.
+     */
+    hideAnnouncements?: boolean;
   };
 };
 
