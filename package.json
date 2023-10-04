@@ -82,7 +82,7 @@
     "@storybook/addon-essentials": "7.4.5",
     "@storybook/addon-interactions": "7.4.5",
     "@storybook/addon-links": "7.4.5",
-    "@storybook/blocks": "7.4.5",
+    "@storybook/blocks": "7.4.6",
     "@storybook/react": "7.4.5",
     "@storybook/react-vite": "7.4.5",
     "@storybook/testing-library": "0.2.2",
