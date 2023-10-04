@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-buildx-
 
       - name: Docker Setup Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver: docker-container
           driver-opts: |
