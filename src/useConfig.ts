@@ -10,12 +10,9 @@ import { jsonFetcherWithErrorHandling } from "./fetcher";
  */
 export type ChainInfo = {
   /**
-   * It contains a string "testnet" for testnets.
-   *
-   * @todo Change this name; it comes from the field name on ethereum-lists,
-   * but it is confusing.
+   * Full name of the chain.
    */
-  network: string | undefined;
+  name: string;
 
   /**
    * If this is a testnet, list example faucets; used by a certain part of
@@ -45,7 +42,7 @@ export type ChainInfo = {
 };
 
 export const defaultChainInfo: ChainInfo = {
-  network: undefined,
+  name: "",
   faucets: [],
   nativeCurrency: {
     name: "Ether",

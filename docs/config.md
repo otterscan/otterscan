@@ -22,7 +22,7 @@ VITE_CONFIG_JSON='
   "assetsURLPrefix": "http://localhost:5175",
   "experimentalFixedChainId": 11155111,
   "chainInfo": {
-    "network": "",
+    "name": "Sepolia Testnet",
     "faucets": [],
     "nativeCurrency": {
       "name": "Sepolia Ether",
@@ -67,3 +67,27 @@ Some components in the user interface can be customized in the config under the 
 ### Logo
 
 To replace the default Otterscan logo with your own, simply replace `src/otter.png` with a different PNG image. Rebuild Otterscan for the change to take effect.
+
+### Chain information
+
+By default, Otterscan recognizes several chains, including the Ethereum mainnet and several Ethereum test networks. For other chains, specify either (1) a `chainInfo` key in the Otterscan config, or (2) create a JSON file accessible at `{assetsURLPrefix}/chains/eip155-{chainId}.json`. In both cases, use the [ethereum-lists](https://github.com/ethereum-lists/chains) structure to describe the properties of the chain:
+
+* `name`: The full name of the network, such as "Ethereum Mainnet".
+* `faucets`: A list of faucet URLs which are accessible at the `/faucets` endpoint and navigable from address pages. The special string `${ADDRESS}` can be included in the URL and will be replaced with the address the user navigated from.
+* `nativeCurrency`: Describes the native currency of the chain; this is analagous to ETH on the Ethereum mainnet.
+  * `name`: Full name of the native currency, e.g. "Ether".
+  * `symbol`: Few-character symbol used in trading, e.g. "ETH".
+  * `decimals`: Number of decimals; usually 18.
+
+Example:
+```json
+{
+  "name": "Sepolia Testnet",
+  "faucets": [],
+  "nativeCurrency": {
+    "name": "Sepolia Ether",
+    "symbol": "sepETH",
+    "decimals": 18
+  }
+}
+```
