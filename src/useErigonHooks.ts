@@ -111,6 +111,17 @@ const blockTransactionsFetcher: Fetcher<
         throw new Error("blockTransactionsFetcher: unknown tx hash");
       }
 
+      let effectiveGasPrice: bigint;
+      if (t.type === 2) {
+        const tip =
+          t.maxFeePerGas! - _block.baseFeePerGas! < t.maxPriorityFeePerGas!
+            ? t.maxFeePerGas! - _block.baseFeePerGas!
+            : t.maxPriorityFeePerGas!;
+        effectiveGasPrice = _block.baseFeePerGas! + tip;
+      } else {
+        effectiveGasPrice = t.gasPrice!;
+      }
+
       return {
         blockNumber: blockNumber,
         timestamp: _block.timestamp,
@@ -121,15 +132,8 @@ const blockTransactionsFetcher: Fetcher<
         to: t.to ?? null,
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
-        fee:
-          t.type !== 2
-            ? formatter.bigInt(_receipt.gasUsed) * t.gasPrice!
-            : formatter.bigInt(_receipt.gasUsed) *
-              (t.maxPriorityFeePerGas! + _block.baseFeePerGas!),
-        gasPrice:
-          t.type !== 2
-            ? t.gasPrice!
-            : t.maxPriorityFeePerGas! + _block.baseFeePerGas!,
+        fee: formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice,
+        gasPrice: effectiveGasPrice,
         data: t.data,
         status: formatter.number(_receipt.status),
       };
