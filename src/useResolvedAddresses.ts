@@ -47,8 +47,8 @@ export const useAddressOrENS = (
       (
         provider._network.getPlugin(
           "org.ethers.plugins.network.Ens"
-        ) as EnsPlugin
-      ).address
+        ) as EnsPlugin | null
+      )?.address
     ) {
       const resolveName = async () => {
         const resolvedAddress = await provider.resolveName(addressOrName);
