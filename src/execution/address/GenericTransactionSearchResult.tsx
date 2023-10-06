@@ -44,6 +44,11 @@ type GenericTransactionSearchResultProps<T> = {
    * Name of the transaction type, e.g. 'transaction' or 'withdrawal'
    */
   typeName?: string;
+
+  /**
+   * Number of columns to fill when results are pending
+   */
+  columns?: number;
 };
 
 const defaultHeader = (
@@ -65,6 +70,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
   Item,
   header = defaultHeader,
   typeName = "transaction",
+  columns = 7,
 }: GenericTransactionSearchResultProps<T>) => {
   const totalFormatter =
     typeName === "withdrawal"
@@ -93,7 +99,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
                 </StandardTBody>
               </StandardSelectionBoundary>
             ) : (
-              <PendingPage rows={PAGE_SIZE} cols={7} />
+              <PendingPage rows={PAGE_SIZE} cols={columns} />
             )}
           </StandardTable>
           {total !== undefined && (
