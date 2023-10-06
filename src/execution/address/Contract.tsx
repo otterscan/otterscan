@@ -7,7 +7,7 @@ type ContractProps = {
 
 const Contract: React.FC<ContractProps> = ({ content }) => (
   <SyntaxHighlighter
-    className="h-full w-full border font-code text-base"
+    className="h-full w-full border font-code text-sm"
     language="solidity"
     style={docco}
     showLineNumbers
