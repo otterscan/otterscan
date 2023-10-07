@@ -29,6 +29,9 @@ const ReadContract: React.FC<ContractsProps> = ({
   match,
 }) => {
   const { provider } = useContext(RuntimeContext);
+  const viewFunctions = match?.metadata.output.abi.filter((fn) =>
+    isReadFunction(fn)
+  );
 
   return (
     <StandardSelectionBoundary>
@@ -43,20 +46,21 @@ const ReadContract: React.FC<ContractsProps> = ({
               Sourcify repository.
             </span>
           )}
-          {match && match.metadata.output.abi && (
+          {viewFunctions && (
             <div>
-              <ul className="list-inside list-decimal">
-                {match.metadata.output.abi.map(
-                  (fn, i) =>
-                    isReadFunction(fn) && (
-                      <ReadFunction
-                        func={FunctionFragment.from(fn)}
-                        address={checksummedAddress}
-                        key={i}
-                      />
-                    )
-                )}
-              </ul>
+              {viewFunctions.length === 0 &&
+                "This contract has no external view functions."}
+              {viewFunctions.length > 0 && (
+                <ul className="list-inside list-decimal">
+                  {viewFunctions.map((fn, i) => (
+                    <ReadFunction
+                      func={FunctionFragment.from(fn)}
+                      address={checksummedAddress}
+                      key={i}
+                    />
+                  ))}
+                </ul>
+              )}
             </div>
           )}
         </div>
