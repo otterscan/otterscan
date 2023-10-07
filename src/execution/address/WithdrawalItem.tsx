@@ -9,6 +9,7 @@ import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TransactionAddress from "../components/TransactionAddress";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import ValidatorLink from "../../consensus/components/ValidatorLink";
+import { commify } from "../../utils/utils";
 
 export type WithdrawalItemProps = AddressAwareComponentProps & {
   index: bigint;
@@ -29,6 +30,7 @@ const WithdrawalItem: FC<WithdrawalItemProps> = ({
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>
+        <td>{commify(index)}</td>
         <td>
           <BlockLink blockTag={blockNumber} />
         </td>

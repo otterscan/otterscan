@@ -13,6 +13,7 @@ import WithdrawalItem, { WithdrawalItemProps } from "./WithdrawalItem";
 
 const withdrawalSearchHeader = (
   <StandardTHead>
+    <th className="w-28">Index</th>
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
     <th className="w-32">Validator</th>
@@ -65,6 +66,7 @@ const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
       Item={(i) => <WithdrawalItem {...i} />}
       header={withdrawalSearchHeader}
       typeName="withdrawal"
+      columns={6}
     />
   );
 };
