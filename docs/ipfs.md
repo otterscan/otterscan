@@ -18,7 +18,7 @@ This way we can provide an out-of-box usable integration, but still allowing use
 
 ## Slow IPNS resolution
 
-By default IPNS resolution _may_ be **extremelly** slow. There is an experimental IPFS feature called IPNS pubsub that speeds it up significantly (https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub), but for it to work, it needs to be enabled in **both** resolver and publisher nodes.
+By default IPNS resolution _may_ be **extremely** slow. There is an experimental IPFS feature called IPNS pubsub that speeds it up significantly (https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub), but for it to work, it needs to be enabled in **both** resolver and publisher nodes.
 
 We asked Sourcify to enable it in their publisher node, so you just have to enable it in your local node to have an usable performance.
 
