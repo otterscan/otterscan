@@ -64,4 +64,4 @@ It'll start a container under the name `otterscan`.
 
 ## Validating the installation (all methods)
 
-You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just bellow the search button.
+You can make sure it is working correctly if the homepage is able to show the latest block/timestamp your Erigon node is at just below the search button.
