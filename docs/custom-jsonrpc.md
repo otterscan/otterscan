@@ -192,7 +192,7 @@ Parameters:
 
 Returns:
 
-- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was sucessfully executed. It is returns "0x" if it failed with no revert reason or out of gas, make sure to analyze this return value together with the transaction success/fail result.
+- `string` containing the hexadecimal-formatted error blob or simply a "0x" if the transaction was successfully executed. It is returns "0x" if it failed with no revert reason or out of gas, make sure to analyze this return value together with the transaction success/fail result.
 
 Example: get the revert reason of a random transaction spotted in the wild to Uniswap V3.
 
@@ -228,7 +228,7 @@ Returns:
   - the block data comes nested inside a `block` attribute.
   - the `transactions` attribute is not returned. The reason is that it doesn't scale, the standard methods return either the transaction hash list or the transaction list with their bodies. So we cap the transaction list entirely to avoid unnecessary network traffic.
   - the transaction count is returned in a `transactionCount` attribute.
-  - the `logsBloom` attribute comes with `null`. It is a byte blob thas is rarely used, so we cap it to avoid unnecessary network traffic.
+  - the `logsBloom` attribute comes with `null`. It is a byte blob that is rarely used, so we cap it to avoid unnecessary network traffic.
   - an extra `issuance` attribute returns an `object` with the fields:
     - `blockReward` - the miner reward.
     - `uncleReward` - the total reward issued to uncle blocks.
@@ -262,7 +262,7 @@ Parameters:
 
 1. `address` - The ETH address to be searched.
 2. `blockNumber` - It searches for occurrences of `address` before/after `blockNumber`. A value of `0` means you want to search from the most recent block (`ots_searchTransactionsBefore`) or from the genesis (`ots_searchTransactionsAfter`).
-3. `pageSize` - How many transactions it may return. See the detailed explanation about this parameter bellow.
+3. `pageSize` - How many transactions it may return. See the detailed explanation about this parameter below.
 
 Returns:
 
