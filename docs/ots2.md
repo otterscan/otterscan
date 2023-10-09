@@ -6,7 +6,7 @@ Be sure to have a working Otterscan/Erigon installation first, following the [in
 
 ## Clone and build Erigon + OTS2 support
 
-Checkout the `ots2-alpha1` branch from Erigon repository: https://github.com/ledgerwatch/erigon/tree/ots2-alpha1
+Checkout the `ots2-alpha2` branch from Erigon repository: https://github.com/ledgerwatch/erigon/tree/ots2-alpha2
 
 Build it as usual with `make` command.
 
@@ -49,11 +49,11 @@ Add the `OTS2=true` env variable when starting the docker container.
 For example, if your docker start command is:
 
 ```
-docker run --rm --name otterscan -d -p 5100:80 --env ERIGON_URL="<erigon-url>" otterscan/otterscan:v2.0.0
+docker run --rm --name otterscan -d -p 5100:80 --env ERIGON_URL="<erigon-url>" otterscan/otterscan:v2.1.0
 ```
 
 change it to:
 
 ```
-docker run --rm --name otterscan -d -p 5100:80 --env ERIGON_URL="<erigon-url>" --env OTS2=true otterscan/otterscan:v2.0.0
+docker run --rm --name otterscan -d -p 5100:80 --env ERIGON_URL="<erigon-url>" --env OTS2=true otterscan/otterscan:v2.1.0
 ```

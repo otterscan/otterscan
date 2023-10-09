@@ -36,7 +36,7 @@ export type UniswapV3PairMeta = {
   pair: ChecksummedAddress;
   token0: UniswapV3TokenMeta;
   token1: UniswapV3TokenMeta;
-  fee: number;
+  fee: bigint;
 };
 
 const ercResolver = new ERCTokenResolver();
@@ -67,7 +67,7 @@ export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
       const [token0, token1, fee] = await Promise.all([
         poolContract.token0() as Promise<string>,
         poolContract.token1() as Promise<string>,
-        poolContract.fee() as Promise<number>,
+        poolContract.fee() as Promise<bigint>,
       ]);
 
       // Probe the factory to ensure it is a legit pair

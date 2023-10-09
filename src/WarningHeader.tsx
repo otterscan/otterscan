@@ -1,8 +1,10 @@
 import React, { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
+import { useChainInfo } from "./useChainInfo";
 
 const WarningHeader: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
+  const { name } = useChainInfo();
   const chainId = provider?._network.chainId;
   if (chainId === 1n) {
     return <></>;
@@ -19,7 +21,12 @@ const WarningHeader: React.FC = () => {
     chainMsg = "Kovan Testnet";
   } else if (chainId === 11155111n) {
     chainMsg = "Sepolia Testnet";
+  } else if (chainId === 17000n) {
+    chainMsg = "Holesky Testnet";
+  } else if (name) {
+    chainMsg = name;
   }
+
   return (
     <div className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white">
       You are on {chainMsg}

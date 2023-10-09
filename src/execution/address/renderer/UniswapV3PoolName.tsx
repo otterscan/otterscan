@@ -13,7 +13,7 @@ type UniswapV3PoolNameProps = {
   address: string;
   token0: UniswapV3TokenMeta;
   token1: UniswapV3TokenMeta;
-  fee: number;
+  fee: bigint;
   linkable: boolean;
   dontOverrideColors?: boolean;
 };
@@ -35,7 +35,7 @@ const UniswapV3PairName: FC<UniswapV3PoolNameProps> = ({
         } truncate`}
         to={`/address/${address}`}
         title={`Uniswap V3 LP (${token0.symbol}/${token1.symbol}/${
-          fee / 10000
+          Number(fee) / 10000
         }%): ${address}`}
       >
         <span>Uniswap V3 LP:</span>
@@ -54,7 +54,7 @@ const UniswapV3PairName: FC<UniswapV3PoolNameProps> = ({
           symbol={token1.symbol}
           linkable
         />
-        <span>/ {fee / 10000}%</span>
+        <span>/ {Number(fee) / 10000}%</span>
       </NavLink>
     );
   }
@@ -63,7 +63,7 @@ const UniswapV3PairName: FC<UniswapV3PoolNameProps> = ({
     <div
       className="flex items-baseline space-x-1 truncate font-sans text-gray-700"
       title={`Uniswap V3 LP (${token0.symbol}/${token1.symbol}/${
-        fee / 10000
+        Number(fee) / 10000
       }%): ${address}`}
     >
       <span>Uniswap V3 LP:</span>
@@ -80,7 +80,7 @@ const UniswapV3PairName: FC<UniswapV3PoolNameProps> = ({
         name={token1.name}
         symbol={token1.symbol}
       />
-      <span>/ {fee / 10000}%</span>
+      <span>/ {Number(fee) / 10000}%</span>
     </div>
   );
 };

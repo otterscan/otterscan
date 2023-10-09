@@ -7,7 +7,10 @@ import StandardTBody from "../../components/StandardTBody";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import PendingPage from "./PendingPage";
 import { TransactionMatch } from "../../ots2/usePrototypeTransferHooks";
-import { totalTransactionsFormatter } from "../../search/messages";
+import {
+  totalTransactionsFormatter,
+  totalWithdrawalsFormatter,
+} from "../../search/messages";
 import { PAGE_SIZE } from "../../params";
 
 type GenericTransactionSearchResultProps<T> = {
@@ -31,58 +34,86 @@ type GenericTransactionSearchResultProps<T> = {
    * Renders 1 page result. It should be a fragment with the result <td> columns.
    */
   Item: FC<T>;
+
+  /**
+   * Table header; customize for pseudotransactions
+   */
+  header?: JSX.Element;
+
+  /**
+   * Name of the transaction type, e.g. 'transaction' or 'withdrawal'
+   */
+  typeName?: string;
+
+  /**
+   * Number of columns to fill when results are pending
+   */
+  columns?: number;
 };
 
-const GenericTransactionSearchResult = <T extends TransactionMatch>({
+const defaultHeader = (
+  <StandardTHead>
+    <th className="w-56">Txn Hash</th>
+    <th className="w-28">Method</th>
+    <th className="w-28">Block</th>
+    <th className="w-28">Age</th>
+    <th>From</th>
+    <th>To</th>
+    <th className="w-44">Value</th>
+  </StandardTHead>
+);
+
+const GenericTransactionSearchResult = <T extends { hash: string }>({
   pageNumber,
   total,
   items,
   Item,
-}: GenericTransactionSearchResultProps<T>) => (
-  <ContentFrame key={pageNumber} tabs>
-    {total === 0 ? (
-      <div className="py-3 text-sm text-gray-500">No transactions found</div>
-    ) : (
-      <>
-        <SearchResultNavBar
-          pageNumber={pageNumber}
-          pageSize={PAGE_SIZE}
-          total={total}
-          totalFormatter={totalTransactionsFormatter}
-        />
-        <StandardTable>
-          <StandardTHead>
-            <th className="w-56">Txn Hash</th>
-            <th className="w-28">Method</th>
-            <th className="w-28">Block</th>
-            <th className="w-28">Age</th>
-            <th>From</th>
-            <th>To</th>
-            <th className="w-44">Value</th>
-          </StandardTHead>
-          {items !== undefined ? (
-            <StandardSelectionBoundary>
-              <StandardTBody>
-                {items.map((i) => (
-                  <Item key={i.hash} {...i} />
-                ))}
-              </StandardTBody>
-            </StandardSelectionBoundary>
-          ) : (
-            <PendingPage rows={PAGE_SIZE} cols={7} />
-          )}
-        </StandardTable>
-        {total !== undefined && (
+  header = defaultHeader,
+  typeName = "transaction",
+  columns = 7,
+}: GenericTransactionSearchResultProps<T>) => {
+  const totalFormatter =
+    typeName === "withdrawal"
+      ? totalWithdrawalsFormatter
+      : totalTransactionsFormatter;
+  return (
+    <ContentFrame key={pageNumber} tabs>
+      {total === 0 ? (
+        <div className="py-3 text-sm text-gray-500">No {typeName}s found</div>
+      ) : (
+        <>
           <SearchResultNavBar
             pageNumber={pageNumber}
             pageSize={PAGE_SIZE}
             total={total}
-            totalFormatter={totalTransactionsFormatter}
+            totalFormatter={totalFormatter}
           />
-        )}
-      </>
-    )}
-  </ContentFrame>
-);
+          <StandardTable>
+            {header}
+            {items !== undefined ? (
+              <StandardSelectionBoundary>
+                <StandardTBody>
+                  {items.map((i) => (
+                    <Item key={i.hash} {...i} />
+                  ))}
+                </StandardTBody>
+              </StandardSelectionBoundary>
+            ) : (
+              <PendingPage rows={PAGE_SIZE} cols={columns} />
+            )}
+          </StandardTable>
+          {total !== undefined && (
+            <SearchResultNavBar
+              pageNumber={pageNumber}
+              pageSize={PAGE_SIZE}
+              total={total}
+              totalFormatter={totalFormatter}
+            />
+          )}
+        </>
+      )}
+    </ContentFrame>
+  );
+};
 
 export default GenericTransactionSearchResult;

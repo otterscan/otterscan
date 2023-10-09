@@ -12,19 +12,16 @@ import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
 
 const Faucets: React.FC = () => {
-  const { network, faucets } = useChainInfo();
+  const { faucets } = useChainInfo();
   const loc = useLocation();
   const urls = useMemo(() => {
     const s = new URLSearchParams(loc.search);
     const address = s.get("address");
 
-    const _urls: string[] =
-      network === "testnet"
-        ? faucets.map((u) =>
-            // eslint-disable-next-line no-template-curly-in-string
-            address !== null ? u.replaceAll("${ADDRESS}", address) : u
-          )
-        : [];
+    const _urls: string[] = faucets.map((u) =>
+      // eslint-disable-next-line no-template-curly-in-string
+      address !== null ? u.replaceAll("${ADDRESS}", address) : u
+    );
 
     // Shuffle faucets to avoid UI bias
     for (let i = _urls.length - 1; i > 0; i--) {
@@ -33,7 +30,7 @@ const Faucets: React.FC = () => {
     }
 
     return _urls;
-  }, [network, faucets, loc]);
+  }, [faucets, loc]);
 
   return (
     <StandardFrame>

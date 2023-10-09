@@ -38,6 +38,11 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
     <ContentFrame tabs>
       {match && (
         <>
+          {match.metadata.settings?.compilationTarget && (
+            <InfoRow title="Name">
+              {Object.values(match.metadata.settings.compilationTarget)[0]}
+            </InfoRow>
+          )}
           <InfoRow title="Match">
             {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
           </InfoRow>
@@ -100,7 +105,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                   )}
                 </div>
                 <div className="relative">
-                  <Menu.Items className="absolute flex flex-col rounded-b border bg-white p-1">
+                  <Menu.Items className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
                     {Object.entries(match.metadata.sources).map(([k]) => (
                       <Menu.Item key={k}>
                         <button

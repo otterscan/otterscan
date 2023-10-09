@@ -1,6 +1,13 @@
 import { FC, memo, useContext, useState, FormEvent } from "react";
 import { SyntaxHighlighter, docco } from "../../../highlight-init";
-import { FunctionFragment, Result, Interface, type ParamType } from "ethers";
+import {
+  JsonRpcApiProvider,
+  FunctionFragment,
+  Result,
+  Interface,
+  type ParamType,
+  resolveAddress,
+} from "ethers";
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
@@ -14,8 +21,13 @@ interface ReadFunctionProps {
 
 function validateArgument(arg: any, argType: ParamType) {
   // Check only those types which ethers might parse incorrectly
-  if (argType.baseType === "string" && typeof arg !== "string") {
-    throw new Error(`Invalid string "${arg}": got type ${typeof arg}`);
+  if (
+    (argType.baseType === "string" || argType.baseType === "address") &&
+    typeof arg !== "string"
+  ) {
+    throw new Error(
+      `Invalid ${argType.baseType} "${arg}": got type ${typeof arg}`
+    );
   } else if (argType.baseType === "bool" && typeof arg !== "boolean") {
     throw new Error(`Invalid bool "${arg}": got type ${typeof arg}`);
   } else if (argType.baseType === "array") {
@@ -40,23 +52,57 @@ function validateArgument(arg: any, argType: ParamType) {
   }
 }
 
-function parseArgument(
+async function transformArgument(
+  arg: any,
+  argType: ParamType,
+  provider: JsonRpcApiProvider
+): Promise<any> {
+  if (argType.baseType === "address" && (arg as string).endsWith(".eth")) {
+    // Resolve ENS domain
+    return resolveAddress(arg, provider);
+  } else if (argType.baseType === "array") {
+    return Promise.all(
+      (arg as any[]).map((childArg) =>
+        transformArgument(childArg, argType.arrayChildren!, provider)
+      )
+    );
+  } else if (argType.baseType === "tuple") {
+    return Promise.all(
+      (arg as any[]).map((childArg, i) =>
+        transformArgument(childArg, argType.components![i], provider)
+      )
+    );
+  }
+  return arg;
+}
+
+async function parseArgument(
   arg: string,
   argType: ParamType,
-  argIndex: number
-): string | bigint | boolean | any[] {
+  argIndex: number,
+  provider: JsonRpcApiProvider
+): Promise<string | bigint | boolean | any[]> {
   let finalArg = arg;
-  // Add quotes around input for strings
   if (arg.length === 0) {
     throw new Error(`Argument ${argIndex} missing`);
   }
-  if (argType.baseType === "string" && arg.length > 0 && arg[0] !== '"') {
+  // Add quotes around input for strings and ENS domains, out of convenience
+  if (
+    (argType.baseType === "string" ||
+      (argType.baseType === "address" && arg.endsWith(".eth"))) &&
+    arg[0] !== '"'
+  ) {
     finalArg = `"${finalArg}"`;
   }
   const parsed = parse(finalArg);
   if (parsed.ast) {
     validateArgument(parsed.ast.value, argType);
-    return parsed.ast.value;
+    const transformedArg = await transformArgument(
+      parsed.ast.value,
+      argType,
+      provider
+    );
+    return transformedArg;
   } else {
     throw new Error(
       parsed.errs
@@ -81,14 +127,16 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
     let int = new Interface([func]);
     if (provider) {
       try {
-        // The parser can be recompiled with `npm run recompile-parsers`
+        setResult(undefined);
+        // The parser can be recompiled with `npm run build-parsers`
         let encodedData = int.encodeFunctionData(
           func.name,
-          inputs.map((input: string, i: number) =>
-            parseArgument(input, func.inputs[i], i)
+          await Promise.all(
+            inputs.map((input: string, i: number) =>
+              parseArgument(input, func.inputs[i], i, provider)
+            )
           )
         );
-        setResult(undefined);
         let resultData = await provider.call({
           to: address,
           data: encodedData,

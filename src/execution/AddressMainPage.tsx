@@ -18,6 +18,7 @@ import SourcifyLogo from "../sourcify/SourcifyLogo";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
+import AddressWithdrawals from "./address/AddressWithdrawals";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
@@ -26,6 +27,7 @@ import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
+import { usePageTitle } from "../useTitle";
 
 type AddressMainPageProps = {};
 
@@ -60,13 +62,11 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     provider?._network.chainId
   );
 
-  useEffect(() => {
-    if (isENS || checksummedAddress === undefined) {
-      document.title = `Address ${addressOrName} | Otterscan`;
-    } else {
-      document.title = `Address ${checksummedAddress} | Otterscan`;
-    }
-  }, [addressOrName, checksummedAddress, isENS]);
+  if (isENS || checksummedAddress === undefined) {
+    usePageTitle(`Address ${addressOrName}`);
+  } else {
+    usePageTitle(`Address ${checksummedAddress}`);
+  }
 
   return (
     <StandardFrame>
@@ -99,6 +99,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </NavTab>
                     <NavTab href={`/address/${addressOrName}/tokens`}>
                       Token Balances
+                    </NavTab>
+                    <NavTab href={`/address/${addressOrName}/withdrawals`}>
+                      Withdrawals
                     </NavTab>
                   </>
                 )}
@@ -168,6 +171,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       <Route
                         path="tokens"
                         element={<AddressTokens address={checksummedAddress} />}
+                      />
+                      <Route
+                        path="withdrawals"
+                        element={
+                          <AddressWithdrawals address={checksummedAddress} />
+                        }
                       />
                     </>
                   )}

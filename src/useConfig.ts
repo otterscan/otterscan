@@ -10,12 +10,9 @@ import { jsonFetcherWithErrorHandling } from "./fetcher";
  */
 export type ChainInfo = {
   /**
-   * It contains a string "testnet" for testnets.
-   *
-   * @todo Change this name; it comes from the field name on ethereum-lists,
-   * but it is confusing.
+   * Full name of the chain.
    */
-  network: string | undefined;
+  name: string;
 
   /**
    * If this is a testnet, list example faucets; used by a certain part of
@@ -45,7 +42,7 @@ export type ChainInfo = {
 };
 
 export const defaultChainInfo: ChainInfo = {
-  network: undefined,
+  name: "",
   faucets: [],
   nativeCurrency: {
     name: "Ether",
@@ -95,6 +92,20 @@ export type OtterscanConfig = {
    * initialization.
    */
   chainInfo?: ChainInfo;
+
+  /**
+   * Optional site customization options
+   */
+  branding?: {
+    /**
+     * Site name shown in page titles, home, and header.
+     */
+    siteName?: string;
+    /**
+     * If set to true, hides new feature announcements on the home page.
+     */
+    hideAnnouncements?: boolean;
+  };
 };
 
 /**
@@ -124,6 +135,8 @@ export const useConfig = (
       _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
       _config.beaconAPI =
         import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
+      _config.assetsURLPrefix =
+        import.meta.env.VITE_ASSETS_URL ?? _config.assetsURLPrefix;
       _config.experimental =
         import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
       if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
