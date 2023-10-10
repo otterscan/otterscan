@@ -15,4 +15,4 @@ PARAMS=$(jq -n \
 
 # Overwrite base image config.json with our own and let nginx do the rest
 echo $PARAMS > /usr/share/nginx/html/config.json
-nginx -g "daemon off;"
+exec nginx -g "daemon off;"
