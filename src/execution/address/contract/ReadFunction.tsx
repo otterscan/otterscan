@@ -10,13 +10,30 @@ import {
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useState } from "react";
 import { RuntimeContext } from "../../../useRuntime";
-import ParamDeclaration from "../../components/ParamDeclaration";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
+import FunctionParamsInput from "./FunctionParamsInput";
 import { parse } from "./contractInputDataParser";
 
 interface ReadFunctionProps {
   address: string;
   func: FunctionFragment;
+}
+
+/**
+ * Prepares an unprocessed argument string by coercing it into the proper
+ * format in some cases as a convenience feature
+ */
+export function prepareArgument(arg: string, argType: ParamType) {
+  // Add quotes around input for strings and ENS domains
+  let finalArg = arg;
+  if (
+    (argType.baseType === "string" ||
+      (argType.baseType === "address" && arg.endsWith(".eth"))) &&
+    arg[0] !== '"'
+  ) {
+    finalArg = `"${finalArg}"`;
+  }
+  return finalArg;
 }
 
 function validateArgument(arg: any, argType: ParamType) {
@@ -82,18 +99,10 @@ async function parseArgument(
   argIndex: number,
   provider: JsonRpcApiProvider,
 ): Promise<string | bigint | boolean | any[]> {
-  let finalArg = arg;
   if (arg.length === 0) {
     throw new Error(`Argument ${argIndex} missing`);
   }
-  // Add quotes around input for strings and ENS domains, out of convenience
-  if (
-    (argType.baseType === "string" ||
-      (argType.baseType === "address" && arg.endsWith(".eth"))) &&
-    arg[0] !== '"'
-  ) {
-    finalArg = `"${finalArg}"`;
-  }
+  let finalArg = prepareArgument(arg, argType);
   const parsed = parse(finalArg);
   if (parsed.ast) {
     validateArgument(parsed.ast.value, argType);
@@ -166,23 +175,10 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       <span className="text-md font-medium">{func.name}</span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         {func.inputs && (
-          <ol className="list-inside">
-            {func.inputs.map((input, index) => (
-              <li className="pl-2" key={index}>
-                <ParamDeclaration input={input} index={index} />
-                <input
-                  type="text"
-                  className="mt-1 w-full rounded border px-2 py-1 text-sm text-gray-600"
-                  placeholder={input.format("full")}
-                  onChange={(event) => {
-                    let newInputs = [...inputs];
-                    newInputs[index] = event.target.value;
-                    setInputs(newInputs);
-                  }}
-                />
-              </li>
-            ))}
-          </ol>
+          <FunctionParamsInput
+            params={func.inputs}
+            inputCallback={(values: string[]) => setInputs(values)}
+          />
         )}
         <button
           className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
