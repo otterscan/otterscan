@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  EnsPlugin,
   JsonRpcProvider,
   JsonRpcApiProvider,
   Network,
@@ -35,7 +34,6 @@ export const useProvider = (
       console.log("Skipping node probe");
       setConnStatus(ConnectionStatus.CONNECTED);
       const network = Network.from(experimentalFixedChainId);
-      network.attachPlugin(new EnsPlugin(null, experimentalFixedChainId));
       setProvider(
         new JsonRpcProvider(erigonURL, network, { staticNetwork: network })
       );
