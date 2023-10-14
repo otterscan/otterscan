@@ -10,7 +10,7 @@ import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
 import StandardTHead from "../../components/StandardTHead";
 import { usePageTitle } from "../../useTitle";
-import BlockProducedItem, { BlockProducedItemProps } from "./BlockProducedItem";
+import BlockRewardedItem, { BlockRewardedItemProps } from "./BlockRewardedItem";
 
 const searchHeader = (
   <StandardTHead>
@@ -19,7 +19,7 @@ const searchHeader = (
   </StandardTHead>
 );
 
-const BlocksProduced: FC<AddressAwareComponentProps> = ({ address }) => {
+const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
@@ -36,26 +36,26 @@ const BlocksProduced: FC<AddressAwareComponentProps> = ({ address }) => {
   const items = useMemo(
     () =>
       results?.results.map(
-        (blockProduced): BlockProducedItemProps & { hash: string } => ({
+        (BlockRewarded): BlockRewardedItemProps & { hash: string } => ({
           address,
-          blockNumber: blockProduced.blockNumber,
+          blockNumber: BlockRewarded.blockNumber,
           timestamp:
-            results.blocksSummary.get(blockProduced.blockNumber)?.timestamp ??
+            results.blocksSummary.get(BlockRewarded.blockNumber)?.timestamp ??
             0, // TODO: fix get
-          hash: blockProduced.blockNumber.toString(),
+          hash: BlockRewarded.blockNumber.toString(),
         })
       ),
     [results]
   );
 
-  usePageTitle(`Blocks Produced | ${address}`);
+  usePageTitle(`Blocks Rewarded | ${address}`);
 
   return (
     <GenericTransactionSearchResult
       pageNumber={pageNumber}
       total={total}
       items={items}
-      Item={(i) => <BlockProducedItem {...i} />}
+      Item={(i) => <BlockRewardedItem {...i} />}
       header={searchHeader}
       typeName="block"
       columns={2}
@@ -63,4 +63,4 @@ const BlocksProduced: FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-export default BlocksProduced;
+export default BlocksRewarded;

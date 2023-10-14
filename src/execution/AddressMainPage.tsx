@@ -19,7 +19,7 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
 import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksProduced from "./address/BlocksProduced";
+import BlocksRewarded from "./address/BlocksRewarded";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
@@ -104,8 +104,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     <NavTab href={`/address/${addressOrName}/withdrawals`}>
                       Withdrawals
                     </NavTab>
-                    <NavTab href={`/address/${addressOrName}/blocksProduced`}>
-                      Blocks Produced
+                    <NavTab href={`/address/${addressOrName}/blocksRewarded`}>
+                      Blocks Rewarded
                     </NavTab>
                   </>
                 )}
@@ -183,9 +183,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                         }
                       />
                       <Route
-                        path="blocksProduced"
+                        path="blocksRewarded"
                         element={
-                          <BlocksProduced address={checksummedAddress} />
+                          <BlocksRewarded address={checksummedAddress} />
                         }
                       />
                     </>

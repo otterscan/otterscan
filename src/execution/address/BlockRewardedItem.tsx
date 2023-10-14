@@ -5,12 +5,12 @@ import { AddressAwareComponentProps } from "../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import { commify } from "../../utils/utils";
 
-export type BlockProducedItemProps = AddressAwareComponentProps & {
+export type BlockRewardedItemProps = AddressAwareComponentProps & {
   blockNumber: number;
   timestamp: number;
 };
 
-const BlockProducedItem: FC<BlockProducedItemProps> = ({
+const BlockRewardedItem: FC<BlockRewardedItemProps> = ({
   address,
   blockNumber,
   timestamp,
@@ -29,4 +29,4 @@ const BlockProducedItem: FC<BlockProducedItemProps> = ({
   );
 };
 
-export default memo(BlockProducedItem);
+export default memo(BlockRewardedItem);
