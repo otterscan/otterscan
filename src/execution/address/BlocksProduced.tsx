@@ -10,29 +10,23 @@ import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
 import StandardTHead from "../../components/StandardTHead";
 import { usePageTitle } from "../../useTitle";
-import WithdrawalItem, { WithdrawalItemProps } from "./WithdrawalItem";
+import BlockProducedItem, { BlockProducedItemProps } from "./BlockProducedItem";
 
-const withdrawalSearchHeader = (
+const searchHeader = (
   <StandardTHead>
-    <th className="w-28">Index</th>
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
-    <th className="w-32">Validator</th>
-    <th className="w-52">To</th>
-    <th className="w-44">Value</th>
   </StandardTHead>
 );
 
-const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
+const BlocksProduced: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "Withdrawals", address);
+  const total = useGenericTransactionCount(provider, "FeeRecipient", address);
   const results = useGenericTransactionList(
     provider,
-    "Withdrawals",
+    "FeeRecipient",
     address,
     pageNumber,
     PAGE_SIZE,
@@ -42,33 +36,31 @@ const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
   const items = useMemo(
     () =>
       results?.results.map(
-        (withdrawal): WithdrawalItemProps & { hash: string } => ({
+        (blockProduced): BlockProducedItemProps & { hash: string } => ({
           address,
-          index: withdrawal.index,
-          blockNumber: withdrawal.blockNumber,
+          blockNumber: blockProduced.blockNumber,
           timestamp:
-            results.blocksSummary.get(withdrawal.blockNumber)?.timestamp ?? 0, // TODO: fix get
-          validatorIndex: withdrawal.validatorIndex,
-          amount: withdrawal.amount,
-          hash: withdrawal.index.toString(),
+            results.blocksSummary.get(blockProduced.blockNumber)?.timestamp ??
+            0, // TODO: fix get
+          hash: blockProduced.blockNumber.toString(),
         })
       ),
     [results]
   );
 
-  usePageTitle(`Withdrawals | ${address}`);
+  usePageTitle(`Blocks Produced | ${address}`);
 
   return (
     <GenericTransactionSearchResult
       pageNumber={pageNumber}
       total={total}
       items={items}
-      Item={(i) => <WithdrawalItem {...i} />}
-      header={withdrawalSearchHeader}
-      typeName="withdrawal"
-      columns={6}
+      Item={(i) => <BlockProducedItem {...i} />}
+      header={searchHeader}
+      typeName="block"
+      columns={2}
     />
   );
 };
 
-export default AddressWithdrawalsResults;
+export default BlocksProduced;

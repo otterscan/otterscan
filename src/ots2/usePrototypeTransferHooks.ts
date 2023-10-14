@@ -22,7 +22,11 @@ import { formatter } from "../utils/formatter";
  * Those are NOT arbitrary strings, they are used to compose RPC method
  * names.
  */
-export type TransactionSearchType = "ERC20" | "ERC721" | "Withdrawals";
+export type TransactionSearchType =
+  | "ERC20Transfer"
+  | "ERC721Transfer"
+  | "Withdrawals"
+  | "FeeRecipient";
 
 export type TransactionListResults<T> = {
   blocksSummary: Map<number, BlockSummary>;
@@ -45,17 +49,23 @@ export type WithdrawalMatch = {
   amount: bigint;
 };
 
-type returnType<T extends TransactionSearchType> = T extends "Withdrawals"
-  ? WithdrawalMatch
-  : TransactionMatchWithData;
+export type FeeRecipientMatch = {
+  blockNumber: number;
+};
+
+type SearchResultsType<T extends TransactionSearchType> =
+  T extends "Withdrawals"
+    ? WithdrawalMatch
+    : T extends "FeeRecipient"
+    ? FeeRecipientMatch
+    : TransactionMatchWithData;
 
 export const useGenericTransactionCount = (
   provider: JsonRpcApiProvider | undefined,
-  t: TransactionSearchType,
+  typeName: TransactionSearchType,
   address: ChecksummedAddress
 ): number | undefined => {
-  const transfer = t !== "Withdrawals" ? "Transfer" : "";
-  const rpcMethod = `ots2_get${t}${transfer}Count`;
+  const rpcMethod = `ots2_get${typeName}Count`;
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
   if (error) {
@@ -67,15 +77,19 @@ export const useGenericTransactionCount = (
 function decodeResults<T extends TransactionSearchType>(
   item: any,
   provider: JsonRpcApiProvider,
-  t: T
-): returnType<T> {
-  if (t === "Withdrawals") {
+  typeName: T
+): SearchResultsType<T> {
+  if (typeName === "Withdrawals") {
     return {
       index: formatter.bigInt(item.index),
       blockNumber: formatter.number(item.blockNumber),
       validatorIndex: formatter.number(item.validatorIndex),
       amount: formatter.bigInt(item.amount),
-    } as returnType<T>;
+    } as SearchResultsType<T>;
+  } else if (typeName === "FeeRecipient") {
+    return {
+      blockNumber: formatter.number(item.blockNumber),
+    } as SearchResultsType<T>;
   } else {
     return {
       hash: item.hash,
@@ -88,15 +102,15 @@ function decodeResults<T extends TransactionSearchType>(
         formatter.transactionReceiptParams(item.receipt),
         provider as JsonRpcApiProvider
       ),
-    } as returnType<T>;
+    } as SearchResultsType<T>;
   }
 }
 
 const resultFetcher = <T extends TransactionSearchType>(
   provider: JsonRpcApiProvider | undefined,
-  t: T
+  typeName: T
 ): Fetcher<
-  TransactionListResults<returnType<T>> | undefined,
+  TransactionListResults<SearchResultsType<T>> | undefined,
   [string, ...any]
 > => {
   const fetcher = providerFetcher(provider);
@@ -108,7 +122,7 @@ const resultFetcher = <T extends TransactionSearchType>(
     }
 
     const converted = (res.results as any[]).map(
-      (m): returnType<T> => decodeResults<T>(m, provider, t)
+      (m): SearchResultsType<T> => decodeResults<T>(m, provider, typeName)
     );
     const blockMap = new Map<number, BlockSummary>();
     for (const [k, v] of Object.entries(res.blocksSummary as any)) {
@@ -124,16 +138,15 @@ const resultFetcher = <T extends TransactionSearchType>(
 
 export const useGenericTransactionList = <T extends TransactionSearchType>(
   provider: JsonRpcApiProvider | undefined,
-  t: T,
+  typeName: T,
   address: ChecksummedAddress,
   pageNumber: number,
   pageSize: number,
   total: number | undefined
-): TransactionListResults<returnType<T>> | undefined => {
+): TransactionListResults<SearchResultsType<T>> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const transfer = t !== "Withdrawals" ? "Transfer" : "";
-  const rpcMethod = `ots2_get${t}${transfer}List`;
-  const fetcher = resultFetcher<T>(provider, t);
+  const rpcMethod = `ots2_get${typeName}List`;
+  const fetcher = resultFetcher<T>(provider, typeName);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
     fetcher
