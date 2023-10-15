@@ -12,6 +12,7 @@ type RewardSplitProps = {
   txData: TransactionData;
 };
 
+// Only can be shown when gasPrice is defined
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
@@ -19,7 +20,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const paidFees = txData.gasPrice * txData.confirmedData!.gasUsed;
+  const paidFees = txData.gasPrice! * txData.confirmedData!.gasUsed;
   const burntFees = block
     ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
     : 0n;

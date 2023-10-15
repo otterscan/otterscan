@@ -326,7 +326,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           </InfoRow>
         </>
       )}
-      {txData.gasPrice !== null && (
+      {txData.gasPrice !== undefined && (
         <InfoRow title="Gas Price">
           <div className="flex items-baseline space-x-1">
             <span>
