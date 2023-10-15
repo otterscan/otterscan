@@ -1,9 +1,7 @@
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { validatorURL } from "../../url";
-import { commify } from "../../utils/utils";
+import ValidatorTag from "./ValidatorTag";
 
 type ValidatorLinkProps = {
   validatorIndex: number;
@@ -11,8 +9,6 @@ type ValidatorLinkProps = {
 };
 
 const ValidatorLink: FC<ValidatorLinkProps> = ({ validatorIndex, slashed }) => {
-  let text = commify(validatorIndex);
-
   return (
     <NavLink
       className={`flex items-baseline space-x-1 font-blocknum ${
@@ -22,20 +18,7 @@ const ValidatorLink: FC<ValidatorLinkProps> = ({ validatorIndex, slashed }) => {
       }`}
       to={validatorURL(validatorIndex)}
     >
-      {slashed ? (
-        <span className="text-red-600 hover:text-red-800">
-          <FontAwesomeIcon
-            className="self-center"
-            icon={faUserSlash}
-            size="1x"
-          />
-        </span>
-      ) : (
-        <span className="text-cyan-600">
-          <FontAwesomeIcon className="self-center" icon={faUser} size="1x" />
-        </span>
-      )}
-      <span>{text}</span>
+      <ValidatorTag validatorIndex={validatorIndex} slashed={slashed} isLink />
     </NavLink>
   );
 };
