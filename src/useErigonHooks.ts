@@ -145,12 +145,12 @@ const blockTransactionsFetcher: Fetcher<
 
 export const useBlockTransactions = (
   provider: JsonRpcApiProvider | undefined,
-  blockNumber: number,
+  blockNumber: number | undefined,
   pageNumber: number,
   pageSize: number
 ): { data: BlockTransactionsPage | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
-    provider !== undefined
+    provider !== undefined && blockNumber !== undefined
       ? [provider, blockNumber, pageNumber, pageSize]
       : null,
     blockTransactionsFetcher,
