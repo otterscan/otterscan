@@ -22,7 +22,7 @@ export const RecentMainnetValidatorIndex: Story = {
 
 export const DisabledValidatorLink: Story = {
   args: {
-    validatorIndex: 560_000,
+    ...RecentMainnetValidatorIndex.args,
     disabled: true,
   },
 };
