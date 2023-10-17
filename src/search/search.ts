@@ -321,9 +321,15 @@ export const useGenericSearch = (): [
   };
 
   const searchRef = useRef<HTMLInputElement>(null);
-  useKeyboardShortcut(["/"], () => {
-    searchRef.current?.focus();
-  });
+  useKeyboardShortcut(
+    ["/"],
+    () => {
+      searchRef.current?.focus();
+    },
+    {
+      overrideSystem: true,
+    }
+  );
 
   return [searchRef, handleChange, handleSubmit];
 };
