@@ -20,6 +20,13 @@ export const RecentMainnetValidatorIndex: Story = {
   },
 };
 
+export const DisabledValidatorLink: Story = {
+  args: {
+    ...RecentMainnetValidatorIndex.args,
+    disabled: true,
+  },
+};
+
 export const SlashedValidator: Story = {
   args: {
     ...RecentMainnetValidatorIndex.args,
