@@ -8,7 +8,6 @@ import { AddressAwareComponentProps } from "../types";
 import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TransactionAddress from "../components/TransactionAddress";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import ValidatorTag from "../../consensus/components/ValidatorTag";
 import ValidatorLink from "../../consensus/components/ValidatorLink";
 import { commify } from "../../utils/utils";
 import { RuntimeContext } from "../../useRuntime";
@@ -44,11 +43,10 @@ const WithdrawalItem: FC<WithdrawalItemProps> = ({
         <td>
           <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
-              {hasConsensusClient ? (
-                <ValidatorLink validatorIndex={validatorIndex} />
-              ) : (
-                <ValidatorTag validatorIndex={validatorIndex} />
-              )}
+              <ValidatorLink
+                validatorIndex={validatorIndex}
+                disabled={!hasConsensusClient}
+              />
             </span>
             <span>
               <TransactionDirection
