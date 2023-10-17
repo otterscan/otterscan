@@ -41,20 +41,19 @@ const ValidatorLink: FC<ValidatorLinkProps> = ({
         {labelElement}
       </span>
     );
-  } else {
-    return (
-      <NavLink
-        className={`flex items-baseline space-x-1 font-blocknum ${
-          slashed
-            ? "text-red-600 line-through hover:text-red-800"
-            : "text-link-blue hover:text-link-blue-hover"
-        }`}
-        to={validatorURL(validatorIndex)}
-      >
-        {labelElement}
-      </NavLink>
-    );
   }
+  return (
+    <NavLink
+      className={`flex items-baseline space-x-1 font-blocknum ${
+        slashed
+          ? "text-red-600 line-through hover:text-red-800"
+          : "text-link-blue hover:text-link-blue-hover"
+      }`}
+      to={validatorURL(validatorIndex)}
+    >
+      {labelElement}
+    </NavLink>
+  );
 };
 
 export default memo(ValidatorLink);
