@@ -53,6 +53,8 @@ import {
 } from "../../useErigonHooks";
 import { useChainInfo } from "../../useChainInfo";
 import { commify } from "../../utils/utils";
+import NavBlock from "../../components/NavBlock";
+import { blockTxURL } from "../../url";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -226,6 +228,16 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                       (block.transactionCount - 1)
                     }
                   />
+                  <div>
+                    <NavBlock
+                      entityNum={txData.confirmedData.transactionIndex}
+                      latestEntityNum={block.transactionCount - 1}
+                      urlBuilder={(txIndex: number) =>
+                        blockTxURL(txData.confirmedData!.blockNumber, txIndex)
+                      }
+                      showFirstLink
+                    />
+                  </div>
                 </div>
               )}
             </div>

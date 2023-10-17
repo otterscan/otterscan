@@ -11,6 +11,9 @@ import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
 
 const Block = lazy(() => import("./execution/Block"));
 const BlockTransactions = lazy(() => import("./execution/BlockTransactions"));
+const BlockTransactionByIndex = lazy(
+  () => import("./execution/block/BlockTransactionByIndex")
+);
 const Address = lazy(() => import("./execution/Address"));
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
@@ -59,6 +62,10 @@ const App = () => {
                     <Route
                       path="block/:blockNumber/txs"
                       element={<BlockTransactions />}
+                    />
+                    <Route
+                      path="block/:blockNumberOrHash/tx/:txIndex"
+                      element={<BlockTransactionByIndex />}
                     />
                     <Route path="tx/:txhash/*" element={<Transaction />} />
                     <Route

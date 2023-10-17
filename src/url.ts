@@ -34,6 +34,9 @@ export const blockURL = (blockNum: BlockTag) => `/block/${blockNum}`;
 
 export const blockTxsURL = (blockNum: BlockTag) => `/block/${blockNum}/txs`;
 
+export const blockTxURL = (blockNum: BlockTag, txIndex: number) =>
+  `/block/${blockNum}/tx/${txIndex}`;
+
 export const transactionURL = (txHash: string) => `/tx/${txHash}`;
 
 export const addressByNonceURL = (address: ChecksummedAddress, nonce: bigint) =>
