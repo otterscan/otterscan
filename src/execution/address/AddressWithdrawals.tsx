@@ -36,7 +36,7 @@ const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
     address,
     pageNumber,
     PAGE_SIZE,
-    total
+    total,
   );
 
   const items = useMemo(
@@ -51,9 +51,9 @@ const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
           validatorIndex: withdrawal.validatorIndex,
           amount: withdrawal.amount,
           hash: withdrawal.index.toString(),
-        })
+        }),
       ),
-    [results]
+    [results],
   );
 
   usePageTitle(`Withdrawals | ${address}`);

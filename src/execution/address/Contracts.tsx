@@ -96,7 +96,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                       <ExternalLink
                         href={openInRemixURL(
                           checksummedAddress,
-                          provider._network.chainId
+                          provider._network.chainId,
                         )}
                       >
                         Open in Remix

@@ -7,7 +7,7 @@ import {
 
 export type ContentSelector = (
   selection: OptionalSelection,
-  content: string
+  content: string,
 ) => boolean;
 
 export const genericSelector =
@@ -71,7 +71,7 @@ const HighlighterBox: FC<PropsWithChildren<HighlighterBoxProps>> = memo(
     >
       {children}
     </div>
-  )
+  ),
 );
 
 export default SelectionHighlighter;

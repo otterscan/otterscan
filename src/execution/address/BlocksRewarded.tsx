@@ -30,7 +30,7 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
     address,
     pageNumber,
     PAGE_SIZE,
-    total
+    total,
   );
 
   const items = useMemo(
@@ -43,9 +43,9 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
             results.blocksSummary.get(BlockRewarded.blockNumber)?.timestamp ??
             0, // TODO: fix get
           hash: BlockRewarded.blockNumber.toString(),
-        })
+        }),
       ),
-    [results]
+    [results],
   );
 
   usePageTitle(`Blocks Rewarded | ${address}`);

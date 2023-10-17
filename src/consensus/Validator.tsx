@@ -51,7 +51,7 @@ const Validator: FC = () => {
 };
 
 const parseValidatorIndex = (
-  validatorIndex: string
+  validatorIndex: string,
 ): number | string | undefined => {
   // Validator by index
   if (validatorIndex.match(/^\d+$/)) {

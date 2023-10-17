@@ -26,7 +26,7 @@ function validateArgument(arg: any, argType: ParamType) {
     typeof arg !== "string"
   ) {
     throw new Error(
-      `Invalid ${argType.baseType} "${arg}": got type ${typeof arg}`
+      `Invalid ${argType.baseType} "${arg}": got type ${typeof arg}`,
     );
   } else if (argType.baseType === "bool" && typeof arg !== "boolean") {
     throw new Error(`Invalid bool "${arg}": got type ${typeof arg}`);
@@ -43,11 +43,11 @@ function validateArgument(arg: any, argType: ParamType) {
       throw new Error(
         `Expected tuple length ${argType.components!.length}, got ${
           arg.length
-        }: [${arg}]`
+        }: [${arg}]`,
       );
     }
     arg.map((childArg, i) =>
-      validateArgument(childArg, argType.components![i])
+      validateArgument(childArg, argType.components![i]),
     );
   }
 }
@@ -55,7 +55,7 @@ function validateArgument(arg: any, argType: ParamType) {
 async function transformArgument(
   arg: any,
   argType: ParamType,
-  provider: JsonRpcApiProvider
+  provider: JsonRpcApiProvider,
 ): Promise<any> {
   if (argType.baseType === "address" && (arg as string).endsWith(".eth")) {
     // Resolve ENS domain
@@ -63,14 +63,14 @@ async function transformArgument(
   } else if (argType.baseType === "array") {
     return Promise.all(
       (arg as any[]).map((childArg) =>
-        transformArgument(childArg, argType.arrayChildren!, provider)
-      )
+        transformArgument(childArg, argType.arrayChildren!, provider),
+      ),
     );
   } else if (argType.baseType === "tuple") {
     return Promise.all(
       (arg as any[]).map((childArg, i) =>
-        transformArgument(childArg, argType.components![i], provider)
-      )
+        transformArgument(childArg, argType.components![i], provider),
+      ),
     );
   }
   return arg;
@@ -80,7 +80,7 @@ async function parseArgument(
   arg: string,
   argType: ParamType,
   argIndex: number,
-  provider: JsonRpcApiProvider
+  provider: JsonRpcApiProvider,
 ): Promise<string | bigint | boolean | any[]> {
   let finalArg = arg;
   if (arg.length === 0) {
@@ -100,7 +100,7 @@ async function parseArgument(
     const transformedArg = await transformArgument(
       parsed.ast.value,
       argType,
-      provider
+      provider,
     );
     return transformedArg;
   } else {
@@ -108,9 +108,11 @@ async function parseArgument(
       parsed.errs
         .map(
           (err) =>
-            `${err.toString()}\n${finalArg}\n${"-".repeat(err.pos.overallPos)}^`
+            `${err.toString()}\n${finalArg}\n${"-".repeat(
+              err.pos.overallPos,
+            )}^`,
         )
-        .join("\n")
+        .join("\n"),
     );
   }
 }
@@ -119,7 +121,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
   let [result, setResult] = useState<Result | null | undefined>(null);
   let [error, setError] = useState<string | null>(null);
   let [inputs, setInputs] = useState<string[]>(
-    new Array(func.inputs.length).fill("")
+    new Array(func.inputs.length).fill(""),
   );
   const { provider } = useContext(RuntimeContext);
 
@@ -133,9 +135,9 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           func.name,
           await Promise.all(
             inputs.map((input: string, i: number) =>
-              parseArgument(input, func.inputs[i], i, provider)
-            )
-          )
+              parseArgument(input, func.inputs[i], i, provider),
+            ),
+          ),
         );
         let resultData = await provider.call({
           to: address,

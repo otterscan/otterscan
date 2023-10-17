@@ -87,7 +87,7 @@ export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
   address,
   tokenMeta,
   linkable,
-  dontOverrideColors
+  dontOverrideColors,
 ) => (
   <TokenName
     chainId={chainId}

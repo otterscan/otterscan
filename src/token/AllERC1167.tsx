@@ -11,7 +11,7 @@ const AllERC1167: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
     "ERC1167",
     erc1167MatchParser,
-    mapper
+    mapper,
   );
 
   usePageTitle("ERC1167 Contracts");

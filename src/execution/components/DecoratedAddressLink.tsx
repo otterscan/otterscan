@@ -167,7 +167,7 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
     address,
     resolvedName,
     linkable,
-    !!dontOverrideColors
+    !!dontOverrideColors,
   );
 };
 

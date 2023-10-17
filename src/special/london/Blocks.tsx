@@ -41,7 +41,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Filler,
-  Tooltip
+  Tooltip,
 );
 
 const MAX_BLOCK_HISTORY = 20;
@@ -84,7 +84,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         // Leave the last block because of transition animation
         const newBlocks = [extBlock, ..._blocks].slice(
           0,
-          MAX_BLOCK_HISTORY + 1
+          MAX_BLOCK_HISTORY + 1,
         );
 
         // Little hack to fix out of order block notifications
@@ -92,7 +92,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return newBlocks;
       });
     },
-    [provider, targetBlockNumber]
+    [provider, targetBlockNumber],
   );
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   const data = useMemo(
     () => (toggleChart ? gasChartData(blocks) : burntFeesChartData(blocks)),
-    [toggleChart, blocks]
+    [toggleChart, blocks],
   );
   const chartOptions = toggleChart ? gasChartOptions : burntFeesChartOptions;
 
@@ -122,7 +122,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
       addPreviousBlocks();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   return (
@@ -202,7 +202,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
                       .subUnsafe(
                         FixedNumber.fromValue(all[i + 1].baseFeePerGas!)
                           .divUnsafe(FixedNumber.fromValue(1e9))
-                          .round(0)
+                          .round(0),
                       )
                       .toUnsafeFloat()
                   : 0

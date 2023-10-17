@@ -11,7 +11,7 @@ const AllERC721: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
     "ERC721",
     erc721MatchParser,
-    mapper
+    mapper,
   );
 
   usePageTitle("ERC721 Tokens");

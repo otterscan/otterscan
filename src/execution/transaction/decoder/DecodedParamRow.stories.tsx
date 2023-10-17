@@ -119,7 +119,7 @@ export const TupleWithHelp: Story = {
 export const ArrayOfTuple: Story = {
   args: {
     paramType: ParamType.from(
-      "tuple(uint8, bool, uint256)[] arrTupleParamName"
+      "tuple(uint8, bool, uint256)[] arrTupleParamName",
     ),
     r: [
       [1, true, 42],

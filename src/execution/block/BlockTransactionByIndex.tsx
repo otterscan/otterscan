@@ -21,16 +21,16 @@ const BlockTransactionByIndex: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { data: block, isLoading: isLoadingBlock } = useBlockData(
     provider,
-    blockNumberOrHash
+    blockNumberOrHash,
   );
   let { data: blockTransactions } = useBlockTransactions(
     provider,
     block?.number,
     Math.floor(
       ((block ? block.transactionCount : txIndexNum) - 1 - txIndexNum) /
-        PAGE_SIZE
+        PAGE_SIZE,
     ),
-    PAGE_SIZE
+    PAGE_SIZE,
   );
   const invTxIndex = block ? block.transactionCount - 1 - txIndexNum : 0;
   useEffect(() => {

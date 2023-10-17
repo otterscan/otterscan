@@ -30,7 +30,7 @@ const BlockTransactions: React.FC = () => {
     provider,
     blockNumber,
     pageNumber - 1,
-    PAGE_SIZE
+    PAGE_SIZE,
   );
   const txs = data?.txs;
   const totalTxs = data?.total;
@@ -38,7 +38,7 @@ const BlockTransactions: React.FC = () => {
   useBlockTransactionsPageTitle(
     blockNumber,
     pageNumber,
-    totalTxs === undefined ? undefined : Math.ceil(totalTxs / PAGE_SIZE)
+    totalTxs === undefined ? undefined : Math.ceil(totalTxs / PAGE_SIZE),
   );
 
   return (

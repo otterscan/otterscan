@@ -8,7 +8,7 @@ import { ChainInfo, defaultChainInfo } from "./useConfig";
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
 const chainInfoFetcher: (
-  runtime: OtterscanRuntime | undefined
+  runtime: OtterscanRuntime | undefined,
 ) => Fetcher<ChainInfo, [string, bigint]> =
   (runtime) =>
   async ([assetsURLPrefix, chainId]) => {
@@ -28,7 +28,7 @@ const chainInfoFetcher: (
   };
 
 export const useChainInfoFromMetadataFile = (
-  runtime: OtterscanRuntime | undefined
+  runtime: OtterscanRuntime | undefined,
 ): ChainInfo | undefined => {
   const hardcodedChainInfo = runtime?.config?.chainInfo !== undefined;
   const assetsURLPrefix = runtime?.config?.assetsURLPrefix;
@@ -41,7 +41,7 @@ export const useChainInfoFromMetadataFile = (
       : [assetsURLPrefix, chainId],
     hardcodedChainInfo
       ? () => runtime?.config?.chainInfo
-      : chainInfoFetcher(runtime)
+      : chainInfoFetcher(runtime),
   );
   if (error) {
     return defaultChainInfo;

@@ -44,7 +44,7 @@ export const useRuntime = (): OtterscanRuntime => {
 
   const [connStatus, provider] = useProvider(
     effectiveConfig?.erigonURL,
-    effectiveConfig?.experimentalFixedChainId
+    effectiveConfig?.experimentalFixedChainId,
   );
 
   const runtime = useMemo((): OtterscanRuntime => {

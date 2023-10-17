@@ -11,7 +11,7 @@ export type ResultPage = {
 export const pageToReverseIdx = (
   pageNumber: number,
   pageSize: number,
-  totalElements: number | undefined
+  totalElements: number | undefined,
 ): ResultPage | undefined => {
   if (totalElements === undefined) {
     return undefined;

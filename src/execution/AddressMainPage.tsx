@@ -51,27 +51,27 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
         `/address/${address}${
           direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
-        { replace: true }
+        { replace: true },
       );
     },
-    [navigate, direction, searchParams]
+    [navigate, direction, searchParams],
   );
   const [checksummedAddress, isENS, error] = useAddressOrENS(
     addressOrName,
-    urlFixer
+    urlFixer,
   );
 
   const { config, provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?._network.chainId
+    provider?._network.chainId,
   );
   const attr = useAddressAttributes(provider, checksummedAddress);
   const proxyAddress =
     useERC1167Impl(
       provider,
-      attr && attr.erc1167 ? checksummedAddress : undefined
+      attr && attr.erc1167 ? checksummedAddress : undefined,
     ) ?? undefined;
   const checksummedProxyAddress = proxyAddress
     ? getAddress(proxyAddress)
@@ -79,7 +79,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
   const proxyMatch = useSourcifyMetadata(
     proxyHasCode ? checksummedProxyAddress : undefined,
-    provider?._network.chainId
+    provider?._network.chainId,
   );
 
   if (isENS || checksummedAddress === undefined) {

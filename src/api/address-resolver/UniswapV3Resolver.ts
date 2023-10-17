@@ -20,12 +20,12 @@ const UNISWAP_V3_PAIR_ABI = [
 
 const UNISWAP_V3_FACTORY_PROTOTYPE = new Contract(
   UNISWAP_V3_FACTORY,
-  UNISWAP_V3_FACTORY_ABI
+  UNISWAP_V3_FACTORY_ABI,
 );
 
 const UNISWAP_V3_PAIR_PROTOTYPE = new Contract(
   ZeroAddress,
-  UNISWAP_V3_PAIR_ABI
+  UNISWAP_V3_PAIR_ABI,
 );
 
 export type UniswapV3TokenMeta = {
@@ -44,15 +44,15 @@ const ercResolver = new ERCTokenResolver();
 export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
   async resolveAddress(
     provider: AbstractProvider,
-    address: string
+    address: string,
   ): Promise<UniswapV3PairMeta | undefined> {
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const poolContract = UNISWAP_V3_PAIR_PROTOTYPE.connect(provider).attach(
-      address
+      address,
     ) as Contract;
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const factoryContract = UNISWAP_V3_FACTORY_PROTOTYPE.connect(
-      provider
+      provider,
     ) as Contract;
 
     try {
@@ -74,7 +74,7 @@ export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
       const expectedPoolAddress = await factoryContract.getPool(
         token0,
         token1,
-        fee
+        fee,
       );
       if (expectedPoolAddress !== address) {
         return undefined;

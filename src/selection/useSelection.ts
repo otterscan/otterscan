@@ -17,13 +17,13 @@ export type OptionalSelection = Selection | null;
 
 export const useSelection = (): [
   OptionalSelection,
-  Dispatch<SetStateAction<OptionalSelection>>
+  Dispatch<SetStateAction<OptionalSelection>>,
 ] => {
   return useState<OptionalSelection>(null);
 };
 
 export const SelectionContext = createContext<ReturnType<typeof useSelection>>(
-  null!
+  null!,
 );
 
 export const useSelectionContext = () => {

@@ -14,7 +14,7 @@ const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 const UNISWAP_V1_FACTORY_PROTOTYPE = new Contract(
   UNISWAP_V1_FACTORY,
-  UNISWAP_V1_FACTORY_ABI
+  UNISWAP_V1_FACTORY_ABI,
 );
 
 export type UniswapV1TokenMeta = {
@@ -31,11 +31,11 @@ const ercResolver = new ERCTokenResolver();
 export class UniswapV1Resolver implements IAddressResolver<UniswapV1PairMeta> {
   async resolveAddress(
     provider: AbstractProvider,
-    address: string
+    address: string,
   ): Promise<UniswapV1PairMeta | undefined> {
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const factoryContract = UNISWAP_V1_FACTORY_PROTOTYPE.connect(
-      provider
+      provider,
     ) as Contract;
 
     try {

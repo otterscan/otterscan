@@ -31,7 +31,7 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
         {slot.data.message.body.execution_payload && (
           <BlockLink
             blockTag={parseInt(
-              slot.data.message.body.execution_payload.block_number
+              slot.data.message.body.execution_payload.block_number,
             )}
           />
         )}

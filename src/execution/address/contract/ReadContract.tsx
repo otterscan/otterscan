@@ -30,7 +30,7 @@ const ReadContract: React.FC<ContractsProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
   const viewFunctions = match?.metadata.output.abi.filter((fn) =>
-    isReadFunction(fn)
+    isReadFunction(fn),
   );
 
   return (

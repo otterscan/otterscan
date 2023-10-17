@@ -40,7 +40,7 @@ const TransactionAddress: FC<TransactionAddressProps> = ({
       ? blockNumber === "latest"
         ? "latest"
         : blockNumber - 1
-      : undefined
+      : undefined,
   );
 
   return (

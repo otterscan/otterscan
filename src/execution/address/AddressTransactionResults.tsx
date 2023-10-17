@@ -48,7 +48,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
         provider,
         address,
         hash!,
-        next
+        next,
       );
       setController(_controller);
     };

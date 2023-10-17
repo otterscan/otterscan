@@ -31,7 +31,7 @@ export const usePageNumber = () => {
 
 const useContractSearch = <T extends ContractMatch>(
   t: ContractSearchType,
-  p: ContractResultParser<T>
+  p: ContractResultParser<T>,
 ) => {
   const { provider } = useContext(RuntimeContext);
 
@@ -43,7 +43,7 @@ const useContractSearch = <T extends ContractMatch>(
     pageNumber,
     PAGE_SIZE,
     total,
-    p
+    p,
   );
 
   return {
@@ -55,7 +55,7 @@ const useContractSearch = <T extends ContractMatch>(
 
 export type ResultMapper<T> = (
   m: any,
-  blocksSummary: ReadonlyMap<bigint, BlockSummary>
+  blocksSummary: ReadonlyMap<bigint, BlockSummary>,
 ) => T;
 
 /**
@@ -63,11 +63,11 @@ export type ResultMapper<T> = (
  */
 export const useContractSearchPage = <
   T extends ContractMatch,
-  U extends unknown
+  U extends unknown,
 >(
   t: ContractSearchType,
   p: ContractResultParser<T>,
-  mapper: ResultMapper<U>
+  mapper: ResultMapper<U>,
 ) => {
   const { pageNumber, results, total } = useContractSearch(t, p);
 

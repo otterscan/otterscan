@@ -11,7 +11,7 @@ const AllERC4626: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
     "ERC4626",
     erc4626MatchParser,
-    mapper
+    mapper,
   );
 
   usePageTitle("ERC4626 Tokens");

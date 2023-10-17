@@ -73,13 +73,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
   const fourBytesTxDesc = useTransactionDescription(
     fourBytesEntry,
     txData.data,
-    txData.value
+    txData.value,
   );
 
   const [sendsEthToMiner, internalOps] = useSendsToMiner(
     provider,
     txData.confirmedData ? txData.transactionHash : undefined,
-    block?.miner
+    block?.miner,
   );
 
   const tokenTransfers = useTokenTransfers(txData);
@@ -100,11 +100,11 @@ const Details: FC<DetailsProps> = ({ txData }) => {
 
   const [errorMsg, outputData, isCustomError] = useTransactionError(
     provider,
-    txData.transactionHash
+    txData.transactionHash,
   );
   const errorDescription = useError(
     metadata,
-    isCustomError ? outputData : undefined
+    isCustomError ? outputData : undefined,
   );
   const userError = errorDescription
     ? userDoc?.errors?.[errorDescription.signature]?.[0]
@@ -370,7 +370,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
             <PercentageBar
               perc={
                 Number(
-                  (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit
+                  (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit,
                 ) / 100
               }
             />

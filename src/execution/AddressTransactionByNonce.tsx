@@ -32,14 +32,14 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
         `/address/${address}${
           direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
-        { replace: true }
+        { replace: true },
       );
     },
-    [navigate, direction, searchParams]
+    [navigate, direction, searchParams],
   );
   const [checksummedAddress, , ensError] = useAddressOrENS(
     addressOrName,
-    urlFixer
+    urlFixer,
   );
 
   // Calculate txCount ONLY when asked for latest nonce
@@ -52,7 +52,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
 
     const readTxCount = async () => {
       const count = BigInt(
-        await provider.getTransactionCount(checksummedAddress)
+        await provider.getTransactionCount(checksummedAddress),
       );
       setTxCount(count);
     };
@@ -78,7 +78,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   const txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    nonce !== undefined && nonce === null ? undefined : nonce
+    nonce !== undefined && nonce === null ? undefined : nonce,
   );
 
   // Invalid ENS

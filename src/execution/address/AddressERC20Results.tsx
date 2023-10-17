@@ -22,7 +22,7 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
     address,
     pageNumber,
     PAGE_SIZE,
-    total
+    total,
   );
   const items = useMemo(
     () =>
@@ -38,9 +38,9 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
           from: m.receipt.from,
           to: m.receipt.to,
           value: m.transaction.value,
-        })
+        }),
       ),
-    [results]
+    [results],
   );
 
   usePageTitle("ERC20 Transfers");

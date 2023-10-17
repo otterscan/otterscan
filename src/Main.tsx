@@ -6,7 +6,7 @@ import { SourcifySource } from "./sourcify/useSourcify";
 
 const Main: React.FC = () => {
   const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
-    SourcifySource.IPFS_IPNS
+    SourcifySource.IPFS_IPNS,
   );
   const appConfig = useMemo((): AppConfig => {
     return {

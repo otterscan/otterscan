@@ -36,17 +36,17 @@ const InternalTransfer: FC<InternalTransferProps> = ({
 
   const blockETHUSDPrice: bigint | undefined = useETHUSDOracle(
     provider,
-    txData.confirmedData?.blockNumber
+    txData.confirmedData?.blockNumber,
   );
   const fromHasCode = useHasCode(
     provider,
     internalOp.from,
-    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
+    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined,
   );
   const toHasCode = useHasCode(
     provider,
     internalOp.to,
-    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined
+    txData.confirmedData ? txData.confirmedData.blockNumber - 1 : undefined,
   );
 
   return (

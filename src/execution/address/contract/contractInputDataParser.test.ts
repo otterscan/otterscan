@@ -9,7 +9,7 @@ describe("contract input data parser", () => {
   test("number types", () => {
     expect(parse("0").ast?.value).toEqual(0n);
     expect(parse("42978156640340513088189666230157").ast?.value).toEqual(
-      42978156640340513088189666230157n
+      42978156640340513088189666230157n,
     );
     expect(parse("[-343, -35]").ast?.value).toEqual([-343n, -35n]);
     expect(parse("-5234008651920315").ast?.value).toEqual(-5234008651920315n);
@@ -18,14 +18,14 @@ describe("contract input data parser", () => {
     expect(parse("3e18").ast?.value).toEqual(3000000000000000000n);
     expect(parse("0.3e1").ast?.value).toEqual(3n);
     expect(parse("0.012345678901234567899876543210e32").ast?.value).toEqual(
-      1234567890123456789987654321000n
+      1234567890123456789987654321000n,
     );
     expect(parse("-1e0").ast?.value).toEqual(-1n);
     expect(parse("-0.1e1").ast?.value).toEqual(-1n);
   });
   test("address types", () => {
     expect(
-      parse("0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326").ast?.value
+      parse("0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326").ast?.value,
     ).toEqual("0x1f9090aaE28b8a3dCeaDf281B0F12828e676c326");
   });
   test("hex types", () => {
@@ -49,8 +49,8 @@ describe("contract input data parser", () => {
   test("several nested arrays", () => {
     expect(
       parse(
-        '[[["USDC", 0.99e6], ["DAI", 1.011e18], ["USDT", 0.9947e6]],[1, 2, 3e0] ]'
-      ).ast?.value
+        '[[["USDC", 0.99e6], ["DAI", 1.011e18], ["USDT", 0.9947e6]],[1, 2, 3e0] ]',
+      ).ast?.value,
     ).toEqual([
       [
         ["USDC", 990000n],

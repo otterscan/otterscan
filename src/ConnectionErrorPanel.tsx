@@ -115,7 +115,7 @@ const Step: React.FC<PropsWithChildren<StepProps>> = React.memo(
       </div>
       {children && <div className="ml-7 mt-4 text-sm">{children}</div>}
     </>
-  )
+  ),
 );
 
 export default React.memo(ConnectionErrorPanel);

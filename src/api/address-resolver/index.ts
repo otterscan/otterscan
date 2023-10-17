@@ -44,7 +44,7 @@ const resolvers: Record<string, IAddressResolver<SelectedResolvedName<any>>> = {
 };
 
 export const getResolver = (
-  chainId: bigint
+  chainId: bigint,
 ): IAddressResolver<SelectedResolvedName<any>> => {
   const res = resolvers[chainId.toString()];
   if (res === undefined) {

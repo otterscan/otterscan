@@ -22,7 +22,7 @@ type FeedRegistryFetcherData = [bigint | undefined, number | undefined];
 
 const feedRegistryFetcherKey = (
   tokenAddress: ChecksummedAddress,
-  blockTag: BlockTag | undefined
+  blockTag: BlockTag | undefined,
 ): FeedRegistryFetcherKey | null => {
   if (blockTag === undefined) {
     return null;
@@ -32,12 +32,12 @@ const feedRegistryFetcherKey = (
 
 const FEED_REGISTRY_MAINNET_PROTOTYPE = new Contract(
   FEED_REGISTRY_MAINNET,
-  FeedRegistryInterface
+  FeedRegistryInterface,
 );
 
 const feedRegistryFetcher =
   (
-    provider: JsonRpcApiProvider | undefined
+    provider: JsonRpcApiProvider | undefined,
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
   async ([tokenAddress, blockTag]) => {
     if (provider === undefined) {
@@ -53,7 +53,7 @@ const feedRegistryFetcher =
     // Let SWR handle error
     // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(
-      provider
+      provider,
     ) as Contract;
     const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
       blockTag,
@@ -68,12 +68,12 @@ const feedRegistryFetcher =
 export const useTokenUSDOracle = (
   provider: JsonRpcApiProvider | undefined,
   blockTag: BlockTag | undefined,
-  tokenAddress: ChecksummedAddress
+  tokenAddress: ChecksummedAddress,
 ): [bigint | undefined, number | undefined] => {
   const fetcher = feedRegistryFetcher(provider);
   const { data, error } = useSWRImmutable(
     feedRegistryFetcherKey(tokenAddress, blockTag),
-    fetcher
+    fetcher,
   );
   if (error) {
     return [undefined, undefined];
@@ -92,7 +92,7 @@ const ETH_USD_FEED_PROTOTYPE = new Contract(ZeroAddress, AggregatorV3Interface);
 
 const ethUSDFetcher =
   (
-    provider: JsonRpcApiProvider | undefined
+    provider: JsonRpcApiProvider | undefined,
   ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
   async ([_, blockTag]) => {
     if (provider?._network.chainId !== 1n) {
@@ -101,7 +101,7 @@ const ethUSDFetcher =
 
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const c = ETH_USD_FEED_PROTOTYPE.connect(provider).attach(
-      "eth-usd.data.eth"
+      "eth-usd.data.eth",
     ) as Contract;
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
@@ -109,7 +109,7 @@ const ethUSDFetcher =
 
 export const useETHUSDOracle = (
   provider: JsonRpcApiProvider | undefined,
-  blockTag: BlockTag | undefined
+  blockTag: BlockTag | undefined,
 ): bigint | undefined => {
   const fetcher = ethUSDFetcher(provider);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
@@ -124,7 +124,7 @@ export const useETHUSDOracle = (
  */
 export const useFiatValue = (
   ethAmount: bigint,
-  blockTag: BlockTag | undefined
+  blockTag: BlockTag | undefined,
 ) => {
   const { provider } = useContext(RuntimeContext);
   const eth2USDValue = useETHUSDOracle(provider, blockTag);
@@ -138,7 +138,7 @@ export const useFiatValue = (
 
 export const formatFiatValue = (
   fiat: FixedNumber | undefined,
-  decimals = 2
+  decimals = 2,
 ): string | undefined => {
   if (!fiat) {
     return undefined;
@@ -157,7 +157,7 @@ export const formatFiatValue = (
 
 export const useETHUSDRawOracle = (
   provider: JsonRpcApiProvider | undefined,
-  blockTag: BlockTag | undefined
+  blockTag: BlockTag | undefined,
 ): any | undefined => {
   const fetcher = ethUSDFetcher(provider);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
@@ -176,12 +176,12 @@ const fastGasFetcherKey = (blockTag: BlockTag | undefined) => {
 
 const FAST_GAS_FEED_PROTOTYPE = new Contract(
   ZeroAddress,
-  AggregatorV3Interface
+  AggregatorV3Interface,
 );
 
 const fastGasFetcher =
   (
-    provider: JsonRpcApiProvider | undefined
+    provider: JsonRpcApiProvider | undefined,
   ): Fetcher<any | undefined, ["gasgwei", BlockTag | undefined]> =>
   async ([_, blockTag]) => {
     if (provider?._network.chainId !== 1n) {
@@ -189,7 +189,7 @@ const fastGasFetcher =
     }
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const c = FAST_GAS_FEED_PROTOTYPE.connect(provider).attach(
-      "fast-gas-gwei.data.eth"
+      "fast-gas-gwei.data.eth",
     ) as Contract;
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
@@ -197,7 +197,7 @@ const fastGasFetcher =
 
 export const useFastGasRawOracle = (
   provider: JsonRpcApiProvider | undefined,
-  blockTag: BlockTag | undefined
+  blockTag: BlockTag | undefined,
 ): any | undefined => {
   const fetcher = fastGasFetcher(provider);
   const { data, error } = useSWRImmutable(fastGasFetcherKey(blockTag), fetcher);

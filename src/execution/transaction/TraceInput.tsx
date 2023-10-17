@@ -31,7 +31,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const fourBytesTxDesc = useTransactionDescription(
     fourBytes,
     t.input,
-    t.value
+    t.value,
   );
 
   const [expanded, setExpanded] = useState<boolean>(false);

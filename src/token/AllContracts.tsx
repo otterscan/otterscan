@@ -11,7 +11,7 @@ const AllContracts: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
     "AllContracts",
     contractMatchParser,
-    mapper
+    mapper,
   );
 
   usePageTitle("All contracts");

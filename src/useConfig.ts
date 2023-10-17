@@ -121,7 +121,7 @@ export const DEFAULT_CONFIG_FILE = "/config.json";
  * env mechanism: https://vitejs.dev/guide/env-and-mode.html
  */
 export const useConfig = (
-  configURL: string = DEFAULT_CONFIG_FILE
+  configURL: string = DEFAULT_CONFIG_FILE,
 ): OtterscanConfig | undefined => {
   const { data } = useSWRImmutable(configURL, jsonFetcherWithErrorHandling);
   const config = useMemo(() => {
@@ -141,7 +141,7 @@ export const useConfig = (
         import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
       if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
         _config.experimentalFixedChainId = parseInt(
-          import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID
+          import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID,
         );
       }
     }

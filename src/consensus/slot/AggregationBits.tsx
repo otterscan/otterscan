@@ -30,7 +30,7 @@ const Bitmap: FC<BitmapProps> = ({ b }) => {
         <span key={i} className="text-red-500">
           0
         </span>
-      )
+      ),
     );
   }
   return <span>{elems}</span>;

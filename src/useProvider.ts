@@ -12,10 +12,10 @@ export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
 export const useProvider = (
   erigonURL?: string,
-  experimentalFixedChainId?: number
+  experimentalFixedChainId?: number,
 ): [ConnectionStatus, JsonRpcApiProvider | undefined] => {
   const [connStatus, setConnStatus] = useState<ConnectionStatus>(
-    ConnectionStatus.CONNECTING
+    ConnectionStatus.CONNECTING,
   );
 
   if (erigonURL !== undefined) {
@@ -35,7 +35,7 @@ export const useProvider = (
       setConnStatus(ConnectionStatus.CONNECTED);
       const network = Network.from(experimentalFixedChainId);
       setProvider(
-        new JsonRpcProvider(erigonURL, network, { staticNetwork: network })
+        new JsonRpcProvider(erigonURL, network, { staticNetwork: network }),
       );
       return;
     }

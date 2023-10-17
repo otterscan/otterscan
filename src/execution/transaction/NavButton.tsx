@@ -51,7 +51,7 @@ const Prefetcher: FC<PrefetcherProps> = ({ checksummedAddress, nonce }) => {
   const _txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    nonce
+    nonce,
   );
 
   return <></>;

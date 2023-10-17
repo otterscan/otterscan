@@ -50,7 +50,7 @@ const Header: FC = () => {
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
                 provider?._network.getPlugin(
-                  "org.ethers.plugins.network.Ens"
+                  "org.ethers.plugins.network.Ens",
                 ) !== null
                   ? " / ENS name"
                   : ""

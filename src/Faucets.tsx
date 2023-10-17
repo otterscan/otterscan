@@ -20,7 +20,7 @@ const Faucets: React.FC = () => {
 
     const _urls: string[] = faucets.map((u) =>
       // eslint-disable-next-line no-template-curly-in-string
-      address !== null ? u.replaceAll("${ADDRESS}", address) : u
+      address !== null ? u.replaceAll("${ADDRESS}", address) : u,
     );
 
     // Shuffle faucets to avoid UI bias

@@ -32,13 +32,13 @@ export const useBlockPageTitle = (blockNumber: BlockTag) => {
 export const useBlockTransactionsPageTitle = (
   blockNumber: number,
   pageNumber: number,
-  pageCount: number | undefined
+  pageCount: number | undefined,
 ) => {
   if (blockNumber !== undefined) {
     usePageTitle(
       `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
         pageCount === undefined ? "" : "/" + pageCount
-      }`
+      }`,
     );
   }
 };

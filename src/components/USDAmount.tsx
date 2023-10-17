@@ -26,7 +26,7 @@ const USDAmount: FC<USDAmountProps> = ({
   const fiatAmount = FixedNumber.fromValue(
     value,
     decimals,
-    `ufixed256x${decimals}`
+    `ufixed256x${decimals}`,
   );
 
   return <FiatValue value={fiatAmount} {...neutralPreset} />;

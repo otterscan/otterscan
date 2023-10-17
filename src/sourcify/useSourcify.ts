@@ -17,7 +17,7 @@ export type UserEvent = {
 export type UserError = [
   {
     notice?: string | undefined;
-  }
+  },
 ];
 
 export type UserDoc = {
@@ -37,7 +37,7 @@ export type DevMethod = {
 export type DevError = [
   {
     params?: Record<string, string>;
-  }
+  },
 ];
 
 export type DevDoc = {
@@ -114,7 +114,7 @@ export const sourcifyMetadata = (
   address: ChecksummedAddress,
   chainId: bigint,
   source: SourcifySource,
-  type: MatchType
+  type: MatchType,
 ) =>
   `${resolveSourcifySource(source)}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
@@ -125,7 +125,7 @@ export const sourcifySourceFile = (
   chainId: bigint,
   filepath: string,
   source: SourcifySource,
-  type: MatchType
+  type: MatchType,
 ) =>
   `${resolveSourcifySource(source)}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
@@ -151,7 +151,7 @@ const sourcifyFetcher: Fetcher<
       address,
       chainId,
       sourcifySource,
-      MatchType.FULL_MATCH
+      MatchType.FULL_MATCH,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -162,7 +162,7 @@ const sourcifyFetcher: Fetcher<
     }
   } catch (err) {
     console.info(
-      `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`
+      `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
     );
   }
 
@@ -172,7 +172,7 @@ const sourcifyFetcher: Fetcher<
       address,
       chainId,
       sourcifySource,
-      MatchType.PARTIAL_MATCH
+      MatchType.PARTIAL_MATCH,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -184,7 +184,7 @@ const sourcifyFetcher: Fetcher<
     return null;
   } catch (err) {
     console.warn(
-      `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`
+      `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`,
     );
     return null;
   }
@@ -192,7 +192,7 @@ const sourcifyFetcher: Fetcher<
 
 export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
-  chainId: bigint | undefined
+  chainId: bigint | undefined,
 ): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
   const metadataURL = () =>
@@ -201,7 +201,7 @@ export const useSourcifyMetadata = (
       : ["sourcify", address, chainId, sourcifySource];
   const { data, error } = useSWRImmutable<Match | null | undefined>(
     metadataURL,
-    sourcifyFetcher
+    sourcifyFetcher,
   );
   if (error) {
     return null;
@@ -222,7 +222,7 @@ export const useContract = (
   networkId: bigint,
   filename: string,
   sourcifySource: SourcifySource,
-  type: MatchType
+  type: MatchType,
 ) => {
   const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
   const url = sourcifySourceFile(
@@ -230,7 +230,7 @@ export const useContract = (
     networkId,
     normalizedFilename,
     sourcifySource,
-    type
+    type,
   );
 
   const { data, error } = useSWRImmutable(url, contractFetcher);
@@ -242,7 +242,7 @@ export const useContract = (
 
 export const useTransactionDescription = (
   metadata: Metadata | null | undefined,
-  txData: TransactionData | null | undefined
+  txData: TransactionData | null | undefined,
 ) => {
   const txDesc = useMemo(() => {
     if (metadata === null) {
@@ -270,7 +270,7 @@ export const useTransactionDescription = (
 
 export const useError = (
   metadata: Metadata | null | undefined,
-  output: string | null | undefined
+  output: string | null | undefined,
 ): ErrorDescription | null | undefined => {
   const err = useMemo(() => {
     if (!metadata || !output) {

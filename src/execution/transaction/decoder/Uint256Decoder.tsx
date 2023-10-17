@@ -27,7 +27,7 @@ const initDisplayMode = (r: any): DisplayMode => {
 
 const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>(
-    initDisplayMode(r)
+    initDisplayMode(r),
   );
 
   const toggleModes = () => {

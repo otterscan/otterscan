@@ -63,7 +63,7 @@ export const ensRenderer: ResolvedAddressRenderer<string> = (
   address,
   resolvedAddress,
   linkable,
-  dontOverrideColors
+  dontOverrideColors,
 ) => (
   <ENSName
     address={address}

@@ -24,7 +24,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
     networkId,
     filename,
     sourcifySource,
-    type
+    type,
   );
 
   return (

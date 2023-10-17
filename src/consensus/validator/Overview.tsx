@@ -25,14 +25,14 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
   }
 
   const eligibleTimestamp = useEpochTimestamp(
-    validator?.data.validator.activation_eligibility_epoch
+    validator?.data.validator.activation_eligibility_epoch,
   );
   const activationTimestamp = useEpochTimestamp(
-    validator?.data.validator.activation_epoch
+    validator?.data.validator.activation_epoch,
   );
   const exitTimestamp = useEpochTimestamp(validator?.data.validator.exit_epoch);
   const withdrawableTimestamp = useEpochTimestamp(
-    validator?.data.validator.withdrawable_epoch
+    validator?.data.validator.withdrawable_epoch,
   );
 
   return (
