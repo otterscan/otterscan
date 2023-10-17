@@ -39,7 +39,9 @@ const BlockTransactionByIndex: React.FC = () => {
       blockTransactions &&
       blockTransactions.txs[invTxIndex % PAGE_SIZE]
     ) {
-      navigate("/tx/" + blockTransactions.txs[invTxIndex % PAGE_SIZE].hash);
+      navigate("/tx/" + blockTransactions.txs[invTxIndex % PAGE_SIZE].hash, {
+        replace: true,
+      });
     }
   }, [blockTransactions, navigate]);
 
