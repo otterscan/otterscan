@@ -1,5 +1,4 @@
 import { FC, memo, useContext, useState, FormEvent } from "react";
-import { SyntaxHighlighter, docco } from "../../../highlight-init";
 import {
   JsonRpcApiProvider,
   FunctionFragment,
@@ -8,6 +7,7 @@ import {
   type ParamType,
   resolveAddress,
 } from "ethers";
+import ParamDeclaration from "../../components/ParamDeclaration";
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
@@ -167,9 +167,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           <ul className="list-inside">
             {func.inputs.map((input, index) => (
               <li className="pl-2" key={index}>
-                <span className="text-sm font-medium text-gray-600">
-                  {input.format("full")}
-                </span>
+                <ParamDeclaration input={input} />
                 <input
                   type="text"
                   className="mt-1 w-full rounded border px-2 py-1 text-sm text-gray-600"
