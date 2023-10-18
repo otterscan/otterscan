@@ -164,7 +164,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       <span className="text-md font-medium">{func.name}</span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         {func.inputs && (
-          <ul className="list-inside">
+          <ol className="list-inside">
             {func.inputs.map((input, index) => (
               <li className="pl-2" key={index}>
                 <ParamDeclaration input={input} />
@@ -180,7 +180,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
                 />
               </li>
             ))}
-          </ul>
+          </ol>
         )}
         <button
           className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
