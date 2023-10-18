@@ -165,7 +165,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         {func.inputs && (
           <ul className="list-inside">
-            {func.inputs.map((input: any, index: number) => (
+            {func.inputs.map((input, index) => (
               <li className="pl-2" key={index}>
                 <span className="text-sm font-medium text-gray-600">
                   {input.format("full")}
