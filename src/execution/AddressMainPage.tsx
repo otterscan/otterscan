@@ -19,6 +19,7 @@ import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
 import AddressWithdrawals from "./address/AddressWithdrawals";
+import BlocksRewarded from "./address/BlocksRewarded";
 import AddressTokens from "./address/AddressTokens";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
@@ -103,6 +104,9 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     <NavTab href={`/address/${addressOrName}/withdrawals`}>
                       Withdrawals
                     </NavTab>
+                    <NavTab href={`/address/${addressOrName}/blocksRewarded`}>
+                      Blocks Rewarded
+                    </NavTab>
                   </>
                 )}
                 {hasCode && (
@@ -176,6 +180,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                         path="withdrawals"
                         element={
                           <AddressWithdrawals address={checksummedAddress} />
+                        }
+                      />
+                      <Route
+                        path="blocksRewarded"
+                        element={
+                          <BlocksRewarded address={checksummedAddress} />
                         }
                       />
                     </>

@@ -7,10 +7,7 @@ import StandardTBody from "../../components/StandardTBody";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import PendingPage from "./PendingPage";
 import { TransactionMatch } from "../../ots2/usePrototypeTransferHooks";
-import {
-  totalTransactionsFormatter,
-  totalWithdrawalsFormatter,
-} from "../../search/messages";
+import { getTotalFormatter } from "../../search/messages";
 import { PAGE_SIZE } from "../../params";
 
 type GenericTransactionSearchResultProps<T> = {
@@ -72,10 +69,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
   typeName = "transaction",
   columns = 7,
 }: GenericTransactionSearchResultProps<T>) => {
-  const totalFormatter =
-    typeName === "withdrawal"
-      ? totalWithdrawalsFormatter
-      : totalTransactionsFormatter;
+  const totalFormatter = getTotalFormatter(typeName);
   return (
     <ContentFrame key={pageNumber} tabs>
       {total === 0 ? (

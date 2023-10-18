@@ -15,10 +15,10 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "ERC20", address);
+  const total = useGenericTransactionCount(provider, "ERC20Transfer", address);
   const results = useGenericTransactionList(
     provider,
-    "ERC20",
+    "ERC20Transfer",
     address,
     pageNumber,
     PAGE_SIZE,
