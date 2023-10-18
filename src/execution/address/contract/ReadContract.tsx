@@ -51,7 +51,7 @@ const ReadContract: React.FC<ContractsProps> = ({
               {viewFunctions.length === 0 &&
                 "This contract has no external view functions."}
               {viewFunctions.length > 0 && (
-                <ul className="list-inside list-decimal">
+                <ol className="marker:text-md list-inside list-decimal marker:text-gray-400">
                   {viewFunctions.map((fn, i) => (
                     <ReadFunction
                       func={FunctionFragment.from(fn)}
@@ -59,7 +59,7 @@ const ReadContract: React.FC<ContractsProps> = ({
                       key={i}
                     />
                   ))}
-                </ul>
+                </ol>
               )}
             </div>
           )}
