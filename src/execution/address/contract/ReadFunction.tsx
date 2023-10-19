@@ -1,5 +1,4 @@
 import { FC, memo, useContext, useState, FormEvent } from "react";
-import { SyntaxHighlighter, docco } from "../../../highlight-init";
 import {
   JsonRpcApiProvider,
   FunctionFragment,
@@ -8,6 +7,7 @@ import {
   type ParamType,
   resolveAddress,
 } from "ethers";
+import ParamDeclaration from "../../components/ParamDeclaration";
 import { RuntimeContext } from "../../../useRuntime";
 import { parse } from "./contractInputDataParser";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
@@ -164,12 +164,10 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       <span className="text-md font-medium">{func.name}</span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         {func.inputs && (
-          <ul className="list-inside">
-            {func.inputs.map((input: any, index: number) => (
+          <ol className="list-inside">
+            {func.inputs.map((input, index) => (
               <li className="pl-2" key={index}>
-                <span className="text-sm font-medium text-gray-600">
-                  {input.format("full")}
-                </span>
+                <ParamDeclaration input={input} index={index} />
                 <input
                   type="text"
                   className="mt-1 w-full rounded border px-2 py-1 text-sm text-gray-600"
@@ -182,7 +180,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
                 />
               </li>
             ))}
-          </ul>
+          </ol>
         )}
         <button
           className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
