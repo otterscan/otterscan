@@ -167,7 +167,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           <ol className="list-inside">
             {func.inputs.map((input, index) => (
               <li className="pl-2" key={index}>
-                <ParamDeclaration input={input} />
+                <ParamDeclaration input={input} index={index} />
                 <input
                   type="text"
                   className="mt-1 w-full rounded border px-2 py-1 text-sm text-gray-600"
