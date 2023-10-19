@@ -1,23 +1,3 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback,
-} from "react";
-import { Block, FixedNumber } from "ethers";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LinearScale,
-  CategoryScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-} from "chart.js";
-import { Transition } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBurn,
   faCoins,
@@ -25,14 +5,34 @@ import {
   faGasPump,
   faHistory,
 } from "@fortawesome/free-solid-svg-icons";
-import BlockRow from "./BlockRow";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Transition } from "@headlessui/react";
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import { Block, FixedNumber } from "ethers";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Line } from "react-chartjs-2";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import BlockRow from "./BlockRow";
 import {
-  burntFeesChartOptions,
   burntFeesChartData,
-  gasChartOptions,
+  burntFeesChartOptions,
   gasChartData,
+  gasChartOptions,
 } from "./chart";
 
 ChartJS.register(

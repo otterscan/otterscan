@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
 import { BlockTag, isHexString } from "ethers";
-import { commify } from "./utils/utils";
+import { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
+import { commify } from "./utils/utils";
 
 /**
  * Set the page title.

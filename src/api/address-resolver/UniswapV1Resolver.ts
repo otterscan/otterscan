@@ -1,8 +1,7 @@
-import { AbstractProvider } from "ethers";
-import { Contract } from "ethers";
-import { IAddressResolver } from "./address-resolver";
+import { AbstractProvider, Contract } from "ethers";
 import { ChecksummedAddress, TokenMeta } from "../../types";
 import { ERCTokenResolver } from "./ERCTokenResolver";
+import { IAddressResolver } from "./address-resolver";
 
 const UNISWAP_V1_FACTORY = "0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95";
 

@@ -1,13 +1,13 @@
-import { FC, Suspense } from "react";
-import { Route, Routes, useParams } from "react-router-dom";
 import { Tab } from "@headlessui/react";
 import { isHexString } from "ethers";
+import { FC, Suspense } from "react";
+import { Route, Routes, useParams } from "react-router-dom";
+import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import ValidatorSubtitle from "./validator/ValidatorSubtitle";
-import NavTab from "../components/NavTab";
-import Overview from "./validator/Overview";
 import { useValidator } from "../useConsensus";
+import Overview from "./validator/Overview";
+import ValidatorSubtitle from "./validator/ValidatorSubtitle";
 
 const Validator: FC = () => {
   const { validatorIndex } = useParams();

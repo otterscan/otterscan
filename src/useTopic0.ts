@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import { RuntimeContext } from "./useRuntime";
 import { topic0URL } from "./url";
+import { RuntimeContext } from "./useRuntime";
 
 export type Topic0Entry = {
   signatures: string[] | undefined;

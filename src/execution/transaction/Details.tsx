@@ -1,60 +1,60 @@
-import { FC, memo, useContext, useState } from "react";
-import { formatUnits } from "ethers";
-import { Tab } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
-import ContentFrame from "../../components/ContentFrame";
-import InfoRow from "../../components/InfoRow";
-import BlockLink from "../../components/BlockLink";
-import ModeTab from "../../components/ModeTab";
-import ExpanderSwitch from "../../components/ExpanderSwitch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tab } from "@headlessui/react";
+import { formatUnits } from "ethers";
+import { FC, memo, useContext, useState } from "react";
 import BlockConfirmations from "../../components/BlockConfirmations";
-import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import BlockLink from "../../components/BlockLink";
+import ContentFrame from "../../components/ContentFrame";
 import Copy from "../../components/Copy";
-import Nonce from "../../components/Nonce";
-import NavNonce from "./NavNonce";
-import Timestamp from "../../components/Timestamp";
+import ExpanderSwitch from "../../components/ExpanderSwitch";
+import ExternalLink from "../../components/ExternalLink";
+import { feePreset } from "../../components/FiatValue";
+import FormattedBalance from "../../components/FormattedBalance";
+import InfoRow from "../../components/InfoRow";
 import InternalTransactionOperation from "../../components/InternalTransactionOperation";
 import MethodName from "../../components/MethodName";
+import ModeTab from "../../components/ModeTab";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
-import TransactionType from "../../components/TransactionType";
-import RewardSplit from "./RewardSplit";
 import NativeTokenPrice from "../../components/NativeTokenPrice";
-import FormattedBalance from "../../components/FormattedBalance";
-import TokenTransferItem from "./TokenTransferItem";
-import { TransactionData } from "../../types";
+import NavBlock from "../../components/NavBlock";
+import Nonce from "../../components/Nonce";
 import PercentageBar from "../../components/PercentageBar";
-import ExternalLink from "../../components/ExternalLink";
-import RelativePosition from "../../components/RelativePosition";
 import PercentagePosition from "../../components/PercentagePosition";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
-import InputDecoder from "./decoder/InputDecoder";
+import RelativePosition from "../../components/RelativePosition";
 import StandardTextarea from "../../components/StandardTextarea";
-import { feePreset } from "../../components/FiatValue";
-import {
-  extract4Bytes,
-  use4Bytes,
-  useTransactionDescription,
-} from "../../use4Bytes";
+import Timestamp from "../../components/Timestamp";
+import TransactionType from "../../components/TransactionType";
 import {
   useError,
   useSourcifyMetadata,
   useTransactionDescription as useSourcifyTransactionDescription,
 } from "../../sourcify/useSourcify";
-import { RuntimeContext } from "../../useRuntime";
+import { TransactionData } from "../../types";
+import { blockTxURL } from "../../url";
+import {
+  extract4Bytes,
+  use4Bytes,
+  useTransactionDescription,
+} from "../../use4Bytes";
+import { useChainInfo } from "../../useChainInfo";
 import {
   useBlockDataFromTransaction,
   useSendsToMiner,
   useTokenTransfers,
   useTransactionError,
 } from "../../useErigonHooks";
-import { useChainInfo } from "../../useChainInfo";
+import { RuntimeContext } from "../../useRuntime";
 import { commify } from "../../utils/utils";
-import NavBlock from "../../components/NavBlock";
-import { blockTxURL } from "../../url";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import NavNonce from "./NavNonce";
+import RewardSplit from "./RewardSplit";
+import TokenTransferItem from "./TokenTransferItem";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import InputDecoder from "./decoder/InputDecoder";
 
 type DetailsProps = {
   txData: TransactionData;

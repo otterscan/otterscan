@@ -1,9 +1,9 @@
-import React, { PropsWithChildren } from "react";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { useAppConfigContext } from "./useAppConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Menu } from "@headlessui/react";
+import React, { PropsWithChildren } from "react";
 import { SourcifySource } from "./sourcify/useSourcify";
+import { useAppConfigContext } from "./useAppConfig";
 
 const SourcifyMenu: React.FC = () => {
   const { sourcifySource, setSourcifySource } = useAppConfigContext();

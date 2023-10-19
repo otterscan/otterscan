@@ -1,7 +1,7 @@
-import { FC, memo } from "react";
 import { Interface } from "ethers";
-import DecodedFragment from "./DecodedFragment";
+import { FC, memo } from "react";
 import { ABIAwareComponentProps } from "../../types";
+import DecodedFragment from "./DecodedFragment";
 
 const DecodedABI: FC<ABIAwareComponentProps> = ({ abi }) => {
   const intf = new Interface(abi);

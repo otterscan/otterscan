@@ -1,5 +1,6 @@
 import { useContext, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { PAGE_SIZE } from "../params";
 import { RuntimeContext } from "../useRuntime";
 import {
   BlockSummary,
@@ -9,7 +10,6 @@ import {
   useGenericContractSearch,
   useGenericContractsCount,
 } from "./usePrototypeHooks";
-import { PAGE_SIZE } from "../params";
 
 /**
  * Extract the page number from query string; if it doesn't

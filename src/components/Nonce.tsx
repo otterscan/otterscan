@@ -1,6 +1,6 @@
-import { FC, memo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, memo } from "react";
 import { commify } from "../utils/utils";
 
 type NonceProps = {

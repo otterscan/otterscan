@@ -1,33 +1,31 @@
-import { useState, useEffect, useMemo } from "react";
 import {
-  Block,
+  AbiCoder,
   BlockParams,
   BlockTag,
+  Contract,
   JsonRpcApiProvider,
   TransactionReceiptParams,
   TransactionResponseParams,
-  getAddress,
-  Contract,
-  AbiCoder,
-  getBytes,
-  dataSlice,
-  isHexString,
   ZeroAddress,
-  Transaction,
+  dataSlice,
+  getAddress,
+  getBytes,
+  isHexString,
   toNumber,
 } from "ethers";
+import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import erc20 from "./erc20.json";
 import {
+  ChecksummedAddress,
+  InternalOperation,
+  OperationType,
+  ProcessedTransaction,
+  TokenMeta,
   TokenTransfer,
   TransactionData,
-  InternalOperation,
-  ProcessedTransaction,
-  OperationType,
-  ChecksummedAddress,
-  TokenMeta,
 } from "./types";
-import erc20 from "./erc20.json";
 import { formatter } from "./utils/formatter";
 
 const TRANSFER_TOPIC =

@@ -1,14 +1,14 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import { balancePreset } from "../../components/FiatValue";
+import HexValue from "../../components/HexValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
-import { balancePreset } from "../../components/FiatValue";
 import Timestamp from "../../components/Timestamp";
-import HexValue from "../../components/HexValue";
-import EpochLink from "../components/EpochLink";
 import { useEpochTimestamp, useValidator } from "../../useConsensus";
-import { commify } from "../../utils/utils";
 import { usePageTitle } from "../../useTitle";
+import { commify } from "../../utils/utils";
+import EpochLink from "../components/EpochLink";
 import WithdrawalCredentials from "./WithdrawalCredentials";
 
 const GWEI = 10n ** 9n;

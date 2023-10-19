@@ -1,6 +1,6 @@
+import { Tab } from "@headlessui/react";
 import React, { Fragment, PropsWithChildren } from "react";
 import { NavLink } from "react-router-dom";
-import { Tab } from "@headlessui/react";
 
 type NavTabProps = {
   href: string;

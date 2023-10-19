@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import { getAddress } from "ethers";
+import { useMemo } from "react";
 import { ChecksummedAddress } from "../types";
 import t2crtokens from "./t2crtokens.eth.json";
 

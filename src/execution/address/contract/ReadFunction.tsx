@@ -1,18 +1,18 @@
-import { FC, memo, useContext, useState, FormEvent } from "react";
-import {
-  JsonRpcApiProvider,
-  FunctionFragment,
-  Result,
-  Interface,
-  type ParamType,
-  resolveAddress,
-} from "ethers";
-import ParamDeclaration from "../../components/ParamDeclaration";
-import { RuntimeContext } from "../../../useRuntime";
-import { parse } from "./contractInputDataParser";
-import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  FunctionFragment,
+  Interface,
+  JsonRpcApiProvider,
+  Result,
+  resolveAddress,
+  type ParamType,
+} from "ethers";
+import { FC, FormEvent, memo, useContext, useState } from "react";
+import { RuntimeContext } from "../../../useRuntime";
+import ParamDeclaration from "../../components/ParamDeclaration";
+import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
+import { parse } from "./contractInputDataParser";
 
 interface ReadFunctionProps {
   address: string;

@@ -1,11 +1,11 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { useParams } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
-import OverviewSkeleton from "./OverviewSkeleton";
-import SlotNotFound from "./SlotNotFound";
-import Attestation from "./Attestation";
 import { useSlot } from "../../useConsensus";
 import { usePageTitle } from "../../useTitle";
+import Attestation from "./Attestation";
+import OverviewSkeleton from "./OverviewSkeleton";
+import SlotNotFound from "./SlotNotFound";
 
 const Attestations: FC = () => {
   const { slotNumber } = useParams();

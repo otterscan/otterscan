@@ -1,16 +1,12 @@
-import React, { useContext, useEffect } from "react";
-import { useParams, NavLink, useNavigate } from "react-router-dom";
-import { lazy, Suspense } from "react";
-import { BlockTag } from "ethers";
-import StandardFrame from "../../components/StandardFrame";
-import ContentFrame from "../../components/ContentFrame";
+import React, { lazy, useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import BlockLink from "../../components/BlockLink";
-import NavBlock from "../../components/NavBlock";
-import { RuntimeContext } from "../../useRuntime";
-import { useBlockData, useBlockTransactions } from "../../useErigonHooks";
-import { blockTxsURL } from "../../url";
-import { PAGE_SIZE } from "../../params";
 import BlockNotFound from "../../components/BlockNotFound";
+import ContentFrame from "../../components/ContentFrame";
+import StandardFrame from "../../components/StandardFrame";
+import { PAGE_SIZE } from "../../params";
+import { useBlockData, useBlockTransactions } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 
 const Transaction = lazy(() => import("../Transaction"));
 

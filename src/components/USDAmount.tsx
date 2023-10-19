@@ -1,5 +1,5 @@
-import { FC, memo } from "react";
 import { FixedNumber } from "ethers";
+import { FC, memo } from "react";
 import FiatValue, { neutralPreset } from "./FiatValue";
 
 type USDAmountProps = {

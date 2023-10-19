@@ -1,7 +1,7 @@
 import { FC } from "react";
-import TwoColumnPanel from "./TwoColumnPanel";
-import Topic from "./Topic";
 import StandardTextarea from "../../../components/StandardTextarea";
+import Topic from "./Topic";
+import TwoColumnPanel from "./TwoColumnPanel";
 
 type RawLogProps = {
   topics: readonly string[];

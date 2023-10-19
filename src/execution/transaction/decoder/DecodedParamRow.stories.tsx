@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { ParamType } from "ethers";
-import DecodedParamRow from "./DecodedParamRow";
-import { RuntimeContext } from "../../../useRuntime";
+import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
+import { SourcifySource } from "../../../sourcify/useSourcify";
 import { ConnectionStatus } from "../../../types";
 import { AppConfigContext } from "../../../useAppConfig";
-import { SourcifySource } from "../../../sourcify/useSourcify";
-import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
+import { RuntimeContext } from "../../../useRuntime";
+import DecodedParamRow from "./DecodedParamRow";
 
 const meta = {
   component: DecodedParamRow,

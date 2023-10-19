@@ -1,11 +1,11 @@
-import { useState, useContext, memo, lazy, FC } from "react";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, lazy, memo, useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
-import { RuntimeContext } from "./useRuntime";
 import { useGenericSearch } from "./search/search";
+import { RuntimeContext } from "./useRuntime";
 // @ts-expect-error
 import Otter from "./otter.png?w=128&h=128&webp";
 

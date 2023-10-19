@@ -1,24 +1,24 @@
-import { FC, memo, useEffect, useMemo } from "react";
+import { FC, memo, useMemo } from "react";
 import { useParams } from "react-router-dom";
-import StandardFrame from "../components/StandardFrame";
-import EpochSubtitle from "./epoch/EpochSubtitle";
-import ContentFrame from "../components/ContentFrame";
-import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import StandardTable from "../components/StandardTable";
-import StandardTHead from "../components/StandardTHead";
-import StandardTBody from "../components/StandardTBody";
-import InfoRow from "../components/InfoRow";
-import Finalized from "./components/Finalized";
-import NotFinalized from "./components/NotFinalized";
-import Timestamp from "../components/Timestamp";
 import { TickerContextProvider } from "../components/AutoRefreshAge";
-import SlotItem from "./epoch/SlotItem";
+import ContentFrame from "../components/ContentFrame";
+import InfoRow from "../components/InfoRow";
+import StandardFrame from "../components/StandardFrame";
+import StandardTBody from "../components/StandardTBody";
+import StandardTHead from "../components/StandardTHead";
+import StandardTable from "../components/StandardTable";
+import Timestamp from "../components/Timestamp";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import {
   useEpochTimestamp,
   useFinalizedSlotNumber,
   useReversedSlotsFromEpoch,
 } from "../useConsensus";
 import { usePageTitle } from "../useTitle";
+import Finalized from "./components/Finalized";
+import NotFinalized from "./components/NotFinalized";
+import EpochSubtitle from "./epoch/EpochSubtitle";
+import SlotItem from "./epoch/SlotItem";
 
 const Epoch: FC = () => {
   const { epochNumber } = useParams();

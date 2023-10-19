@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
-import TransactionAddress from "../components/TransactionAddress";
-import TraceItem from "./TraceItem";
 import { TransactionData } from "../../types";
 import { useTraceTransaction } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import TransactionAddress from "../components/TransactionAddress";
+import TraceItem from "./TraceItem";
 
 type TraceProps = {
   txData: TransactionData;

@@ -1,4 +1,4 @@
-import React, { FC, memo, useContext } from "react";
+import { FC, memo, useContext } from "react";
 // @ts-expect-error
 import Otter from "./otter.png?w=128&h=128&webp";
 import { RuntimeContext } from "./useRuntime";

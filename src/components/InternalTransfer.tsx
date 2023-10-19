@@ -1,19 +1,19 @@
-import { FC, useContext } from "react";
-import { formatEther } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleRight,
   faCaretRight,
   faSackDollar,
 } from "@fortawesome/free-solid-svg-icons";
-import AddressHighlighter from "./AddressHighlighter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatEther } from "ethers";
+import { FC, useContext } from "react";
 import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
-import USDAmount from "./USDAmount";
-import { RuntimeContext } from "../useRuntime";
-import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
+import { InternalOperation, TransactionData } from "../types";
 import { useChainInfo } from "../useChainInfo";
+import { useBlockDataFromTransaction, useHasCode } from "../useErigonHooks";
 import { useETHUSDOracle } from "../usePriceOracle";
-import { TransactionData, InternalOperation } from "../types";
+import { RuntimeContext } from "../useRuntime";
+import AddressHighlighter from "./AddressHighlighter";
+import USDAmount from "./USDAmount";
 
 type InternalTransferProps = {
   txData: TransactionData;

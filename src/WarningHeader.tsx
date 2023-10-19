@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { RuntimeContext } from "./useRuntime";
 import { useChainInfo } from "./useChainInfo";
+import { RuntimeContext } from "./useRuntime";
 
 const WarningHeader: React.FC = () => {
   const { provider } = useContext(RuntimeContext);

@@ -1,5 +1,5 @@
+import { dataSlice, getAddress, toBeArray } from "ethers";
 import { FC, memo } from "react";
-import { getAddress, dataSlice, toBeArray } from "ethers";
 import HexValue from "../../components/HexValue";
 import DecoratedAddressLink from "../../execution/components/DecoratedAddressLink";
 

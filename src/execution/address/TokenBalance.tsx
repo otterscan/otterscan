@@ -1,12 +1,12 @@
 import { FC, useContext } from "react";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import USDAmount from "../../components/USDAmount";
+import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
 import { ChecksummedAddress } from "../../types";
-import { RuntimeContext } from "../../useRuntime";
 import { useTokenMetadata } from "../../useErigonHooks";
-import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
-import USDAmount from "../../components/USDAmount";
+import { RuntimeContext } from "../../useRuntime";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 
 type TokenBalanceProps = {
   holderAddress: ChecksummedAddress;

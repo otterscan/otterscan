@@ -1,5 +1,5 @@
-import { FC, memo } from "react";
 import { EventFragment } from "ethers";
+import { FC, memo } from "react";
 
 type DecodedLogSignatureProps = {
   event: EventFragment;

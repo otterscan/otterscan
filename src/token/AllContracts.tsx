@@ -1,11 +1,11 @@
 import { FC } from "react";
-import GenericContractSearchResult from "./GenericContractSearchResult";
-import ContractHeader from "./ContractHeader";
-import ContractItem, { mapper } from "./ContractItem";
-import { useContractSearchPage } from "../ots2/useUIHooks";
 import { contractMatchParser } from "../ots2/contractMatchParsers";
+import { useContractSearchPage } from "../ots2/useUIHooks";
 import { PAGE_SIZE } from "../params";
 import { usePageTitle } from "../useTitle";
+import ContractHeader from "./ContractHeader";
+import ContractItem, { mapper } from "./ContractItem";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 
 const AllContracts: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(

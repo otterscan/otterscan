@@ -1,15 +1,15 @@
-import { useContext, FC, useMemo } from "react";
-import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
-import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
-import { RuntimeContext } from "../../useRuntime";
+import { FC, useContext, useMemo } from "react";
 import {
   useGenericTransactionCount,
   useGenericTransactionList,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
-import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
+import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
+import { AddressAwareComponentProps } from "../types";
+import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
+import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
 const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);

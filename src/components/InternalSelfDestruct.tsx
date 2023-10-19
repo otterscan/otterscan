@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
-import { formatEther } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import AddressHighlighter from "./AddressHighlighter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatEther } from "ethers";
+import React, { useContext } from "react";
 import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import TransactionAddress from "../execution/components/TransactionAddress";
-import { RuntimeContext } from "../useRuntime";
-import { useBlockDataFromTransaction } from "../useErigonHooks";
+import { InternalOperation, TransactionData } from "../types";
 import { useChainInfo } from "../useChainInfo";
-import { TransactionData, InternalOperation } from "../types";
+import { useBlockDataFromTransaction } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import AddressHighlighter from "./AddressHighlighter";
 
 type InternalSelfDestructProps = {
   txData: TransactionData;

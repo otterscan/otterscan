@@ -1,8 +1,8 @@
 import { FC, memo, PropsWithChildren, useMemo } from "react";
 import {
-  useSelectionContext,
   OptionalSelection,
   SelectionType,
+  useSelectionContext,
 } from "./useSelection";
 
 export type ContentSelector = (

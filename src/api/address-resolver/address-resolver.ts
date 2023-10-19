@@ -1,5 +1,5 @@
-import React from "react";
 import { AbstractProvider } from "ethers";
+import React from "react";
 
 export interface IAddressResolver<T> {
   resolveAddress(

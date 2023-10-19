@@ -1,9 +1,9 @@
 import { FC, PropsWithChildren, useContext, useState } from "react";
 import _NavButton from "../../components/NavButton";
-import { RuntimeContext } from "../../useRuntime";
-import { useTransactionBySenderAndNonce } from "../../useErigonHooks";
 import { ChecksummedAddress } from "../../types";
 import { addressByNonceURL } from "../../url";
+import { useTransactionBySenderAndNonce } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 
 // TODO: extract common component with block/NavButton
 type NavButtonProps = {

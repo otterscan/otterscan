@@ -4,17 +4,17 @@ import { tokenRenderer } from "../../execution/address/renderer/TokenName";
 import { uniswapV1PairRenderer } from "../../execution/address/renderer/UniswapV1ExchangeName";
 import { uniswapV2PairRenderer } from "../../execution/address/renderer/UniswapV2PairName";
 import { uniswapV3PairRenderer } from "../../execution/address/renderer/UniswapV3PoolName";
-import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 import {
   CompositeAddressResolver,
   SelectedResolvedName,
 } from "./CompositeAddressResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
+import { ERCTokenResolver } from "./ERCTokenResolver";
+import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
 import { UniswapV1Resolver } from "./UniswapV1Resolver";
 import { UniswapV2Resolver } from "./UniswapV2Resolver";
 import { UniswapV3Resolver } from "./UniswapV3Resolver";
-import { ERCTokenResolver } from "./ERCTokenResolver";
-import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
+import { IAddressResolver, ResolvedAddressRenderer } from "./address-resolver";
 
 export type ResolvedAddresses = Record<string, SelectedResolvedName<any>>;
 

@@ -1,10 +1,10 @@
-import React, { PropsWithChildren } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faClock,
   faCheckCircle,
+  faClock,
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { PropsWithChildren } from "react";
 import { ConnectionStatus } from "./types";
 import { OtterscanConfig } from "./useConfig";
 

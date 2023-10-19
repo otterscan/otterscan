@@ -1,11 +1,11 @@
-import { useState, useEffect, useContext } from "react";
-import { JsonRpcApiProvider, EnsPlugin, getAddress, isAddress } from "ethers";
+import { EnsPlugin, JsonRpcApiProvider, getAddress, isAddress } from "ethers";
+import { useContext, useEffect, useState } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
-import { RuntimeContext } from "./useRuntime";
 import { ChecksummedAddress } from "./types";
+import { RuntimeContext } from "./useRuntime";
 
 export const useAddressOrENS = (
   addressOrName: string,

@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
 import { FunctionFragment } from "ethers";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import React, { useContext } from "react";
 import ContentFrame from "../../../components/ContentFrame";
-import InfoRow from "../../../components/InfoRow";
-import { RuntimeContext } from "../../../useRuntime";
-import { Match, MatchType } from "../../../sourcify/useSourcify";
-import ContractABI from "../contract/ContractABI";
-import ReadFunction from "./ReadFunction";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
-import { commify } from "../../../utils/utils";
+import { Match } from "../../../sourcify/useSourcify";
+import { RuntimeContext } from "../../../useRuntime";
+import ReadFunction from "./ReadFunction";
 
 type ContractsProps = {
   checksummedAddress: string;

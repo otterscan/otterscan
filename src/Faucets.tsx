@@ -1,12 +1,12 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFaucetDrip,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import ExternalLink from "./components/ExternalLink";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import ContentFrame from "./components/ContentFrame";
+import ExternalLink from "./components/ExternalLink";
 import StandardFrame from "./components/StandardFrame";
 import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";

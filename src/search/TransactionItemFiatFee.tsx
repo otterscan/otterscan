@@ -1,8 +1,7 @@
+import { BlockTag, FixedNumber } from "ethers";
 import React, { useContext } from "react";
-import { BlockTag } from "ethers";
-import { FixedNumber } from "ethers";
-import { RuntimeContext } from "../useRuntime";
 import { useETHUSDOracle } from "../usePriceOracle";
+import { RuntimeContext } from "../useRuntime";
 import { commify } from "../utils/utils";
 
 type TransactionItemFiatFeeProps = {

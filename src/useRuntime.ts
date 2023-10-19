@@ -1,8 +1,8 @@
+import { JsonRpcApiProvider, JsonRpcProvider, Network } from "ethers";
 import { createContext, useMemo } from "react";
-import { JsonRpcProvider, JsonRpcApiProvider, Network } from "ethers";
+import { ConnectionStatus } from "./types";
 import { OtterscanConfig, useConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
-import { ConnectionStatus } from "./types";
 
 /**
  * A runtime comprises a OtterscanConfig read from somewhere, +

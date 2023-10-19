@@ -1,20 +1,19 @@
-import { useMemo } from "react";
 import {
+  Contract,
   JsonRpcApiProvider,
-  TransactionResponse,
   TransactionReceipt,
-  TransactionReceiptParams,
+  TransactionResponse,
+  ZeroAddress,
 } from "ethers";
-import { Contract } from "ethers";
-import { ZeroAddress } from "ethers";
+import { useMemo } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import erc20 from "../erc20.json";
 import { ChecksummedAddress } from "../types";
 import { providerFetcher } from "../useErigonHooks";
-import { BlockSummary } from "./usePrototypeHooks";
-import { pageToReverseIdx } from "./pagination";
-import erc20 from "../erc20.json";
 import { formatter } from "../utils/formatter";
+import { pageToReverseIdx } from "./pagination";
+import { BlockSummary } from "./usePrototypeHooks";
 
 /**
  * All supported transaction search types.

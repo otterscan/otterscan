@@ -1,12 +1,12 @@
-import React, { useMemo, useContext } from "react";
-import { formatUnits } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
-import { RuntimeContext } from "./useRuntime";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatUnits } from "ethers";
+import React, { useContext, useMemo } from "react";
 import { formatValue } from "./components/formatter";
-import { useLatestBlockHeader } from "./useLatestBlock";
 import { useChainInfo } from "./useChainInfo";
+import { useLatestBlockHeader } from "./useLatestBlock";
 import { useETHUSDRawOracle, useFastGasRawOracle } from "./usePriceOracle";
+import { RuntimeContext } from "./useRuntime";
 import { commify } from "./utils/utils";
 
 // TODO: encapsulate this magic number

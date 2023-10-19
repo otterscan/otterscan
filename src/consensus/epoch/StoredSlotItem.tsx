@@ -1,16 +1,16 @@
 import { FC, memo } from "react";
-import { SlotAwareComponentProps } from "../types";
-import SlotLink from "../components/SlotLink";
 import BlockLink from "../../components/BlockLink";
-import SlotTimestamp from "./SlotTimestamp";
-import CheckedValidatorLink from "../components/CheckedValidatorLink";
-import BlockRoot from "../slot/BlockRoot";
-import SlotAttestationsLink from "../components/SlotAttestationsLink";
-import AggregationParticipation from "../slot/AggregationParticipation";
 import RelevantNumericValue from "../../components/RelevantNumericValue";
-import SlashingCount from "../components/SlashingCount";
 import { useSlot } from "../../useConsensus";
 import { commify } from "../../utils/utils";
+import CheckedValidatorLink from "../components/CheckedValidatorLink";
+import SlashingCount from "../components/SlashingCount";
+import SlotAttestationsLink from "../components/SlotAttestationsLink";
+import SlotLink from "../components/SlotLink";
+import AggregationParticipation from "../slot/AggregationParticipation";
+import BlockRoot from "../slot/BlockRoot";
+import { SlotAwareComponentProps } from "../types";
+import SlotTimestamp from "./SlotTimestamp";
 
 const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const { slot } = useSlot(slotNumber);

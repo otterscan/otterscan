@@ -1,5 +1,5 @@
-import { FC } from "react";
 import { getBytes } from "ethers";
+import { FC } from "react";
 
 type AggregationBitsProps = {
   hex: string;

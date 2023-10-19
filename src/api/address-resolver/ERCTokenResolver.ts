@@ -1,9 +1,7 @@
-import { AbstractProvider } from "ethers";
-import { Contract } from "ethers";
-import { ZeroAddress } from "ethers";
-import { IAddressResolver } from "./address-resolver";
+import { AbstractProvider, Contract, ZeroAddress } from "ethers";
 import erc20 from "../../erc20.json";
 import { TokenMeta } from "../../types";
+import { IAddressResolver } from "./address-resolver";
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 

@@ -1,5 +1,5 @@
-import { FC, PropsWithChildren } from "react";
 import { Tab } from "@headlessui/react";
+import { FC, PropsWithChildren } from "react";
 
 type ModeTabProps = {
   disabled?: boolean | undefined;

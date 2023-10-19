@@ -1,39 +1,39 @@
-import React, { useEffect, useCallback, useContext } from "react";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tab } from "@headlessui/react";
+import { getAddress } from "ethers";
+import React, { useCallback, useContext } from "react";
 import {
-  Routes,
   Route,
+  Routes,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { getAddress } from "ethers";
-import { Tab } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import StandardFrame from "../components/StandardFrame";
-import AddressSubtitle from "./address/AddressSubtitle";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
-import SourcifyLogo from "../sourcify/SourcifyLogo";
-import AddressTransactionResults from "./address/AddressTransactionResults";
-import AddressERC20Results from "./address/AddressERC20Results";
-import AddressERC721Results from "./address/AddressERC721Results";
-import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksRewarded from "./address/BlocksRewarded";
-import AddressTokens from "./address/AddressTokens";
-import Contracts from "./address/Contracts";
-import ReadContract from "./address/contract/ReadContract";
-import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
-import { useAddressOrENS } from "../useResolvedAddresses";
-import { useSourcifyMetadata } from "../sourcify/useSourcify";
-import { ChecksummedAddress } from "../types";
-import { usePageTitle } from "../useTitle";
+import StandardFrame from "../components/StandardFrame";
 import {
   useAddressAttributes,
   useERC1167Impl,
 } from "../ots2/usePrototypeTransferHooks";
+import SourcifyLogo from "../sourcify/SourcifyLogo";
+import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { ChecksummedAddress } from "../types";
+import { useHasCode } from "../useErigonHooks";
+import { useAddressOrENS } from "../useResolvedAddresses";
+import { RuntimeContext } from "../useRuntime";
+import { usePageTitle } from "../useTitle";
+import AddressERC20Results from "./address/AddressERC20Results";
+import AddressERC721Results from "./address/AddressERC721Results";
+import AddressSubtitle from "./address/AddressSubtitle";
+import AddressTokens from "./address/AddressTokens";
+import AddressTransactionResults from "./address/AddressTransactionResults";
+import AddressWithdrawals from "./address/AddressWithdrawals";
+import BlocksRewarded from "./address/BlocksRewarded";
+import Contracts from "./address/Contracts";
+import ReadContract from "./address/contract/ReadContract";
 
 type AddressMainPageProps = {};
 

@@ -1,10 +1,10 @@
-import { FC, memo } from "react";
 import { Tab } from "@headlessui/react";
-import ModeTab from "../../../components/ModeTab";
+import { FC, memo } from "react";
 import Copy from "../../../components/Copy";
+import ModeTab from "../../../components/ModeTab";
+import { ABIAwareComponentProps } from "../../types";
 import DecodedABI from "./DecodedABI";
 import RawABI from "./RawABI";
-import { ABIAwareComponentProps } from "../../types";
 
 const ContractABI: FC<ABIAwareComponentProps> = ({ abi }) => (
   <div className="mb-3">

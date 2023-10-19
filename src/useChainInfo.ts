@@ -2,8 +2,8 @@ import { createContext, useContext } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { chainInfoURL } from "./url";
-import { OtterscanRuntime } from "./useRuntime";
 import { ChainInfo, defaultChainInfo } from "./useConfig";
+import { OtterscanRuntime } from "./useRuntime";
 
 export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 

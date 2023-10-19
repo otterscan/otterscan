@@ -1,11 +1,11 @@
 import { FC } from "react";
-import GenericContractSearchResult from "./GenericContractSearchResult";
-import ERC1155Header from "./ERC1155Header";
-import ERC1155Item, { mapper } from "./ERC1155Item";
-import { useContractSearchPage } from "../ots2/useUIHooks";
 import { erc1155MatchParser } from "../ots2/contractMatchParsers";
+import { useContractSearchPage } from "../ots2/useUIHooks";
 import { PAGE_SIZE } from "../params";
 import { usePageTitle } from "../useTitle";
+import ERC1155Header from "./ERC1155Header";
+import ERC1155Item, { mapper } from "./ERC1155Item";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 
 const AllERC1155: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(

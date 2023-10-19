@@ -1,5 +1,5 @@
-import { ContractMatch, ContractResultParser } from "./usePrototypeHooks";
 import { ChecksummedAddress } from "../types";
+import { ContractMatch, ContractResultParser } from "./usePrototypeHooks";
 
 export type ERC20ContractMatch = ContractMatch & {
   name: string;

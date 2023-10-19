@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
 import {
-  JsonRpcProvider,
   JsonRpcApiProvider,
+  JsonRpcProvider,
   Network,
   WebSocketProvider,
 } from "ethers";
-import { ConnectionStatus } from "./types";
+import { useEffect, useState } from "react";
 import { MIN_API_LEVEL } from "./params";
+import { ConnectionStatus } from "./types";
 
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 

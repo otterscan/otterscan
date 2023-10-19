@@ -1,6 +1,5 @@
+import { ErrorDescription, Interface } from "ethers";
 import { useMemo } from "react";
-import { Interface } from "ethers";
-import { ErrorDescription } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";

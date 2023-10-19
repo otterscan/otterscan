@@ -1,23 +1,23 @@
 import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { AddressAwareComponentProps } from "../types";
+import { useParams, useSearchParams } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
-import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
+import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
-import { balancePreset } from "../../components/FiatValue";
-import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import TransactionLink from "../../components/TransactionLink";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
-import { SearchController } from "../../search/search";
 import TransactionItem from "../../search/TransactionItem";
 import UndefinedPageControl from "../../search/UndefinedPageControl";
+import { SearchController } from "../../search/search";
 import { useFeeToggler } from "../../search/useFeeToggler";
-import { RuntimeContext } from "../../useRuntime";
-import { useParams, useSearchParams } from "react-router-dom";
+import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
-import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
 import { BlockNumberContext } from "../../useBlockTagContext";
+import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import { AddressAwareComponentProps } from "../types";
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,

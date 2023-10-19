@@ -2,8 +2,8 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
-  useState,
   useContext,
+  useState,
 } from "react";
 
 export type SelectionType = "address" | "value" | "functionSig" | "tag";
