@@ -6,7 +6,7 @@ type HardcodedAddressMap = Record<string, string | undefined>;
 export class HardcodedAddressResolver implements IAddressResolver<string> {
   async resolveAddress(
     provider: JsonRpcApiProvider,
-    address: string
+    address: string,
   ): Promise<string | undefined> {
     try {
       const addressMap: HardcodedAddressMap = (

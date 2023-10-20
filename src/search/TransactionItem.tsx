@@ -1,21 +1,21 @@
 import React, { useContext } from "react";
-import MethodName from "../components/MethodName";
 import BlockLink from "../components/BlockLink";
-import TransactionLink from "../components/TransactionLink";
+import MethodName from "../components/MethodName";
+import NativeTokenAmount from "../components/NativeTokenAmount";
 import TimestampAge from "../components/TimestampAge";
 import TransactionDirection, {
   Direction,
   Flags,
 } from "../components/TransactionDirection";
-import NativeTokenAmount from "../components/NativeTokenAmount";
-import TransactionItemFiatFee from "./TransactionItemFiatFee";
-import { ProcessedTransaction } from "../types";
-import { FeeDisplay } from "./useFeeToggler";
-import { RuntimeContext } from "../useRuntime";
-import { useSendsToMiner } from "../useErigonHooks";
+import TransactionLink from "../components/TransactionLink";
 import { formatValue } from "../components/formatter";
 import TransactionAddress from "../execution/components/TransactionAddress";
+import { ProcessedTransaction } from "../types";
 import { BlockNumberContext } from "../useBlockTagContext";
+import { useSendsToMiner } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import TransactionItemFiatFee from "./TransactionItemFiatFee";
+import { FeeDisplay } from "./useFeeToggler";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;

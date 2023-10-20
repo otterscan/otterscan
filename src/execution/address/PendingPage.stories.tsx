@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
-import PendingPage from "./PendingPage";
 import StandardTHead from "../../components/StandardTHead";
+import PendingPage from "./PendingPage";
 
 const meta = {
   component: PendingPage,

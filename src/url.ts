@@ -3,7 +3,7 @@ import { ChecksummedAddress } from "./types";
 
 export const fourBytesURL = (
   assetsURLPrefix: string,
-  fourBytes: string
+  fourBytes: string,
 ): string => `${assetsURLPrefix}/signatures/${fourBytes}`;
 
 export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
@@ -12,12 +12,12 @@ export const topic0URL = (assetsURLPrefix: string, topic0: string): string =>
 export const tokenLogoURL = (
   assetsURLPrefix: string,
   chainId: bigint,
-  address: string
+  address: string,
 ): string => `${assetsURLPrefix}/assets/${chainId}/${address}/logo.png`;
 
 export const chainInfoURL = (
   assetsURLPrefix: string,
-  chainId: bigint
+  chainId: bigint,
 ): string => `${assetsURLPrefix}/chains/eip155-${chainId}.json`;
 
 export const epochURL = (epochNumber: number) => `/epoch/${epochNumber}`;

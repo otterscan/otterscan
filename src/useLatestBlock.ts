@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { Block, JsonRpcApiProvider } from "ethers";
+import { useEffect, useState } from "react";
 import { formatter } from "./utils/formatter";
 
 /**

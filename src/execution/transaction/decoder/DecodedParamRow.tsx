@@ -1,17 +1,17 @@
-import { FC, memo, ReactNode, useState } from "react";
-import { ParamType } from "ethers";
-import { Switch } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faQuestionCircle as faQuestionCircleSolid } from "@fortawesome/free-solid-svg-icons";
-import Uint256Decoder from "./Uint256Decoder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Switch } from "@headlessui/react";
+import { ParamType } from "ethers";
+import { FC, memo, ReactNode, useState } from "react";
+import SelectionHighlighter, {
+  valueSelector,
+} from "../../../selection/SelectionHighlighter";
 import AddressDecoder from "./AddressDecoder";
 import BooleanDecoder from "./BooleanDecoder";
 import BytesDecoder from "./BytesDecoder";
 import DefaultDecoder from "./DefaultDecoder";
-import SelectionHighlighter, {
-  valueSelector,
-} from "../../../selection/SelectionHighlighter";
+import Uint256Decoder from "./Uint256Decoder";
 
 type DecodedParamRowProps = {
   prefix?: ReactNode;

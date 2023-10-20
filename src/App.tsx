@@ -1,18 +1,18 @@
 import { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import WarningHeader from "./WarningHeader";
-import Home from "./Home";
-import Main from "./Main";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
+import Home from "./Home";
+import Main from "./Main";
 import { ConnectionStatus } from "./types";
-import { RuntimeContext, useRuntime } from "./useRuntime";
 import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
+import { RuntimeContext, useRuntime } from "./useRuntime";
+import WarningHeader from "./WarningHeader";
 
 const Block = lazy(() => import("./execution/Block"));
 const BlockTransactions = lazy(() => import("./execution/BlockTransactions"));
 const BlockTransactionByIndex = lazy(
-  () => import("./execution/block/BlockTransactionByIndex")
+  () => import("./execution/block/BlockTransactionByIndex"),
 );
 const Address = lazy(() => import("./execution/Address"));
 const Transaction = lazy(() => import("./execution/Transaction"));

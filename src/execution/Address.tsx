@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import AddressMainPage from "./AddressMainPage";
 
 const AddressTransactionByNonce = lazy(
-  () => import("./AddressTransactionByNonce")
+  () => import("./AddressTransactionByNonce"),
 );
 
 /**

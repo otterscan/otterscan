@@ -1,16 +1,16 @@
 import { FC, ReactNode } from "react";
-import StandardFrame from "../components/StandardFrame";
-import StandardSubtitle from "../components/StandardSubtitle";
-import ContractFilterMenu from "./ContractFilterMenu";
 import ContentFrame from "../components/ContentFrame";
-import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
+import StandardFrame from "../components/StandardFrame";
 import StandardScrollableTable from "../components/StandardScrollableTable";
-import StandardTHead from "../components/StandardTHead";
+import StandardSubtitle from "../components/StandardSubtitle";
 import StandardTBody from "../components/StandardTBody";
-import SearchResultNavBar from "../search/SearchResultNavBar";
+import StandardTHead from "../components/StandardTHead";
 import PendingPage from "../execution/address/PendingPage";
 import { ContractMatch } from "../ots2/usePrototypeHooks";
+import SearchResultNavBar from "../search/SearchResultNavBar";
 import { totalContractsFormatter } from "../search/messages";
+import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
+import ContractFilterMenu from "./ContractFilterMenu";
 
 type GenericContractSearchResultProps<T> = {
   /**

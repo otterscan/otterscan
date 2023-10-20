@@ -1,8 +1,8 @@
+import { faCube } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { BlockTag } from "ethers";
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { BlockTag } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { blockURL } from "../url";
 import { commify } from "../utils/utils";
 

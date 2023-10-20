@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import TokenLogo from "./TokenLogo";
-import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
-import { ChecksummedAddress } from "../../../types";
 import {
   UniswapV1PairMeta,
   UniswapV1TokenMeta,
 } from "../../../api/address-resolver/UniswapV1Resolver";
+import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
+import { ChecksummedAddress } from "../../../types";
+import TokenLogo from "./TokenLogo";
 
 type UniswapV1ExchangeNameProps = {
   chainId: bigint;

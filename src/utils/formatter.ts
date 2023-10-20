@@ -1,22 +1,17 @@
 import {
-  TransactionResponseParams,
-  TransactionReceiptParams,
-  LogParams,
-  BlockParams,
-  makeError,
-  Transaction,
-  isHexString,
   AccessList,
-  accessListify,
-  ZeroAddress,
-  getAddress,
-  dataSlice,
-  getCreateAddress,
-  toQuantity,
-  dataLength,
-  zeroPadValue,
+  BlockParams,
+  LogParams,
   Signature,
+  TransactionReceiptParams,
+  TransactionResponseParams,
+  accessListify,
+  dataLength,
+  getAddress,
+  isHexString,
+  makeError,
   toBeHex,
+  zeroPadValue,
 } from "ethers";
 
 export type FormatFunc<T> = (value: any) => T;
@@ -160,7 +155,7 @@ class Formatter {
   // if value is null-ish, nullValue is returned
   static allowNull<T>(
     format: FormatFunc<T>,
-    nullValue?: any
+    nullValue?: any,
   ): FormatFunc<T | typeof nullValue> {
     return function (value: any) {
       if (value === null || value === undefined) {
@@ -237,7 +232,7 @@ class Formatter {
 
   static check<T extends Record<string, FormatFunc<any>>>(
     format: T,
-    object: any
+    object: any,
   ): FormatObject<T> {
     const result = {} as FormatObject<T>;
     for (const key in format) {
@@ -261,7 +256,7 @@ class Formatter {
   }
 
   static blockParamsWithTransactions(
-    blockObj: any
+    blockObj: any,
   ): BlockParamsWithTransactions {
     let blockWithTxsFormat = {
       ...Formatter.formats.block,
@@ -273,7 +268,7 @@ class Formatter {
   static logParams(receiptLogObj: any): LogParams {
     const nodeLog = Formatter.check(
       Formatter.formats.receiptLog,
-      receiptLogObj
+      receiptLogObj,
     );
     return {
       index: nodeLog.logIndex,
@@ -337,7 +332,7 @@ class Formatter {
     };
     const parsedTx: ParsedTransactionType = Formatter.check(
       Formatter.formats.transaction,
-      transaction
+      transaction,
     );
 
     const index = parsedTx.transactionIndex;

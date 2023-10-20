@@ -1,12 +1,12 @@
-import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFaucetDrip,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
-import ExternalLink from "./components/ExternalLink";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 import ContentFrame from "./components/ContentFrame";
+import ExternalLink from "./components/ExternalLink";
 import StandardFrame from "./components/StandardFrame";
 import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
@@ -20,7 +20,7 @@ const Faucets: React.FC = () => {
 
     const _urls: string[] = faucets.map((u) =>
       // eslint-disable-next-line no-template-curly-in-string
-      address !== null ? u.replaceAll("${ADDRESS}", address) : u
+      address !== null ? u.replaceAll("${ADDRESS}", address) : u,
     );
 
     // Shuffle faucets to avoid UI bias

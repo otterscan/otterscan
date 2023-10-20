@@ -1,9 +1,9 @@
 import { FC, memo } from "react";
-import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
-import { ChecksummedAddress } from "../types";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import { ResultMapper } from "../ots2/useUIHooks";
+import { ChecksummedAddress } from "../types";
 
 type ContractItemProps = {
   blockNumber: bigint;

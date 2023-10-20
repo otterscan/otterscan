@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import TokenLogo from "./TokenLogo";
 import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 import { TokenMeta } from "../../../types";
+import TokenLogo from "./TokenLogo";
 
 type TokenNameProps = {
   chainId: bigint;
@@ -87,7 +87,7 @@ export const tokenRenderer: ResolvedAddressRenderer<TokenMeta> = (
   address,
   tokenMeta,
   linkable,
-  dontOverrideColors
+  dontOverrideColors,
 ) => (
   <TokenName
     chainId={chainId}

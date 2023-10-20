@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
-import ParamDeclaration from "./ParamDeclaration";
 import { ParamType } from "ethers";
+import ParamDeclaration from "./ParamDeclaration";
 
 const meta = {
   component: ParamDeclaration,

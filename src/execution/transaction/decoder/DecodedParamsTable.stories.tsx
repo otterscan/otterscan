@@ -5,7 +5,6 @@ import { SourcifySource } from "../../../sourcify/useSourcify";
 import { ConnectionStatus } from "../../../types";
 import { AppConfigContext } from "../../../useAppConfig";
 import { RuntimeContext } from "../../../useRuntime";
-import DecodedParamsTable from "./DecodedParamsTable";
 import {
   AddressWithHelp,
   ArrayOfTupleWithHelp,
@@ -15,6 +14,7 @@ import {
   Uint256WithHelp,
   Uint8WithHelp,
 } from "./DecodedParamRow.stories";
+import DecodedParamsTable from "./DecodedParamsTable";
 
 const meta = {
   component: DecodedParamsTable,

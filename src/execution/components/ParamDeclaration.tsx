@@ -1,5 +1,5 @@
-import { FC } from "react";
 import { ParamType } from "ethers";
+import { FC } from "react";
 
 type ParamDeclarationProps = {
   input: ParamType;

@@ -17,7 +17,7 @@ export const Zero: Story = {
 export const Max: Story = {
   args: {
     r: BigInt(
-      "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
     ),
   },
 };

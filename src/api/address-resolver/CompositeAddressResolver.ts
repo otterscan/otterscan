@@ -14,7 +14,7 @@ export class CompositeAddressResolver<T = any>
 
   async resolveAddress(
     provider: AbstractProvider,
-    address: string
+    address: string,
   ): Promise<SelectedResolvedName<T> | undefined> {
     for (const r of this.resolvers) {
       try {

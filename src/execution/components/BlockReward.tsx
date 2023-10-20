@@ -1,6 +1,6 @@
 import { FC } from "react";
-import NativeTokenAmount from "../../components/NativeTokenAmount";
 import FiatValue, { rewardPreset } from "../../components/FiatValue";
+import NativeTokenAmount from "../../components/NativeTokenAmount";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { useFiatValue } from "../../usePriceOracle";
 

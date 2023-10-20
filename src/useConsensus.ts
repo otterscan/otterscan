@@ -101,7 +101,7 @@ const useEpochProposersURL = (epochNumber: number) => {
 const useCommitteeURL = (
   epochNumber: number,
   slotNumber: number,
-  committeeIndex: number
+  committeeIndex: number,
 ) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
@@ -114,7 +114,7 @@ export const useSlot = (slotNumber: number) => {
   const url = useBeaconBlockURL(slotNumber);
   const { data, error, isLoading, isValidating } = useSWR(
     url,
-    jsonFetcherWithErrorHandling
+    jsonFetcherWithErrorHandling,
   );
 
   return {
@@ -129,7 +129,7 @@ export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
   const { data, error, isLoading, isValidating } = useSWRImmutable(
     url,
-    jsonFetcherWithErrorHandling
+    jsonFetcherWithErrorHandling,
   );
 
   if (isLoading || isValidating) {
@@ -214,7 +214,7 @@ export const useProposerMap = (epochNumber: number) => {
   const url = useEpochProposersURL(epochNumber);
   const { data: proposers } = useSWRImmutable(
     url,
-    jsonFetcherWithErrorHandling
+    jsonFetcherWithErrorHandling,
   );
 
   const proposerMap = useMemo(() => {
@@ -285,7 +285,7 @@ export const useCommittee = (slotNumber: number, committeeIndex: number) => {
  */
 const useDynamicHeader = (
   tag: "finalized" | "head",
-  refreshInterval: number = 1000
+  refreshInterval: number = 1000,
 ) => {
   const url = useBeaconHeaderURL(tag);
   const { data, error } = useSWR(url, jsonFetcher, {
@@ -340,21 +340,21 @@ const parseSlotNumber = (slot: unknown): number | undefined => {
 
 // TODO: useMemo
 export const useHeadSlotNumber = (
-  refreshInterval: number = HEAD_SLOT_REFRESH_INTERVAL
+  refreshInterval: number = HEAD_SLOT_REFRESH_INTERVAL,
 ): number | undefined => {
   const slot = useDynamicHeader("head", refreshInterval);
   return parseSlotNumber(slot);
 };
 
 export const useFinalizedSlotNumber = (
-  refreshInterval: number = FINALIZED_SLOT_REFRESH_INTERVAL
+  refreshInterval: number = FINALIZED_SLOT_REFRESH_INTERVAL,
 ): number | undefined => {
   const slot = useDynamicHeader("finalized", refreshInterval);
   return parseSlotNumber(slot);
 };
 
 export const useHeadEpochNumber = (
-  refreshInterval: number = HEAD_EPOCH_REFRESH_INTERVAL
+  refreshInterval: number = HEAD_EPOCH_REFRESH_INTERVAL,
 ) => {
   const headSlot = useHeadSlotNumber(refreshInterval);
   if (headSlot === undefined) {

@@ -1,5 +1,5 @@
-import { FC, memo } from "react";
 import { FixedNumber } from "ethers";
+import { FC, memo } from "react";
 import FiatValue, { neutralPreset } from "./FiatValue";
 
 type USDAmountProps = {
@@ -26,7 +26,7 @@ const USDAmount: FC<USDAmountProps> = ({
   const fiatAmount = FixedNumber.fromValue(
     value,
     decimals,
-    `ufixed256x${decimals}`
+    `ufixed256x${decimals}`,
   );
 
   return <FiatValue value={fiatAmount} {...neutralPreset} />;

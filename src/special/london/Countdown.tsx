@@ -1,5 +1,5 @@
+import { Block, JsonRpcApiProvider } from "ethers";
 import React, { useEffect, useState } from "react";
-import { JsonRpcApiProvider, Block } from "ethers";
 import { commify } from "../../utils/utils";
 
 type CountdownProps = {

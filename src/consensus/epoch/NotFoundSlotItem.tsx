@@ -1,7 +1,7 @@
 import { FC, memo } from "react";
+import { useFinalizedSlotNumber } from "../../useConsensus";
 import { SlotAwareComponentProps } from "../types";
 import ScheduledOrMissedSlotItem from "./ScheduledOrMissedSlotItem";
-import { useFinalizedSlotNumber } from "../../useConsensus";
 
 type NotFoundSlotItemProps = SlotAwareComponentProps & {
   isValidating: boolean;

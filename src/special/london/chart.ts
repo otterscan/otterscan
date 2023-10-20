@@ -46,7 +46,7 @@ export const burntFeesChartOptions: ChartOptions<"line"> = {
 };
 
 export const burntFeesChartData = (
-  blocks: ExtendedBlock[]
+  blocks: ExtendedBlock[],
 ): ChartData<"line"> => ({
   labels: blocks.map((b) => b.number.toString()).reverse(),
   datasets: [

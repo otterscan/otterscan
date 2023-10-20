@@ -1,6 +1,6 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
 import Contract from "./Contract";
@@ -24,7 +24,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
     networkId,
     filename,
     sourcifySource,
-    type
+    type,
   );
 
   return (

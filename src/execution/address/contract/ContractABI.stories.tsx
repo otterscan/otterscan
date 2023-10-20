@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
-import ContractABI from "./ContractABI";
 import erc20 from "../../../erc20.json";
+import ContractABI from "./ContractABI";
 
 const meta = {
   component: ContractABI,

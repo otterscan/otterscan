@@ -1,6 +1,6 @@
 import { FC } from "react";
-import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
 import { ChecksummedAddress } from "../../../types";
+import TransactionAddressWithCopy from "../../components/TransactionAddressWithCopy";
 
 type AddressDecoderProps = {
   r: ChecksummedAddress;

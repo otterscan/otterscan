@@ -1,8 +1,8 @@
 import { FC, memo } from "react";
-import { useSelectionContext } from "./useSelection";
 import FormattedBalance, {
   FormattedBalanceProps,
 } from "../components/FormattedBalance";
+import { useSelectionContext } from "./useSelection";
 
 // TODO: replace all occurences with SelectionHighlighter and remove this component
 const FormattedBalanceHighlighter: FC<FormattedBalanceProps> = ({

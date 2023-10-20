@@ -1,15 +1,15 @@
 import { useContext } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import { RuntimeContext } from "./useRuntime";
 import { topic0URL } from "./url";
+import { RuntimeContext } from "./useRuntime";
 
 export type Topic0Entry = {
   signatures: string[] | undefined;
 };
 
 const topic0Fetcher: Fetcher<Topic0Entry | null | undefined, string> = async (
-  signatureURL
+  signatureURL,
 ) => {
   try {
     const res = await fetch(signatureURL);
@@ -37,11 +37,11 @@ const topic0Fetcher: Fetcher<Topic0Entry | null | undefined, string> = async (
  * @param rawTopic0 an hex string containing the keccak256 of event signature
  */
 export const useTopic0 = (
-  rawTopic0: string
+  rawTopic0: string,
 ): Topic0Entry | null | undefined => {
   if (rawTopic0.length !== 66 || !rawTopic0.startsWith("0x")) {
     throw new Error(
-      `rawTopic0 must contain a 32 bytes hex event signature starting with 0x; received value: "${rawTopic0}"`
+      `rawTopic0 must contain a 32 bytes hex event signature starting with 0x; received value: "${rawTopic0}"`,
     );
   }
 

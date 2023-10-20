@@ -1,12 +1,12 @@
 import { FC, useContext } from "react";
 import Blockies from "react-blockies";
-import { AddressAwareComponentProps } from "../types";
-import StandardSubtitle from "../../components/StandardSubtitle";
 import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
-import AddressAttributes from "./AddressAttributes";
-import { RuntimeContext } from "../../useRuntime";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import { useChainInfo } from "../../useChainInfo";
+import { RuntimeContext } from "../../useRuntime";
+import { AddressAwareComponentProps } from "../types";
+import AddressAttributes from "./AddressAttributes";
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
   isENS: boolean | undefined;

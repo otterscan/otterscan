@@ -1,39 +1,39 @@
-import React, { useEffect, useCallback, useContext } from "react";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tab } from "@headlessui/react";
+import { getAddress } from "ethers";
+import React, { useCallback, useContext } from "react";
 import {
-  Routes,
   Route,
+  Routes,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { getAddress } from "ethers";
-import { Tab } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import StandardFrame from "../components/StandardFrame";
-import AddressSubtitle from "./address/AddressSubtitle";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
-import SourcifyLogo from "../sourcify/SourcifyLogo";
-import AddressTransactionResults from "./address/AddressTransactionResults";
-import AddressERC20Results from "./address/AddressERC20Results";
-import AddressERC721Results from "./address/AddressERC721Results";
-import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksRewarded from "./address/BlocksRewarded";
-import AddressTokens from "./address/AddressTokens";
-import Contracts from "./address/Contracts";
-import ReadContract from "./address/contract/ReadContract";
-import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
-import { useAddressOrENS } from "../useResolvedAddresses";
-import { useSourcifyMetadata } from "../sourcify/useSourcify";
-import { ChecksummedAddress } from "../types";
-import { usePageTitle } from "../useTitle";
+import StandardFrame from "../components/StandardFrame";
 import {
   useAddressAttributes,
   useERC1167Impl,
 } from "../ots2/usePrototypeTransferHooks";
+import SourcifyLogo from "../sourcify/SourcifyLogo";
+import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { ChecksummedAddress } from "../types";
+import { useHasCode } from "../useErigonHooks";
+import { useAddressOrENS } from "../useResolvedAddresses";
+import { RuntimeContext } from "../useRuntime";
+import { usePageTitle } from "../useTitle";
+import AddressERC20Results from "./address/AddressERC20Results";
+import AddressERC721Results from "./address/AddressERC721Results";
+import AddressSubtitle from "./address/AddressSubtitle";
+import AddressTokens from "./address/AddressTokens";
+import AddressTransactionResults from "./address/AddressTransactionResults";
+import AddressWithdrawals from "./address/AddressWithdrawals";
+import BlocksRewarded from "./address/BlocksRewarded";
+import Contracts from "./address/Contracts";
+import ReadContract from "./address/contract/ReadContract";
 
 type AddressMainPageProps = {};
 
@@ -51,27 +51,27 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
         `/address/${address}${
           direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
-        { replace: true }
+        { replace: true },
       );
     },
-    [navigate, direction, searchParams]
+    [navigate, direction, searchParams],
   );
   const [checksummedAddress, isENS, error] = useAddressOrENS(
     addressOrName,
-    urlFixer
+    urlFixer,
   );
 
   const { config, provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?._network.chainId
+    provider?._network.chainId,
   );
   const attr = useAddressAttributes(provider, checksummedAddress);
   const proxyAddress =
     useERC1167Impl(
       provider,
-      attr && attr.erc1167 ? checksummedAddress : undefined
+      attr && attr.erc1167 ? checksummedAddress : undefined,
     ) ?? undefined;
   const checksummedProxyAddress = proxyAddress
     ? getAddress(proxyAddress)
@@ -79,7 +79,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
   const proxyMatch = useSourcifyMetadata(
     proxyHasCode ? checksummedProxyAddress : undefined,
-    provider?._network.chainId
+    provider?._network.chainId,
   );
 
   if (isENS || checksummedAddress === undefined) {

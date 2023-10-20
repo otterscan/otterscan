@@ -1,11 +1,10 @@
-import React, { useMemo } from "react";
-import { TransactionDescription } from "ethers";
-import { toUtf8String } from "ethers";
 import { Tab } from "@headlessui/react";
+import { TransactionDescription, toUtf8String } from "ethers";
+import React, { useMemo } from "react";
 import ModeTab from "../../../components/ModeTab";
-import DecodedParamsTable from "./DecodedParamsTable";
 import StandardTextarea from "../../../components/StandardTextarea";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
+import DecodedParamsTable from "./DecodedParamsTable";
 
 type InputDecoderProps = {
   fourBytes: string;

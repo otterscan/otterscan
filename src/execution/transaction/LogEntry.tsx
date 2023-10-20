@@ -1,16 +1,16 @@
-import React, { FC, memo, useContext, useMemo } from "react";
-import { Fragment, Interface, Log } from "ethers";
 import { Tab } from "@headlessui/react";
-import LogIndex from "./log/LogIndex";
-import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import { Fragment, Interface, Log } from "ethers";
+import React, { FC, memo, useContext, useMemo } from "react";
 import ModeTab from "../../components/ModeTab";
-import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { RuntimeContext } from "../../useRuntime";
+import { useTopic0 } from "../../useTopic0";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
+import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import LogIndex from "./log/LogIndex";
 import RawLog from "./log/RawLog";
 import TwoColumnPanel from "./log/TwoColumnPanel";
-import { useTopic0 } from "../../useTopic0";
-import { RuntimeContext } from "../../useRuntime";
-import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 
 type LogEntryProps = {
   log: Log;

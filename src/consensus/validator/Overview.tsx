@@ -1,14 +1,14 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import { balancePreset } from "../../components/FiatValue";
+import HexValue from "../../components/HexValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
-import { balancePreset } from "../../components/FiatValue";
 import Timestamp from "../../components/Timestamp";
-import HexValue from "../../components/HexValue";
-import EpochLink from "../components/EpochLink";
 import { useEpochTimestamp, useValidator } from "../../useConsensus";
-import { commify } from "../../utils/utils";
 import { usePageTitle } from "../../useTitle";
+import { commify } from "../../utils/utils";
+import EpochLink from "../components/EpochLink";
 import WithdrawalCredentials from "./WithdrawalCredentials";
 
 const GWEI = 10n ** 9n;
@@ -25,14 +25,14 @@ const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
   }
 
   const eligibleTimestamp = useEpochTimestamp(
-    validator?.data.validator.activation_eligibility_epoch
+    validator?.data.validator.activation_eligibility_epoch,
   );
   const activationTimestamp = useEpochTimestamp(
-    validator?.data.validator.activation_epoch
+    validator?.data.validator.activation_epoch,
   );
   const exitTimestamp = useEpochTimestamp(validator?.data.validator.exit_epoch);
   const withdrawableTimestamp = useEpochTimestamp(
-    validator?.data.validator.withdrawable_epoch
+    validator?.data.validator.withdrawable_epoch,
   );
 
   return (

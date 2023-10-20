@@ -1,17 +1,17 @@
-import { FC, useContext, useMemo, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { getAddress } from "ethers";
-import { AddressAwareComponentProps } from "../types";
+import { FC, useContext, useMemo, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
-import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
-import StandardTable from "../../components/StandardTable";
-import StandardTHead from "../../components/StandardTHead";
 import StandardTBody from "../../components/StandardTBody";
-import SearchResultNavBar from "../../search/SearchResultNavBar";
-import TokenBalance from "./TokenBalance";
-import { RuntimeContext } from "../../useRuntime";
-import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
+import StandardTHead from "../../components/StandardTHead";
+import StandardTable from "../../components/StandardTable";
 import { useTokenSet } from "../../kleros/useTokenList";
+import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
+import SearchResultNavBar from "../../search/SearchResultNavBar";
+import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
+import { RuntimeContext } from "../../useRuntime";
+import { AddressAwareComponentProps } from "../types";
+import TokenBalance from "./TokenBalance";
 
 const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);

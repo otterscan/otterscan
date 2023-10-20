@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext } from "react";
 import FormattedBalance from "../../components/FormattedBalance";
 import PercentageGauge from "../../components/PercentageGauge";
-import { RuntimeContext } from "../../useRuntime";
-import { useBlockDataFromTransaction } from "../../useErigonHooks";
-import { useChainInfo } from "../../useChainInfo";
 import { TransactionData } from "../../types";
+import { useChainInfo } from "../../useChainInfo";
+import { useBlockDataFromTransaction } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 
 type RewardSplitProps = {
   txData: TransactionData;

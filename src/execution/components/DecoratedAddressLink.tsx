@@ -1,6 +1,3 @@
-import { FC, memo, useContext } from "react";
-import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBomb,
   faBurn,
@@ -8,16 +5,19 @@ import {
   faMoneyBillAlt,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, memo, useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { resolverRendererRegistry } from "../../api/address-resolver";
+import AddressLegend from "../../components/AddressLegend";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
+import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
+import { useResolvedAddress } from "../../useResolvedAddresses";
+import { RuntimeContext } from "../../useRuntime";
+import AddressAttributes from "../address/AddressAttributes";
 import { AddressAwareComponentProps } from "../types";
 import PlainAddress from "./PlainAddress";
-import AddressLegend from "../../components/AddressLegend";
-import AddressAttributes from "../address/AddressAttributes";
-import { RuntimeContext } from "../../useRuntime";
-import { useSourcifyMetadata } from "../../sourcify/useSourcify";
-import { useResolvedAddress } from "../../useResolvedAddresses";
-import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
-import { resolverRendererRegistry } from "../../api/address-resolver";
 
 export type DecoratedAddressLinkProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
@@ -167,7 +167,7 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
     address,
     resolvedName,
     linkable,
-    !!dontOverrideColors
+    !!dontOverrideColors,
   );
 };
 

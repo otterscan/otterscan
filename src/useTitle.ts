@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
 import { BlockTag, isHexString } from "ethers";
-import { commify } from "./utils/utils";
+import { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
+import { commify } from "./utils/utils";
 
 /**
  * Set the page title.
@@ -32,13 +32,13 @@ export const useBlockPageTitle = (blockNumber: BlockTag) => {
 export const useBlockTransactionsPageTitle = (
   blockNumber: number,
   pageNumber: number,
-  pageCount: number | undefined
+  pageCount: number | undefined,
 ) => {
   if (blockNumber !== undefined) {
     usePageTitle(
       `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
         pageCount === undefined ? "" : "/" + pageCount
-      }`
+      }`,
     );
   }
 };

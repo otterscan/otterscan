@@ -1,8 +1,8 @@
 import React from "react";
-import InternalTransfer from "./InternalTransfer";
-import InternalSelfDestruct from "./InternalSelfDestruct";
+import { InternalOperation, OperationType, TransactionData } from "../types";
 import InternalCreate from "./InternalCreate";
-import { TransactionData, InternalOperation, OperationType } from "../types";
+import InternalSelfDestruct from "./InternalSelfDestruct";
+import InternalTransfer from "./InternalTransfer";
 
 type InternalTransactionOperationProps = {
   txData: TransactionData;

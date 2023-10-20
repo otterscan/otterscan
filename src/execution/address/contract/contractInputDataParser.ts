@@ -152,7 +152,7 @@ export class FixedBig {
   constructor(
     integer: Integer,
     decimal: Nullable<FixedBig_$0>,
-    exponent: UnsignedInteger
+    exponent: UnsignedInteger,
   ) {
     this.integer = integer;
     this.decimal = decimal;
@@ -165,7 +165,7 @@ export class FixedBig {
             10n **
               BigInt(
                 BigInt(this.exponent.value) -
-                  BigInt(this.decimal.value.value.length)
+                  BigInt(this.decimal.value.value.length),
               ) *
             (this.integer.parts.sign === "-" ? -1n : 1n)
           : 0n)
@@ -287,7 +287,7 @@ export class Parser {
   }
   public matchValuesArray(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<ValuesArray> {
     return this.run<ValuesArray>($$dpth, () => {
       let $scope$elements: Nullable<Nullable<Values>>;
@@ -323,7 +323,7 @@ export class Parser {
   }
   public matchValues_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Values_$0> {
     return this.run<Values_$0>($$dpth, () => {
       let $scope$vals: Nullable<Values>;
@@ -341,7 +341,7 @@ export class Parser {
   }
   public matchHexValue(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<HexValue> {
     return this.run<HexValue>($$dpth, () => {
       let $scope$value: Nullable<HexValue_$0>;
@@ -357,13 +357,13 @@ export class Parser {
   }
   public matchHexValue_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<HexValue_$0> {
     return this.regexAccept(String.raw`(?:0x[a-f0-9]*)`, "i", $$dpth + 1, $$cr);
   }
   public matchUnsignedInteger(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<UnsignedInteger> {
     return this.run<UnsignedInteger>($$dpth, () => {
       let $scope$value: Nullable<UnsignedInteger_$0>;
@@ -379,7 +379,7 @@ export class Parser {
   }
   public matchUnsignedInteger_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<UnsignedInteger_$0> {
     return this.regexAccept(String.raw`(?:[0-9]+)`, "", $$dpth + 1, $$cr);
   }
@@ -398,7 +398,7 @@ export class Parser {
   }
   public matchInteger_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Integer_$0> {
     return this.run<Integer_$0>($$dpth, () => {
       let $scope$sign: Nullable<Nullable<string>>;
@@ -410,7 +410,7 @@ export class Parser {
           String.raw`(?:-)`,
           "",
           $$dpth + 1,
-          $$cr
+          $$cr,
         )) ||
           true) &&
         ($scope$abs = this.matchUnsignedInteger($$dpth + 1, $$cr)) !== null
@@ -426,7 +426,7 @@ export class Parser {
   }
   public matchFixedBig(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<FixedBig> {
     return this.run<FixedBig>($$dpth, () => {
       let $scope$integer: Nullable<Integer>;
@@ -447,7 +447,7 @@ export class Parser {
   }
   public matchFixedBig_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<FixedBig_$0> {
     return this.run<FixedBig_$0>($$dpth, () => {
       let $scope$value: Nullable<UnsignedInteger>;
@@ -464,7 +464,7 @@ export class Parser {
   }
   public matchEscapeSequence(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<EscapeSequence> {
     return this.run<EscapeSequence>($$dpth, () => {
       let $scope$escaped: Nullable<EscapeSequence_$0>;
@@ -481,7 +481,7 @@ export class Parser {
   }
   public matchEscapeSequence_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<EscapeSequence_$0> {
     return this.run<EscapeSequence_$0>($$dpth, () => {
       let $scope$label: Nullable<string>;
@@ -493,7 +493,7 @@ export class Parser {
           String.raw`(?:[n"\'\\])`,
           "",
           $$dpth + 1,
-          $$cr
+          $$cr,
         )) !== null
       ) {
         $$res = { kind: ASTKinds.EscapeSequence_$0, label: $scope$label };
@@ -503,7 +503,7 @@ export class Parser {
   }
   public matchCharacter(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Character> {
     return this.choice<Character>([
       () => this.matchCharacter_1($$dpth + 1, $$cr),
@@ -512,7 +512,7 @@ export class Parser {
   }
   public matchCharacter_1(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Character_1> {
     return this.run<Character_1>($$dpth, () => {
       let $scope$char: Nullable<string>;
@@ -520,13 +520,13 @@ export class Parser {
       if (
         true &&
         this.negate(() =>
-          this.regexAccept(String.raw`(?:["\n\\])`, "", $$dpth + 1, $$cr)
+          this.regexAccept(String.raw`(?:["\n\\])`, "", $$dpth + 1, $$cr),
         ) !== null &&
         ($scope$char = this.regexAccept(
           String.raw`(?:.)`,
           "",
           $$dpth + 1,
-          $$cr
+          $$cr,
         )) !== null
       ) {
         $$res = { kind: ASTKinds.Character_1, char: $scope$char };
@@ -536,13 +536,13 @@ export class Parser {
   }
   public matchCharacter_2(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Character_2> {
     return this.matchEscapeSequence($$dpth + 1, $$cr);
   }
   public matchUnquotedString(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<UnquotedString> {
     return this.run<UnquotedString>($$dpth, () => {
       let $scope$chars: Nullable<UnquotedString_$0[]>;
@@ -552,7 +552,7 @@ export class Parser {
         ($scope$chars = this.loop<UnquotedString_$0>(
           () => this.matchUnquotedString_$0($$dpth + 1, $$cr),
           0,
-          -1
+          -1,
         )) !== null
       ) {
         $$res = new UnquotedString($scope$chars);
@@ -562,13 +562,13 @@ export class Parser {
   }
   public matchUnquotedString_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<UnquotedString_$0> {
     return this.matchCharacter($$dpth + 1, $$cr);
   }
   public matchQuotedString(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<QuotedString> {
     return this.run<QuotedString>($$dpth, () => {
       let $scope$str: Nullable<UnquotedString>;
@@ -599,7 +599,7 @@ export class Parser {
   }
   public matchBoolean_$0(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Boolean_$0> {
     return this.choice<Boolean_$0>([
       () => this.matchBoolean_$0_1($$dpth + 1, $$cr),
@@ -608,13 +608,13 @@ export class Parser {
   }
   public matchBoolean_$0_1(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Boolean_$0_1> {
     return this.regexAccept(String.raw`(?:true)`, "", $$dpth + 1, $$cr);
   }
   public matchBoolean_$0_2(
     $$dpth: number,
-    $$cr?: ErrorTracker
+    $$cr?: ErrorTracker,
   ): Nullable<Boolean_$0_2> {
     return this.regexAccept(String.raw`(?:false)`, "", $$dpth + 1, $$cr);
   }
@@ -712,7 +712,7 @@ export class Parser {
     match: string,
     mods: string,
     dpth: number,
-    cr?: ErrorTracker
+    cr?: ErrorTracker,
   ): Nullable<string> {
     return this.run<string>(dpth, () => {
       const reg = new RegExp(match, "y" + mods);
@@ -774,7 +774,7 @@ export class Parser {
   // @ts-ignore: Memoise may not be used
   private memoise<K>(
     rule: $$RuleType<K>,
-    memo: Map<number, [Nullable<K>, PosInfo]>
+    memo: Map<number, [Nullable<K>, PosInfo]>,
   ): Nullable<K> {
     const $scope$pos = this.mark();
     const $scope$memoRes = memo.get($scope$pos.overallPos);
@@ -827,7 +827,7 @@ export class SyntaxErr {
     return `Syntax Error at line ${this.pos.line}:${
       this.pos.offset
     }. Expected one of ${this.expmatches.map((x) =>
-      x.kind === "EOF" ? " EOF" : ` ${x.negated ? "not " : ""}'${x.literal}'`
+      x.kind === "EOF" ? " EOF" : ` ${x.negated ? "not " : ""}'${x.literal}'`,
     )}`;
   }
 }

@@ -1,10 +1,10 @@
-import React from "react";
 import { AbstractProvider } from "ethers";
+import React from "react";
 
 export interface IAddressResolver<T> {
   resolveAddress(
     provider: AbstractProvider,
-    address: string
+    address: string,
   ): Promise<T | undefined>;
 }
 
@@ -13,5 +13,5 @@ export type ResolvedAddressRenderer<T> = (
   address: string,
   resolvedAddress: T,
   linkable: boolean,
-  dontOverrideColors: boolean
+  dontOverrideColors: boolean,
 ) => React.ReactElement;

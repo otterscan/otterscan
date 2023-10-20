@@ -1,4 +1,11 @@
 import {
+  JsonRpcApiProvider,
+  TransactionReceiptParams,
+  TransactionResponse,
+  isAddress,
+  isHexString,
+} from "ethers";
+import {
   ChangeEventHandler,
   FormEventHandler,
   RefObject,
@@ -6,13 +13,6 @@ import {
   useState,
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
-import {
-  JsonRpcApiProvider,
-  TransactionResponse,
-  TransactionReceiptParams,
-} from "ethers";
-import { isAddress } from "ethers";
-import { isHexString } from "ethers";
 import useKeyboardShortcut from "use-keyboard-shortcut";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
@@ -21,7 +21,7 @@ import { formatter } from "../utils/formatter";
 export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
   const _res: TransactionResponse[] = _rawRes.txs.map(
     (t: any) =>
-      new TransactionResponse(formatter.transactionResponse(t), provider)
+      new TransactionResponse(formatter.transactionResponse(t), provider),
   );
 
   return {
@@ -61,7 +61,7 @@ export class SearchController {
     txs: ProcessedTransaction[],
     readonly isFirst: boolean,
     readonly isLast: boolean,
-    boundToStart: boolean
+    boundToStart: boolean,
   ) {
     this.txs = txs;
     if (boundToStart) {
@@ -76,7 +76,7 @@ export class SearchController {
   private static async readBackPage(
     provider: JsonRpcApiProvider,
     address: string,
-    baseBlock: number
+    baseBlock: number,
   ): Promise<TransactionChunk> {
     const _rawRes = await provider.send("ots_searchTransactionsBefore", [
       address,
@@ -89,7 +89,7 @@ export class SearchController {
   private static async readForwardPage(
     provider: JsonRpcApiProvider,
     address: string,
-    baseBlock: number
+    baseBlock: number,
   ): Promise<TransactionChunk> {
     const _rawRes = await provider.send("ots_searchTransactionsAfter", [
       address,
@@ -101,7 +101,7 @@ export class SearchController {
 
   static async firstPage(
     provider: JsonRpcApiProvider,
-    address: string
+    address: string,
   ): Promise<SearchController> {
     const newTxs = await SearchController.readBackPage(provider, address, 0);
     return new SearchController(
@@ -109,7 +109,7 @@ export class SearchController {
       newTxs.txs,
       newTxs.firstPage,
       newTxs.lastPage,
-      true
+      true,
     );
   }
 
@@ -117,7 +117,7 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     address: string,
     hash: string,
-    next: boolean
+    next: boolean,
   ): Promise<SearchController> {
     const tx = await provider.getTransaction(hash);
     // TODO: Can we actually infer that this transaction is not null?
@@ -126,20 +126,20 @@ export class SearchController {
       : await SearchController.readForwardPage(
           provider,
           address,
-          tx!.blockNumber!
+          tx!.blockNumber!,
         );
     return new SearchController(
       address,
       newTxs.txs,
       newTxs.firstPage,
       newTxs.lastPage,
-      next
+      next,
     );
   }
 
   static async lastPage(
     provider: JsonRpcApiProvider,
-    address: string
+    address: string,
   ): Promise<SearchController> {
     const newTxs = await SearchController.readForwardPage(provider, address, 0);
     return new SearchController(
@@ -147,7 +147,7 @@ export class SearchController {
       newTxs.txs,
       newTxs.firstPage,
       newTxs.lastPage,
-      false
+      false,
     );
   }
 
@@ -157,7 +157,7 @@ export class SearchController {
 
   async prevPage(
     provider: JsonRpcApiProvider,
-    hash: string
+    hash: string,
   ): Promise<SearchController> {
     // Already on this page
     if (this.txs[this.pageEnd - 1].hash === hash) {
@@ -170,14 +170,14 @@ export class SearchController {
       const prevPage = await SearchController.readForwardPage(
         provider,
         this.address,
-        baseBlock
+        baseBlock,
       );
       return new SearchController(
         this.address,
         prevPage.txs.concat(overflowPage),
         prevPage.firstPage,
         prevPage.lastPage,
-        false
+        false,
       );
     }
 
@@ -186,7 +186,7 @@ export class SearchController {
 
   async nextPage(
     provider: JsonRpcApiProvider,
-    hash: string
+    hash: string,
   ): Promise<SearchController> {
     // Already on this page
     if (this.txs[this.pageStart].hash === hash) {
@@ -199,14 +199,14 @@ export class SearchController {
       const nextPage = await SearchController.readBackPage(
         provider,
         this.address,
-        baseBlock
+        baseBlock,
       );
       return new SearchController(
         this.address,
         overflowPage.concat(nextPage.txs),
         nextPage.firstPage,
         nextPage.lastPage,
-        true
+        true,
       );
     }
 
@@ -231,7 +231,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     navigate(
       `/address/${maybeAddress}${
         maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-      }`
+      }`,
     );
     return;
   }
@@ -289,14 +289,16 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
 
   // Assume it is an ENS name
   navigate(
-    `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`
+    `/address/${maybeAddress}${
+      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
+    }`,
   );
 };
 
 export const useGenericSearch = (): [
   RefObject<HTMLInputElement>,
   ChangeEventHandler<HTMLInputElement>,
-  FormEventHandler<HTMLFormElement>
+  FormEventHandler<HTMLFormElement>,
 ] => {
   const [searchString, setSearchString] = useState<string>("");
   const [canSubmit, setCanSubmit] = useState<boolean>(false);
@@ -328,7 +330,7 @@ export const useGenericSearch = (): [
     },
     {
       overrideSystem: true,
-    }
+    },
   );
 
   return [searchRef, handleChange, handleSubmit];

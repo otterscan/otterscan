@@ -1,7 +1,7 @@
+import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFaucetDrip } from "@fortawesome/free-solid-svg-icons";
 import { AddressAwareComponentProps } from "../execution/types";
 
 type FaucetProps = AddressAwareComponentProps & {

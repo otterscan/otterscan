@@ -1,9 +1,8 @@
 import { FC, memo } from "react";
 import BlockLink from "../../components/BlockLink";
 import TimestampAge from "../../components/TimestampAge";
-import { AddressAwareComponentProps } from "../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { commify } from "../../utils/utils";
+import { AddressAwareComponentProps } from "../types";
 
 export type BlockRewardedItemProps = AddressAwareComponentProps & {
   blockNumber: number;

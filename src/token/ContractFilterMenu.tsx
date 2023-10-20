@@ -1,8 +1,8 @@
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Menu } from "@headlessui/react";
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { contractFilters } from "./filters";
 
 type ContractFilterMenuProps = {

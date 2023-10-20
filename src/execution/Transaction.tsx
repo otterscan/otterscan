@@ -1,15 +1,15 @@
-import { FC, lazy, Suspense, useContext, useEffect } from "react";
-import { useParams, Route, Routes } from "react-router-dom";
 import { Tab } from "@headlessui/react";
-import StandardFrame from "../components/StandardFrame";
-import StandardSubtitle from "../components/StandardSubtitle";
+import { FC, lazy, Suspense, useContext } from "react";
+import { Route, Routes, useParams } from "react-router-dom";
 import ContentFrame from "../components/ContentFrame";
 import NavTab from "../components/NavTab";
+import StandardFrame from "../components/StandardFrame";
+import StandardSubtitle from "../components/StandardSubtitle";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import { RuntimeContext } from "../useRuntime";
-import { useTxData } from "../useErigonHooks";
-import { SelectedTransactionContext } from "../useSelectedTransaction";
 import { BlockNumberContext } from "../useBlockTagContext";
+import { useTxData } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import { SelectedTransactionContext } from "../useSelectedTransaction";
 import { usePageTitle } from "../useTitle";
 
 const Details = lazy(() => import("./transaction/Details"));

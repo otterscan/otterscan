@@ -1,11 +1,11 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { ParamType } from "ethers";
-import DecodedParamRow from "./DecodedParamRow";
-import { RuntimeContext } from "../../../useRuntime";
+import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
+import { SourcifySource } from "../../../sourcify/useSourcify";
 import { ConnectionStatus } from "../../../types";
 import { AppConfigContext } from "../../../useAppConfig";
-import { SourcifySource } from "../../../sourcify/useSourcify";
-import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
+import { RuntimeContext } from "../../../useRuntime";
+import DecodedParamRow from "./DecodedParamRow";
 
 const meta = {
   component: DecodedParamRow,
@@ -119,7 +119,7 @@ export const TupleWithHelp: Story = {
 export const ArrayOfTuple: Story = {
   args: {
     paramType: ParamType.from(
-      "tuple(uint8, bool, uint256)[] arrTupleParamName"
+      "tuple(uint8, bool, uint256)[] arrTupleParamName",
     ),
     r: [
       [1, true, 42],

@@ -1,8 +1,8 @@
 import { FC } from "react";
 import NavBlock from "../../components/NavBlock";
+import { epochURL } from "../../url";
 import { EPOCHS_AFTER_HEAD, useHeadEpochNumber } from "../../useConsensus";
 import { EpochAwareComponentProps } from "../types";
-import { epochURL } from "../../url";
 
 const EpochNavBlock: FC<EpochAwareComponentProps> = ({ epochNumber }) => {
   const headEpochNumber = useHeadEpochNumber();

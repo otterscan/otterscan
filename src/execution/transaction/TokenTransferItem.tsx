@@ -1,14 +1,14 @@
-import { FC, memo, useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretRight, faSackDollar } from "@fortawesome/free-solid-svg-icons";
-import TransactionAddress from "../components/TransactionAddress";
-import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, memo, useContext } from "react";
 import USDAmount from "../../components/USDAmount";
-import { RuntimeContext } from "../../useRuntime";
+import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
+import { AddressContext, TokenTransfer } from "../../types";
 import { useBlockNumberContext } from "../../useBlockTagContext";
 import { useTokenMetadata } from "../../useErigonHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
-import { AddressContext, TokenTransfer } from "../../types";
+import { RuntimeContext } from "../../useRuntime";
+import TransactionAddress from "../components/TransactionAddress";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;

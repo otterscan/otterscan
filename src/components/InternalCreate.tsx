@@ -1,10 +1,10 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import TransactionAddress from "../execution/components/TransactionAddress";
-import AddressHighlighter from "./AddressHighlighter";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
+import TransactionAddress from "../execution/components/TransactionAddress";
 import { InternalOperation } from "../types";
+import AddressHighlighter from "./AddressHighlighter";
 
 type InternalCreateProps = {
   internalOp: InternalOperation;
