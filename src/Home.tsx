@@ -15,6 +15,7 @@ import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import Header from "./Header";
 import RecentBlocks from "./execution/block/RecentBlocks";
 import RecentDSBlocks from "./execution/block/RecentDSBlocks";
+import ChainInfo from "./execution/ChainInfo";
 
 
 const Home: FC = () => {
@@ -30,7 +31,10 @@ const Home: FC = () => {
   return (
       <>
       <Header sourcifyPresent= {false} />
-<     <div className="grid grid-cols-5 gap-x-1 mx-1">
+      <div className="mx-1 my-1">
+      <ChainInfo />
+      </div>
+      <div className="grid grid-cols-5 gap-x-1 mx-1">
         <span className="col-span-2">
           <RecentDSBlocks />
         </span>

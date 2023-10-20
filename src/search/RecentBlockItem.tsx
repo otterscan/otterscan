@@ -40,7 +40,7 @@ const RecentBlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
         )}
         {feeDisplay === FeeDisplay.GAS_PRICE && formatValue(block.gasUsed, 9)}
     </span>
-    <span>
+    <span className="truncate">
         <BlockReward block={block} />
     </span>
     <TimestampAge timestamp={block.timestamp}/>

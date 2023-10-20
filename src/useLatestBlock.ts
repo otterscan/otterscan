@@ -5,7 +5,6 @@ import { Block } from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Zilliqa } from "@zilliqa-js/zilliqa";
 import { BlockchainInfo } from '@zilliqa-js/core/dist/types/src/types'
-import { useBlockChainInfo } from "./useZilliqaHooks";
 
 const refreshRate = 30000 // In milliseconds
 
@@ -120,3 +119,46 @@ export const useLatestBlockChainInfo = (zilliqa?: Zilliqa)
 
   return latestBlockChainInfo;
 };
+
+interface BCInfoState {
+  startTxBlock: number,
+  maxTPS: number,
+  maxTPSTxBlockNum: number,
+  maxTxnCount: number,
+  maxTxnCountTxBlockNum: number
+}
+
+export const useBCInfoStateInfo = (latestBlockChainInfo?: BlockchainInfo)  
+: BCInfoState | undefined => {
+
+  const [state, setState] = useState<BCInfoState>();
+
+  useEffect(() => {
+    setState((prevState: BCInfoState | undefined) => {
+      if(latestBlockChainInfo === undefined) return prevState;
+
+      if(prevState === undefined){
+        return {
+          startTxBlock: parseInt(latestBlockChainInfo.NumTxBlocks, 10) - 1,
+          maxTPS: latestBlockChainInfo.TransactionRate,
+          maxTPSTxBlockNum: parseInt(latestBlockChainInfo.NumTxBlocks, 10) - 1, 
+          maxTxnCount: parseInt(latestBlockChainInfo.NumTxnsTxEpoch, 10),
+          maxTxnCountTxBlockNum: parseInt(latestBlockChainInfo.NumTxBlocks, 10) - 1,
+        };
+      };
+        
+      const newState : BCInfoState = { ...prevState};
+      if (prevState.maxTPS <= latestBlockChainInfo.TransactionRate) {
+        newState.maxTPS = latestBlockChainInfo.TransactionRate
+        newState.maxTPSTxBlockNum = parseInt(latestBlockChainInfo.NumTxBlocks, 10) - 1
+      }
+      if (prevState.maxTxnCount <= parseInt(latestBlockChainInfo.NumTxnsTxEpoch, 10)) {
+        newState.maxTxnCount = parseInt(latestBlockChainInfo.NumTxnsTxEpoch, 10)
+        newState.maxTxnCountTxBlockNum = parseInt(latestBlockChainInfo.NumTxBlocks, 10) - 1
+      }
+      return newState
+    });
+  }, [latestBlockChainInfo]);
+
+  return state;
+}
