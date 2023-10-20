@@ -6,7 +6,7 @@
   "type": "module",
   "dependencies": {
     "@chainlink/contracts": "^0.8.0",
-    "@fontsource/fira-code": "^5.0.13",
+    "@fontsource/fira-code": "^5.0.14",
     "@fontsource/roboto": "^5.0.8",
     "@fontsource/roboto-mono": "^5.0.13",
     "@fontsource/space-grotesk": "^5.0.14",
