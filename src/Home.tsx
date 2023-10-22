@@ -32,7 +32,7 @@ const Home: FC = () => {
         <Logo />
       </div>
       <form
-        className="flex w-1/3 flex-col"
+        className="flex min-w-[24rem] w-1/3 flex-col"
         onSubmit={handleSubmit}
         autoComplete="off"
         spellCheck={false}
