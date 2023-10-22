@@ -4,7 +4,6 @@ import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
-import { type OtterscanConfig } from "../useConfig";
 import { RuntimeContext } from "../useRuntime";
 
 export type UserMethod = {
@@ -91,26 +90,35 @@ export enum SourcifySource {
   CENTRAL_SERVER = "central_server",
 }
 
+export type SourcifySourceMap = { [key: string]: string };
+
 const sourcifyIPNS =
   "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
 const defaultIpfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
 const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
 
-const sourcifySources = {
+const defaultSourcifySources = {
   [SourcifySource.IPFS_IPNS]: defaultIpfsGatewayPrefix,
   [SourcifySource.CENTRAL_SERVER]: sourcifyHttpRepoPrefix,
 };
 
 function resolveSourcifySource(
   source: SourcifySource,
-  config?: OtterscanConfig,
+  sourcifySources: SourcifySourceMap,
 ): string {
-  const sources = (config && config.sourcifySources) || sourcifySources;
-  if (source in sources) {
-    return sources[source];
+  if (source in sourcifySources) {
+    return sourcifySources[source];
   } else {
     throw new Error(`Unknown Sourcify integration source code: ${source}`);
   }
+}
+
+function useSourcifySources(): SourcifySourceMap {
+  const { config } = useContext(RuntimeContext);
+  if (!config) {
+    return {};
+  }
+  return config.sourcifySources ?? defaultSourcifySources;
 }
 
 /**
@@ -122,9 +130,9 @@ export const sourcifyMetadata = (
   chainId: bigint,
   source: SourcifySource,
   type: MatchType,
-  config?: OtterscanConfig,
+  sourcifySources: SourcifySourceMap,
 ) =>
-  `${resolveSourcifySource(source, config)}/contracts/${
+  `${resolveSourcifySource(source, sourcifySources)}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
   }/${chainId}/${address}/metadata.json`;
 
@@ -134,9 +142,9 @@ export const sourcifySourceFile = (
   filepath: string,
   source: SourcifySource,
   type: MatchType,
-  config?: OtterscanConfig,
+  sourcifySources: SourcifySourceMap,
 ) =>
-  `${resolveSourcifySource(source, config)}/contracts/${
+  `${resolveSourcifySource(source, sourcifySources)}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
   }/${chainId}/${address}/sources/${filepath}`;
 
@@ -152,8 +160,8 @@ export type Match = {
 
 const sourcifyFetcher: Fetcher<
   Match | null | undefined,
-  ["sourcify", ChecksummedAddress, bigint, SourcifySource, OtterscanConfig?]
-> = async ([_, address, chainId, sourcifySource, config]) => {
+  ["sourcify", ChecksummedAddress, bigint, SourcifySource, SourcifySourceMap]
+> = async ([_, address, chainId, sourcifySource, sourcifySources]) => {
   // Try full match
   try {
     const url = sourcifyMetadata(
@@ -161,7 +169,7 @@ const sourcifyFetcher: Fetcher<
       chainId,
       sourcifySource,
       MatchType.FULL_MATCH,
-      config,
+      sourcifySources,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -183,7 +191,7 @@ const sourcifyFetcher: Fetcher<
       chainId,
       sourcifySource,
       MatchType.PARTIAL_MATCH,
-      config,
+      sourcifySources,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -206,7 +214,7 @@ export const useSourcifyMetadata = (
   chainId: bigint | undefined,
 ): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
-  const { config } = useContext(RuntimeContext);
+  const sourcifySources = useSourcifySources();
   const metadataURL = () =>
     address === undefined || chainId === undefined
       ? null
@@ -214,7 +222,7 @@ export const useSourcifyMetadata = (
   const { data, error } = useSWRImmutable<Match | null | undefined>(
     metadataURL,
     (key: ["sourcify", string, bigint, SourcifySource]) =>
-      sourcifyFetcher([...key, config]),
+      sourcifyFetcher([...key, sourcifySources]),
   );
   if (error) {
     return null;
@@ -237,7 +245,7 @@ export const useContract = (
   sourcifySource: SourcifySource,
   type: MatchType,
 ) => {
-  const { config } = useContext(RuntimeContext);
+  const sourcifySources = useSourcifySources();
   const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
   const url = sourcifySourceFile(
     checksummedAddress,
@@ -245,7 +253,7 @@ export const useContract = (
     normalizedFilename,
     sourcifySource,
     type,
-    config,
+    sourcifySources,
   );
 
   const { data, error } = useSWRImmutable(url, contractFetcher);
