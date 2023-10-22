@@ -7,17 +7,20 @@ type ParamDeclarationProps = {
 };
 
 const ParamDeclaration: FC<ParamDeclarationProps> = ({ input, index }) => {
-  if (input.isArray() || input.isTuple()) {
+  let paramTypeName = input.type;
+  if (input.isArray()) {
     return (
       <span className="text-sm font-medium text-gray-600">
         {input.format("full")}
       </span>
     );
+  } else if (input.isTuple()) {
+    paramTypeName = "tuple(...)";
   }
 
   return (
     <span className="font-code text-sm font-medium text-blue-700">
-      <span className="text-red-700">{input.type}</span>{" "}
+      <span className="text-red-700">{paramTypeName}</span>{" "}
       {input.name !== "" ? (
         input.name
       ) : (

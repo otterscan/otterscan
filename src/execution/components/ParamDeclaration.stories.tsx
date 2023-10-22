@@ -29,3 +29,12 @@ export const UnnamedParam: Story = {
     input: ParamType.from("address"),
   },
 };
+
+export const OrderTuple: Story = {
+  args: {
+    ...Address.args,
+    input: ParamType.from(
+      "tuple(uint256 info, address makerAsset, address takerAsset, address maker, address allowedSender, uint256 makingAmount, uint256 takingAmount) order",
+    ),
+  },
+};
