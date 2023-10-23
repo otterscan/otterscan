@@ -19,7 +19,7 @@ const Header: FC = () => {
   return (
     <>
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="flex flex-col sm:flex-row items-baseline justify-between px-9 py-2">
+      <div className="flex flex-col sm:flex-row items-baseline space-y-1 sm:space-y-0 justify-between px-9 py-2">
         <div className="flex flex-row justify-between sm:self-center items-center w-full sm:w-auto">
           <Link className="self-center" to="/">
             <div className="flex items-center space-x-2 font-title text-2xl font-bold text-link-blue">
