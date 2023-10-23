@@ -25,9 +25,7 @@ const Transaction: FC = () => {
   const { provider } = useContext(RuntimeContext);
   const txData = useTxData(provider, txHash);
 
-  if (txData) {
-    usePageTitle(`Transaction ${txData.transactionHash}`);
-  }
+  usePageTitle(txData ? `Transaction ${txData.transactionHash}` : undefined);
 
   return (
     <SelectedTransactionContext.Provider value={txData}>
