@@ -246,15 +246,12 @@ export const useAddressAttributes = (
   provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
 ): AddressAttributes | undefined => {
-  if (address === undefined) {
-    return undefined;
-  }
   const fetcher = providerFetcher(provider);
   const { data, error } = useSWR(
     ["ots2_getAddressAttributes", address],
     fetcher,
   );
-  if (error) {
+  if (address === undefined || error) {
     return undefined;
   }
 

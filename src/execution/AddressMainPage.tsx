@@ -82,11 +82,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     provider?._network.chainId,
   );
 
-  if (isENS || checksummedAddress === undefined) {
-    usePageTitle(`Address ${addressOrName}`);
-  } else {
-    usePageTitle(`Address ${checksummedAddress}`);
-  }
+  usePageTitle(`Address ${(isENS || checksummedAddress === undefined) ? addressOrName : checksummedAddress}`);
 
   return (
     <StandardFrame>

@@ -7,10 +7,10 @@ import { commify } from "./utils/utils";
  * Set the page title.
  */
 export const usePageTitle = (title: string | undefined) => {
+  const { config } = useContext(RuntimeContext);
   if (title === undefined) {
     return;
   }
-  const { config } = useContext(RuntimeContext);
   const siteName = config?.branding?.siteName || "Otterscan";
   document.title = `${title} | ${siteName}`;
 };
@@ -34,11 +34,11 @@ export const useBlockTransactionsPageTitle = (
   pageNumber: number,
   pageCount: number | undefined,
 ) => {
-  if (blockNumber !== undefined) {
-    usePageTitle(
-      `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
-        pageCount === undefined ? "" : "/" + pageCount
-      }`,
-    );
-  }
+  usePageTitle(
+    blockNumber === undefined
+      ? undefined
+      : `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
+          pageCount === undefined ? "" : "/" + pageCount
+        }`,
+  );
 };
