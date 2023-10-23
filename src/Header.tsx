@@ -19,23 +19,30 @@ const Header: FC = () => {
   return (
     <>
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="flex items-baseline justify-between px-9 py-2">
-        <Link className="self-center" to="/">
-          <div className="flex items-center space-x-2 font-title text-2xl font-bold text-link-blue">
-            <img
-              className="rounded-full"
-              src={Otter}
-              width={32}
-              height={32}
-              alt="An otter scanning"
-              title="An otter scanning"
-            />
-            <span>
-              {config?.branding?.siteName || "Otterscan"}
-              {config?.experimental && <span className="text-red-400">2</span>}
-            </span>
+      <div className="flex flex-col sm:flex-row items-baseline space-y-1 sm:space-y-0 justify-between px-9 py-2">
+        <div className="flex flex-row justify-between sm:self-center items-center w-full sm:w-auto">
+          <Link className="self-center" to="/">
+            <div className="flex items-center space-x-2 font-title text-2xl font-bold text-link-blue">
+              <img
+                className="rounded-full"
+                src={Otter}
+                width={32}
+                height={32}
+                alt="An otter scanning"
+                title="An otter scanning"
+              />
+              <span>
+                {config?.branding?.siteName || "Otterscan"}
+                {config?.experimental && (
+                  <span className="text-red-400">2</span>
+                )}
+              </span>
+            </div>
+          </Link>
+          <div className="inline sm:hidden">
+            <SourcifyMenu />
           </div>
-        </Link>
+        </div>
         <div className="flex items-baseline space-x-3">
           {provider?._network.chainId === 1n && <PriceBox />}
           <form
@@ -73,7 +80,9 @@ const Header: FC = () => {
               Search
             </button>
           </form>
-          <SourcifyMenu />
+          <div className="hidden sm:inline self-stretch">
+            <SourcifyMenu />
+          </div>
         </div>
       </div>
     </>
