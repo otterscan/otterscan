@@ -102,6 +102,10 @@ export type OtterscanConfig = {
      */
     siteName?: string;
     /**
+     * Additional name shown only in page titles.
+     */
+    networkTitle?: string;
+    /**
      * If set to true, hides new feature announcements on the home page.
      */
     hideAnnouncements?: boolean;
