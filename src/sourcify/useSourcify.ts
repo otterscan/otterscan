@@ -92,8 +92,7 @@ export enum SourcifySource {
 
 export type SourcifySourceMap = { [key: string]: string };
 
-const sourcifyIPNS =
-  "k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p";
+const sourcifyIPNS = "repo.sourcify.dev";
 const defaultIpfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
 const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
 
