@@ -31,7 +31,7 @@ VITE_CONFIG_JSON='
     }
   },
   "sourcifySources": {
-    "ipfs": "https://ipfs.io/ipns/k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p",
+    "ipfs": "https://ipfs.io/ipns/repo.sourcify.dev",
     "central_server": "https://repo.sourcify.dev"
   }
 }

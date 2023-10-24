@@ -47,7 +47,7 @@ docker stop sourcify-snapshot
 Rather than using the default `ipfs.io` and `repo.sourcify.dev` sites for accessing Sourcify, you may specify your own Sourcify root URLs in the configuration file by adding the `sourcifySources` key and changing the URLs accordingly:
 ```json
 "sourcifySources": {
-  "ipfs": "https://ipfs.io/ipns/k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p",
+  "ipfs": "https://ipfs.io/ipns/repo.sourcify.dev",
   "central_server": "https://repo.sourcify.dev"
 }
 ```
