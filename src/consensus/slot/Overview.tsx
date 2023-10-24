@@ -25,9 +25,7 @@ const Overview: FC = () => {
   }
   const slotAsNumber = parseInt(slotNumber);
   const { slot, error, isLoading } = useSlot(slotAsNumber);
-  if (slot !== undefined) {
-    usePageTitle(`Slot #${slotNumber}`);
-  }
+  usePageTitle(slotNumber === undefined ? undefined : `Slot #${slotNumber}`);
 
   const epoch = slot2Epoch(slotAsNumber);
   const slotTimestamp = useSlotTimestamp(slotAsNumber);

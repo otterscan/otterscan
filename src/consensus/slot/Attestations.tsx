@@ -14,9 +14,9 @@ const Attestations: FC = () => {
   }
   const slotAsNumber = parseInt(slotNumber);
   const { slot, error, isLoading } = useSlot(slotAsNumber);
-  if (slot !== undefined) {
-    usePageTitle(`Attestations for #${slotNumber}`);
-  }
+  usePageTitle(
+    slotNumber === undefined ? undefined : `Attestations for #${slotNumber}`,
+  );
 
   return (
     <ContentFrame tabs>

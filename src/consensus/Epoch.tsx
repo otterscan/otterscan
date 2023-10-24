@@ -27,9 +27,7 @@ const Epoch: FC = () => {
   }
   const epochAsNumber = parseInt(epochNumber);
 
-  if (!isNaN(epochAsNumber)) {
-    usePageTitle(`Epoch #${epochAsNumber}`);
-  }
+  usePageTitle(isNaN(epochAsNumber) ? undefined : `Epoch #${epochAsNumber}`);
 
   const epochTimestamp = useEpochTimestamp(epochNumber);
   const slots = useReversedSlotsFromEpoch(epochAsNumber);

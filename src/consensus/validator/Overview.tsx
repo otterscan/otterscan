@@ -20,9 +20,7 @@ type OverviewProps = {
 const Overview: FC<OverviewProps> = ({ validatorIndex }) => {
   const validator = useValidator(validatorIndex);
 
-  if (validator !== undefined) {
-    usePageTitle(`Validator #${validator.data.index}`);
-  }
+  usePageTitle(validator ? `Validator #${validator.data.index}` : undefined);
 
   const eligibleTimestamp = useEpochTimestamp(
     validator?.data.validator.activation_eligibility_epoch,
