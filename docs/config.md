@@ -29,6 +29,10 @@ VITE_CONFIG_JSON='
       "symbol": "SEPETH",
       "decimals": 18
     }
+  },
+  "sourcifySources": {
+    "ipfs": "https://ipfs.io/ipns/k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p",
+    "central_server": "https://repo.sourcify.dev"
   }
 }
 '

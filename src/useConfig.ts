@@ -106,6 +106,12 @@ export type OtterscanConfig = {
      */
     hideAnnouncements?: boolean;
   };
+
+  /**
+   * Optional custom Sourcify sources object with the keys "ipfs" and
+   * "central_server" whose values are their respective root URLs.
+   */
+  sourcifySources?: { [key: string]: string };
 };
 
 /**
