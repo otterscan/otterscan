@@ -12,7 +12,10 @@ export const usePageTitle = (title: string | undefined) => {
     return;
   }
   const siteName = config?.branding?.siteName || "Otterscan";
-  document.title = `${title} | ${siteName}`;
+  const networkTitle = config?.branding?.networkTitle
+    ? `| ${config?.branding?.networkTitle} `
+    : "";
+  document.title = `${title} ${networkTitle}| ${siteName}`;
 };
 
 /**

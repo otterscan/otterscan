@@ -62,12 +62,14 @@ Some components in the user interface can be customized in the config under the 
 {
   "branding": {
     "siteName": "Otterscan",
+    "networkTitle": "Holesky Testnet",
     "hideAnnouncements": false
   }
 }
 ```
 
 * `siteName`: Sets the name displayed on the home page, header, and page titles.
+* `networkTitle`: If set, adds an additional name to page titles.
 * `hideAnnouncements`: If set to true, hides new feature announcements from the home page.
 
 ### Logo
