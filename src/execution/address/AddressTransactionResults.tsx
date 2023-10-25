@@ -5,6 +5,7 @@ import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import TransactionLink from "../../components/TransactionLink";
+import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
@@ -16,6 +17,7 @@ import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
 
@@ -93,6 +95,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
+  const proxyAttributes = useProxyAttributes(provider, address);
 
   return (
     <ContentFrame tabs>
@@ -114,6 +117,14 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
                   <TransactionLink txHash={creator.hash} />
                 </div>
               </div>
+            </InfoRow>
+          )}
+          {proxyAttributes && proxyAttributes.proxyType && (
+            <InfoRow title="Proxy type">{proxyAttributes.proxyType}</InfoRow>
+          )}
+          {proxyAttributes && proxyAttributes.logicAddress && (
+            <InfoRow title="Proxy logic address">
+              <DecoratedAddressLink address={proxyAttributes.logicAddress} />
             </InfoRow>
           )}
         </BlockNumberContext.Provider>

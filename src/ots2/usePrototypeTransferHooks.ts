@@ -4,13 +4,15 @@ import {
   TransactionReceipt,
   TransactionResponse,
   ZeroAddress,
+  getAddress,
 } from "ethers";
 import { useMemo } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "../erc20.json";
+import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
-import { providerFetcher } from "../useErigonHooks";
+import { providerFetcher, useHasCode } from "../useErigonHooks";
 import { formatter } from "../utils/formatter";
 import { pageToReverseIdx } from "./pagination";
 import { BlockSummary } from "./usePrototypeHooks";
@@ -259,4 +261,37 @@ export const useAddressAttributes = (
     return undefined;
   }
   return data;
+};
+
+export type ProxyAttributes = {
+  proxyType?: string;
+  logicAddress?: ChecksummedAddress;
+  proxyHasCode?: boolean;
+  proxyMatch?: Match | null | undefined;
+};
+
+export const useProxyAttributes = (
+  provider: JsonRpcApiProvider | undefined,
+  address: ChecksummedAddress | undefined,
+): ProxyAttributes => {
+  const attr = useAddressAttributes(provider, address);
+  const proxyType = attr && attr.erc1167 ? "ERC-1167" : undefined;
+  const proxyAddress =
+    useERC1167Impl(provider, attr && attr.erc1167 ? address : undefined) ??
+    undefined;
+  const checksummedProxyAddress = proxyAddress
+    ? getAddress(proxyAddress)
+    : undefined;
+  const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
+  const proxyMatch = useSourcifyMetadata(
+    proxyHasCode ? checksummedProxyAddress : undefined,
+    provider?._network.chainId,
+  );
+
+  return {
+    proxyType,
+    logicAddress: checksummedProxyAddress,
+    proxyHasCode,
+    proxyMatch,
+  };
 };
