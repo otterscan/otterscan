@@ -123,7 +123,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
             <InfoRow title="Proxy type">{proxyAttributes.proxyType}</InfoRow>
           )}
           {proxyAttributes && proxyAttributes.logicAddress && (
-            <InfoRow title="Proxy logic address">
+            <InfoRow title="Logic contract">
               <DecoratedAddressLink address={proxyAttributes.logicAddress} />
             </InfoRow>
           )}
