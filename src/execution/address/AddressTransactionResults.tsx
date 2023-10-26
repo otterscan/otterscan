@@ -20,6 +20,7 @@ import { RuntimeContext } from "../../useRuntime";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
+import PendingItem from "./PendingItem";
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
@@ -101,11 +102,15 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
     <ContentFrame tabs>
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
-          {balance !== null && balance !== undefined && (
-            <InfoRow title="Balance">
+          <InfoRow title="Balance">
+            {balance !== null && balance !== undefined ? (
               <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
-            </InfoRow>
-          )}
+            ) : (
+              <div className="w-80">
+                <PendingItem />
+              </div>
+            )}
+          </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex divide-x-2 divide-dotted divide-gray-300">
