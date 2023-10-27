@@ -44,7 +44,11 @@ const Header: FC = () => {
           </div>
         </div>
         <div className="flex items-baseline space-x-3">
-          {provider?._network.chainId === 1n && <PriceBox />}
+          {provider?._network.chainId === 1n && (
+            <div className="hidden md:inline">
+              <PriceBox />
+            </div>
+          )}
           <form
             className="flex"
             onSubmit={handleSubmit}
