@@ -43,7 +43,7 @@ const Header: FC = () => {
             <SourcifyMenu />
           </div>
         </div>
-        <div className="flex items-baseline space-x-3">
+        <div className="flex items-baseline gap-x-3">
           {provider?._network.chainId === 1n && (
             <div className="hidden lg:inline">
               <PriceBox />
