@@ -19,7 +19,7 @@ const Header: FC = () => {
   return (
     <>
       {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="flex flex-col sm:flex-row items-baseline space-y-1 sm:space-y-0 justify-between px-9 py-2">
+      <div className="flex flex-col sm:flex-row items-baseline space-y-1 sm:space-y-0 justify-between px-4 md:px-9 py-2">
         <div className="flex flex-row justify-between sm:self-center items-center w-full sm:w-auto shrink-0 mr-2">
           <Link className="self-center" to="/">
             <div className="flex items-center space-x-2 font-title text-2xl font-bold text-link-blue">
@@ -44,7 +44,11 @@ const Header: FC = () => {
           </div>
         </div>
         <div className="flex items-baseline space-x-3">
-          {provider?._network.chainId === 1n && <PriceBox />}
+          {provider?._network.chainId === 1n && (
+            <div className="hidden md:inline">
+              <PriceBox />
+            </div>
+          )}
           <form
             className="flex"
             onSubmit={handleSubmit}
