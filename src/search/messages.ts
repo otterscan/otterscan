@@ -33,7 +33,3 @@ export const getTotalFormatter = (
   }
 };
 
-export const totalBlocksFormatter = (total: number) =>
-  `A total of ${commify(total)} ${
-    total > 1 ? "blocks" : "block"
-  } found`;

@@ -28,7 +28,6 @@ import {
   TransactionData,
 } from "./types";
 import { formatter } from "./utils/formatter";
-import erc20 from "./erc20.json";
 import { DsBlockObj } from '@zilliqa-js/core/dist/types/src/types'
 import { Zilliqa } from "@zilliqa-js/zilliqa";
 
@@ -712,7 +711,7 @@ export const useGetCode = (
   return data as string | undefined;
 };
 
-const ERC20_PROTOTYPE = new Contract(AddressZero, erc20);
+const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const tokenMetadataFetcher =
   (

@@ -1,8 +1,6 @@
-import { JsonRpcApiProvider } from "ethers";
+import { Block, JsonRpcApiProvider } from "ethers";
 import { useEffect, useState } from "react";
 import { formatter } from "./utils/formatter";
-import { Block } from "@ethersproject/abstract-provider";
-import { JsonRpcProvider } from "@ethersproject/providers";
 import { Zilliqa } from "@zilliqa-js/zilliqa";
 import { BlockchainInfo } from '@zilliqa-js/core/dist/types/src/types'
 

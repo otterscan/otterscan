@@ -1,13 +1,7 @@
 import { FC, memo } from "react";
 import ContentFrame from "../../components/ContentFrame";
-import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
-import SearchResultNavBar from "../../search/SearchResultNavBar";
 import TransactionResultHeader from "../../search/TransactionResultHeader";
 import { PendingTransactionResults } from "../../search/PendingResults";
-import TransactionItem from "../../search/TransactionItem";
-import { useFeeToggler } from "../../search/useFeeToggler";
-import { totalTransactionsFormatter } from "../../search/messages";
-import { ProcessedTransaction } from "../../types";
 import { PAGE_SIZE } from "../../params";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";

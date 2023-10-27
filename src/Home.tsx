@@ -25,7 +25,8 @@ const Home: FC = () => {
   const latestBlock = useLatestBlockHeader(provider);
   const finalizedSlotNumber = useFinalizedSlotNumber();
   const slotTime = useSlotTimestamp(finalizedSlotNumber);
-
+  const [isScanning, setScanning] = useState<boolean>(false);
+  
   usePageTitle("Home");
 
   return (

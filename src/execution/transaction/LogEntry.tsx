@@ -4,7 +4,6 @@ import React, { FC, memo, useContext, useMemo } from "react";
 import ModeTab from "../../components/ModeTab";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { RuntimeContext } from "../../useRuntime";
-import { useTopic0 } from "../../useTopic0";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
@@ -12,10 +11,9 @@ import LogIndex from "./log/LogIndex";
 import RawLog from "./log/RawLog";
 import TwoColumnPanel from "./log/TwoColumnPanel";
 import { useTopic0 } from "../../useTopic0";
-import { RuntimeContext } from "../../useRuntime";
-import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { useGetCode } from "../../useErigonHooks";
-import { EventFragment, LogDescription, defaultAbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
+//import { EventFragment, LogDescription, defaultAbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
+import { EventFragment, LogDescription, AbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers";
 
 type LogEntryProps = {
   log: Log;
@@ -28,7 +26,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const scillaLogDesc = useMemo(() => {
     // Scilla logs are encoded as a single JSON string.
     try {
-      const data = JSON.parse(defaultAbiCoder.decode(["string"], log.data)[0]);
+      const data = JSON.parse(AbiCoder.defaultAbiCoder().decode(["string"], log.data)[0]);
       const params: any[] = data.params;
       return new LogDescription({
         eventFragment: EventFragment.fromObject({type: "event", name: data._eventname, inputs: params.map(p => ({ name: p.vname, type: p.type }))}),
