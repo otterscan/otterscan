@@ -5,6 +5,7 @@ import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import TransactionLink from "../../components/TransactionLink";
+import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
@@ -16,8 +17,10 @@ import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
+import PendingItem from "./PendingItem";
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
@@ -93,16 +96,21 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
+  const proxyAttributes = useProxyAttributes(provider, address);
 
   return (
     <ContentFrame tabs>
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
-          {balance !== null && balance !== undefined && (
-            <InfoRow title="Balance">
+          <InfoRow title="Balance">
+            {balance !== null && balance !== undefined ? (
               <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
-            </InfoRow>
-          )}
+            ) : (
+              <div className="w-80">
+                <PendingItem />
+              </div>
+            )}
+          </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex divide-x-2 divide-dotted divide-gray-300">
@@ -114,6 +122,14 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
                   <TransactionLink txHash={creator.hash} />
                 </div>
               </div>
+            </InfoRow>
+          )}
+          {proxyAttributes && proxyAttributes.proxyType && (
+            <InfoRow title="Proxy type">{proxyAttributes.proxyType}</InfoRow>
+          )}
+          {proxyAttributes && proxyAttributes.logicAddress && (
+            <InfoRow title="Logic contract">
+              <DecoratedAddressLink address={proxyAttributes.logicAddress} />
             </InfoRow>
           )}
         </BlockNumberContext.Provider>

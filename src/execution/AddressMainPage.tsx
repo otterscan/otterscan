@@ -2,7 +2,6 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Tab } from "@headlessui/react";
-import { getAddress } from "ethers";
 import React, { useCallback, useContext } from "react";
 import {
   Route,
@@ -14,10 +13,7 @@ import {
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
-import {
-  useAddressAttributes,
-  useERC1167Impl,
-} from "../ots2/usePrototypeTransferHooks";
+import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
@@ -67,20 +63,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
   );
-  const attr = useAddressAttributes(provider, checksummedAddress);
-  const proxyAddress =
-    useERC1167Impl(
-      provider,
-      attr && attr.erc1167 ? checksummedAddress : undefined,
-    ) ?? undefined;
-  const checksummedProxyAddress = proxyAddress
-    ? getAddress(proxyAddress)
-    : undefined;
-  const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
-  const proxyMatch = useSourcifyMetadata(
-    proxyHasCode ? checksummedProxyAddress : undefined,
-    provider?._network.chainId,
-  );
+  const proxyAttrs = useProxyAttributes(provider, checksummedAddress);
 
   usePageTitle(
     `Address ${
@@ -157,10 +140,10 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {proxyHasCode && proxyMatch && (
-                  <NavTab href={`/address/${addressOrName}/contractAsProxy`}>
+                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
+                  <NavTab href={`/address/${addressOrName}/proxyLogicContract`}>
                     <span className={`flex items-baseline space-x-2`}>
-                      <span>Contract as Proxy</span>
+                      <span>Logic Contract</span>
                       <SourcifyLogo />
                     </span>
                   </NavTab>
@@ -172,7 +155,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {proxyHasCode && proxyMatch && (
+                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
                   <NavTab
                     href={`/address/${addressOrName}/readContractAsProxy`}
                   >
@@ -235,13 +218,13 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
-                  {checksummedProxyAddress && proxyMatch && (
+                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
                     <Route
-                      path="contractAsProxy"
+                      path="proxyLogicContract"
                       element={
                         <Contracts
-                          checksummedAddress={checksummedProxyAddress}
-                          match={proxyMatch}
+                          checksummedAddress={proxyAttrs.logicAddress}
+                          match={proxyAttrs.proxyMatch}
                         />
                       }
                     />
@@ -255,13 +238,13 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
-                  {checksummedProxyAddress && proxyMatch && (
+                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
                     <Route
                       path="readContractAsProxy"
                       element={
                         <ReadContract
                           checksummedAddress={checksummedAddress}
-                          match={proxyMatch}
+                          match={proxyAttrs.proxyMatch}
                         />
                       }
                     />
