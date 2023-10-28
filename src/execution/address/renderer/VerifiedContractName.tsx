@@ -24,7 +24,7 @@ const VerifiedContractName: FC<VerifiedContractNameProps> = ({
         className={`flex items-baseline space-x-1 font-sans ${
           dontOverrideColors
             ? ""
-            : "text-verified-purple hover:text-verified-purple-hover"
+            : "text-verified-contract hover:text-verified-contract-hover"
         } truncate`}
         to={`/address/${address}`}
         title={`Verified Contract (${resolvedName}): ${address}`}
