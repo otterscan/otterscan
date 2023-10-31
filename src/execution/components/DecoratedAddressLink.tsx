@@ -16,6 +16,7 @@ import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import AddressAttributes from "../address/AddressAttributes";
+import { VerifiedContractRenderer } from "../address/renderer/VerifiedContractName";
 import { AddressAwareComponentProps } from "../types";
 import PlainAddress from "./PlainAddress";
 
@@ -139,6 +140,25 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
   const { provider } = useContext(RuntimeContext);
   const resolvedAddress = useResolvedAddress(provider, address);
   const linkable = address !== selectedAddress;
+  const match = useSourcifyMetadata(address, provider?._network.chainId);
+
+  if (
+    provider &&
+    !resolvedAddress &&
+    match &&
+    match.metadata.settings?.compilationTarget
+  ) {
+    const compilationTarget = match.metadata.settings?.compilationTarget;
+    if (Object.values(compilationTarget).length > 0) {
+      return VerifiedContractRenderer(
+        provider._network.chainId,
+        address,
+        Object.values(compilationTarget)[0],
+        linkable,
+        !!dontOverrideColors,
+      );
+    }
+  }
 
   if (!provider || !resolvedAddress) {
     return (
