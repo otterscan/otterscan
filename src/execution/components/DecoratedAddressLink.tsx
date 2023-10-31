@@ -150,7 +150,6 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
   ) {
     const compilationTarget = match.metadata.settings?.compilationTarget;
     if (Object.values(compilationTarget).length > 0) {
-      console.log(Object.values(compilationTarget)[0]);
       return VerifiedContractRenderer(
         provider._network.chainId,
         address,
