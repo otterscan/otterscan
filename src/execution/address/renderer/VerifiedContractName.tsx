@@ -18,6 +18,7 @@ const VerifiedContractName: FC<VerifiedContractNameProps> = ({
   dontOverrideColors,
 }) => {
   const contents = <>{resolvedName}</>;
+  const title = `Verified Contract (${resolvedName}): ${address}`;
   if (linkable) {
     return (
       <NavLink
@@ -27,7 +28,7 @@ const VerifiedContractName: FC<VerifiedContractNameProps> = ({
             : "text-verified-contract hover:text-verified-contract-hover"
         } truncate`}
         to={`/address/${address}`}
-        title={`Verified Contract (${resolvedName}): ${address}`}
+        title={title}
       >
         {contents}
       </NavLink>
@@ -35,7 +36,7 @@ const VerifiedContractName: FC<VerifiedContractNameProps> = ({
   }
 
   return (
-    <span className="truncate text-gray-400" title={name}>
+    <span className="truncate text-gray-400" title={title}>
       {contents}
     </span>
   );
