@@ -7,6 +7,7 @@ import {
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import { useSourcifyMetadata } from "./sourcify/useSourcify";
 import { fourBytesURL } from "./url";
 import { RuntimeContext } from "./useRuntime";
 
@@ -85,6 +86,7 @@ const fourBytesFetcher =
  */
 export const use4Bytes = (
   rawFourBytes: string | null,
+  address?: string,
 ): FourBytesEntry | null | undefined => {
   if (rawFourBytes !== null && !rawFourBytes.startsWith("0x")) {
     throw new Error(
@@ -92,18 +94,41 @@ export const use4Bytes = (
     );
   }
 
-  const { config } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
+  const sourcifyMatch = useSourcifyMetadata(
+    address,
+    provider?._network.chainId,
+  );
+  let sourcifyFourBytes: FourBytesEntry | null = null;
+  if (sourcifyMatch && rawFourBytes) {
+    try {
+      const int = new Interface(sourcifyMatch.metadata.output.abi);
+      if (int.hasFunction(rawFourBytes)) {
+        const func = int.getFunction(rawFourBytes);
+        if (func) {
+          sourcifyFourBytes = {
+            name: func.name,
+            signature: func.format("sighash"),
+          };
+        }
+      }
+    } catch (e: any) {}
+  }
+
   const assetsURLPrefix = config?.assetsURLPrefix;
   const fourBytesKey = assetsURLPrefix !== undefined ? rawFourBytes : null;
 
   const fetcher = fourBytesFetcher(assetsURLPrefix!);
   const { data, error } = useSWRImmutable(["4bytes", fourBytesKey], fetcher);
-  return error ? undefined : data;
+  return sourcifyFourBytes ? sourcifyFourBytes : error ? undefined : data;
 };
 
-export const useMethodSelector = (data: string): [boolean, string, string] => {
+export const useMethodSelector = (
+  data: string,
+  to?: string,
+): [boolean, string, string] => {
   const rawFourBytes = extract4Bytes(data);
-  const fourBytesEntry = use4Bytes(rawFourBytes);
+  let fourBytesEntry = use4Bytes(rawFourBytes, to);
   const isSimpleTransfer = data === "0x";
   const methodName = isSimpleTransfer
     ? "transfer"

@@ -37,7 +37,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
         <td>
           <TransactionLink txHash={hash} fail={status === 0} />
         </td>
-        <td>{to !== null && <MethodName data={data} />}</td>
+        <td>{to !== null && <MethodName data={data} to={to} />}</td>
         <td>
           <BlockLink blockTag={blockNumber} />
         </td>

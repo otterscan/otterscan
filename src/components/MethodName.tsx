@@ -3,10 +3,14 @@ import { useMethodSelector } from "../use4Bytes";
 
 type MethodNameProps = {
   data: string;
+  to?: string;
 };
 
-const MethodName: React.FC<MethodNameProps> = ({ data }) => {
-  const [isSimpleTransfer, methodName, methodTitle] = useMethodSelector(data);
+const MethodName: React.FC<MethodNameProps> = ({ data, to = undefined }) => {
+  const [isSimpleTransfer, methodName, methodTitle] = useMethodSelector(
+    data,
+    to,
+  );
 
   return (
     <div
