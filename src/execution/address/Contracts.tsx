@@ -18,7 +18,7 @@ import ContractFromRepo from "./ContractFromRepo";
 import ContractABI from "./contract/ContractABI";
 import { useGetCode } from "../../useErigonHooks";
 import StandardTextarea from "../../components/StandardTextarea";
-import { toUtf8String } from "ethers/lib/utils";
+import { toUtf8String } from "ethers";
 import ScillaContract from "./ScillaContract";
 
 type ContractsProps = {

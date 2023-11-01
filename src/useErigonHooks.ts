@@ -99,7 +99,7 @@ const blockTransactionsFetcher: Fetcher<
   ]);
   const _block = formatter.blockParamsWithTransactions(result.fullblock);
   const _receipts = result.receipts;
-
+  
   const rawTxs = _block.transactions
     .map((t: TransactionResponseParams, i: number): ProcessedTransaction => {
       const _rawReceipt = _receipts[i];
@@ -239,16 +239,17 @@ export const useTxData = (
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
 
   useEffect(() => {
+
     if (!provider) {
       return;
     }
-
     const readTxData = async () => {
       try {
         const [_response, _receipt] = await Promise.all([
           provider.getTransaction(txhash),
           provider.getTransactionReceipt(txhash),
         ]);
+
         if (_response === null) {
           setTxData(null);
           return;

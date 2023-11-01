@@ -1,7 +1,7 @@
 import React from "react";
 import TimestampAge from "../components/TimestampAge";
 import { DsBlockObj } from '@zilliqa-js/core/dist/types/src/types'
-import { commify } from "ethers/lib/utils";
+import { commify } from "ethers";
 import { addHexPrefix, pubKeyToAddr, zilliqaToOtterscanTimestamp } from "../utils/utils";
 import DSBlockLink from "../components/DSBlockLink";
 import TransactionAddress from "../execution/components/TransactionAddress";
