@@ -1,5 +1,5 @@
 import { Tab } from "@headlessui/react";
-import { Fragment, Interface, Log } from "ethers";
+import { Fragment, Interface, Log, Result } from "ethers";
 import React, { FC, memo, useContext, useMemo } from "react";
 import ModeTab from "../../components/ModeTab";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
@@ -28,13 +28,11 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     try {
       const data = JSON.parse(AbiCoder.defaultAbiCoder().decode(["string"], log.data)[0]);
       const params: any[] = data.params;
-      return new LogDescription({
-        eventFragment: EventFragment.fromObject({type: "event", name: data._eventname, inputs: params.map(p => ({ name: p.vname, type: p.type }))}),
-        name: data._eventname,
-        signature: "",
-        topic: "",
-        args: params.map(p => (p.value)),
-      });
+      return new LogDescription(
+        EventFragment.from({type: "event", name: data._eventname, inputs: params.map(p => ({ name: p.vname, type: p.type }))}),
+        "",
+        Result.fromItems(params.map(p => (p.value)), params.map(p=> (p.name)))
+      );
     } catch (err) {
       // Silently ignore on purpose
       return undefined;
@@ -117,7 +115,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
                   <DecodedLogSignature event={resolvedLogDesc.fragment} />
                   <DecodedParamsTable
                     args={resolvedLogDesc.args}
-                    paramTypes={resolvedLogDesc.eventFragment.inputs}
+                    paramTypes={resolvedLogDesc.fragment.inputs}
                     hasParamNames={resolvedLogDesc === logDesc || resolvedLogDesc === scillaLogDesc}
                   />
                 </TwoColumnPanel>

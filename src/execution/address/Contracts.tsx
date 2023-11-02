@@ -1,11 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { commify } from "@ethersproject/units";
 import { Menu } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu } from "@headlessui/react";
-import React, { useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
@@ -119,7 +115,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         <ExternalLink
                           href={openInRemixURL(
                             checksummedAddress,
-                            provider.network.chainId
+                            provider._network.chainId
                           )}
                         >
                           Open in Remix
@@ -155,7 +151,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                     ) : (
                       <ContractFromRepo
                         checksummedAddress={checksummedAddress}
-                        networkId={provider!.network.chainId}
+                        networkId={provider!._network.chainId}
                         filename={selected}
                         type={match.type}
                       />

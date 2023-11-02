@@ -17,6 +17,7 @@ import RecentBlocks from "./execution/block/RecentBlocks";
 import RecentDSBlocks from "./execution/block/RecentDSBlocks";
 import ChainInfo from "./execution/ChainInfo";
 
+const CameraScanner = lazy(() => import("./search/CameraScanner"));
 
 const Home: FC = () => {
   const { provider, config } = useContext(RuntimeContext);

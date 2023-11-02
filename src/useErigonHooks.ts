@@ -189,7 +189,7 @@ export const useBlockData = (
 };
 
 export const useRecentBlocks = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   blockNumber: number | undefined,
   pageNumber: number,
   pageSize: number
@@ -201,7 +201,7 @@ export const useRecentBlocks = (
   // cached value. The pageSize differenciates the cache between components so that different components
   // do not display incorrect number of displays
   const getKey = (pageIndex : number) 
-  : [ JsonRpcProvider , string, number] | null =>  {
+  : [ JsonRpcApiProvider , string, number] | null =>  {
     if((provider == undefined || startBlockNum == undefined) 
     || (startBlockNum - pageIndex < 0)) return null;
 
@@ -336,9 +336,9 @@ export const useInternalOperations = (
       for (const t of data) {
         _t.push({
           type: t.type,
-          from: provider.formatter.address(getAddress(t.from)),
-          to: provider.formatter.address(getAddress(t.to)),
-          value: provider.formatter.bigNumber(t.value),
+          from: formatter.address(getAddress(t.from)),
+          to: formatter.address(getAddress(t.to)),
+          value: formatter.bigInt(t.value),
         });
       }
     }
@@ -697,7 +697,7 @@ export const useHasCode = (
 };
 
 export const useGetCode = (
-  provider: JsonRpcProvider | undefined,
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest"
 ): string | undefined => {

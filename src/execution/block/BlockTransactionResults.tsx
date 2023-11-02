@@ -3,7 +3,6 @@ import ContentFrame from "../../components/ContentFrame";
 import TransactionResultHeader from "../../search/TransactionResultHeader";
 import { PendingTransactionResults } from "../../search/PendingResults";
 import { PAGE_SIZE } from "../../params";
-import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import TransactionItem from "../../search/TransactionItem";

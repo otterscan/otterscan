@@ -34,7 +34,7 @@ const BlockItem: React.FC<BlockItemProps> = ({ block, feeDisplay}) => {
     </NavLink>
     </span>
     <span className="col-span-4">
-    <HexValue value={block.hash} />
+    <HexValue value={block.hash ?? "null"} />
     </span>
     <span className="truncate font-balance text-xs text-gray-500">
         {feeDisplay === FeeDisplay.TX_FEE && formatValue(block.feeReward, 18)}
