@@ -10,6 +10,7 @@ import { FC, memo, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
+import { useIsFavorite } from "../../search/FavoritesSource";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
@@ -52,6 +53,8 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
 
+  const isFavorite = useIsFavorite(address);
+
   return (
     <div
       className={`flex items-baseline space-x-1 ${
@@ -62,6 +65,11 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
         selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
       }`}
     >
+      {isFavorite && (
+        <span className="text-blue-700" title="Favorite">
+          <FontAwesomeIcon icon={faStar} size="1x" />
+        </span>
+      )}
       {creation && (
         <span className="text-amber-300" title="Contract creation">
           <FontAwesomeIcon icon={faStar} size="1x" />
