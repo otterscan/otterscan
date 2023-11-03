@@ -82,7 +82,9 @@ const fourBytesFetcher =
 /**
  * Extract 4bytes DB info
  *
- * @param rawFourBytes an hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
+ * @param rawFourBytes a hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
+ * @param address (optional) the address to which this four-byte selector is sent; if a
+ * Sourcify match exists at this address, the contract ABI will be used to decode the selector.
  */
 export const use4Bytes = (
   rawFourBytes: string | null,
