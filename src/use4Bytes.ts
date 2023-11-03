@@ -14,6 +14,7 @@ import { RuntimeContext } from "./useRuntime";
 export type FourBytesEntry = {
   name: string;
   signature: string | undefined;
+  fromVerifiedContract: boolean;
 };
 
 /**
@@ -70,6 +71,7 @@ const fourBytesFetcher =
       const entry: FourBytesEntry = {
         name: method,
         signature: sig,
+        fromVerifiedContract: false,
       };
       return entry;
     } catch (err) {
@@ -111,6 +113,7 @@ export const use4Bytes = (
           sourcifyFourBytes = {
             name: func.name,
             signature: func.format("sighash"),
+            fromVerifiedContract: true,
           };
         }
       }
@@ -128,7 +131,7 @@ export const use4Bytes = (
 export const useMethodSelector = (
   data: string,
   to?: string,
-): [boolean, string, string] => {
+): [boolean, string, string, boolean] => {
   const rawFourBytes = extract4Bytes(data);
   let fourBytesEntry = use4Bytes(rawFourBytes, to);
   const isSimpleTransfer = data === "0x";
@@ -141,7 +144,10 @@ export const useMethodSelector = (
     ? methodName
     : `${methodName} [${rawFourBytes}]`;
 
-  return [isSimpleTransfer, methodName, methodTitle];
+  const fromVerifiedContract = fourBytesEntry
+    ? fourBytesEntry.fromVerifiedContract
+    : false;
+  return [isSimpleTransfer, methodName, methodTitle, fromVerifiedContract];
 };
 
 export const useTransactionDescription = (
