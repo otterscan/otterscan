@@ -27,7 +27,6 @@ import AddressSubtitle from "./address/AddressSubtitle";
 import AddressTokens from "./address/AddressTokens";
 import AddressTransactionResults from "./address/AddressTransactionResults";
 import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksRewarded from "./address/BlocksRewarded";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
 
@@ -107,9 +106,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </NavTab>
                     <NavTab href={`/address/${addressOrName}/withdrawals`}>
                       Withdrawals
-                    </NavTab>
-                    <NavTab href={`/address/${addressOrName}/blocksRewarded`}>
-                      Blocks Rewarded
                     </NavTab>
                   </>
                 )}
@@ -199,12 +195,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                         path="withdrawals"
                         element={
                           <AddressWithdrawals address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="blocksRewarded"
-                        element={
-                          <BlocksRewarded address={checksummedAddress} />
                         }
                       />
                     </>
