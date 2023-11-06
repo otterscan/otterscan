@@ -23,7 +23,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
     nativeCurrency: { symbol },
   } = useChainInfo();
   const raw4Bytes = extract4Bytes(t.input);
-  const fourBytes = use4Bytes(raw4Bytes);
+  const fourBytes = use4Bytes(raw4Bytes, t.to);
   const sigText =
     raw4Bytes === null ? "<fallback>" : fourBytes?.name ?? raw4Bytes;
   const hasParams = t.input.length > 10;

@@ -61,7 +61,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <span className="col-span-2">
           <TransactionLink txHash={tx.hash} fail={tx.status === 0} />
         </span>
-        {tx.to !== null ? <MethodName data={tx.data} /> : <span></span>}
+        {tx.to !== null ? (
+          <MethodName data={tx.data} to={tx.to} />
+        ) : (
+          <span></span>
+        )}
         <span>
           <BlockLink blockTag={tx.blockNumber} />
         </span>

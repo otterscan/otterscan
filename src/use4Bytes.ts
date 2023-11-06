@@ -7,12 +7,14 @@ import {
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import { useSourcifyMetadata } from "./sourcify/useSourcify";
 import { fourBytesURL } from "./url";
 import { RuntimeContext } from "./useRuntime";
 
 export type FourBytesEntry = {
   name: string;
   signature: string | undefined;
+  fromVerifiedContract: boolean;
 };
 
 /**
@@ -69,6 +71,7 @@ const fourBytesFetcher =
       const entry: FourBytesEntry = {
         name: method,
         signature: sig,
+        fromVerifiedContract: false,
       };
       return entry;
     } catch (err) {
@@ -81,10 +84,13 @@ const fourBytesFetcher =
 /**
  * Extract 4bytes DB info
  *
- * @param rawFourBytes an hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
+ * @param rawFourBytes a hex string containing the 4bytes signature in the "0xXXXXXXXX" format.
+ * @param address (optional) the address to which this four-byte selector is sent; if a
+ * Sourcify match exists at this address, the contract ABI will be used to decode the selector.
  */
 export const use4Bytes = (
   rawFourBytes: string | null,
+  address?: string,
 ): FourBytesEntry | null | undefined => {
   if (rawFourBytes !== null && !rawFourBytes.startsWith("0x")) {
     throw new Error(
@@ -92,18 +98,42 @@ export const use4Bytes = (
     );
   }
 
-  const { config } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
+  const sourcifyMatch = useSourcifyMetadata(
+    address,
+    provider?._network.chainId,
+  );
+  let sourcifyFourBytes: FourBytesEntry | null = null;
+  if (sourcifyMatch && rawFourBytes) {
+    try {
+      const int = new Interface(sourcifyMatch.metadata.output.abi);
+      if (int.hasFunction(rawFourBytes)) {
+        const func = int.getFunction(rawFourBytes);
+        if (func) {
+          sourcifyFourBytes = {
+            name: func.name,
+            signature: func.format("sighash"),
+            fromVerifiedContract: true,
+          };
+        }
+      }
+    } catch (e: any) {}
+  }
+
   const assetsURLPrefix = config?.assetsURLPrefix;
   const fourBytesKey = assetsURLPrefix !== undefined ? rawFourBytes : null;
 
   const fetcher = fourBytesFetcher(assetsURLPrefix!);
   const { data, error } = useSWRImmutable(["4bytes", fourBytesKey], fetcher);
-  return error ? undefined : data;
+  return sourcifyFourBytes ? sourcifyFourBytes : error ? undefined : data;
 };
 
-export const useMethodSelector = (data: string): [boolean, string, string] => {
+export const useMethodSelector = (
+  data: string,
+  to?: string,
+): [boolean, string, string, boolean] => {
   const rawFourBytes = extract4Bytes(data);
-  const fourBytesEntry = use4Bytes(rawFourBytes);
+  let fourBytesEntry = use4Bytes(rawFourBytes, to);
   const isSimpleTransfer = data === "0x";
   const methodName = isSimpleTransfer
     ? "transfer"
@@ -114,7 +144,10 @@ export const useMethodSelector = (data: string): [boolean, string, string] => {
     ? methodName
     : `${methodName} [${rawFourBytes}]`;
 
-  return [isSimpleTransfer, methodName, methodTitle];
+  const fromVerifiedContract = fourBytesEntry
+    ? fourBytesEntry.fromVerifiedContract
+    : false;
+  return [isSimpleTransfer, methodName, methodTitle, fromVerifiedContract];
 };
 
 export const useTransactionDescription = (

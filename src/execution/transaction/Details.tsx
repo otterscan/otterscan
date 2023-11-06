@@ -69,7 +69,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
 
   const fourBytes =
     txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
-  const fourBytesEntry = use4Bytes(fourBytes);
+  const fourBytesEntry = use4Bytes(fourBytes, txData.to ?? undefined);
   const fourBytesTxDesc = useTransactionDescription(
     fourBytesEntry,
     txData.data,
@@ -282,7 +282,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       </InfoRow>
       {txData.to && (
         <InfoRow title="Transaction Action">
-          <MethodName data={txData.data} />
+          <MethodName data={txData.data} to={txData.to} />
         </InfoRow>
       )}
       {tokenTransfers && tokenTransfers.length > 0 && (
