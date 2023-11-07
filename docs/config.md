@@ -29,6 +29,10 @@ VITE_CONFIG_JSON='
       "symbol": "SEPETH",
       "decimals": 18
     }
+  },
+  "sourcifySources": {
+    "ipfs": "https://ipfs.io/ipns/repo.sourcify.dev",
+    "central_server": "https://repo.sourcify.dev"
   }
 }
 '
@@ -38,7 +42,7 @@ VITE_CONFIG_JSON='
 
 On production environment, that variable __needs__ to be defined at build time, otherwise it has no effect; in that case, the node/chain config will be static.
 
-That way the config won't need to be fetched from server (1 less network call on page load), that's the recommend setting for controlled hosted environments where you control the node your users will connect to.
+That way the config won't need to be fetched from server (1 less network call on page load), that's the recommended setting for controlled hosted environments where you control the node your users will connect to.
 
 ## Fetch config from server
 
@@ -58,12 +62,14 @@ Some components in the user interface can be customized in the config under the 
 {
   "branding": {
     "siteName": "Otterscan",
+    "networkTitle": "Holesky Testnet",
     "hideAnnouncements": false
   }
 }
 ```
 
 * `siteName`: Sets the name displayed on the home page, header, and page titles.
+* `networkTitle`: If set, adds an additional name to page titles.
 * `hideAnnouncements`: If set to true, hides new feature announcements from the home page.
 
 ### Logo
@@ -76,7 +82,7 @@ By default, Otterscan recognizes several chains, including the Ethereum mainnet 
 
 * `name`: The full name of the network, such as "Ethereum Mainnet".
 * `faucets`: A list of faucet URLs which are accessible at the `/faucets` endpoint and navigable from address pages. The special string `${ADDRESS}` can be included in the URL and will be replaced with the address the user navigated from.
-* `nativeCurrency`: Describes the native currency of the chain; this is analagous to ETH on the Ethereum mainnet.
+* `nativeCurrency`: Describes the native currency of the chain; this is analogous to ETH on the Ethereum mainnet.
   * `name`: Full name of the native currency, e.g. "Ether".
   * `symbol`: Few-character symbol used in trading, e.g. "ETH".
   * `decimals`: Number of decimals; usually 18.

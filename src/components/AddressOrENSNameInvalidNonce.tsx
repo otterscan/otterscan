@@ -1,7 +1,7 @@
 import React from "react";
-import StandardSubtitle from "./StandardSubtitle";
-import ContentFrame from "./ContentFrame";
 import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
+import ContentFrame from "./ContentFrame";
+import StandardSubtitle from "./StandardSubtitle";
 
 type AddressOrENSNameInvalidNonceProps = {
   addressOrENSName: string;

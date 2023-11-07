@@ -1,16 +1,16 @@
-import React, { PropsWithChildren } from "react";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { useAppConfigContext } from "./useAppConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Menu } from "@headlessui/react";
+import React, { PropsWithChildren } from "react";
 import { SourcifySource } from "./sourcify/useSourcify";
+import { useAppConfigContext } from "./useAppConfig";
 
 const SourcifyMenu: React.FC = () => {
   const { sourcifySource, setSourcifySource } = useAppConfigContext();
 
   return (
     <Menu>
-      <div className="relative self-stretch">
+      <div className="relative self-stretch h-full">
         <Menu.Button className="flex h-full w-full items-center justify-center space-x-2 rounded border px-2 py-1 text-sm">
           <FontAwesomeIcon icon={faBars} size="1x" />
         </Menu.Button>

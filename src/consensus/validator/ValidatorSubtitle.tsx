@@ -1,6 +1,6 @@
-import { FC, memo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, memo } from "react";
 import StandardSubtitle from "../../components/StandardSubtitle";
 
 type ValidatorSubtitleProps = {

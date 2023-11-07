@@ -38,7 +38,7 @@ export type TransactionData = {
   type: number;
   maxFeePerGas?: bigint | undefined;
   maxPriorityFeePerGas?: bigint | undefined;
-  gasPrice: bigint;
+  gasPrice?: bigint;
   gasLimit: bigint;
   nonce: bigint;
   data: string;

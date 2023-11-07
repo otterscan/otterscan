@@ -26,7 +26,7 @@ export const Constructor: Story = {
 export const Function: Story = {
   args: {
     ...makeArgs(
-      "function transfer(address _to, uint256 _value) public returns (bool success)"
+      "function transfer(address _to, uint256 _value) public returns (bool success)",
     ),
   },
 };
@@ -34,7 +34,7 @@ export const Function: Story = {
 export const Event: Story = {
   args: {
     ...makeArgs(
-      "event Transfer(address indexed _from, address indexed _to, uint256 _value)"
+      "event Transfer(address indexed _from, address indexed _to, uint256 _value)",
     ),
   },
 };

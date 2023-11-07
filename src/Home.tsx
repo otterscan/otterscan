@@ -1,14 +1,14 @@
-import { useState, useContext, lazy, FC, memo } from "react";
-import { NavLink } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FC, lazy, memo, useContext, useState } from "react";
+import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import Timestamp from "./components/Timestamp";
-import { RuntimeContext, useRuntime } from "./useRuntime";
-import { useLatestBlockHeader } from "./useLatestBlock";
-import { blockURL, slotURL } from "./url";
 import { useGenericSearch } from "./search/search";
+import { blockURL, slotURL } from "./url";
 import { useFinalizedSlotNumber, useSlotTimestamp } from "./useConsensus";
+import { useLatestBlockHeader } from "./useLatestBlock";
+import { RuntimeContext } from "./useRuntime";
 import { usePageTitle } from "./useTitle";
 import { commify } from "./utils/utils";
 
@@ -32,7 +32,7 @@ const Home: FC = () => {
         <Logo />
       </div>
       <form
-        className="flex w-1/3 flex-col"
+        className="flex min-w-[24rem] w-1/3 flex-col"
         onSubmit={handleSubmit}
         autoComplete="off"
         spellCheck={false}

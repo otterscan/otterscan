@@ -1,5 +1,5 @@
-import { FC, memo } from "react";
 import { FixedNumber } from "ethers";
+import { FC, memo } from "react";
 import { formatFiatValue } from "../usePriceOracle";
 
 const DEFAULT_DECIMALS = 2;

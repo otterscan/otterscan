@@ -11,7 +11,7 @@ import { createContext, useContext } from "react";
  * so it should be displayed as an EOA.
  */
 export const BlockNumberContext = createContext<number | "latest" | undefined>(
-  undefined
+  undefined,
 );
 
 export const useBlockNumberContext = () => useContext(BlockNumberContext);

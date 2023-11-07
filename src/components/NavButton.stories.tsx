@@ -1,6 +1,6 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Meta, StoryObj } from "@storybook/react";
 import NavButton from "./NavButton";
 
 const meta = {

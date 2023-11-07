@@ -1,15 +1,14 @@
-import { FC, memo } from "react";
-import TransactionLink from "../../components/TransactionLink";
-import MethodName from "../../components/MethodName";
+import { FC, memo, useContext } from "react";
 import BlockLink from "../../components/BlockLink";
+import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TimestampAge from "../../components/TimestampAge";
 import TransactionDirection from "../../components/TransactionDirection";
-import { AddressAwareComponentProps } from "../types";
-import NativeTokenAmount from "../../components/NativeTokenAmount";
-import TransactionAddress from "../components/TransactionAddress";
-import { BlockNumberContext } from "../../useBlockTagContext";
 import ValidatorLink from "../../consensus/components/ValidatorLink";
+import { BlockNumberContext } from "../../useBlockTagContext";
+import { RuntimeContext } from "../../useRuntime";
 import { commify } from "../../utils/utils";
+import TransactionAddress from "../components/TransactionAddress";
+import { AddressAwareComponentProps } from "../types";
 
 export type WithdrawalItemProps = AddressAwareComponentProps & {
   index: bigint;
@@ -27,6 +26,8 @@ const WithdrawalItem: FC<WithdrawalItemProps> = ({
   validatorIndex,
   amount,
 }) => {
+  const { config } = useContext(RuntimeContext);
+  const hasConsensusClient = config?.beaconAPI !== undefined;
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>
@@ -40,7 +41,10 @@ const WithdrawalItem: FC<WithdrawalItemProps> = ({
         <td>
           <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
-              <ValidatorLink validatorIndex={validatorIndex} />
+              <ValidatorLink
+                validatorIndex={validatorIndex}
+                disabled={!hasConsensusClient}
+              />
             </span>
             <span>
               <TransactionDirection

@@ -1,5 +1,5 @@
-import { FC, memo } from "react";
 import { getBytes } from "ethers";
+import { FC, memo } from "react";
 import PercentageBar from "../../components/PercentageBar";
 
 type AggregationParticipationProps = {

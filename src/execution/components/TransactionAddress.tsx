@@ -1,12 +1,12 @@
 import { FC, useContext } from "react";
-import { AddressAwareComponentProps } from "../types";
 import AddressHighlighter from "../../components/AddressHighlighter";
-import DecoratedAddressLink from "./DecoratedAddressLink";
-import { useSelectedTransaction } from "../../useSelectedTransaction";
-import { useBlockNumberContext } from "../../useBlockTagContext";
-import { RuntimeContext } from "../../useRuntime";
-import { useBlockDataFromTransaction, useHasCode } from "../../useErigonHooks";
 import { AddressContext, ChecksummedAddress } from "../../types";
+import { useBlockNumberContext } from "../../useBlockTagContext";
+import { useBlockDataFromTransaction, useHasCode } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
+import { useSelectedTransaction } from "../../useSelectedTransaction";
+import { AddressAwareComponentProps } from "../types";
+import DecoratedAddressLink from "./DecoratedAddressLink";
 
 export type TransactionAddressProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
@@ -40,7 +40,7 @@ const TransactionAddress: FC<TransactionAddressProps> = ({
       ? blockNumber === "latest"
         ? "latest"
         : blockNumber - 1
-      : undefined
+      : undefined,
   );
 
   return (

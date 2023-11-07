@@ -1,19 +1,19 @@
-import { useState, useEffect, useContext } from "react";
-import { JsonRpcApiProvider, EnsPlugin, getAddress, isAddress } from "ethers";
+import { EnsPlugin, JsonRpcApiProvider, getAddress, isAddress } from "ethers";
+import { useContext, useEffect, useState } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
-import { RuntimeContext } from "./useRuntime";
 import { ChecksummedAddress } from "./types";
+import { RuntimeContext } from "./useRuntime";
 
 export const useAddressOrENS = (
   addressOrName: string,
-  urlFixer: (address: ChecksummedAddress) => void
+  urlFixer: (address: ChecksummedAddress) => void,
 ): [
   ChecksummedAddress | undefined,
   boolean | undefined,
-  boolean | undefined
+  boolean | undefined,
 ] => {
   const { provider } = useContext(RuntimeContext);
   const [checksummedAddress, setChecksummedAddress] = useState<
@@ -46,7 +46,7 @@ export const useAddressOrENS = (
     if (
       (
         provider._network.getPlugin(
-          "org.ethers.plugins.network.Ens"
+          "org.ethers.plugins.network.Ens",
         ) as EnsPlugin | null
       )?.address
     ) {
@@ -75,7 +75,7 @@ export const useAddressOrENS = (
 
 export const useResolvedAddress = (
   provider: JsonRpcApiProvider | undefined,
-  address: ChecksummedAddress
+  address: ChecksummedAddress,
 ): SelectedResolvedName<any> | undefined => {
   const fetcher: Fetcher<
     SelectedResolvedName<any> | undefined,

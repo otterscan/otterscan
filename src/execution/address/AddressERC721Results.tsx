@@ -1,28 +1,28 @@
-import { useContext, FC, useMemo } from "react";
-import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
-import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
-import { RuntimeContext } from "../../useRuntime";
+import { FC, useContext, useMemo } from "react";
 import {
   useGenericTransactionCount,
   useGenericTransactionList,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
-import { AddressAwareComponentProps } from "../types";
 import { PAGE_SIZE } from "../../params";
+import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
+import { AddressAwareComponentProps } from "../types";
+import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
+import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
 const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "ERC721", address);
+  const total = useGenericTransactionCount(provider, "ERC721Transfer", address);
   const results = useGenericTransactionList(
     provider,
-    "ERC721",
+    "ERC721Transfer",
     address,
     pageNumber,
     PAGE_SIZE,
-    total
+    total,
   );
   const items = useMemo(
     () =>
@@ -38,9 +38,9 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           from: m.receipt.from,
           to: m.receipt.to,
           value: m.transaction.value,
-        })
+        }),
       ),
-    [results]
+    [results],
   );
 
   usePageTitle("ERC721 Transfers");

@@ -1,13 +1,13 @@
+import { Tab } from "@headlessui/react";
 import { FC, Suspense } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
-import { Tab } from "@headlessui/react";
+import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import SlotSubtitle from "./slot/SlotSubtitle";
-import NavTab from "../components/NavTab";
+import Attestations from "./slot/Attestations";
 import AttestationsTabTitle from "./slot/AttestationsTabTitle";
 import Overview from "./slot/Overview";
-import Attestations from "./slot/Attestations";
+import SlotSubtitle from "./slot/SlotSubtitle";
 
 const Slot: FC = () => {
   const { slotNumber } = useParams();

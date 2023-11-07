@@ -41,7 +41,7 @@ export const plainStringRenderer: ResolvedAddressRenderer<string> = (
   address,
   resolvedAddress,
   linkable,
-  dontOverrideColors
+  dontOverrideColors,
 ) => (
   <PlainString
     address={address}

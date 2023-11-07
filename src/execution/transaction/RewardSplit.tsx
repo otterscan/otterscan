@@ -1,17 +1,18 @@
-import React, { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext } from "react";
 import FormattedBalance from "../../components/FormattedBalance";
 import PercentageGauge from "../../components/PercentageGauge";
-import { RuntimeContext } from "../../useRuntime";
-import { useBlockDataFromTransaction } from "../../useErigonHooks";
-import { useChainInfo } from "../../useChainInfo";
 import { TransactionData } from "../../types";
+import { useChainInfo } from "../../useChainInfo";
+import { useBlockDataFromTransaction } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 
 type RewardSplitProps = {
   txData: TransactionData;
 };
 
+// Only can be shown when gasPrice is defined
 const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
@@ -19,7 +20,7 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const paidFees = txData.gasPrice * txData.confirmedData!.gasUsed;
+  const paidFees = txData.gasPrice! * txData.confirmedData!.gasUsed;
   const burntFees = block
     ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
     : 0n;

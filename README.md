@@ -118,4 +118,6 @@ Follow the creator on Twitter for more updates ([@wmitsuda](https://twitter.com/
 
 ### Donation address
 
-If you like this project, feel free to send donations to `otterscan.eth` or use our gitcoin grant page: https://gitcoin.co/grants/3224/otterscan
+If you like this project, feel free to send donations to `otterscan.eth` on any EVM chain (it's an EOA).
+
+We also participate regularly on Gitcoin Grants rounds.

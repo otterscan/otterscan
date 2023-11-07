@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { useLatestBlockHeader } from "../../useLatestBlock";
 import { RuntimeContext } from "../../useRuntime";
-import Countdown from "./Countdown";
 import Blocks from "./Blocks";
+import Countdown from "./Countdown";
 import { londonBlockNumber } from "./params";
 
 const London: React.FC = () => {

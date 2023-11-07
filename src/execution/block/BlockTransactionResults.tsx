@@ -1,14 +1,14 @@
 import { FC, memo } from "react";
 import ContentFrame from "../../components/ContentFrame";
-import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
-import SearchResultNavBar from "../../search/SearchResultNavBar";
-import ResultHeader from "../../search/ResultHeader";
-import PendingResults from "../../search/PendingResults";
-import TransactionItem from "../../search/TransactionItem";
-import { useFeeToggler } from "../../search/useFeeToggler";
-import { totalTransactionsFormatter } from "../../search/messages";
-import { ProcessedTransaction } from "../../types";
 import { PAGE_SIZE } from "../../params";
+import PendingResults from "../../search/PendingResults";
+import ResultHeader from "../../search/ResultHeader";
+import SearchResultNavBar from "../../search/SearchResultNavBar";
+import TransactionItem from "../../search/TransactionItem";
+import { totalTransactionsFormatter } from "../../search/messages";
+import { useFeeToggler } from "../../search/useFeeToggler";
+import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
+import { ProcessedTransaction } from "../../types";
 
 type BlockTransactionResultsProps = {
   page?: ProcessedTransaction[];

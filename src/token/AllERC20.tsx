@@ -1,17 +1,17 @@
 import { FC } from "react";
-import GenericContractSearchResult from "./GenericContractSearchResult";
-import ERC20Header from "./ERC20Header";
-import ERC20Item, { mapper } from "./ERC20Item";
-import { useContractSearchPage } from "../ots2/useUIHooks";
 import { erc20MatchParser } from "../ots2/contractMatchParsers";
+import { useContractSearchPage } from "../ots2/useUIHooks";
 import { PAGE_SIZE } from "../params";
 import { usePageTitle } from "../useTitle";
+import ERC20Header from "./ERC20Header";
+import ERC20Item, { mapper } from "./ERC20Item";
+import GenericContractSearchResult from "./GenericContractSearchResult";
 
 const AllERC20: FC = () => {
   const { pageNumber, page, total } = useContractSearchPage(
     "ERC20",
     erc20MatchParser,
-    mapper
+    mapper,
   );
 
   usePageTitle("ERC20 Tokens");

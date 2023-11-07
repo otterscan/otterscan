@@ -18,7 +18,7 @@ This way we can provide an out-of-box usable integration, but still allowing use
 
 ## Slow IPNS resolution
 
-By default IPNS resolution _may_ be **extremelly** slow. There is an experimental IPFS feature called IPNS pubsub that speeds it up significantly (https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub), but for it to work, it needs to be enabled in **both** resolver and publisher nodes.
+By default IPNS resolution _may_ be **extremely** slow. There is an experimental IPFS feature called IPNS pubsub that speeds it up significantly (https://github.com/ipfs/go-ipfs/blob/master/docs/experimental-features.md#ipns-pubsub), but for it to work, it needs to be enabled in **both** resolver and publisher nodes.
 
 We asked Sourcify to enable it in their publisher node, so you just have to enable it in your local node to have an usable performance.
 
@@ -49,14 +49,14 @@ You can create a repository from scratch by using `ipfs init -p badgerds`, or co
 My experiments pinning the entire repo on `badgerds` gave different timings, varying from 1 to 2 hours in a standard MacBook Pro laptop, totally affordable for home users, with no perceived system degradation.
 
 ```
-$ time ipfs pin add --progress /ipns/k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p
+$ time ipfs pin add --progress /ipns/repo.sourcify.dev
 pinned QmVn7fcwo4Eai19hRX6dG9jAV8piHyxcrPTuobyZjEKhMW recursively
 ipfs pin add --progress   4.47s user 1.85s system 0% cpu 2:22:41.00 total
 ```
 
 ### IPFS root changes hourly
 
-The Sourcify root IPNS name is `/ipns/k51qzi5uqu5dll0ocge71eudqnrgnogmbr37gsgl12uubsinphjoknl6bbi41p`.
+The Sourcify root IPNS name is `/ipns/repo.sourcify.dev`.
 
 Pinning it resolves it to the current IPFS root hash. However, any change to their contents changes the root hash (e.g., new contracts are verified).
 

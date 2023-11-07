@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import NavButton from "./NavButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useContext } from "react";
 import { ChecksummedAddress } from "../../types";
-import { RuntimeContext } from "../../useRuntime";
 import { useTransactionCount } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
+import NavButton from "./NavButton";
 
 type NavNonceProps = {
   sender: ChecksummedAddress;

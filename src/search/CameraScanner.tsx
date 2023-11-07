@@ -1,10 +1,10 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { isAddress } from "ethers";
+import { Dialog } from "@headlessui/react";
 import { QrReader } from "@otterscan/react-qr-reader";
 import { OnResultFunction } from "@otterscan/react-qr-reader/dist-types/types";
 import { BarcodeFormat } from "@zxing/library";
-import { Dialog } from "@headlessui/react";
+import { isAddress } from "ethers";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type CameraScannerProps = {
   turnOffScan: () => void;

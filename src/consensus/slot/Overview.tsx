@@ -1,23 +1,22 @@
-import { FC, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
 import { toUtf8String } from "ethers";
+import { FC, useMemo } from "react";
+import { useParams } from "react-router-dom";
+import BlockLink from "../../components/BlockLink";
 import ContentFrame from "../../components/ContentFrame";
+import HexValue from "../../components/HexValue";
+import InfoRow from "../../components/InfoRow";
+import RelevantNumericValue from "../../components/RelevantNumericValue";
+import Timestamp from "../../components/Timestamp";
+import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
+import { usePageTitle } from "../../useTitle";
+import CheckedValidatorLink from "../components/CheckedValidatorLink";
+import EpochLink from "../components/EpochLink";
+import SlashingCount from "../components/SlashingCount";
+import AggregationBits from "./AggregationBits";
+import AggregationParticipation from "./AggregationParticipation";
+import BlockRoot from "./BlockRoot";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
-import InfoRow from "../../components/InfoRow";
-import Timestamp from "../../components/Timestamp";
-import EpochLink from "../components/EpochLink";
-import BlockLink from "../../components/BlockLink";
-import CheckedValidatorLink from "../components/CheckedValidatorLink";
-import BlockRoot from "./BlockRoot";
-import HexValue from "../../components/HexValue";
-import RelevantNumericValue from "../../components/RelevantNumericValue";
-import AggregationParticipation from "./AggregationParticipation";
-import AggregationBits from "./AggregationBits";
-import SlashingCount from "../components/SlashingCount";
-import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
-import { commify } from "../../utils/utils";
-import { usePageTitle } from "../../useTitle";
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();
@@ -26,9 +25,7 @@ const Overview: FC = () => {
   }
   const slotAsNumber = parseInt(slotNumber);
   const { slot, error, isLoading } = useSlot(slotAsNumber);
-  if (slot !== undefined) {
-    usePageTitle(`Slot #${slotNumber}`);
-  }
+  usePageTitle(slotNumber === undefined ? undefined : `Slot #${slotNumber}`);
 
   const epoch = slot2Epoch(slotAsNumber);
   const slotTimestamp = useSlotTimestamp(slotAsNumber);

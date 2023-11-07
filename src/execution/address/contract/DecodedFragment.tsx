@@ -1,4 +1,5 @@
-import { FC, memo } from "react";
+import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ConstructorFragment,
   EventFragment,
@@ -6,8 +7,7 @@ import {
   FunctionFragment,
   Interface,
 } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
+import { FC, memo } from "react";
 
 type DecodedFragmentProps = {
   intf: Interface;

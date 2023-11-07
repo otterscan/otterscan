@@ -1,7 +1,7 @@
-import { FC, memo, useState } from "react";
-import { toBeHex, zeroPadValue, formatEther } from "ethers";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSync } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { formatEther, toBeHex, zeroPadValue } from "ethers";
+import { FC, memo, useState } from "react";
 import { commify } from "../../../utils/utils";
 
 type Uint256DecoderProps = {
@@ -27,7 +27,7 @@ const initDisplayMode = (r: any): DisplayMode => {
 
 const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
   const [displayMode, setDisplayMode] = useState<DisplayMode>(
-    initDisplayMode(r)
+    initDisplayMode(r),
   );
 
   const toggleModes = () => {

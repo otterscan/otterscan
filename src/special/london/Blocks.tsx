@@ -1,23 +1,3 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useMemo,
-  useCallback,
-} from "react";
-import { Block, FixedNumber } from "ethers";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LinearScale,
-  CategoryScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-} from "chart.js";
-import { Transition } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBurn,
   faCoins,
@@ -25,14 +5,34 @@ import {
   faGasPump,
   faHistory,
 } from "@fortawesome/free-solid-svg-icons";
-import BlockRow from "./BlockRow";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Transition } from "@headlessui/react";
+import {
+  CategoryScale,
+  Chart as ChartJS,
+  Filler,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Tooltip,
+} from "chart.js";
+import { Block, FixedNumber } from "ethers";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Line } from "react-chartjs-2";
 import { ExtendedBlock, readBlock } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import BlockRow from "./BlockRow";
 import {
-  burntFeesChartOptions,
   burntFeesChartData,
-  gasChartOptions,
+  burntFeesChartOptions,
   gasChartData,
+  gasChartOptions,
 } from "./chart";
 
 ChartJS.register(
@@ -41,7 +41,7 @@ ChartJS.register(
   PointElement,
   LineElement,
   Filler,
-  Tooltip
+  Tooltip,
 );
 
 const MAX_BLOCK_HISTORY = 20;
@@ -84,7 +84,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         // Leave the last block because of transition animation
         const newBlocks = [extBlock, ..._blocks].slice(
           0,
-          MAX_BLOCK_HISTORY + 1
+          MAX_BLOCK_HISTORY + 1,
         );
 
         // Little hack to fix out of order block notifications
@@ -92,7 +92,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return newBlocks;
       });
     },
-    [provider, targetBlockNumber]
+    [provider, targetBlockNumber],
   );
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
 
   const data = useMemo(
     () => (toggleChart ? gasChartData(blocks) : burntFeesChartData(blocks)),
-    [toggleChart, blocks]
+    [toggleChart, blocks],
   );
   const chartOptions = toggleChart ? gasChartOptions : burntFeesChartOptions;
 
@@ -122,7 +122,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
       addPreviousBlocks();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
 
   return (
@@ -202,7 +202,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
                       .subUnsafe(
                         FixedNumber.fromValue(all[i + 1].baseFeePerGas!)
                           .divUnsafe(FixedNumber.fromValue(1e9))
-                          .round(0)
+                          .round(0),
                       )
                       .toUnsafeFloat()
                   : 0

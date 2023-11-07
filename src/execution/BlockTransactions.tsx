@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import { useParams } from "react-router";
 import { useSearchParams } from "react-router-dom";
 import StandardFrame from "../components/StandardFrame";
+import { PAGE_SIZE } from "../params";
+import { useBlockTransactions } from "../useErigonHooks";
+import { RuntimeContext } from "../useRuntime";
+import { useBlockTransactionsPageTitle } from "../useTitle";
 import BlockTransactionHeader from "./block/BlockTransactionHeader";
 import BlockTransactionResults from "./block/BlockTransactionResults";
-import { PAGE_SIZE } from "../params";
-import { useBlockTransactionsPageTitle } from "../useTitle";
-import { RuntimeContext } from "../useRuntime";
-import { useBlockTransactions } from "../useErigonHooks";
 
 const BlockTransactions: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
@@ -30,7 +30,7 @@ const BlockTransactions: React.FC = () => {
     provider,
     blockNumber,
     pageNumber - 1,
-    PAGE_SIZE
+    PAGE_SIZE,
   );
   const txs = data?.txs;
   const totalTxs = data?.total;
@@ -38,7 +38,7 @@ const BlockTransactions: React.FC = () => {
   useBlockTransactionsPageTitle(
     blockNumber,
     pageNumber,
-    totalTxs === undefined ? undefined : Math.ceil(totalTxs / PAGE_SIZE)
+    totalTxs === undefined ? undefined : Math.ceil(totalTxs / PAGE_SIZE),
   );
 
   return (

@@ -1,10 +1,10 @@
 import { FC, memo } from "react";
-import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
+import AddressHighlighter from "../components/AddressHighlighter";
 import BlockLink from "../components/BlockLink";
 import TimestampAge from "../components/TimestampAge";
-import AddressHighlighter from "../components/AddressHighlighter";
-import { ChecksummedAddress } from "../types";
+import DecoratedAddressLink from "../execution/components/DecoratedAddressLink";
 import { ResultMapper } from "../ots2/useUIHooks";
+import { ChecksummedAddress } from "../types";
 
 type ERC1167ItemProps = {
   blockNumber: bigint;

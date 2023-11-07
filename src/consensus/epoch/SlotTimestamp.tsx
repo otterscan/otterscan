@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { SlotAwareComponentProps } from "../types";
 import AutoRefreshAge from "../../components/AutoRefreshAge";
 import { useSlotTimestamp } from "../../useConsensus";
+import { SlotAwareComponentProps } from "../types";
 
 const SlotTimestamp: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const slotTimestamp = useSlotTimestamp(slotNumber);

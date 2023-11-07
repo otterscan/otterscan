@@ -36,7 +36,7 @@ const AutoRefreshAge: FC<AutoRefreshAgeProps> = ({ timestamp }) => {
         return newLast;
       });
     },
-    [setLast]
+    [setLast],
   );
 
   const lastInSecs = Math.round(last.getTime() / 1000);

@@ -1,6 +1,6 @@
 import { FC } from "react";
-import { SlotAwareComponentProps } from "../types";
 import { useSlot } from "../../useConsensus";
+import { SlotAwareComponentProps } from "../types";
 
 const AttestationsTabTitle: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const { slot, error, isLoading } = useSlot(slotNumber);

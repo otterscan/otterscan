@@ -1,16 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
 import { FunctionFragment } from "ethers";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import React, { useContext } from "react";
 import ContentFrame from "../../../components/ContentFrame";
-import InfoRow from "../../../components/InfoRow";
-import { RuntimeContext } from "../../../useRuntime";
-import { Match, MatchType } from "../../../sourcify/useSourcify";
-import ContractABI from "../contract/ContractABI";
-import ReadFunction from "./ReadFunction";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
-import { commify } from "../../../utils/utils";
+import { Match } from "../../../sourcify/useSourcify";
+import { RuntimeContext } from "../../../useRuntime";
+import ReadFunction from "./ReadFunction";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -30,7 +24,7 @@ const ReadContract: React.FC<ContractsProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
   const viewFunctions = match?.metadata.output.abi.filter((fn) =>
-    isReadFunction(fn)
+    isReadFunction(fn),
   );
 
   return (
@@ -51,7 +45,7 @@ const ReadContract: React.FC<ContractsProps> = ({
               {viewFunctions.length === 0 &&
                 "This contract has no external view functions."}
               {viewFunctions.length > 0 && (
-                <ul className="list-inside list-decimal">
+                <ol className="marker:text-md list-inside list-decimal marker:text-gray-400">
                   {viewFunctions.map((fn, i) => (
                     <ReadFunction
                       func={FunctionFragment.from(fn)}
@@ -59,7 +53,7 @@ const ReadContract: React.FC<ContractsProps> = ({
                       key={i}
                     />
                   ))}
-                </ul>
+                </ol>
               )}
             </div>
           )}

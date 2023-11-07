@@ -1,10 +1,10 @@
+import { faCoins } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo, useContext } from "react";
 import { useImage } from "react-image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCoins } from "@fortawesome/free-solid-svg-icons";
+import { ChecksummedAddress } from "../../../types";
 import { tokenLogoURL } from "../../../url";
 import { RuntimeContext } from "../../../useRuntime";
-import { ChecksummedAddress } from "../../../types";
 
 type TokenLogoProps = {
   chainId: bigint;

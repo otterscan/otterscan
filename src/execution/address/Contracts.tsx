@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
-import { Menu } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Menu } from "@headlessui/react";
+import React, { useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
+import { Match, MatchType } from "../../sourcify/useSourcify";
+import { openInRemixURL } from "../../url";
+import { RuntimeContext } from "../../useRuntime";
+import { commify } from "../../utils/utils";
 import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
-import { RuntimeContext } from "../../useRuntime";
-import { Match, MatchType } from "../../sourcify/useSourcify";
-import ExternalLink from "../../components/ExternalLink";
-import { openInRemixURL } from "../../url";
 import ContractABI from "./contract/ContractABI";
-import { commify } from "../../utils/utils";
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -96,7 +96,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                       <ExternalLink
                         href={openInRemixURL(
                           checksummedAddress,
-                          provider._network.chainId
+                          provider._network.chainId,
                         )}
                       >
                         Open in Remix

@@ -1,14 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import StandardFrame from "../components/StandardFrame";
-import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import AddressOrENSNameInvalidNonce from "../components/AddressOrENSNameInvalidNonce";
 import AddressOrENSNameNoTx from "../components/AddressOrENSNameNoTx";
-import { useTransactionBySenderAndNonce } from "../useErigonHooks";
-import { RuntimeContext } from "../useRuntime";
-import { useAddressOrENS } from "../useResolvedAddresses";
+import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
+import StandardFrame from "../components/StandardFrame";
 import { ChecksummedAddress } from "../types";
 import { transactionURL } from "../url";
+import { useTransactionBySenderAndNonce } from "../useErigonHooks";
+import { useAddressOrENS } from "../useResolvedAddresses";
+import { RuntimeContext } from "../useRuntime";
 
 type AddressTransactionByNonceProps = {
   rawNonce: string;
@@ -32,14 +32,14 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
         `/address/${address}${
           direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
-        { replace: true }
+        { replace: true },
       );
     },
-    [navigate, direction, searchParams]
+    [navigate, direction, searchParams],
   );
   const [checksummedAddress, , ensError] = useAddressOrENS(
     addressOrName,
-    urlFixer
+    urlFixer,
   );
 
   // Calculate txCount ONLY when asked for latest nonce
@@ -52,7 +52,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
 
     const readTxCount = async () => {
       const count = BigInt(
-        await provider.getTransactionCount(checksummedAddress)
+        await provider.getTransactionCount(checksummedAddress),
       );
       setTxCount(count);
     };
@@ -78,7 +78,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   const txHash = useTransactionBySenderAndNonce(
     provider,
     checksummedAddress,
-    nonce !== undefined && nonce === null ? undefined : nonce
+    nonce !== undefined && nonce === null ? undefined : nonce,
   );
 
   // Invalid ENS

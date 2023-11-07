@@ -1,33 +1,34 @@
-import React, { useEffect, useCallback, useContext } from "react";
+import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Tab } from "@headlessui/react";
+import React, { useCallback, useContext } from "react";
 import {
-  Routes,
   Route,
+  Routes,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Tab } from "@headlessui/react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
-import StandardFrame from "../components/StandardFrame";
-import AddressSubtitle from "./address/AddressSubtitle";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
+import StandardFrame from "../components/StandardFrame";
+import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
-import AddressTransactionResults from "./address/AddressTransactionResults";
-import AddressERC20Results from "./address/AddressERC20Results";
-import AddressERC721Results from "./address/AddressERC721Results";
-import AddressWithdrawals from "./address/AddressWithdrawals";
-import AddressTokens from "./address/AddressTokens";
-import Contracts from "./address/Contracts";
-import ReadContract from "./address/contract/ReadContract";
-import { RuntimeContext } from "../useRuntime";
-import { useHasCode } from "../useErigonHooks";
-import { useAddressOrENS } from "../useResolvedAddresses";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
 import { ChecksummedAddress } from "../types";
+import { useHasCode } from "../useErigonHooks";
+import { useAddressOrENS } from "../useResolvedAddresses";
+import { RuntimeContext } from "../useRuntime";
 import { usePageTitle } from "../useTitle";
+import AddressERC20Results from "./address/AddressERC20Results";
+import AddressERC721Results from "./address/AddressERC721Results";
+import AddressSubtitle from "./address/AddressSubtitle";
+import AddressTokens from "./address/AddressTokens";
+import AddressTransactionResults from "./address/AddressTransactionResults";
+import AddressWithdrawals from "./address/AddressWithdrawals";
+import Contracts from "./address/Contracts";
+import ReadContract from "./address/contract/ReadContract";
 
 type AddressMainPageProps = {};
 
@@ -45,28 +46,31 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
         `/address/${address}${
           direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
-        { replace: true }
+        { replace: true },
       );
     },
-    [navigate, direction, searchParams]
+    [navigate, direction, searchParams],
   );
   const [checksummedAddress, isENS, error] = useAddressOrENS(
     addressOrName,
-    urlFixer
+    urlFixer,
   );
 
   const { config, provider } = useContext(RuntimeContext);
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?._network.chainId
+    provider?._network.chainId,
   );
+  const proxyAttrs = useProxyAttributes(provider, checksummedAddress);
 
-  if (isENS || checksummedAddress === undefined) {
-    usePageTitle(`Address ${addressOrName}`);
-  } else {
-    usePageTitle(`Address ${checksummedAddress}`);
-  }
+  usePageTitle(
+    `Address ${
+      isENS || checksummedAddress === undefined
+        ? addressOrName
+        : checksummedAddress
+    }`,
+  );
 
   return (
     <StandardFrame>
@@ -132,11 +136,26 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
+                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
+                  <NavTab href={`/address/${addressOrName}/proxyLogicContract`}>
+                    <span className={`flex items-baseline space-x-2`}>
+                      <span>Logic Contract</span>
+                      <SourcifyLogo />
+                    </span>
+                  </NavTab>
+                )}
                 {hasCode && match && (
                   <NavTab href={`/address/${addressOrName}/readContract`}>
                     <span className={`flex items-baseline space-x-2`}>
                       <span>Read Contract</span>
                     </span>
+                  </NavTab>
+                )}
+                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
+                  <NavTab
+                    href={`/address/${addressOrName}/readContractAsProxy`}
+                  >
+                    <span>Read as Proxy</span>
                   </NavTab>
                 )}
               </Tab.List>
@@ -189,6 +208,17 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
+                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
+                    <Route
+                      path="proxyLogicContract"
+                      element={
+                        <Contracts
+                          checksummedAddress={proxyAttrs.logicAddress}
+                          match={proxyAttrs.proxyMatch}
+                        />
+                      }
+                    />
+                  )}
                   <Route
                     path="readContract"
                     element={
@@ -198,6 +228,17 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
+                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
+                    <Route
+                      path="readContractAsProxy"
+                      element={
+                        <ReadContract
+                          checksummedAddress={checksummedAddress}
+                          match={proxyAttrs.proxyMatch}
+                        />
+                      }
+                    />
+                  )}
                 </Routes>
               </Tab.Panels>
             </Tab.Group>

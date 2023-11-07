@@ -1,5 +1,5 @@
-import { Meta, StoryObj } from "@storybook/react";
 import { Tab } from "@headlessui/react";
+import { Meta, StoryObj } from "@storybook/react";
 import ModeTab from "./ModeTab";
 
 const meta = {

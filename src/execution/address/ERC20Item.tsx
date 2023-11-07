@@ -1,13 +1,13 @@
 import { FC, memo } from "react";
-import TransactionLink from "../../components/TransactionLink";
-import MethodName from "../../components/MethodName";
 import BlockLink from "../../components/BlockLink";
+import MethodName from "../../components/MethodName";
+import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TimestampAge from "../../components/TimestampAge";
 import TransactionDirection from "../../components/TransactionDirection";
-import { AddressAwareComponentProps } from "../types";
-import NativeTokenAmount from "../../components/NativeTokenAmount";
-import TransactionAddress from "../components/TransactionAddress";
+import TransactionLink from "../../components/TransactionLink";
 import { BlockNumberContext } from "../../useBlockTagContext";
+import TransactionAddress from "../components/TransactionAddress";
+import { AddressAwareComponentProps } from "../types";
 
 export type ERC20ItemProps = AddressAwareComponentProps & {
   blockNumber: number;
@@ -37,7 +37,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
         <td>
           <TransactionLink txHash={hash} fail={status === 0} />
         </td>
-        <td>{to !== null && <MethodName data={data} />}</td>
+        <td>{to !== null && <MethodName data={data} to={to} />}</td>
         <td>
           <BlockLink blockTag={blockNumber} />
         </td>

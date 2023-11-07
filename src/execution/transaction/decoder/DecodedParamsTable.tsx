@@ -1,7 +1,7 @@
-import { FC, memo } from "react";
 import { ParamType, Result } from "ethers";
-import DecodedParamRow from "./DecodedParamRow";
+import { FC, memo } from "react";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
+import DecodedParamRow from "./DecodedParamRow";
 
 type DecodedParamsTableProps = {
   args: Result;

@@ -32,9 +32,9 @@ That may be a better alternative to genesis sync if you want to have all histori
 
 ### Some historical operations can be slow on default settings
 
-Let's take as an example the `/eth/v1/validator/duties/proposer/` call that we use to obtain the ellected block proposers for a given epoch.
+Let's take as an example the `/eth/v1/validator/duties/proposer/` call that we use to obtain the elected block proposers for a given epoch.
 
-Its main use is to answer the question: for a missed slot, who was the ellected validator who missed it?
+Its main use is to answer the question: for a missed slot, who was the elected validator who missed it?
 
 Well, in Lighthouse, using the default settings, querying an old epoch is very slow: https://github.com/sigp/lighthouse/issues/3770
 
@@ -44,7 +44,7 @@ There may be other cases with different trade-offs. Be aware of how your CL impl
 
 ## Enabling CL REST API
 
-Instructions for enabling the REST API is dependant on which CL implementation you are using.
+Instructions for enabling the REST API are dependent on which CL implementation you are using.
 
 It is out-of-scope of this document to explain how it is done since there are many CL implementations. Please check their docs.
 

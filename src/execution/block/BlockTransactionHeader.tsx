@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
 import { BlockTag } from "ethers";
-import StandardSubtitle from "../../components/StandardSubtitle";
+import React, { useContext } from "react";
 import BlockLink from "../../components/BlockLink";
 import NavBlock from "../../components/NavBlock";
-import { RuntimeContext } from "../../useRuntime";
-import { useLatestBlockNumber } from "../../useLatestBlock";
+import StandardSubtitle from "../../components/StandardSubtitle";
 import { blockTxsURL } from "../../url";
+import { useLatestBlockNumber } from "../../useLatestBlock";
+import { RuntimeContext } from "../../useRuntime";
 
 type BlockTransactionHeaderProps = {
   blockTag: BlockTag;

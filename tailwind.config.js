@@ -15,6 +15,8 @@ export default {
       colors: {
         "link-blue": "#3498db",
         "link-blue-hover": "#0468ab",
+        "verified-contract": "#2b50aa",
+        "verified-contract-hover": "#26007b",
       },
       fontFamily: {
         sans: ["Roboto"],

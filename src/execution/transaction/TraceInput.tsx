@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBomb } from "@fortawesome/free-solid-svg-icons";
-import TransactionAddress from "../components/TransactionAddress";
-import FormattedBalance from "../../components/FormattedBalance";
-import FunctionSignature from "./FunctionSignature";
-import InputDecoder from "./decoder/InputDecoder";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
-import { TraceEntry } from "../../useErigonHooks";
+import FormattedBalance from "../../components/FormattedBalance";
 import {
   extract4Bytes,
   use4Bytes,
   useTransactionDescription,
 } from "../../use4Bytes";
 import { useChainInfo } from "../../useChainInfo";
+import { TraceEntry } from "../../useErigonHooks";
+import TransactionAddress from "../components/TransactionAddress";
+import FunctionSignature from "./FunctionSignature";
+import InputDecoder from "./decoder/InputDecoder";
 
 type TraceInputProps = {
   t: TraceEntry;
@@ -23,7 +23,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
     nativeCurrency: { symbol },
   } = useChainInfo();
   const raw4Bytes = extract4Bytes(t.input);
-  const fourBytes = use4Bytes(raw4Bytes);
+  const fourBytes = use4Bytes(raw4Bytes, t.to);
   const sigText =
     raw4Bytes === null ? "<fallback>" : fourBytes?.name ?? raw4Bytes;
   const hasParams = t.input.length > 10;
@@ -31,7 +31,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const fourBytesTxDesc = useTransactionDescription(
     fourBytes,
     t.input,
-    t.value
+    t.value,
   );
 
   const [expanded, setExpanded] = useState<boolean>(false);

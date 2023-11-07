@@ -1,18 +1,21 @@
-import { useContext, useEffect } from "react";
 import { BlockTag, isHexString } from "ethers";
-import { commify } from "./utils/utils";
+import { useContext } from "react";
 import { RuntimeContext } from "./useRuntime";
+import { commify } from "./utils/utils";
 
 /**
  * Set the page title.
  */
 export const usePageTitle = (title: string | undefined) => {
+  const { config } = useContext(RuntimeContext);
   if (title === undefined) {
     return;
   }
-  const { config } = useContext(RuntimeContext);
   const siteName = config?.branding?.siteName || "Otterscan";
-  document.title = `${title} | ${siteName}`;
+  const networkTitle = config?.branding?.networkTitle
+    ? `| ${config?.branding?.networkTitle} `
+    : "";
+  document.title = `${title} ${networkTitle}| ${siteName}`;
 };
 
 /**
@@ -32,13 +35,13 @@ export const useBlockPageTitle = (blockNumber: BlockTag) => {
 export const useBlockTransactionsPageTitle = (
   blockNumber: number,
   pageNumber: number,
-  pageCount: number | undefined
+  pageCount: number | undefined,
 ) => {
-  if (blockNumber !== undefined) {
-    usePageTitle(
-      `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
-        pageCount === undefined ? "" : "/" + pageCount
-      }`
-    );
-  }
+  usePageTitle(
+    blockNumber === undefined
+      ? undefined
+      : `Block #${commify(blockNumber)} Txns | Page ${pageNumber}${
+          pageCount === undefined ? "" : "/" + pageCount
+        }`,
+  );
 };
