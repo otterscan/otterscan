@@ -6,7 +6,7 @@ Be sure to have a working Otterscan/Erigon installation first, following the [in
 
 ## Clone and build Erigon + OTS2 support
 
-Checkout the `ots2-alpha2` branch from Erigon repository: https://github.com/ledgerwatch/erigon/tree/ots2-alpha2
+Checkout the `ots2-alpha3` branch from Erigon repository: https://github.com/ledgerwatch/erigon/tree/ots2-alpha3
 
 Build it as usual with `make` command.
 
