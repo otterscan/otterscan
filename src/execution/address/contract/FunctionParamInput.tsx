@@ -123,37 +123,38 @@ const FunctionParamInput = forwardRef<
     </ul>
   ) : param.baseType === "array" ? (
     <>
-      <ul className="ml-2 list-inside mb-3">
-        {paramValue.map((entryKey: string, index: number) => {
-          return (
-            <li className="pl-2" key={entryKey}>
-              <span className="text-sm font-medium text-gray-600">
-                <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
-                {param.arrayLength === -1 && (
-                  <button
-                    className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
-                    type="button"
-                    onClick={(event) => {
-                      childRefs.current = childRefs.current.toSpliced(index, 1);
-                      dispatch({ type: "REMOVE_VALUE", index: index });
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTrashAlt} className="mr-2" />
-                    Remove
-                  </button>
-                )}
-              </span>
-              <FunctionParamInput
-                param={param.arrayChildren!}
-                ref={(childRef) => {
-                  if (childRef !== null) {
-                    childRefs.current[index] = childRef;
-                  }
-                }}
-              />
-            </li>
-          );
-        })}
+      <ul className="ml-2 list-inside">
+        {paramValue.map((entryKey: string, index: number) => (
+          <li
+            className={`pl-2${param.arrayLength === -1 ? " mb-3" : ""}`}
+            key={entryKey}
+          >
+            <span className="text-sm font-medium text-gray-600">
+              <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
+              {param.arrayLength === -1 && (
+                <button
+                  className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
+                  type="button"
+                  onClick={(event) => {
+                    childRefs.current = childRefs.current.toSpliced(index, 1);
+                    dispatch({ type: "REMOVE_VALUE", index: index });
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTrashAlt} className="mr-2" />
+                  Remove
+                </button>
+              )}
+            </span>
+            <FunctionParamInput
+              param={param.arrayChildren!}
+              ref={(childRef) => {
+                if (childRef !== null) {
+                  childRefs.current[index] = childRef;
+                }
+              }}
+            />
+          </li>
+        ))}
       </ul>
       {param.arrayLength === -1 && (
         <span className="text-sm font-medium text-gray-600">
