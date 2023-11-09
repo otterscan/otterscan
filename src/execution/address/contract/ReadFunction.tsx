@@ -8,10 +8,14 @@ import {
   resolveAddress,
   type ParamType,
 } from "ethers";
-import { FC, FormEvent, memo, useContext, useState } from "react";
+import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
 import { RuntimeContext } from "../../../useRuntime";
+import ParamDeclaration from "../../components/ParamDeclaration";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
-import FunctionParamsInput from "./FunctionParamsInput";
+import FunctionParamInput, {
+  ParamComponentRef,
+  ParamValue,
+} from "./FunctionParamInput";
 import { parse } from "./contractInputDataParser";
 
 interface ReadFunctionProps {
@@ -93,44 +97,79 @@ async function transformArgument(
   return arg;
 }
 
-async function parseArgument(
-  arg: string,
+async function parseStructuredArgument(
+  arg: ParamValue,
   argType: ParamType,
   argIndex: number,
   provider: JsonRpcApiProvider,
 ): Promise<string | bigint | boolean | any[]> {
-  if (arg.length === 0) {
-    throw new Error(`Argument ${argIndex} missing`);
+  const isSingleType = typeof arg === "string";
+  if (
+    isSingleType ===
+    (argType.baseType === "tuple" || argType.baseType === "array")
+  ) {
+    throw new Error(`ParamValue type mismatch`);
   }
-  let finalArg = prepareArgument(arg, argType);
-  const parsed = parse(finalArg);
-  if (parsed.ast) {
-    validateArgument(parsed.ast.value, argType);
-    const transformedArg = await transformArgument(
-      parsed.ast.value,
-      argType,
-      provider,
-    );
-    return transformedArg;
+  if (isSingleType) {
+    if (arg.length === 0) {
+      throw new Error(`Argument ${argIndex} missing`);
+    }
+    let finalArg = prepareArgument(arg, argType);
+    const parsed = parse(finalArg);
+    if (parsed.ast) {
+      validateArgument(parsed.ast.value, argType);
+      const transformedArg = await transformArgument(
+        parsed.ast.value,
+        argType,
+        provider,
+      );
+      return transformedArg;
+    } else {
+      throw new Error(
+        parsed.errs
+          .map(
+            (err) =>
+              `${err.toString()}\n${finalArg}\n${"-".repeat(
+                err.pos.overallPos,
+              )}^`,
+          )
+          .join("\n"),
+      );
+    }
   } else {
-    throw new Error(
-      parsed.errs
-        .map(
-          (err) =>
-            `${err.toString()}\n${finalArg}\n${"-".repeat(
-              err.pos.overallPos,
-            )}^`,
-        )
-        .join("\n"),
-    );
+    if (argType.baseType === "tuple") {
+      return Promise.all(
+        arg.map((childArg: ParamValue, index: number) =>
+          parseStructuredArgument(
+            childArg,
+            argType.components![index],
+            argIndex,
+            provider,
+          ),
+        ),
+      );
+    } else if (argType.baseType === "array") {
+      return Promise.all(
+        arg.map((childArg: ParamValue) =>
+          parseStructuredArgument(
+            childArg,
+            argType.arrayChildren!,
+            argIndex,
+            provider,
+          ),
+        ),
+      );
+    }
   }
+
+  throw new Error("Unhandled parse sequence: " + argType.format("full"));
 }
 
 const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
   let [result, setResult] = useState<Result | null | undefined>(null);
   let [error, setError] = useState<string | null>(null);
-  let [inputs, setInputs] = useState<string[]>(
-    new Array(func.inputs.length).fill(""),
+  const childRefs = useRef<ParamComponentRef[]>(
+    new Array(func.inputs.length).fill(null),
   );
   const { provider } = useContext(RuntimeContext);
 
@@ -140,11 +179,14 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       try {
         setResult(undefined);
         // The parser can be recompiled with `npm run build-parsers`
+        const inputTree: ParamValue[] = childRefs.current.map((childRef) =>
+          childRef.computeParamValue(),
+        );
         let encodedData = int.encodeFunctionData(
           func.name,
           await Promise.all(
-            inputs.map((input: string, i: number) =>
-              parseArgument(input, func.inputs[i], i, provider),
+            inputTree.map((input: ParamValue, i: number) =>
+              parseStructuredArgument(input, func.inputs[i], i, provider),
             ),
           ),
         );
@@ -174,14 +216,26 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
     <li key={func.format()} className="pb-4">
       <span className="text-md font-medium">{func.name}</span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
-        {func.inputs && (
-          <FunctionParamsInput
-            params={func.inputs}
-            inputCallback={(values: string[]) => setInputs(values)}
-          />
-        )}
+        <ul className="ml-2 list-inside">
+          {func.inputs &&
+            func.inputs.map((param, index) => (
+              <li className="pl-2" key={index}>
+                <span className="text-sm font-medium text-gray-600">
+                  <ParamDeclaration input={param} index={index} />
+                </span>
+                <FunctionParamInput
+                  param={param}
+                  ref={(component) => {
+                    if (component !== null) {
+                      childRefs.current[index] = component;
+                    }
+                  }}
+                />
+              </li>
+            ))}
+        </ul>
         <button
-          className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+          className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
           type="submit"
         >
           Query
