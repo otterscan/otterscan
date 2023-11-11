@@ -188,7 +188,7 @@ export const useERC20Holdings = (
     if (data === undefined || data === null) {
       return undefined;
     }
-    return (data as any[]).map((m) => m.address);
+    return (data as any[]).map((m) => getAddress(m.address));
   }, [data, error]);
 
   return converted;
