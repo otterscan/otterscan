@@ -43,5 +43,8 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: npm start
+          wait-on: "http://localhost:5173"
+          record: true
         env:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
+          CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
