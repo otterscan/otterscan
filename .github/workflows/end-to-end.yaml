@@ -7,44 +7,73 @@ on:
       - develop
       - main
 jobs:
-  e2e-test:
-    name: Run Otterscan E2E tests
+  e2e-test-mainnet:
+    name: Run Otterscan E2E tests on mainnet
     runs-on: ubuntu-latest
+    if: ${{ secrets.E2E_ERIGON_URL != '' }}
+    needs: e2e-test-devnet
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up xvfb
         run: |
-          sudo DEBIAN_FRONTEND=noninteractive apt update
-          sudo DEBIAN_FRONTEND=noninteractive apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-      #      - name: Download Erigon
-      #        run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
-      #      - name: Set up Go
-      #        uses: actions/setup-go@v4
-      #        with:
-      #          go-version: 'stable'
-      #      - name: Build Erigon
-      #        run: |
-      #          cd erigon
-      #          make erigon
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Install Node dependencies
         run: npm install
-      #      - name: Run tests from local Erigon devnet
-      #        run: |
-      #          npm start &
-      #          ./erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow &
-      #          sleep 10
-      #          npx cypress run
-      - name: Run Cypress tests
+
+      - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
         with:
           start: npm start
           wait-on: "http://localhost:5173"
-          record: true
+          spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
+          record: |
+            ${{{secrets.E2E_CYPRESS_RECORD_KEY != '' ? 'true' : 'false'}}}
         env:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+
+  e2e-test-devnet:
+    name: Run Otterscan E2E tests on a devnet
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Download Erigon
+        run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+      - name: Build Erigon
+        run: |
+          cd erigon
+          make erigon
+      - name: Run tests from local Erigon devnet
+        run: |
+          npm start &
+          ./erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow &
+          sleep 10
+          npx cypress run --spec "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
+      - name: Upload screenshots from failing tests
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: Cypress Screenshots
+          path: cypress/screenshots
