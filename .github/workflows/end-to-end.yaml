@@ -33,7 +33,7 @@ jobs:
           wait-on: "http://localhost:5173"
           spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           record: |
-            ${{{secrets.E2E_CYPRESS_RECORD_KEY != '' ? 'true' : 'false'}}}
+            ${{secrets.E2E_CYPRESS_RECORD_KEY != '' ? 'true' : 'false'}}
         env:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
