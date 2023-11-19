@@ -71,14 +71,14 @@ RUN set -ex \
     && rm -rf /tmp/packages
 RUN apk update && apk add jq
 WORKDIR /usr/share/nginx/html/
-COPY --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/chains chains/
-COPY --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/topic0 topic0/
-COPY --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/assets assets/
-COPY --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/signatures signatures/
-COPY nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /otterscan-build/dist /usr/share/nginx/html/
-COPY --from=builder /otterscan-build/run-nginx.sh /
+COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/chains chains/
+COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/topic0 topic0/
+COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/assets assets/
+COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/signatures signatures/
+COPY --link nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY --link nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --link --from=builder /otterscan-build/dist /usr/share/nginx/html/
+COPY --link --from=builder /otterscan-build/run-nginx.sh /
 WORKDIR /
 
 CMD ["/run-nginx.sh"]
