@@ -13,12 +13,14 @@ jobs:
       e2e-erigon-url: ${{ steps.e2e-erigon-url.outputs.defined }}
       e2e-cypress-record-key: ${{ steps.e2e-cypress-record-key.outputs.defined }}
     steps:
-      - id: e2e-erigon-url
+      - name: Check if E2E_ERIGON_URL is available
+        id: e2e-erigon-url
         env:
           E2E_ERIGON_URL: ${{ secrets.E2E_ERIGON_URL }}
         if: "${{ env.E2E_ERIGON_URL != '' }}"
         run: echo "defined=true" >> $GITHUB_OUTPUT
-      - id: e2e-cypress-record-key
+      - name: Check if E2E_CYPRESS_RECORD_KEY is available
+        id: e2e-cypress-record-key
         env:
           E2E_CYPRESS_RECORD_KEY: ${{ secrets.E2E_CYPRESS_RECORD_KEY }}
         if: "${{ env.E2E_CYPRESS_RECORD_KEY != '' }}"
