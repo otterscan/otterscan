@@ -6,6 +6,7 @@ on:
     branches:
       - develop
       - main
+  workflow_dispatch:
 jobs:
   check-secrets:
     runs-on: ubuntu-latest
