@@ -59,7 +59,9 @@
     "docker-hub-start": "docker run --rm -p 5273:80 --pull always --name otterscan -d otterscan/otterscan:develop",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build-parsers": "npx tspeg ./src/execution/address/contract/contract-input-grammar | npx prettier --stdin-filepath contractInput.ts > ./src/execution/address/contract/contractInputDataParser.ts"
+    "build-parsers": "npx tspeg ./src/execution/address/contract/contract-input-grammar | npx prettier --stdin-filepath contractInput.ts > ./src/execution/address/contract/contractInputDataParser.ts",
+    "cy:run-mainnet": "npx cypress run --spec \"cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts\"",
+    "cy:run-devnet": "npx cypress run --spec \"cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts\""
   },
   "eslintConfig": {
     "extends": [
