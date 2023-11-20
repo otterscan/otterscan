@@ -6,7 +6,6 @@ on:
     branches:
       - develop
       - main
-      - cypress-e2e-tests-2
   workflow_dispatch:
 jobs:
   check-secrets:
