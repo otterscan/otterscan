@@ -96,7 +96,10 @@ jobs:
           make erigon
       - name: Run tests from local Erigon devnet
         run: |
-          npm start &
+          VITE_CONFIG_JSON='{
+            "erigonURL": "http://127.0.0.1:8545",
+            "assetsURLPrefix": "http://127.0.0.1:5175"
+          }' npm start &
           ./erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow &
           sleep 10
           npx cypress run --spec "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts" ${{ needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && '--record --tag devnet' || '' }}
