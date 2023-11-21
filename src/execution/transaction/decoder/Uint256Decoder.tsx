@@ -54,7 +54,7 @@ const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
       </button>
       <span>
         {displayMode === DisplayMode.RAW ? (
-          <>{commify(r.toString())}</>
+          <>{r.toString()}</>
         ) : displayMode === DisplayMode.HEX ? (
           <>{zeroPadValue(toBeHex(r), 32)}</>
         ) : (
