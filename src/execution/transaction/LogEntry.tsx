@@ -7,6 +7,8 @@ import { RuntimeContext } from "../../useRuntime";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
+import DecodedScillaLogSignature from "./decoder/DecodedScillaLogSignature";
+import DecodedScillaParamsTable from "./decoder/DecodedScillaParamsTable";
 import LogIndex from "./log/LogIndex";
 import RawLog from "./log/RawLog";
 import TwoColumnPanel from "./log/TwoColumnPanel";
@@ -19,27 +21,65 @@ type LogEntryProps = {
   log: Log;
 };
 
+type ScillaLog = {
+  eventName: string;
+  address: string;
+  params: object;
+};
+
+const EvmLogDisplay: FC<LogDisplayProps> = ( {resolvedLogDesc} ) => {
+  return (   <div>  {resolvedLogDesc === undefined ? (
+    <TwoColumnPanel>Waiting for data...</TwoColumnPanel>
+  ) : resolvedLogDesc === null ? (
+    <TwoColumnPanel>Cannot decode data</TwoColumnPanel>
+) : (
+   <TwoColumnPanel>
+      <DecodedLogSignature event={resolvedLogDesc.fragment} />
+      <DecodedParamsTable
+    args={resolvedLogDesc.args}
+    paramTypes={resolvedLogDesc.fragment.inputs}
+    hasParamNames={resolvedLogDesc === logDesc || resolvedLogDesc === scillaLogDesc}
+      />
+      </TwoColumnPanel>
+  )
+              } </div>);
+};
+
+/// Display a scilla log; if the log were null, we would have defaulted to
+///  EvmLogDisplay, so no need to handle undefined or null.
+const ScillaLogDisplay: FC<ScillaLog> = ( { scillaLogDesc} ) => {
+  let eventProps = { name: scillaLogDesc.eventName,  address: scillaLogDesc.address }
+  return ( <div> <TwoColumnPanel>
+    <DecodedScillaLogSignature event={eventProps} />
+    <DecodedScillaParamsTable params={ scillaLogDesc.params } />
+     </TwoColumnPanel>
+    </div>
+    )
+}
+
+
+
 const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(log.address, provider?._network.chainId);
 
-  const scillaLogDesc = useMemo(() => {
+  const scillaLogDesc : ScillaLog | undefined = useMemo(() => {
     // Scilla logs are encoded as a single JSON string.
     try {
       const data = JSON.parse(AbiCoder.defaultAbiCoder().decode(["string"], log.data)[0]);
-      const params: any[] = data.params;
-      return new LogDescription(
-        EventFragment.from({type: "event", name: data._eventname, inputs: params.map(p => ({ name: p.vname, type: p.type }))}),
-        "",
-        Result.fromItems(params.map(p => (p.value)), params.map(p=> (p.name)))
-      );
+      return {
+        eventName: data._eventname,
+        address: data.address,
+        params: data.params
+      }
     } catch (err) {
       // Silently ignore on purpose
       return undefined;
     }
   }, [log]);
 
-  const logDesc = useMemo(() => {
+  const logDesc = scillaLogDesc ? undefined :
+    useMemo(() => {
     if (!match) {
       return match;
     }
@@ -58,9 +98,9 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
   }, [log, match]);
 
   const rawTopic0 = log.topics[0];
-  const topic0 = useTopic0(rawTopic0);
+  const topic0 = scillaLogDesc ? undefined : useTopic0(rawTopic0);
 
-  const topic0LogDesc = useMemo(() => {
+  const topic0LogDesc = scillaLogDesc ? undefined : useMemo(() => {
     if (!topic0) {
       return topic0;
     }
@@ -84,7 +124,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     return undefined;
   }, [topic0, log]);
 
-  const resolvedLogDesc = scillaLogDesc ?? logDesc ?? topic0LogDesc;
+  const resolvedLogDesc = logDesc ?? topic0LogDesc;
 
   return (
     <div className="flex space-x-10 py-5">
@@ -105,22 +145,11 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
             </TwoColumnPanel>
           </Tab.List>
           <Tab.Panels as={React.Fragment}>
-            <Tab.Panel>
-              {resolvedLogDesc === undefined ? (
-                <TwoColumnPanel>Waiting for data...</TwoColumnPanel>
-              ) : resolvedLogDesc === null ? (
-                <TwoColumnPanel>Can't decode data</TwoColumnPanel>
-              ) : (
-                <TwoColumnPanel>
-                  <DecodedLogSignature event={resolvedLogDesc.fragment} />
-                  <DecodedParamsTable
-                    args={resolvedLogDesc.args}
-                    paramTypes={resolvedLogDesc.fragment.inputs}
-                    hasParamNames={resolvedLogDesc === logDesc || resolvedLogDesc === scillaLogDesc}
-                  />
-                </TwoColumnPanel>
-              )}
-            </Tab.Panel>
+      <Tab.Panel>
+      ({ scillaLogDesc !== undefined && scillaLogDesc !== null ?
+        <ScillaLogDisplay scillaLogDesc={scillaLogDesc} /> :
+        <EvmLogDisplay resolvedLogDesc={resolvedLogDesc} />})
+      </Tab.Panel>
             <Tab.Panel as={React.Fragment}>
               <RawLog topics={log.topics} data={log.data} />
             </Tab.Panel>
