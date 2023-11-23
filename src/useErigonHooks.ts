@@ -328,9 +328,12 @@ export const useTxData = (
 };
 
 export const useTokenTransfers = (
-  txData: TransactionData,
+  txData?: TransactionData | null,
 ): TokenTransfer[] | undefined => {
   const transfers = useMemo(() => {
+    if (txData === undefined || txData === null) {
+      return undefined;
+    }
     if (!txData.confirmedData) {
       return undefined;
     }
