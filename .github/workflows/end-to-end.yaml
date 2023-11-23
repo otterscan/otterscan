@@ -1,0 +1,112 @@
+name: End-to-End Tests
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      e2e-erigon-url: ${{ steps.e2e-erigon-url.outputs.defined }}
+      e2e-cypress-record-key: ${{ steps.e2e-cypress-record-key.outputs.defined }}
+    steps:
+      - name: Check if E2E_ERIGON_URL is available
+        id: e2e-erigon-url
+        env:
+          E2E_ERIGON_URL: ${{ secrets.E2E_ERIGON_URL }}
+        if: "${{ env.E2E_ERIGON_URL != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+      - name: Check if E2E_CYPRESS_RECORD_KEY is available
+        id: e2e-cypress-record-key
+        env:
+          E2E_CYPRESS_RECORD_KEY: ${{ secrets.E2E_CYPRESS_RECORD_KEY }}
+        if: "${{ env.E2E_CYPRESS_RECORD_KEY != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+
+  e2e-test-mainnet:
+    name: Run Otterscan E2E tests on mainnet
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-secrets.outputs.e2e-erigon-url == 'true' }}
+    needs: [check-secrets]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Run Cypress tests on mainnet
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: "http://localhost:5173"
+          spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
+          tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'mainnet' || ''}}
+          record: |
+            ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'true' || 'false'}}
+        env:
+          VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
+          CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+      - name: Upload screenshots from failing tests
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: Cypress Mainnet Screenshots
+          path: cypress/screenshots
+
+  e2e-test-devnet:
+    name: Run Otterscan E2E tests on a devnet
+    runs-on: ubuntu-latest
+    needs: [check-secrets]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Node dependencies
+        run: npm install
+
+      - name: Download Erigon
+        run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+      - name: Build Erigon
+        run: |
+          cd erigon
+          make erigon
+      - name: Run tests from local Erigon devnet
+        run: |
+          VITE_CONFIG_JSON='{
+            "erigonURL": "http://127.0.0.1:8545",
+            "assetsURLPrefix": "http://127.0.0.1:5175"
+          }' npm start &
+          ./erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow &
+          sleep 10
+          npx cypress run --spec "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts" ${{ needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && '--record --tag devnet' || '' }}
+        env:
+          CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+      - name: Upload screenshots from failing tests
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: Cypress Devnet Screenshots
+          path: cypress/screenshots
