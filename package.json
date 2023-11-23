@@ -24,7 +24,7 @@
     "@types/node": "^18.16.8",
     "@types/react": "^18.2.38",
     "@types/react-blockies": "^1.4.4",
-    "@types/react-dom": "^18.2.15",
+    "@types/react-dom": "^18.2.17",
     "@types/react-highlight": "^0.12.8",
     "@types/react-syntax-highlighter": "^15.5.10",
     "chart.js": "^4.4.0",
