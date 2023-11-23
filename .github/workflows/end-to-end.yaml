@@ -44,7 +44,7 @@ jobs:
         with:
           node-version: 20
       - name: Install Node dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
