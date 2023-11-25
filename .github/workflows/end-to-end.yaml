@@ -92,8 +92,8 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: |
-            ./erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow
-            VITE_CONFIG_JSON='{"erigonURL": "http://127.0.0.1:8545", "assetsURLPrefix": "http://127.0.0.1:5175" }' npm start
+            './erigon/build/bin/erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow'
+            'VITE_CONFIG_JSON=\'{"erigonURL": "http://127.0.0.1:8545", "assetsURLPrefix": "http://127.0.0.1:5175" }\' npm start'
           wait-on: "http://127.0.0.1:8545, http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'devnet' || ''}}
