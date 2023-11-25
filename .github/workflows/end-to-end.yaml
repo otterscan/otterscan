@@ -77,7 +77,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: "stable"
+          go-version-file: "erigon/go.mod"
+          cache-dependency-path: "erigon/go.sum"
       - name: Build Erigon
         run: |
           cd erigon
