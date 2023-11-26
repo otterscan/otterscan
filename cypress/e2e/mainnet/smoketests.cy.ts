@@ -4,9 +4,8 @@ describe("Basic navigation", () => {
     cy.visit("/");
     cy.get('[data-test="home-search-input"]').type(`vitalik.eth{enter}`);
 
-    cy.get('[data-test="address"]').contains(
+    cy.get('[data-test="address"]', { timeout: 15_000 }).contains(
       "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-      { timeout: 15_000 },
     );
 
     // Go to last page, check if it has a full 25 entries page
