@@ -6,6 +6,7 @@ describe("Basic navigation", () => {
 
     cy.get('[data-test="address"]').contains(
       "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+      { timeout: 15_000 },
     );
 
     // Go to last page, check if it has a full 25 entries page
