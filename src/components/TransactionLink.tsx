@@ -21,7 +21,9 @@ const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail }) => (
         className="font-hash text-link-blue hover:text-link-blue-hover"
         to={transactionURL(txHash)}
       >
-        <p className="truncate">{txHash}</p>
+        <p className="truncate" data-test="tx-hash">
+          {txHash}
+        </p>
       </NavLink>
     </span>
   </span>
