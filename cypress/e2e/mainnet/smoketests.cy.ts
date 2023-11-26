@@ -59,5 +59,12 @@ describe("Basic navigation", () => {
       "equal",
       "/tx/0x9b8964cd49910fd7494fb8359912b8925bf7417126a3e5a0a3f69e0166ad437e",
     );
+    cy.get('[data-test="tx-hash"]')
+      .invoke("text")
+      .should(
+        "equal",
+        "0x9b8964cd49910fd7494fb8359912b8925bf7417126a3e5a0a3f69e0166ad437e",
+      );
+    cy.get('[data-test="status"]').invoke("text").should("equal", "Success");
   });
 });
