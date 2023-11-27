@@ -169,7 +169,10 @@ const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
       {page === undefined ? (
         <>Waiting for search results...</>
       ) : (
-        <>{page.length} transactions on this page</>
+        <>
+          <span data-test="page-count">{page.length}</span> transactions on this
+          page
+        </>
       )}
     </div>
     <UndefinedPageControl
