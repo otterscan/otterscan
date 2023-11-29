@@ -1,4 +1,4 @@
-FROM node:20.8.1-alpine3.17 AS builder
+FROM node:20.10.0-alpine3.17 AS builder
 WORKDIR /otterscan-build
 COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm ci
