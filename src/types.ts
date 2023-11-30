@@ -30,6 +30,11 @@ export type TransactionChunk = {
   lastPage: boolean;
 };
 
+export type TransactionDescriptionData = {
+  value: bigint;
+  data: string;
+};
+
 export type TransactionData = {
   transactionHash: string;
   from: string;
