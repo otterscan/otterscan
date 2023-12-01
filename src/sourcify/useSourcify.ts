@@ -245,7 +245,7 @@ export const useContract = (
   type: MatchType,
 ) => {
   const sourcifySources = useSourcifySources();
-  const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
+  const normalizedFilename = filename.replaceAll(/[:]/g, "_");
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,
