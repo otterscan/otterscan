@@ -6,7 +6,7 @@ import { AppConfig, AppConfigContext } from "./useAppConfig";
 
 const Main: React.FC = () => {
   const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
-    SourcifySource.IPFS_IPNS,
+    SourcifySource.CENTRAL_SERVER,
   );
   const appConfig = useMemo((): AppConfig => {
     return {
