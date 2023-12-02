@@ -1,4 +1,4 @@
-name: Prettier
+name: Build and Prettier
 on:
   pull_request:
     types: [opened, synchronize]
@@ -23,3 +23,5 @@ jobs:
         run: npm ci
       - name: Run prettier
         run: npx prettier -c .
+      - name: Build Otterscan
+        run: npm run build
