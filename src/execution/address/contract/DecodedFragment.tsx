@@ -61,8 +61,8 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
             fragmentType === "function"
               ? "Method Selector"
               : fragmentType === "event"
-              ? "Topic Hash"
-              : ""
+                ? "Topic Hash"
+                : ""
           }
         >
           {sig}
