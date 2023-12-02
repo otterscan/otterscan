@@ -408,6 +408,133 @@ export const useSendsToMiner = (
   return [send, ops];
 };
 
+export type StateDiffElement = {
+  type: string;
+  from: string | null;
+  to: string | null;
+
+  // "+": new
+  // "*": modified
+  // "-": removed
+  storageChange: string;
+};
+
+export type StateDiffGroup = {
+  title: string;
+  diffs: (StateDiffElement | StateDiffGroup)[];
+};
+
+export const useStateDiffTrace = (
+  provider: JsonRpcApiProvider | undefined,
+  txHash: string
+): StateDiffGroup[] | undefined => {
+  const [traceGroups, setTraceGroups] = useState<
+    StateDiffGroup[] | undefined
+  >();
+
+  useEffect(() => {
+    if (!provider) {
+      setTraceGroups(undefined);
+      return;
+    }
+
+    const stateDiffTrace = async () => {
+      const results = await provider.send("trace_replayTransaction", [
+        txHash,
+        ["stateDiff"],
+      ]);
+      const entries: StateDiffGroup[] = [];
+      let address: string;
+      let highLevelChange: any;
+
+      // Iterate over each address with a state change
+      for ([address, highLevelChange] of Object.entries(results.stateDiff)) {
+        const sdGroup: StateDiffGroup = {
+          title: address,
+          diffs: [],
+        };
+        let changeType: string;
+        let changes: any;
+
+        function addChangeType(
+          changeType: string,
+          changes: any
+        ): StateDiffGroup | StateDiffElement | null {
+          if (changes === "=") {
+            // No change
+            return null;
+          }
+
+          if (changeType === "storage") {
+            // Create a "storage" subgroup and a subgroup for each storage slot
+            let group: StateDiffGroup = {
+              title: "storage",
+              diffs: [],
+            };
+            for (const [storageSlot, storageChange] of Object.entries(
+              changes
+            )) {
+              let storageGroup: StateDiffGroup = {
+                title: storageSlot,
+                diffs: [],
+              };
+              let change = addChangeType("storageChange", storageChange);
+              if (change !== null) {
+                storageGroup.diffs.push(change);
+              }
+              group.diffs.push(storageGroup);
+            }
+            return group;
+          }
+
+          let storageChanges = Object.keys(changes);
+          if (storageChanges.length !== 1) {
+            throw new Error("More than one storage change type found");
+          }
+          // storageChange is "*", "+", or "-"
+          let storageChange = storageChanges[0];
+
+          if (storageChange === "+") {
+            // Just the new value is stored
+            return {
+              type: changeType,
+              from: null,
+              to: changes[storageChange],
+              storageChange,
+            };
+          } else if (storageChange === "-") {
+            return {
+              type: changeType,
+              from: changes[storageChange],
+              to: null,
+              storageChange,
+            };
+          }
+
+          return {
+            type: changeType,
+            from: changes[storageChange].from,
+            to: changes[storageChange].to,
+            storageChange,
+          };
+        }
+
+        // Add each of the state changes from this acddress
+        for ([changeType, changes] of Object.entries(highLevelChange)) {
+          let change = addChangeType(changeType, changes);
+          if (change !== null) {
+            sdGroup.diffs.push(change);
+          }
+        }
+        entries.push(sdGroup);
+      }
+      setTraceGroups(entries);
+    };
+    stateDiffTrace();
+  }, [provider, txHash]);
+  return traceGroups;
+};
+
 export type TraceEntry = {
   type: string;
   depth: number;
