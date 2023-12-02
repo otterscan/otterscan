@@ -23,5 +23,8 @@ export default defineConfig({
     },
     baseUrl: "http://localhost:5173",
     video: true,
+    env: {
+      DEVNET_ERIGON_URL: "http://127.0.0.1:8545",
+    },
   },
 });
