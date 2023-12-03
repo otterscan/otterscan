@@ -16,12 +16,28 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
   args,
   paramTypes,
   hasParamNames = true,
+  userMethod,
   devMethod,
   defaultNameBase = "param",
 }) => (
   <table className="w-full border">
-    <thead>
-      <tr className="grid grid-cols-12 gap-x-2 bg-gray-100 py-2 text-left">
+    <thead className="bg-gray-100 text-left">
+      {userMethod && userMethod.notice && (
+        <tr className="grid grid-cols-12 gap-x-2 py-2">
+          <th className="col-span-12 px-1 font-normal">{userMethod.notice}</th>
+        </tr>
+      )}
+      {devMethod && devMethod.details && (
+        <tr className="grid grid-cols-12 gap-x-2 py-2">
+          <th className="col-span-12 px-1 font-normal">
+            <span className="font-bold italic text-xs mr-2 select-none">
+              dev{" "}
+            </span>
+            {devMethod.details}
+          </th>
+        </tr>
+      )}
+      <tr className="grid grid-cols-12 gap-x-2 py-2">
         <th className="col-span-3 pl-1">
           name <span className="text-xs text-gray-400">(index)</span>
         </th>
@@ -29,7 +45,7 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
         <th className="col-span-8 pr-1">value</th>
       </tr>
       {!hasParamNames && (
-        <tr className="grid grid-cols-12 gap-x-2 bg-amber-100 py-2 text-left text-red-700">
+        <tr className="grid grid-cols-12 gap-x-2 bg-amber-100 py-2 text-red-700">
           <th className="col-span-12 px-1">
             {paramTypes.length > 0 && paramTypes[0].name !== ""
               ? "Parameter names are estimated."
