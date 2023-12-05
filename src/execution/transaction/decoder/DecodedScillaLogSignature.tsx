@@ -6,7 +6,7 @@ type DecodedScillaLogSignatureProps = {
   address: string;
 };
 
-const DecodedScillaLogSignature: FC<DecodedScillaLogSignatureProps> = ({ event }) => {
+const DecodedScillaLogSignature: FC<DecodedScillaLogSignatureProps> = ( event ) => {
   if (event) {
   return (
     <span className="font-mono">

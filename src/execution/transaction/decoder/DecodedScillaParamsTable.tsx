@@ -4,7 +4,7 @@ import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 import DecodedParamRow from "./DecodedParamRow";
 
 type DecodedScillaParamsTableProps = {
-  params: object;
+  params: Record<string, string>[];
 };
 
 type DecodedScillaParamRowProps = {
