@@ -58,8 +58,8 @@ type SearchResultsType<T extends TransactionSearchType> =
   T extends "Withdrawals"
     ? WithdrawalMatch
     : T extends "FeeRecipient"
-    ? FeeRecipientMatch
-    : TransactionMatchWithData;
+      ? FeeRecipientMatch
+      : TransactionMatchWithData;
 
 export const useGenericTransactionCount = (
   provider: JsonRpcApiProvider | undefined,

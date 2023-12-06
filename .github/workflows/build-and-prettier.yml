@@ -1,0 +1,27 @@
+name: Build and Prettier
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - develop
+      - main
+      - "feature/**"
+  workflow_dispatch:
+jobs:
+  check-prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install packages
+        run: npm ci
+      - name: Run prettier
+        run: npx prettier -c .
+      - name: Build Otterscan
+        run: npm run build

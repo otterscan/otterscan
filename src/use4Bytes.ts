@@ -141,8 +141,8 @@ export const useMethodSelector = (
   const methodTitle = isSimpleTransfer
     ? "ETH Transfer"
     : methodName === rawFourBytes
-    ? methodName
-    : `${methodName} [${rawFourBytes}]`;
+      ? methodName
+      : `${methodName} [${rawFourBytes}]`;
 
   const fromVerifiedContract = fourBytesEntry
     ? fourBytesEntry.fromVerifiedContract

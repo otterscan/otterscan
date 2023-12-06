@@ -6,7 +6,7 @@ on:
     branches:
       - develop
       - main
-      - 'feature/**'
+      - "feature/**"
   workflow_dispatch:
 jobs:
   check-secrets:

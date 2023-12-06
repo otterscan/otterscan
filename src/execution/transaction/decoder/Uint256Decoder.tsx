@@ -48,8 +48,8 @@ const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
           {displayMode === DisplayMode.RAW
             ? "Raw"
             : displayMode === DisplayMode.HEX
-            ? "Hex"
-            : "18 dec"}
+              ? "Hex"
+              : "18 dec"}
         </span>
       </button>
       <span>
