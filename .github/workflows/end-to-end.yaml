@@ -75,7 +75,7 @@ jobs:
       - name: Download Erigon
         run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version-file: "erigon/go.mod"
           cache-dependency-path: "erigon/go.sum"
