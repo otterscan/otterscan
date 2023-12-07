@@ -6,21 +6,22 @@ type ParamDeclarationProps = {
   index: number;
 };
 
-const ParamDeclaration: FC<ParamDeclarationProps> = ({ input, index }) => {
-  let paramTypeName = input.type;
-  if (input.isArray()) {
-    return (
-      <span className="text-sm font-medium text-gray-600">
-        {input.format("full")}
-      </span>
-    );
-  } else if (input.isTuple()) {
-    paramTypeName = "tuple(...)";
+function getShortenedParamType(paramType: ParamType): string {
+  if (paramType.isArray()) {
+    const end =
+      paramType.arrayLength === -1 ? "[]" : "[" + paramType.arrayLength + "]";
+    return getShortenedParamType(paramType.arrayChildren!) + end;
+  } else if (paramType.isTuple()) {
+    return "tuple(...)";
+  } else {
+    return paramType.type;
   }
+}
 
+const ParamDeclaration: FC<ParamDeclarationProps> = ({ input, index }) => {
   return (
     <span className="font-code text-sm font-medium text-blue-700">
-      <span className="text-red-700">{paramTypeName}</span>{" "}
+      <span className="text-red-700">{getShortenedParamType(input)}</span>{" "}
       {input.name !== "" ? (
         input.name
       ) : (
