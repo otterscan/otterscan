@@ -123,13 +123,15 @@ const FunctionParamInput = forwardRef<
     </ul>
   ) : param.baseType === "array" ? (
     <>
-      <ul className="ml-2 list-inside">
+      <ul
+        className={`ml-2 list-inside${param.arrayLength === -1 ? " mb-3" : ""}`}
+      >
         {paramValue.map((entryKey: string, index: number) => (
           <li
             className={`pl-2${param.arrayLength === -1 ? " mb-3" : ""}`}
             key={entryKey}
           >
-            <span className="text-sm font-medium text-gray-600">
+            <div className="text-sm font-medium text-gray-600 flex items-end">
               <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
               {param.arrayLength === -1 && (
                 <button
@@ -144,7 +146,7 @@ const FunctionParamInput = forwardRef<
                   Remove
                 </button>
               )}
-            </span>
+            </div>
             <FunctionParamInput
               param={param.arrayChildren!}
               ref={(childRef) => {
