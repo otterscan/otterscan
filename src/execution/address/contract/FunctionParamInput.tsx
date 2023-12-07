@@ -131,10 +131,8 @@ const FunctionParamInput = forwardRef<
             className={`ml-2${param.arrayLength === -1 ? " mb-2" : ""}`}
             key={entryKey}
           >
-            <div className="text-sm font-medium text-gray-600 flex items-end">
-              <div className="mt-1">
-                <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
-              </div>
+            <div className="text-sm font-medium text-gray-600 flex items-center mt-1">
+              <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
               {param.arrayLength === -1 && (
                 <button
                   className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
