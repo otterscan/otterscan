@@ -106,9 +106,9 @@ const FunctionParamInput = forwardRef<
       {param.components!.map((param: ParamType, index: number) => {
         return (
           <li key={index}>
-            <span className="text-sm font-medium text-gray-600">
+            <div className="mt-1">
               <ParamDeclaration input={param} index={index} />
-            </span>
+            </div>
             <FunctionParamInput
               param={param}
               ref={(childRef) => {
@@ -128,11 +128,13 @@ const FunctionParamInput = forwardRef<
       >
         {paramValue.map((entryKey: string, index: number) => (
           <li
-            className={`ml-2${param.arrayLength === -1 ? " mb-3" : ""}`}
+            className={`ml-2${param.arrayLength === -1 ? " mb-2" : ""}`}
             key={entryKey}
           >
             <div className="text-sm font-medium text-gray-600 flex items-end">
-              <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
+              <div className="mt-1">
+                <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
+              </div>
               {param.arrayLength === -1 && (
                 <button
                   className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
@@ -159,7 +161,7 @@ const FunctionParamInput = forwardRef<
         ))}
       </ul>
       {param.arrayLength === -1 && (
-        <span className="text-sm font-medium text-gray-600">
+        <div className="text-sm font-medium text-gray-600">
           <button
             className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-4"
             type="button"
@@ -171,7 +173,7 @@ const FunctionParamInput = forwardRef<
             <FontAwesomeIcon icon={faPlus} className="mr-2" />
             Add Element
           </button>
-        </span>
+        </div>
       )}
     </>
   ) : (

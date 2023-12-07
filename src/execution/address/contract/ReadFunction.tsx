@@ -220,9 +220,9 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           {func.inputs &&
             func.inputs.map((param, index) => (
               <li key={index}>
-                <span className="text-sm font-medium text-gray-600">
+                <div className="text-sm font-medium text-gray-600">
                   <ParamDeclaration input={param} index={index} />
-                </span>
+                </div>
                 <FunctionParamInput
                   param={param}
                   ref={(component) => {
