@@ -219,7 +219,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
         <ul className="ml-2 list-inside">
           {func.inputs &&
             func.inputs.map((param, index) => (
-              <li className="pl-2" key={index}>
+              <li key={index}>
                 <span className="text-sm font-medium text-gray-600">
                   <ParamDeclaration input={param} index={index} />
                 </span>
@@ -235,7 +235,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             ))}
         </ul>
         <button
-          className="ml-2 mt-1 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
+          className="ml-2 mt-2 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
           type="submit"
         >
           Query

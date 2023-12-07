@@ -102,10 +102,10 @@ const FunctionParamInput = forwardRef<
       }
     />
   ) : param.baseType === "tuple" ? (
-    <ul className="ml-2 list-inside">
+    <ul className="ml-4 list-inside">
       {param.components!.map((param: ParamType, index: number) => {
         return (
-          <li className="pl-2" key={index}>
+          <li key={index}>
             <span className="text-sm font-medium text-gray-600">
               <ParamDeclaration input={param} index={index} />
             </span>
@@ -128,7 +128,7 @@ const FunctionParamInput = forwardRef<
       >
         {paramValue.map((entryKey: string, index: number) => (
           <li
-            className={`pl-2${param.arrayLength === -1 ? " mb-3" : ""}`}
+            className={`ml-2${param.arrayLength === -1 ? " mb-3" : ""}`}
             key={entryKey}
           >
             <div className="text-sm font-medium text-gray-600 flex items-end">
@@ -161,7 +161,7 @@ const FunctionParamInput = forwardRef<
       {param.arrayLength === -1 && (
         <span className="text-sm font-medium text-gray-600">
           <button
-            className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3 mb-2"
+            className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-4"
             type="button"
             onClick={(event) => {
               event.preventDefault();
