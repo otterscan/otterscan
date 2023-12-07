@@ -124,7 +124,7 @@ const FunctionParamInput = forwardRef<
   ) : param.baseType === "array" ? (
     <>
       <ul
-        className={`ml-2 list-inside${param.arrayLength === -1 ? " mb-3" : ""}`}
+        className={`ml-2 list-inside${param.arrayLength === -1 ? " mb-2" : ""}`}
       >
         {paramValue.map((entryKey: string, index: number) => (
           <li
