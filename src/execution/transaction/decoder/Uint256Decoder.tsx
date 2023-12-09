@@ -2,6 +2,7 @@ import { faSync } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatEther, toBeHex, zeroPadValue } from "ethers";
 import { FC, memo, useState } from "react";
+import DisplayInteger from "../../../components/DisplayInteger";
 import { commify } from "../../../utils/utils";
 
 type Uint256DecoderProps = {
@@ -54,7 +55,7 @@ const Uint256Decoder: FC<Uint256DecoderProps> = ({ r }) => {
       </button>
       <span>
         {displayMode === DisplayMode.RAW ? (
-          <>{r.toString()}</>
+          <DisplayInteger numberStr={r.toString()} decimalHint={true} />
         ) : displayMode === DisplayMode.HEX ? (
           <>{zeroPadValue(toBeHex(r), 32)}</>
         ) : (
