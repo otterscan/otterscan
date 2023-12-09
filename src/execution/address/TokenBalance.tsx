@@ -1,4 +1,5 @@
 import { FC, useContext } from "react";
+import Copy from "../../components/Copy";
 import USDAmount from "../../components/USDAmount";
 import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
@@ -25,7 +26,10 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   return (
     <tr>
       <td>
-        <DecoratedAddressLink address={tokenAddress} />
+        <div className="-ml-1 flex items-baseline space-x-2">
+          <DecoratedAddressLink address={tokenAddress} />
+          <Copy value={tokenAddress} />
+        </div>
       </td>
       <td>
         {balance !== null && balance !== undefined && (
