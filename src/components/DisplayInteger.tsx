@@ -3,7 +3,7 @@ import { FC } from "react";
 type DisplayIntegerProps = {
   numberStr: string;
   // If true, displays a shadow around the comma before 18 digits
-  decimalHint: boolean;
+  decimalHint?: boolean;
 };
 
 const DisplayInteger: FC<DisplayIntegerProps> = ({
