@@ -26,7 +26,7 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   return (
     <tr>
       <td>
-        <div className="-ml-1 flex items-baseline space-x-2">
+        <div className="flex items-baseline space-x-2">
           <DecoratedAddressLink address={tokenAddress} />
           <Copy value={tokenAddress} />
         </div>
