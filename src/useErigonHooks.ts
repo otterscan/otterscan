@@ -280,7 +280,7 @@ export const useTxData = (
                   fee: _response.gasPrice! * _receipt.gasUsed,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
-                },
+              }
         });
       } catch (err) {
         console.error(err);
@@ -694,6 +694,21 @@ export const useHasCode = (
     return undefined;
   }
   return data as boolean | undefined;
+};
+
+export const useGetRawReceipt = (
+  provider: JsonRpcApiProvider | undefined,
+  address: ChecksummedAddress | undefined,
+): string | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["eth_getTransactionReceipt", address],
+    fetcher
+  );
+  if (error) {
+    return undefined;
+  }
+  return data as string | undefined;
 };
 
 export const useGetCode = (

@@ -8,7 +8,7 @@ type DecodedScillaLogSignatureProps = {
 
 const DecodedScillaLogSignature: FC<DecodedScillaLogSignatureProps> = ( event ) => {
   if (event) {
-  return (
+  return ( 
     <span className="font-mono">
       <span className="font-italic">_eventName:</span> <span className="font-bold text-blue-900">{event.name}</span><br/>
           <span className="font-italic">address:</span> <span className="font-bold text-blue-500">{event.address}</span><br/>

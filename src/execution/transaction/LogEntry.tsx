@@ -52,7 +52,7 @@ const EvmLogDisplay: FC<LogDescProps> = ( { resolvedLogDesc } ) => {
 /// Display a scilla log; if the log were null, we would have defaulted to
 ///  EvmLogDisplay, so no need to handle undefined or null.
 const ScillaLogDisplay: FC<ScillaLog> = ( scillaLogDesc ) => {
-  return ( <div> <TwoColumnPanel>
+  return (  <div> <TwoColumnPanel> 
     <DecodedScillaLogSignature name={scillaLogDesc.eventName} address={scillaLogDesc.address} />
     <DecodedScillaParamsTable params={ scillaLogDesc.params as any } />
      </TwoColumnPanel>
@@ -149,7 +149,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
           </Tab.List>
           <Tab.Panels as={React.Fragment}>
       <Tab.Panel>
-      ({ scillaLogDesc !== undefined && scillaLogDesc !== null ?
+      { scillaLogDesc !== undefined && scillaLogDesc !== null ?
         <ScillaLogDisplay eventName={scillaLogDesc.eventName} address={scillaLogDesc.address} params={scillaLogDesc.params} /> :
          ( resolvedLogDesc !== undefined && resolvedLogDesc !== null ?
            <EvmLogDisplay resolvedLogDesc={resolvedLogDesc} /> : <div />) }

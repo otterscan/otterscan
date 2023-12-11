@@ -18,7 +18,7 @@ const DecodedScillaParamRow: FC<DecodedScillaParamRowProps> = ({
   valueType,
   value }) => {
   return (
-    <>
+    <> 
       <tr className="grid grid-cols-12 gap-x-2 py-2 hover:bg-gray-100">
       <td className="col-span-3 pl-1">
       <span className="text-gray-600">{name}</span>

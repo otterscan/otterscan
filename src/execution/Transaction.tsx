@@ -15,6 +15,7 @@ import { usePageTitle } from "../useTitle";
 const Details = lazy(() => import("./transaction/Details"));
 const Logs = lazy(() => import("./transaction/Logs"));
 const Trace = lazy(() => import("./transaction/Trace"));
+const Receipt = lazy(() => import("./transaction/Receipt"));
 
 const Transaction: FC = () => {
   const { txhash: txHash } = useParams();
@@ -51,7 +52,8 @@ const Transaction: FC = () => {
                       {` (${txData.confirmedData?.logs?.length ?? 0})`}
                     </NavTab>
                   )}
-                  <NavTab href="trace">Trace</NavTab>
+              <NavTab href="trace">Trace</NavTab>
+              <NavTab href="receipt">Receipt</NavTab>
                 </Tab.List>
               </Tab.Group>
               <Suspense fallback={null}>
@@ -61,7 +63,8 @@ const Transaction: FC = () => {
                     path="logs"
                     element={<Logs logs={txData.confirmedData?.logs} />}
                   />
-                  <Route path="trace" element={<Trace txData={txData} />} />
+              <Route path="trace" element={<Trace txData={txData} />} />
+              <Route path="receipt" element={<Receipt txData={txData} />} />
                 </Routes>
               </Suspense>
             </StandardSelectionBoundary>
