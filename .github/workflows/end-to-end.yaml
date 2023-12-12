@@ -83,7 +83,7 @@ jobs:
         run: |
           cd erigon
           make erigon
-      - name: Load Otterscan devnet config
+      - name: Load devnet config
         id: load-devnet-config
         run: |
           OTTERSCAN_CONFIG="$(cat cypress/support/devnet-config.json | sed 's/localhost/127.0.0.1/')"
