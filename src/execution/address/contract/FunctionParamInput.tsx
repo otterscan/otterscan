@@ -29,7 +29,8 @@ interface Action {
 
 // Retrieve a unique key name for using across element additions/deletions
 function getUUID(): string {
-  return crypto.randomUUID();
+  // In some browsers, crypto.randomUUID is only available in secure contexts
+  return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString();
 }
 
 const reducer = (state: ParamNodeState, action: Action): ParamNodeState => {
@@ -137,6 +138,7 @@ const FunctionParamInput = forwardRef<
                 <button
                   className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
                   type="button"
+                  data-test="remove-array-element"
                   onClick={(event) => {
                     childRefs.current = childRefs.current.toSpliced(index, 1);
                     dispatch({ type: "REMOVE_VALUE", index: index });

@@ -20,11 +20,21 @@ export default defineConfig({
           }
         },
       );
+      on("task", {
+        // Run cy.task('log', <message>) to log something to stdout
+        log(message) {
+          console.log(message);
+          return null;
+        },
+      });
     },
     baseUrl: "http://localhost:5173",
+    // SyntaxHighlighter files may take several seconds to load in dev mode
+    defaultCommandTimeout: 8_000,
     video: true,
     env: {
-      DEVNET_ERIGON_URL: "http://127.0.0.1:8545",
+      DEVNET_ERIGON_URL: "http://localhost:8545",
+      DEVNET_SOURCIFY_SOURCE: "http://localhost:7077",
     },
   },
 });

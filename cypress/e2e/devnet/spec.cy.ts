@@ -1,5 +1,3 @@
-import { ethers } from "ethers";
-
 describe("Devnet tests", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -10,36 +8,21 @@ describe("Devnet tests", () => {
     );
   });
   it("Can navigate to a transaction's Trace tab and back", () => {
-    const hash = cy
-      .wrap(
-        (async () => {
-          // Send a transaction
-          const provider = new ethers.JsonRpcProvider(
-            Cypress.env("DEVNET_ERIGON_URL"),
-          );
-          const wallet = new ethers.Wallet(
-            ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),
-            provider,
-          );
-          const tx = await wallet.sendTransaction({
-            to: wallet.address,
-            value: ethers.parseEther("1"),
-          });
-          await tx.wait();
-          return tx.hash;
-        })(),
-        { timeout: 15_000 },
-      )
-      .then((hash) => {
-        cy.visit("http://localhost:5173/tx/" + hash);
-        // Click Trace button and make sure the trace loads
-        cy.get("a").contains("Trace").click();
-        cy.get("span").contains("<fallback>");
-        cy.location("pathname").should("equal", "/tx/" + hash + "/trace");
-        // Go back to the Overview tab
-        cy.get("a").contains("Overview").click();
-        cy.location("pathname").should("equal", "/tx/" + hash);
-        cy.get('[data-test="tx-hash"]').contains(hash);
-      });
+    cy.sendTx({
+      to: "0x67b1d87101671b127f5f8714789C7192f7ad340e",
+    }).then(({ txReceipt }) => {
+      cy.visit("/tx/" + txReceipt.hash);
+      // Click Trace button and make sure the trace loads
+      cy.get("a").contains("Trace").click();
+      cy.get("span").contains("<fallback>");
+      cy.location("pathname").should(
+        "equal",
+        "/tx/" + txReceipt.hash + "/trace",
+      );
+      // Go back to the Overview tab
+      cy.get("a").contains("Overview").click();
+      cy.location("pathname").should("equal", "/tx/" + txReceipt.hash);
+      cy.get('[data-test="tx-hash"]').contains(txReceipt.hash);
+    });
   });
 });

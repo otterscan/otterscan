@@ -83,20 +83,28 @@ jobs:
         run: |
           cd erigon
           make erigon
+      - name: Load Otterscan devnet config
+        id: load-devnet-config
+        run: |
+          OTTERSCAN_CONFIG="$(cat cypress/support/devnet-config.json | sed 's/localhost/127.0.0.1/')"
+          OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
+          echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
       - name: Run Cypress tests on devnet
         uses: cypress-io/github-action@v6
         with:
           start: |
             sh ./scripts/run-erigon-devnet-e2e-tests.sh
-            npm start
+            npm run start
           wait-on: "http://127.0.0.1:8545, http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'devnet' || ''}}
           record: |
             ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'true' || 'false'}}
         env:
-          VITE_ERIGON_URL: "http://127.0.0.1:8545"
+          VITE_CONFIG_JSON: ${{steps.load-devnet-config.outputs.config}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+          CYPRESS_DEVNET_ERIGON_URL: "http://127.0.0.1:8545"
+          CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
       - name: Upload screenshots from failing tests
         uses: actions/upload-artifact@v3
         if: failure()
