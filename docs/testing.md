@@ -16,7 +16,11 @@ npm run cy:run-mainnet
 ```
 
 ### Erigon devnet
-The Otterscan instance should be pointed to an Erigon devnet running on `http://localhost:8545`. You can start an Erigon devnet with this command:
+Running the devnet tests requires a custom Otterscan configuration. You can use this command to start Otterscan with the devnet configuration:
+```sh
+npm run start-devnet
+```
+The Otterscan instance should then be pointed to an Erigon devnet running on `http://localhost:8545`. You can start an Erigon devnet with this command:
 ```sh
 ./erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow
 ```

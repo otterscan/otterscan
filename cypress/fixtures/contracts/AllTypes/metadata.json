@@ -1,0 +1,406 @@
+{
+  "compiler": { "version": "0.8.18+commit.87f61d96" },
+  "language": "Solidity",
+  "output": {
+    "abi": [
+      {
+        "inputs": [
+          { "internalType": "address", "name": "val", "type": "address" }
+        ],
+        "name": "getAddress",
+        "outputs": [
+          { "internalType": "address", "name": "", "type": "address" }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "components": [
+              { "internalType": "bool", "name": "boolVal", "type": "bool" },
+              { "internalType": "uint8", "name": "uint8Val", "type": "uint8" },
+              {
+                "internalType": "uint256",
+                "name": "uint256Val",
+                "type": "uint256"
+              },
+              { "internalType": "int8", "name": "int8Val", "type": "int8" },
+              {
+                "internalType": "int256",
+                "name": "int256Val",
+                "type": "int256"
+              },
+              {
+                "internalType": "address",
+                "name": "addressVal",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes1",
+                "name": "bytes1Val",
+                "type": "bytes1"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "bytes32Val",
+                "type": "bytes32"
+              },
+              { "internalType": "bytes", "name": "bytesVal", "type": "bytes" },
+              {
+                "internalType": "string",
+                "name": "stringVal",
+                "type": "string"
+              },
+              {
+                "internalType": "string[]",
+                "name": "varLenStringArray",
+                "type": "string[]"
+              },
+              {
+                "internalType": "string[2][2]",
+                "name": "fixedLenStringArray",
+                "type": "string[2][2]"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "uint8",
+                    "name": "tinyUint8",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "bytes1",
+                    "name": "tinyBytes1",
+                    "type": "bytes1"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "tinyAddress",
+                    "type": "address"
+                  }
+                ],
+                "internalType": "struct TinyTuple",
+                "name": "tupleVal",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct AllTypeVal[]",
+            "name": "val",
+            "type": "tuple[]"
+          }
+        ],
+        "name": "getAllTypeTuple",
+        "outputs": [
+          {
+            "components": [
+              { "internalType": "bool", "name": "boolVal", "type": "bool" },
+              { "internalType": "uint8", "name": "uint8Val", "type": "uint8" },
+              {
+                "internalType": "uint256",
+                "name": "uint256Val",
+                "type": "uint256"
+              },
+              { "internalType": "int8", "name": "int8Val", "type": "int8" },
+              {
+                "internalType": "int256",
+                "name": "int256Val",
+                "type": "int256"
+              },
+              {
+                "internalType": "address",
+                "name": "addressVal",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes1",
+                "name": "bytes1Val",
+                "type": "bytes1"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "bytes32Val",
+                "type": "bytes32"
+              },
+              { "internalType": "bytes", "name": "bytesVal", "type": "bytes" },
+              {
+                "internalType": "string",
+                "name": "stringVal",
+                "type": "string"
+              },
+              {
+                "internalType": "string[]",
+                "name": "varLenStringArray",
+                "type": "string[]"
+              },
+              {
+                "internalType": "string[2][2]",
+                "name": "fixedLenStringArray",
+                "type": "string[2][2]"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "uint8",
+                    "name": "tinyUint8",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "bytes1",
+                    "name": "tinyBytes1",
+                    "type": "bytes1"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "tinyAddress",
+                    "type": "address"
+                  }
+                ],
+                "internalType": "struct TinyTuple",
+                "name": "tupleVal",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct AllTypeVal[]",
+            "name": "",
+            "type": "tuple[]"
+          }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [{ "internalType": "bool", "name": "val", "type": "bool" }],
+        "name": "getBool",
+        "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [{ "internalType": "bytes", "name": "val", "type": "bytes" }],
+        "name": "getBytes",
+        "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "bytes1", "name": "val", "type": "bytes1" }
+        ],
+        "name": "getBytes1",
+        "outputs": [{ "internalType": "bytes1", "name": "", "type": "bytes1" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "bytes32", "name": "val", "type": "bytes32" }
+        ],
+        "name": "getBytes32",
+        "outputs": [
+          { "internalType": "bytes32", "name": "", "type": "bytes32" }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "string[2][2]",
+            "name": "val",
+            "type": "string[2][2]"
+          }
+        ],
+        "name": "getFixedLengthStringArray",
+        "outputs": [
+          { "internalType": "string[2][2]", "name": "", "type": "string[2][2]" }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "int256", "name": "val", "type": "int256" }
+        ],
+        "name": "getInt256",
+        "outputs": [{ "internalType": "int256", "name": "", "type": "int256" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [{ "internalType": "int8", "name": "val", "type": "int8" }],
+        "name": "getInt8",
+        "outputs": [{ "internalType": "int8", "name": "", "type": "int8" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "string", "name": "val", "type": "string" }
+        ],
+        "name": "getString",
+        "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "components": [
+              { "internalType": "uint8", "name": "tinyUint8", "type": "uint8" },
+              {
+                "internalType": "bytes1",
+                "name": "tinyBytes1",
+                "type": "bytes1"
+              },
+              {
+                "internalType": "address",
+                "name": "tinyAddress",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct TinyTuple",
+            "name": "val",
+            "type": "tuple"
+          }
+        ],
+        "name": "getTinyTuple",
+        "outputs": [
+          {
+            "components": [
+              { "internalType": "uint8", "name": "tinyUint8", "type": "uint8" },
+              {
+                "internalType": "bytes1",
+                "name": "tinyBytes1",
+                "type": "bytes1"
+              },
+              {
+                "internalType": "address",
+                "name": "tinyAddress",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct TinyTuple",
+            "name": "",
+            "type": "tuple"
+          }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "uint256", "name": "val", "type": "uint256" }
+        ],
+        "name": "getUint256",
+        "outputs": [
+          { "internalType": "uint256", "name": "", "type": "uint256" }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [{ "internalType": "uint8", "name": "val", "type": "uint8" }],
+        "name": "getUint8",
+        "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+        "stateMutability": "pure",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          { "internalType": "string[]", "name": "val", "type": "string[]" }
+        ],
+        "name": "getVariableLengthStringArray",
+        "outputs": [
+          { "internalType": "string[]", "name": "", "type": "string[]" }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+      }
+    ],
+    "devdoc": {
+      "details": "Store & retrieve all types",
+      "kind": "dev",
+      "methods": {
+        "getAddress(address)": {
+          "details": "Store & retrieve an address",
+          "params": { "val": "Value to return" }
+        },
+        "getAllTypeTuple((bool,uint8,uint256,int8,int256,address,bytes1,bytes32,bytes,string,string[],string[2][2],(uint8,bytes1,address))[])": {
+          "details": "Store & retrieve a tuple with all types",
+          "params": { "val": "Value to return" }
+        },
+        "getBool(bool)": {
+          "details": "Store & retrieve a bool",
+          "params": { "val": "Value to return" }
+        },
+        "getBytes(bytes)": {
+          "details": "Store & retrieve a byte array",
+          "params": { "val": "Value to return" }
+        },
+        "getBytes1(bytes1)": {
+          "details": "Store & retrieve a bytes1",
+          "params": { "val": "Value to return" }
+        },
+        "getBytes32(bytes32)": {
+          "details": "Store & retrieve a bytes32",
+          "params": { "val": "Value to return" }
+        },
+        "getFixedLengthStringArray(string[2][2])": {
+          "details": "Store & retrieve a fixed-length string array",
+          "params": { "val": "Value to return" }
+        },
+        "getInt256(int256)": {
+          "details": "Store & retrieve an int256",
+          "params": { "val": "Value to return" }
+        },
+        "getInt8(int8)": {
+          "details": "Store & retrieve an int8",
+          "params": { "val": "Value to return" }
+        },
+        "getString(string)": {
+          "details": "Store & retrieve a string",
+          "params": { "val": "Value to return" }
+        },
+        "getTinyTuple((uint8,bytes1,address))": {
+          "details": "Store & retrieve a tuple with fixed-length types",
+          "params": { "val": "Value to return" }
+        },
+        "getUint256(uint256)": {
+          "details": "Store & retrieve a uint256",
+          "params": { "val": "Value to return" }
+        },
+        "getUint8(uint8)": {
+          "details": "Store & retrieve a uint8",
+          "params": { "val": "Value to return" }
+        },
+        "getVariableLengthStringArray(string[])": {
+          "details": "Store & retrieve a variable-length string array",
+          "params": { "val": "Value to return" }
+        }
+      },
+      "title": "AllTypes",
+      "version": 1
+    },
+    "userdoc": { "kind": "user", "methods": {}, "version": 1 }
+  },
+  "settings": {
+    "compilationTarget": { "test.sol": "AllTypes" },
+    "evmVersion": "paris",
+    "libraries": {},
+    "metadata": { "bytecodeHash": "ipfs" },
+    "optimizer": { "enabled": false, "runs": 200 },
+    "remappings": []
+  },
+  "sources": {
+    "test.sol": {
+      "keccak256": "0x6557dc50dd96646f758608c668ebe005caab5695e68064fdfd9b5795beff9189",
+      "license": "GPL-3.0",
+      "urls": [
+        "bzz-raw://057d9e0fe433f0acb411609f9e974f8b6a828932a368077dc2e23a81fbebf2eb",
+        "dweb:/ipfs/QmTMiFNCi1yoBMZZJ9sgUNAiTCptXaeJnEGz5qN4yFNTEy"
+      ]
+    }
+  },
+  "version": 1
+}

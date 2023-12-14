@@ -60,6 +60,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "build-parsers": "npx tspeg ./src/execution/address/contract/contract-input-grammar | npx prettier --stdin-filepath contractInput.ts > ./src/execution/address/contract/contractInputDataParser.ts",
+    "start-devnet": "VITE_CONFIG_JSON=$(cat cypress/support/devnet-config.json) vite",
     "cy:run-mainnet": "npx cypress run --spec \"cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts\"",
     "cy:run-devnet": "npx cypress run --spec \"cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts\""
   },

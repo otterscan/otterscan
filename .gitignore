@@ -8,6 +8,8 @@
 # testing
 /coverage
 /storybook-static
+/cypress/screenshots
+/cypress/videos
 
 # production
 /build
