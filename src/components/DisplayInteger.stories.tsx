@@ -26,9 +26,8 @@ export const NegativeNumber: Story = {
   },
 };
 
-export const EighteenDecimalsWithShadow: Story = {
+export const EighteenDecimals: Story = {
   args: {
     numberStr: "11000000000000000000",
-    decimalHint: true,
   },
 };
