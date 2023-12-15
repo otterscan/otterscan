@@ -6,7 +6,6 @@ on:
     branches:
       - develop
       - main
-      - "feature/**"
   workflow_dispatch:
 jobs:
   check-prettier:
