@@ -34,14 +34,14 @@ type LogDescProps = {
 const EvmLogDisplay: FC<LogDescProps> = ( { resolvedLogDesc } ) => {
   return (   <div>  {resolvedLogDesc === undefined ? (
     <TwoColumnPanel>Waiting for data...</TwoColumnPanel>
-  ) : resolvedLogDesc === null ? (
+  ) : (resolvedLogDesc === null || resolvedLogDesc.fragment === undefined) ? (
     <TwoColumnPanel>Cannot decode data</TwoColumnPanel>
 ) : (
    <TwoColumnPanel>
       <DecodedLogSignature event={resolvedLogDesc.fragment} />
       <DecodedParamsTable
     args={resolvedLogDesc.args}
-    paramTypes={resolvedLogDesc.fragment.inputs}
+    paramTypes={resolvedLogDesc.fragment?.inputs}
     hasParamNames={true}
       />
       </TwoColumnPanel>
@@ -100,8 +100,10 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     }
   }, [log, match]);
 
+  console.log(`Log = ${JSON.stringify(log)}`);
+  
   const rawTopic0 = log.topics[0];
-  const topic0 = scillaLogDesc ? undefined : useTopic0(rawTopic0);
+  const topic0 = scillaLogDesc ? undefined : (rawTopic0 ? useTopic0(rawTopic0) : "");
 
   const topic0LogDesc = scillaLogDesc ? undefined : useMemo(() => {
     if (!topic0) {

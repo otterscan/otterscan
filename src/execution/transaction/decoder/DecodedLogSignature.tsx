@@ -7,15 +7,15 @@ type DecodedLogSignatureProps = {
 
 const DecodedLogSignature: FC<DecodedLogSignatureProps> = ({ event }) => (
   <span className="font-mono">
-    <span className="font-bold text-blue-900">{event.name}</span>(
-    {event.inputs.map((input, i) => (
+    <span className="font-bold text-blue-900">{event.name ?? "<unknown>"}</span>(
+      {event.inputs ? (event.inputs.map((input, i) => (
       <span key={i}>
         {i > 0 ? ", " : ""}
         <span>
           {input.format ? input.format("full") : `${input.type} ${input.name}`}
         </span>
       </span>
-    ))}
+      ))) : "<unknown>"}
     ){event.anonymous ? " anonymous" : ""}
   </span>
 );
