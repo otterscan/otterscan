@@ -8,14 +8,14 @@ import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy
 import DecodedLogSignature from "./decoder/DecodedLogSignature";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import DecodedScillaLogSignature  from "./decoder/DecodedScillaLogSignature";
+import DecodedScillaEncaps  from "./decoder/DecodedScillaEncaps";
 import DecodedScillaParamsTable from "./decoder/DecodedScillaParamsTable";
 import LogIndex from "./log/LogIndex";
 import RawLog from "./log/RawLog";
 import TwoColumnPanel from "./log/TwoColumnPanel";
 import { useTopic0 } from "../../useTopic0";
 import { useGetCode } from "../../useErigonHooks";
-//import { EventFragment, LogDescription, defaultAbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
-import { EventFragment, LogDescription, AbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers";
+import { getBytes, EventFragment, LogDescription, AbiCoder, keccak256, toUtf8Bytes, toUtf8String } from "ethers";
 
 type LogEntryProps = {
   log: Log;
@@ -25,6 +25,11 @@ type ScillaLog = {
   eventName: string;
   address: string;
   params: object;
+};
+
+type ScillaEncapsLog = {
+  kind: string,
+  description: string
 };
 
 type LogDescProps = {
@@ -60,6 +65,13 @@ const ScillaLogDisplay: FC<ScillaLog> = ( scillaLogDesc ) => {
     )
 }
 
+const ScillaEncapsDisplay: FC<ScillaEncapsLog> = ( scillaEncaps ) => {
+  return (<div> <TwoColumnPanel>
+    <DecodedScillaEncaps kind={scillaEncaps.kind} description={scillaEncaps.description} />
+    </TwoColumnPanel>
+    </div>
+    )
+}
 
 
 const LogEntry: FC<LogEntryProps> = ({ log }) => {
@@ -81,7 +93,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     }
   }, [log]);
 
-  const logDesc = scillaLogDesc ? undefined :
+  const logDesc =
     useMemo(() => {
     if (!match) {
       return match;
@@ -101,11 +113,40 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
   }, [log, match]);
 
   console.log(`Log = ${JSON.stringify(log)}`);
-  
-  const rawTopic0 = log.topics[0];
-  const topic0 = scillaLogDesc ? undefined : (rawTopic0 ? useTopic0(rawTopic0) : "");
 
-  const topic0LogDesc = scillaLogDesc ? undefined : useMemo(() => {
+  const rawTopic0 = log.topics[0];
+  // If rawTopic0 is keccak256("ScillaError(String)") or keccak256("ScillaException(String)")
+  // this is secretly a Scilla exception and we should treat it as such. W00t. Magic :-)
+  // Don't use id() here - the semantics we want are precisely those of the ZIP.
+  // - rrw 2023-12-18
+  const scillaErrorTopic = keccak256(toUtf8Bytes("ScillaError(string)"));
+  const scillaExceptionTopic = keccak256(toUtf8Bytes("ScillaException(string)"));
+  const topic0ScillaEncapsLogDesc = useMemo(() => {
+    const byteTopic0= rawTopic0.toLowerCase();
+
+    if (byteTopic0 == scillaExceptionTopic ||
+      byteTopic0 == scillaErrorTopic) {
+      console.log(`bytes ${byteTopic0} scillaLogDesc ${scillaLogDesc}`);
+      try {
+        let kind = (byteTopic0 == scillaExceptionTopic) ? "Forwarded_Scilla_Exception" : "Forwarded_Scilla_Error";
+        let parsed = AbiCoder.defaultAbiCoder().decode(["string"], log.data);
+        console.log(`parsed ${parsed}`);
+        return {
+          kind,
+          description: parsed,
+        }
+      } catch (err) {
+        console.log(`Failed to parse Scilla error ${err}`);
+        return undefined;
+      }
+    }
+    return undefined;
+  });
+
+  // console.log(`Topics = ${scillaErrorTopic} ${scillaExceptionTopic}`);
+  const topic0 = rawTopic0 ? useTopic0(rawTopic0): "";
+
+  const topic0LogDesc = useMemo(() => {
     if (!topic0) {
       return topic0;
     }
@@ -129,7 +170,9 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     return undefined;
   }, [topic0, log]);
 
-  const resolvedLogDesc = logDesc ?? topic0LogDesc;
+  // If we have a known topic, use that. Otherwise, if we have an eth log, use that.
+  const resolvedLogDesc = topic0LogDesc ? logDesc : undefined;
+  console.log(` R ${resolvedLogDesc} sciolla ${scillaLogDesc} encaps ${topic0ScillaEncapsLogDesc}`)
 
   return (
     <div className="flex space-x-10 py-5">
@@ -151,10 +194,13 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
           </Tab.List>
           <Tab.Panels as={React.Fragment}>
       <Tab.Panel>
-      { scillaLogDesc !== undefined && scillaLogDesc !== null ?
-        <ScillaLogDisplay eventName={scillaLogDesc.eventName} address={scillaLogDesc.address} params={scillaLogDesc.params} /> :
-         ( resolvedLogDesc !== undefined && resolvedLogDesc !== null ?
-           <EvmLogDisplay resolvedLogDesc={resolvedLogDesc} /> : <div />) }
+      { (resolvedLogDesc !== undefined && resolvedLogDesc !== null) ?
+        <EvmLogDisplay resolvedLogDesc={resolvedLogDesc} /> :
+        ((scillaLogDesc !== null && scillaLogDesc !== undefined) ?
+          <ScillaLogDisplay eventName={scillaLogDesc.eventName} address={scillaLogDesc.address} params={scillaLogDesc.params} /> :
+         ( topic0ScillaEncapsLogDesc !== null && topic0ScillaEncapsLogDesc !== undefined ?
+           <ScillaEncapsDisplay kind={topic0ScillaEncapsLogDesc.kind} description={topic0ScillaEncapsLogDesc.description} /> :
+           <div /> ))}
       </Tab.Panel>
             <Tab.Panel as={React.Fragment}>
               <RawLog topics={log.topics} data={log.data} />

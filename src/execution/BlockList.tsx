@@ -10,6 +10,7 @@ import BlockItem from "../search/BlockItem";
 import { PendingBlockResults } from "../search/PendingResults";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import { useFeeToggler } from "../search/useFeeToggler";
+import { EmptyBlocksDisplay, useEmptyBlocksToggler } from "../search/useEmptyBlocksToggler";
 import ContentFrame from "../components/ContentFrame";
 import BlockResultHeader from "../search/BlockResultHeader";
 import { totalBlocksFormatter } from "../search/messages";
@@ -20,6 +21,7 @@ const BlockList: React.FC = () => {
   
   const latestBlockNum = useLatestBlockNumber(provider);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+  const [emptyBlocksDisplay, emptyBlocksDisplayToggler] = useEmptyBlocksToggler();
   
 
   const [searchParams] = useSearchParams();
@@ -53,12 +55,16 @@ const BlockList: React.FC = () => {
         <BlockResultHeader
             feeDisplay={feeDisplay}
             feeDisplayToggler={feeDisplayToggler}
+            emptyBlocksDisplay={emptyBlocksDisplay}
+    emptyBlocksDisplayToggler={emptyBlocksDisplayToggler}
         />
         {data ? (
             <StandardSelectionBoundary>
             {data.map((block) => (
-                block ? <BlockItem key={block.number} block={block} feeDisplay={feeDisplay} /> : <></> 
-            ))}
+              (block &&
+                ( emptyBlocksDisplay === EmptyBlocksDisplay.SHOW_EMPTY_BLOCKS ||
+                  block.transactionCount != 0) ) ? <BlockItem key={block.number} block={block} feeDisplay={feeDisplay} /> : undefined 
+            )).filter((blk) => blk !== undefined)}
             </StandardSelectionBoundary>
         ) : (
             <PendingBlockResults />
