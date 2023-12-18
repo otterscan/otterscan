@@ -112,8 +112,6 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     }
   }, [log, match]);
 
-  console.log(`Log = ${JSON.stringify(log)}`);
-
   const rawTopic0 = log.topics[0];
   // If rawTopic0 is keccak256("ScillaError(String)") or keccak256("ScillaException(String)")
   // this is secretly a Scilla exception and we should treat it as such. W00t. Magic :-)
@@ -126,11 +124,9 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
 
     if (byteTopic0 == scillaExceptionTopic ||
       byteTopic0 == scillaErrorTopic) {
-      console.log(`bytes ${byteTopic0} scillaLogDesc ${scillaLogDesc}`);
       try {
         let kind = (byteTopic0 == scillaExceptionTopic) ? "Forwarded_Scilla_Exception" : "Forwarded_Scilla_Error";
         let parsed = AbiCoder.defaultAbiCoder().decode(["string"], log.data);
-        console.log(`parsed ${parsed}`);
         return {
           kind,
           description: parsed,
@@ -143,7 +139,6 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
     return undefined;
   });
 
-  // console.log(`Topics = ${scillaErrorTopic} ${scillaExceptionTopic}`);
   const topic0 = rawTopic0 ? useTopic0(rawTopic0): "";
 
   const topic0LogDesc = useMemo(() => {
@@ -172,7 +167,6 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
 
   // If we have a known topic, use that. Otherwise, if we have an eth log, use that.
   const resolvedLogDesc = topic0LogDesc ? logDesc : undefined;
-  console.log(` R ${resolvedLogDesc} sciolla ${scillaLogDesc} encaps ${topic0ScillaEncapsLogDesc}`)
 
   return (
     <div className="flex space-x-10 py-5">
