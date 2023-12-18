@@ -129,7 +129,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
         let parsed = AbiCoder.defaultAbiCoder().decode(["string"], log.data);
         return {
           kind,
-          description: parsed,
+          description: parsed[0],
         }
       } catch (err) {
         console.log(`Failed to parse Scilla error ${err}`);
@@ -137,7 +137,7 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
       }
     }
     return undefined;
-  });
+  }, [rawTopic0, log]);
 
   const topic0 = rawTopic0 ? useTopic0(rawTopic0): "";
 

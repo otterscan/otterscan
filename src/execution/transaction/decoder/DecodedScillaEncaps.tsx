@@ -1,7 +1,7 @@
 import { EventFragment } from "ethers";
 import { FC, memo } from "react";
 
-type DecodedScillaEncaps = {
+type DecodedScillaEncapsProps = {
   kind: string;
   description: string;
 };
