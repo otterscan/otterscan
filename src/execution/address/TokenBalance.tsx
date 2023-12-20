@@ -1,5 +1,4 @@
 import { FC, useContext } from "react";
-import Copy from "../../components/Copy";
 import USDAmount from "../../components/USDAmount";
 import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
@@ -7,7 +6,7 @@ import { ChecksummedAddress } from "../../types";
 import { useTokenMetadata } from "../../useErigonHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
 import { RuntimeContext } from "../../useRuntime";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 
 type TokenBalanceProps = {
   holderAddress: ChecksummedAddress;
@@ -26,10 +25,7 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   return (
     <tr>
       <td>
-        <div className="flex items-baseline space-x-2">
-          <DecoratedAddressLink address={tokenAddress} />
-          <Copy value={tokenAddress} />
-        </div>
+        <TransactionAddressWithCopy address={tokenAddress} />
       </td>
       <td>
         {balance !== null && balance !== undefined && (
