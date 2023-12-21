@@ -36,7 +36,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-content-loader": "^6.2.1",
     "react-dom": "^18.2.0",
-    "react-helmet-async": "^2.0.3",
+    "react-helmet-async": "^2.0.4",
     "react-image": "^4.1.0",
     "react-intersection-observer": "^9.5.3",
     "react-router-dom": "^6.21.0",
