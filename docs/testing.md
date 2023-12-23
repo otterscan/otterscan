@@ -20,9 +20,9 @@ Running the devnet tests requires a custom Otterscan configuration. You can use 
 ```sh
 npm run start-devnet
 ```
-The Otterscan instance should then be pointed to an Erigon devnet running on `http://localhost:8545`. You can start an Erigon devnet with this command:
+The Otterscan instance should then be pointed to an Erigon devnet running on `http://localhost:8545` using the latest ots2 release branch. You can start an Erigon devnet with this command:
 ```sh
-./erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow
+./erigon --chain=dev --datadir=dev --http.api eth,erigon,trace,ots,ots2 --http.corsdomain "*" --http.vhosts "*" --mine --fakepow --experimental.ots2
 ```
 
 (Note: The private key for the funded account can be found with `echo -n "erigon devnet key" | sha256sum`.)

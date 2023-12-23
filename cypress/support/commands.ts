@@ -20,16 +20,20 @@ Cypress.Commands.add(
 );
 
 // Send a transaction using the devnet key
-Cypress.Commands.add("sendTx", (txReq) => {
+Cypress.Commands.add("sendTx", (txReq, wallet: ethers.Wallet? = undefined) => {
   return cy.wrap(
     (async () => {
       const provider = new ethers.JsonRpcProvider(
         Cypress.env("DEVNET_ERIGON_URL"),
       );
-      const wallet = new ethers.Wallet(
-        ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),
-        provider,
-      );
+      if (wallet) {
+        wallet = wallet.connect(provider);
+      } else {
+        wallet = new ethers.Wallet(
+          ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),
+          provider,
+        );
+      }
       const tx = await wallet.sendTransaction(txReq);
       const txReceipt = await tx.wait();
       return { tx, txReceipt, wallet };
