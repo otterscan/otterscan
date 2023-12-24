@@ -27,10 +27,10 @@ export type TransactionSearchType =
   | "ERC20Transfer"
   | "ERC721Transfer"
   | "Withdrawals"
-  | "FeeRecipient";
+  | "BlocksRewarded";
 
-export type TransactionListResults<T> = {
-  blocksSummary: Map<number, BlockSummary>;
+export type TransactionListResults<T, U = BlockSummary> = {
+  blocksSummary: Map<number, U>;
   results: T[];
 };
 
@@ -50,15 +50,16 @@ export type WithdrawalMatch = {
   amount: bigint;
 };
 
-export type FeeRecipientMatch = {
+export type BlocksRewardedMatch = {
   blockNumber: number;
+  totalFees: bigint;
 };
 
 type SearchResultsType<T extends TransactionSearchType> =
   T extends "Withdrawals"
     ? WithdrawalMatch
-    : T extends "FeeRecipient"
-      ? FeeRecipientMatch
+    : T extends "BlocksRewarded"
+      ? BlocksRewardedMatch
       : TransactionMatchWithData;
 
 export const useGenericTransactionCount = (
@@ -87,7 +88,7 @@ function decodeResults<T extends TransactionSearchType>(
       validatorIndex: formatter.number(item.validatorIndex),
       amount: formatter.bigInt(item.amount),
     } as SearchResultsType<T>;
-  } else if (typeName === "FeeRecipient") {
+  } else if (typeName === "BlocksRewarded") {
     return {
       blockNumber: formatter.number(item.blockNumber),
     } as SearchResultsType<T>;
@@ -107,11 +108,11 @@ function decodeResults<T extends TransactionSearchType>(
   }
 }
 
-const resultFetcher = <T extends TransactionSearchType>(
+const resultFetcher = <T extends TransactionSearchType, U>(
   provider: JsonRpcApiProvider | undefined,
   typeName: T,
 ): Fetcher<
-  TransactionListResults<SearchResultsType<T>> | undefined,
+  TransactionListResults<SearchResultsType<T>, U> | undefined,
   [string, ...any]
 > => {
   const fetcher = providerFetcher(provider);
@@ -125,7 +126,7 @@ const resultFetcher = <T extends TransactionSearchType>(
     const converted = (res.results as any[]).map(
       (m): SearchResultsType<T> => decodeResults<T>(m, provider, typeName),
     );
-    const blockMap = new Map<number, BlockSummary>();
+    const blockMap = new Map<number, U>();
     for (const [k, v] of Object.entries(res.blocksSummary as any)) {
       blockMap.set(parseInt(k), v as any);
     }
@@ -137,17 +138,20 @@ const resultFetcher = <T extends TransactionSearchType>(
   };
 };
 
-export const useGenericTransactionList = <T extends TransactionSearchType>(
+export const useGenericTransactionList = <
+  T extends TransactionSearchType,
+  U = BlockSummary,
+>(
   provider: JsonRpcApiProvider | undefined,
   typeName: T,
   address: ChecksummedAddress,
   pageNumber: number,
   pageSize: number,
   total: number | undefined,
-): TransactionListResults<SearchResultsType<T>> | undefined => {
+): TransactionListResults<SearchResultsType<T>, U> | undefined => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots2_get${typeName}List`;
-  const fetcher = resultFetcher<T>(provider, typeName);
+  const fetcher = resultFetcher<T, U>(provider, typeName);
   const { data, error } = useSWRImmutable(
     page === undefined ? null : [rpcMethod, address, page.idx, page.count],
     fetcher,
