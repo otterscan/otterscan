@@ -22,8 +22,8 @@ const FunctionSignature: React.FC<FunctionSignatureProps> = ({
         callType === "STATICCALL"
           ? "text-red-700"
           : callType === "DELEGATECALL" || callType === "CALLCODE"
-          ? "text-gray-400"
-          : "text-blue-900"
+            ? "text-gray-400"
+            : "text-blue-900"
       }`}
     >
       {sig}

@@ -118,7 +118,9 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     <ContentFrame tabs>
       <InfoRow title="Transaction Hash">
         <div className="flex items-baseline space-x-2">
-          <span className="font-hash">{txData.transactionHash}</span>
+          <span className="font-hash" data-test="tx-hash">
+            {txData.transactionHash}
+          </span>
           <Copy value={txData.transactionHash} />
         </div>
       </InfoRow>
@@ -132,7 +134,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               icon={faCheckCircle}
               size="1x"
             />
-            <span>Success</span>
+            <span data-test="status">Success</span>
           </span>
         ) : (
           <>

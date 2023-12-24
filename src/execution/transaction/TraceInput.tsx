@@ -1,8 +1,12 @@
 import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
 import FormattedBalance from "../../components/FormattedBalance";
+import {
+  useSourcifyMetadata,
+  useTransactionDescription as useSourcifyTransactionDescription,
+} from "../../sourcify/useSourcify";
 import {
   extract4Bytes,
   use4Bytes,
@@ -10,6 +14,7 @@ import {
 } from "../../use4Bytes";
 import { useChainInfo } from "../../useChainInfo";
 import { TraceEntry } from "../../useErigonHooks";
+import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
 import FunctionSignature from "./FunctionSignature";
 import InputDecoder from "./decoder/InputDecoder";
@@ -22,6 +27,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
+  const { provider } = useContext(RuntimeContext);
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes, t.to);
   const sigText =
@@ -33,6 +39,22 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
     t.input,
     t.value,
   );
+
+  const match = useSourcifyMetadata(t.to, provider?._network.chainId);
+  const metadata = match?.metadata;
+  const sourcifyTxDesc = useSourcifyTransactionDescription(metadata, {
+    data: t.input,
+    value: t.value,
+  });
+  const userDoc = metadata?.output.userdoc;
+  const devDoc = metadata?.output.devdoc;
+  const userMethod = sourcifyTxDesc
+    ? userDoc?.methods[sourcifyTxDesc.signature]
+    : undefined;
+  const devMethod = sourcifyTxDesc
+    ? devDoc?.methods[sourcifyTxDesc.signature]
+    : undefined;
+  const txDesc = sourcifyTxDesc ?? fourBytesTxDesc;
 
   const [expanded, setExpanded] = useState<boolean>(false);
 
@@ -84,11 +106,11 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
           <div className="my-2 ml-5 mr-1">
             <InputDecoder
               fourBytes={raw4Bytes ?? "0x"}
-              resolvedTxDesc={fourBytesTxDesc}
-              hasParamNames={false}
+              resolvedTxDesc={txDesc}
+              hasParamNames={txDesc === sourcifyTxDesc}
               data={t.input}
-              userMethod={undefined}
-              devMethod={undefined}
+              userMethod={userMethod}
+              devMethod={devMethod}
             />
           </div>
           <div>)</div>

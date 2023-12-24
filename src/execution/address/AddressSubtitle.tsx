@@ -30,7 +30,12 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
           scale={3}
         />
         <span>Address</span>
-        <span className="font-address text-base text-gray-500">{address}</span>
+        <span
+          className="font-address text-base text-gray-500"
+          data-test="address"
+        >
+          {address}
+        </span>
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}

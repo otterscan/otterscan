@@ -2,6 +2,7 @@ import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ConstructorFragment,
+  ErrorFragment,
   EventFragment,
   Fragment,
   FunctionFragment,
@@ -15,7 +16,7 @@ type DecodedFragmentProps = {
 };
 
 const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
-  let fragmentType: "constructor" | "event" | "function" | undefined;
+  let fragmentType: "constructor" | "event" | "function" | "error" | undefined;
   let sig: string | undefined;
   let letter: string | undefined;
   let letterBg: string | undefined;
@@ -37,6 +38,12 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
     fragmentType = "constructor";
     letter = "C";
     letterBg = "bg-blue-500";
+  } else if (ErrorFragment.isError(fragment)) {
+    fragmentType = "error";
+    sig = fragment.selector;
+    letter = "E";
+    letterBg = "bg-red-500";
+    hashBg = "bg-red-50";
   }
 
   return (
@@ -61,8 +68,8 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
             fragmentType === "function"
               ? "Method Selector"
               : fragmentType === "event"
-              ? "Topic Hash"
-              : ""
+                ? "Topic Hash"
+                : ""
           }
         >
           {sig}
