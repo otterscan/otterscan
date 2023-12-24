@@ -23,10 +23,10 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "FeeRecipient", address);
+  const total = useGenericTransactionCount(provider, "BlocksRewarded", address);
   const results = useGenericTransactionList(
     provider,
-    "FeeRecipient",
+    "BlocksRewarded",
     address,
     pageNumber,
     PAGE_SIZE,

@@ -27,7 +27,7 @@ export type TransactionSearchType =
   | "ERC20Transfer"
   | "ERC721Transfer"
   | "Withdrawals"
-  | "FeeRecipient";
+  | "BlocksRewarded";
 
 export type TransactionListResults<T> = {
   blocksSummary: Map<number, BlockSummary>;
@@ -50,15 +50,15 @@ export type WithdrawalMatch = {
   amount: bigint;
 };
 
-export type FeeRecipientMatch = {
+export type BlocksRewardedMatch = {
   blockNumber: number;
 };
 
 type SearchResultsType<T extends TransactionSearchType> =
   T extends "Withdrawals"
     ? WithdrawalMatch
-    : T extends "FeeRecipient"
-      ? FeeRecipientMatch
+    : T extends "BlocksRewarded"
+      ? BlocksRewardedMatch
       : TransactionMatchWithData;
 
 export const useGenericTransactionCount = (
@@ -87,7 +87,7 @@ function decodeResults<T extends TransactionSearchType>(
       validatorIndex: formatter.number(item.validatorIndex),
       amount: formatter.bigInt(item.amount),
     } as SearchResultsType<T>;
-  } else if (typeName === "FeeRecipient") {
+  } else if (typeName === "BlocksRewarded") {
     return {
       blockNumber: formatter.number(item.blockNumber),
     } as SearchResultsType<T>;
