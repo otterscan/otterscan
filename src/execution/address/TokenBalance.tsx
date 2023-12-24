@@ -6,7 +6,7 @@ import { ChecksummedAddress } from "../../types";
 import { useTokenMetadata } from "../../useErigonHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
 import { RuntimeContext } from "../../useRuntime";
-import DecoratedAddressLink from "../components/DecoratedAddressLink";
+import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 
 type TokenBalanceProps = {
   holderAddress: ChecksummedAddress;
@@ -25,7 +25,7 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   return (
     <tr>
       <td>
-        <DecoratedAddressLink address={tokenAddress} />
+        <TransactionAddressWithCopy address={tokenAddress} />
       </td>
       <td>
         {balance !== null && balance !== undefined && (

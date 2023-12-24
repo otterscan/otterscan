@@ -2,7 +2,7 @@ import { ErrorDescription, Interface } from "ethers";
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import { ChecksummedAddress, TransactionData } from "../types";
+import { ChecksummedAddress, TransactionDescriptionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
 import { RuntimeContext } from "../useRuntime";
 
@@ -245,7 +245,7 @@ export const useContract = (
   type: MatchType,
 ) => {
   const sourcifySources = useSourcifySources();
-  const normalizedFilename = filename.replaceAll(/[@:]/g, "_");
+  const normalizedFilename = filename.replaceAll(/[:]/g, "_");
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,
@@ -264,7 +264,7 @@ export const useContract = (
 
 export const useTransactionDescription = (
   metadata: Metadata | null | undefined,
-  txData: TransactionData | null | undefined,
+  txData: TransactionDescriptionData | null | undefined,
 ) => {
   const txDesc = useMemo(() => {
     if (metadata === null) {

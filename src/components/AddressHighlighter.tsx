@@ -12,13 +12,15 @@ const AddressHighlighter: React.FC<AddressHighlighterProps> = ({
   address,
   children,
 }) => (
-  <SelectionHighlighter
-    myType="address"
-    myContent={address}
-    selector={addressSelector}
-  >
-    {children}
-  </SelectionHighlighter>
+  <div className="truncate">
+    <SelectionHighlighter
+      myType="address"
+      myContent={address}
+      selector={addressSelector}
+    >
+      {children}
+    </SelectionHighlighter>
+  </div>
 );
 
 export default AddressHighlighter;

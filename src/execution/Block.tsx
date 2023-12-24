@@ -54,7 +54,9 @@ const Block: FC = () => {
       <StandardSubtitle>
         <div className="flex items-baseline space-x-1">
           <span>Block</span>
-          <span className="text-base text-gray-500">#{blockNumberOrHash}</span>
+          <span className="text-base text-gray-500" data-test="block-number">
+            #{blockNumberOrHash}
+          </span>
           {block && (
             <NavBlock
               entityNum={block.number}
@@ -75,7 +77,9 @@ const Block: FC = () => {
       {block && (
         <ContentFrame isLoading={isLoading}>
           <InfoRow title="Block Height">
-            <span className="font-bold">{commify(block.number)}</span>
+            <span className="font-bold" data-test="block-height-text">
+              {commify(block.number)}
+            </span>
           </InfoRow>
           <InfoRow title="Timestamp">
             <Timestamp value={block.timestamp} />

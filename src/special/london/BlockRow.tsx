@@ -33,8 +33,8 @@ const BlockRow: React.FC<BlockRowProps> = ({ block, baseFeeDelta }) => {
           block.gasUsed > gasTarget
             ? "text-emerald-500"
             : block.gasUsed < gasTarget
-            ? "text-red-500"
-            : ""
+              ? "text-red-500"
+              : ""
         }`}
       >
         {commify(block.gasUsed.toString())} (

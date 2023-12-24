@@ -9,6 +9,13 @@ export type BlockSummary = {
   timestamp: number;
 };
 
+// TODO: dedup BlockSummary?
+export type BlockRewardedSummary = {
+  blockNumber: bigint;
+  timestamp: number;
+  totalFees: bigint;
+};
+
 export type ContractMatch = {
   blockNumber: bigint;
   address: string;

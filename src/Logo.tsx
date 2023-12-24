@@ -16,7 +16,7 @@ const Logo: FC = () => {
         alt="An otter scanning"
         title="An otter scanning"
       />
-      <span>
+      <span data-test="logotext">
         {config?.branding?.siteName || "Otterscan"}
         {config?.experimental && <span className="text-red-400">2</span>}
       </span>

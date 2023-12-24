@@ -51,10 +51,14 @@ export const useProvider = (
     const tryToConnect = async () => {
       let provider: JsonRpcApiProvider;
       if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
-        provider = new WebSocketProvider(erigonURL);
+        provider = new WebSocketProvider(erigonURL, undefined, {
+          staticNetwork: true,
+        });
       } else {
         // Batching takes place by default
-        provider = new JsonRpcProvider(erigonURL);
+        provider = new JsonRpcProvider(erigonURL, undefined, {
+          staticNetwork: true,
+        });
       }
 
       // Check if it is at least a regular ETH node

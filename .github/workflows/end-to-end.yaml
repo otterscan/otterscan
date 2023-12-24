@@ -1,0 +1,112 @@
+name: End-to-End Tests
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      e2e-erigon-url: ${{ steps.e2e-erigon-url.outputs.defined }}
+      e2e-cypress-record-key: ${{ steps.e2e-cypress-record-key.outputs.defined }}
+    steps:
+      - name: Check if E2E_ERIGON_URL is available
+        id: e2e-erigon-url
+        env:
+          E2E_ERIGON_URL: ${{ secrets.E2E_ERIGON_URL }}
+        if: "${{ env.E2E_ERIGON_URL != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+      - name: Check if E2E_CYPRESS_RECORD_KEY is available
+        id: e2e-cypress-record-key
+        env:
+          E2E_CYPRESS_RECORD_KEY: ${{ secrets.E2E_CYPRESS_RECORD_KEY }}
+        if: "${{ env.E2E_CYPRESS_RECORD_KEY != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+
+  e2e-test-mainnet:
+    name: Run E2E tests on mainnet
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-secrets.outputs.e2e-erigon-url == 'true' }}
+    needs: [check-secrets]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
+      - name: Run Cypress tests on mainnet
+        uses: cypress-io/github-action@v6
+        with:
+          start: npm start
+          wait-on: "http://localhost:5173"
+          spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
+          tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'mainnet' || ''}}
+          record: |
+            ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'true' || 'false'}}
+        env:
+          VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
+          CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+      - name: Upload screenshots from failing tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: Cypress Mainnet Screenshots
+          path: cypress/screenshots
+
+  e2e-test-devnet:
+    name: Run E2E tests on a devnet
+    runs-on: ubuntu-latest
+    needs: [check-secrets]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
+      - name: Download Erigon
+        run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "erigon/go.mod"
+          cache-dependency-path: "erigon/go.sum"
+      - name: Build Erigon
+        run: |
+          cd erigon
+          make erigon
+      - name: Load devnet config
+        id: load-devnet-config
+        run: |
+          OTTERSCAN_CONFIG="$(cat cypress/support/devnet-config.json | sed 's/localhost/127.0.0.1/')"
+          OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
+          echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
+      - name: Run Cypress tests on devnet
+        uses: cypress-io/github-action@v6
+        with:
+          start: |
+            sh ./scripts/run-erigon-devnet-e2e-tests.sh
+            npm run start
+          wait-on: "http://127.0.0.1:8545, http://localhost:5173"
+          spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
+          tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'devnet' || ''}}
+          record: |
+            ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'true' || 'false'}}
+        env:
+          VITE_CONFIG_JSON: ${{steps.load-devnet-config.outputs.config}}
+          CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
+          CYPRESS_DEVNET_ERIGON_URL: "http://127.0.0.1:8545"
+          CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
+      - name: Upload screenshots from failing tests
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: Cypress Devnet Screenshots
+          path: cypress/screenshots
