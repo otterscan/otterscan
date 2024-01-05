@@ -59,7 +59,7 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
       Item={(i) => <BlockRewardedItem {...i} />}
       header={searchHeader}
       typeName="block"
-      columns={2}
+      columns={3}
     />
   );
 };
