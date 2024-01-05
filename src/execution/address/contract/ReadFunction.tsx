@@ -254,11 +254,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             defaultNameBase="ret"
           />
         )}
-        {error && (
-          <p className="whitespace-break-spaces font-mono text-red-500">
-            {error}
-          </p>
-        )}
+        {error && <p className="break-words font-mono text-red-500">{error}</p>}
       </div>
     </li>
   );
