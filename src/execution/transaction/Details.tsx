@@ -284,7 +284,26 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       </InfoRow>
       {txData.to && (
         <InfoRow title="Transaction Action">
-          <MethodName data={txData.data} to={txData.to} />
+          <div>
+            <MethodName data={txData.data} to={txData.to} />
+          </div>
+          {(userMethod || devMethod) && (
+            <div className="mt-1 text-gray-800">
+              {userMethod && userMethod.notice && (
+                <div className="col-span-12 gap-x-2 pt-1 px-1 font-normal">
+                  {userMethod.notice}
+                </div>
+              )}
+              {devMethod && devMethod.details && (
+                <div className="col-span-12 gap-x-2 pt-1 px-1 font-normal">
+                  <span className="font-bold italic text-xs mr-2 select-none">
+                    dev{" "}
+                  </span>
+                  {devMethod.details}
+                </div>
+              )}
+            </div>
+          )}
         </InfoRow>
       )}
       {tokenTransfers && tokenTransfers.length > 0 && (

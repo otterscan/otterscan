@@ -4,7 +4,6 @@ import React, { useMemo } from "react";
 import ModeTab from "../../../components/ModeTab";
 import StandardTextarea from "../../../components/StandardTextarea";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
-import { formatFragmentShort } from "../../../utils/format-paramtype";
 import DecodedParamsTable from "./DecodedParamsTable";
 
 type InputDecoderProps = {
@@ -55,11 +54,6 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
               hasParamNames={hasParamNames}
               userMethod={userMethod}
               devMethod={devMethod}
-              signature={
-                resolvedTxDesc
-                  ? formatFragmentShort(resolvedTxDesc.fragment)
-                  : undefined
-              }
             />
           )}
         </Tab.Panel>
