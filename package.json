@@ -15,7 +15,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@headlessui/react": "^1.7.17",
+    "@headlessui/react": "^1.7.18",
     "@otterscan/react-qr-reader": "^5.2.0",
     "@testing-library/jest-dom": "^6.2.0",
     "@testing-library/react": "^14.1.2",
