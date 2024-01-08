@@ -113,13 +113,15 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
-              <div className="flex divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex flex-col md:flex-row divide-x-2 divide-dotted divide-gray-300">
                 <TransactionAddressWithCopy
                   address={creator.creator}
                   showCodeIndicator
                 />
-                <div className="ml-3 flex items-baseline pl-3">
-                  <TransactionLink txHash={creator.hash} />
+                <div className="md:ml-3 flex items-baseline pl-3 truncate">
+                  <div className="truncate">
+                    <TransactionLink txHash={creator.hash} />
+                  </div>
                 </div>
               </div>
             </InfoRow>
