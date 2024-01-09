@@ -10,19 +10,17 @@ type HelpButtonProps = {
   onChange: (newValue: boolean) => void;
 };
 
-const HelpButton: React.FC<HelpButtonProps> = ({ checked, onChange }) => {
-  return (
-    <Switch
-      checked={checked}
-      onChange={onChange}
-      className="self-center text-gray-500 pr-2"
-    >
-      <FontAwesomeIcon
-        icon={checked ? faQuestionCircleSolid : faQuestionCircle}
-        size="1x"
-      />
-    </Switch>
-  );
-};
+const HelpButton: React.FC<HelpButtonProps> = ({ checked, onChange }) => (
+  <Switch
+    checked={checked}
+    onChange={onChange}
+    className="self-center text-gray-500 pr-2"
+  >
+    <FontAwesomeIcon
+      icon={checked ? faQuestionCircleSolid : faQuestionCircle}
+      size="1x"
+    />
+  </Switch>
+);
 
 export default HelpButton;
