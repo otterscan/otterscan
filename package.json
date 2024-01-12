@@ -83,7 +83,7 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "7.6.7",
+    "@storybook/addon-essentials": "7.6.8",
     "@storybook/addon-interactions": "7.6.7",
     "@storybook/addon-links": "7.6.7",
     "@storybook/blocks": "7.6.7",
