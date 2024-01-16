@@ -199,6 +199,17 @@ export const useBlockDataFromTransaction = (
   return block;
 };
 
+function multiplyByScalar(num: bigint, decimalStr: string): bigint {
+  const [integerPart, fractionalPart] = decimalStr.split(".");
+  const numInteger = BigInt(integerPart);
+  if (fractionalPart) {
+    const numFraction = BigInt(fractionalPart);
+    const divisor = 10n ** BigInt(fractionalPart.length);
+    return (num * numInteger * divisor + num * numFraction) / divisor;
+  }
+  return num * numInteger;
+}
+
 export const useTxData = (
   provider: JsonRpcApiProvider | undefined,
   txhash: string,
@@ -221,6 +232,35 @@ export const useTxData = (
           return;
         }
 
+        let fee: bigint;
+        let gasPrice: bigint;
+        const isOptimistic =
+          provider._network.chainId === 10n ||
+          provider._network.chainId === 11155420n;
+        if (isOptimistic) {
+          if (_response.type === 0x7e) {
+            fee = 0n;
+            gasPrice = 0n;
+          } else {
+            const _rawReceipt = await provider.send(
+              "eth_getTransactionReceipt",
+              [txhash],
+            );
+            console.log(_receipt);
+            console.log(_rawReceipt);
+            const l1GasUsed: bigint = formatter.bigInt(_rawReceipt.l1GasUsed);
+            const l1GasPrice: bigint = formatter.bigInt(_rawReceipt.l1GasPrice);
+            const l1FeeScalar: string = _rawReceipt.l1FeeScalar;
+            gasPrice = _response.gasPrice!;
+            fee =
+              _receipt!.gasUsed! * gasPrice +
+              multiplyByScalar(l1GasUsed * l1GasPrice, l1FeeScalar);
+          }
+        } else {
+          fee = _response.gasPrice! * _receipt!.gasUsed!;
+          gasPrice = _response.gasPrice!;
+        }
+
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
@@ -229,7 +269,7 @@ export const useTxData = (
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas ?? undefined,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas ?? undefined,
-          gasPrice: _response.gasPrice!,
+          gasPrice,
           gasLimit: _response.gasLimit,
           nonce: BigInt(_response.nonce),
           data: _response.data,
@@ -245,7 +285,7 @@ export const useTxData = (
                   // TODO: Does awaiting this Promise induce another RPC call?
                   confirmations: await _receipt.confirmations(),
                   createdContractAddress: _receipt.contractAddress ?? undefined,
-                  fee: _response.gasPrice! * _receipt.gasUsed,
+                  fee,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
                   blobGasPrice: _receipt.blobGasPrice ?? undefined,
