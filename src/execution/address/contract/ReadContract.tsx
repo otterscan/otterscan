@@ -5,6 +5,7 @@ import LabeledSwitch from "../../../components/LabeledSwitch";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
 import { Match } from "../../../sourcify/useSourcify";
 import { RuntimeContext } from "../../../useRuntime";
+import { usePageTitle } from "../../../useTitle";
 import ReadFunction from "./ReadFunction";
 
 type ContractsProps = {
@@ -25,6 +26,7 @@ const ReadContract: React.FC<ContractsProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
   const [showNonViewReturns, setShowNonViewReturns] = useState<boolean>(false);
+  usePageTitle(`Read Contract | ${checksummedAddress}`);
 
   const viewFunctions = match?.metadata.output.abi.filter((fn) =>
     isReadFunction(fn),

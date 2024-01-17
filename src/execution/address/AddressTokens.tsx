@@ -10,12 +10,14 @@ import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { RuntimeContext } from "../../useRuntime";
+import { usePageTitle } from "../../useTitle";
 import { AddressAwareComponentProps } from "../types";
 import TokenBalance from "./TokenBalance";
 
 const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
   const erc20List = useERC20Holdings(provider, address);
+  usePageTitle(`Token Balances | ${address}`);
 
   const [enabled, setEnabled] = useState<boolean>(true);
   const tokenSet = useTokenSet(provider?._network.chainId);
