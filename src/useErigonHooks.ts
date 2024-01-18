@@ -17,7 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
-import { getOpFeeData, isOptimistic } from "./execution/op-tx-calculation";
+import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -41,6 +41,8 @@ export interface ExtendedBlock extends BlockParams {
   stateRoot: string;
   totalDifficulty: bigint;
   transactionCount: number;
+  // Optimism-specific
+  gasUsedDepositTx?: bigint;
 }
 
 export const readBlock = async (
@@ -76,6 +78,8 @@ export const readBlock = async (
     stateRoot: _rawBlock.block.stateRoot,
     totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
     transactionCount: formatter.number(_rawBlock.block.transactionCount),
+    // Optimism-specific; gas used by the deposit transaction
+    gasUsedDepositTx: formatter.bigInt(_rawBlock.gasUsedDepositTx ?? 0n),
     ..._block,
   };
   return extBlock;
@@ -126,8 +130,8 @@ const blockTransactionsFetcher: Fetcher<
       let l1GasUsed: bigint | undefined;
       let l1GasPrice: bigint | undefined;
       let l1FeeScalar: string | undefined;
-      if (isOptimistic(provider._network.chainId)) {
-        if (t.type === 0x7e) {
+      if (isOptimisticChain(provider._network.chainId)) {
+        if (t.type === 126) {
           fee = 0n;
           effectiveGasPrice = 0n;
         } else {
@@ -162,9 +166,6 @@ const blockTransactionsFetcher: Fetcher<
         gasPrice: effectiveGasPrice,
         data: t.data,
         status: formatter.number(_receipt.status),
-        l1GasUsed,
-        l1GasPrice,
-        l1FeeScalar,
       };
     })
     .reverse();
@@ -258,7 +259,7 @@ export const useTxData = (
         let l1GasUsed: bigint | undefined;
         let l1GasPrice: bigint | undefined;
         let l1FeeScalar: string | undefined;
-        if (isOptimistic(provider._network.chainId)) {
+        if (isOptimisticChain(provider._network.chainId)) {
           if (_response.type === 0x7e) {
             fee = 0n;
             gasPrice = 0n;

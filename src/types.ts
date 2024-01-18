@@ -23,11 +23,6 @@ export type ProcessedTransaction = {
   gasPrice: bigint;
   data: string;
   status: number;
-
-  // Optimism-specific
-  l1GasUsed?: bigint;
-  l1GasPrice?: bigint;
-  l1FeeScalar?: string;
 };
 
 export type TransactionChunk = {

@@ -42,7 +42,13 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
   const extraStr = useMemo(() => {
     return block && toUtf8String(block.extraData, Utf8ErrorFuncs.replace);
   }, [block]);
-  const burntFees = block?.baseFeePerGas && block.baseFeePerGas * block.gasUsed;
+  // gasUsedDepositTx: Optimism-specific; "gas used" by the deposit transaction which does
+  // not pay the basefee
+  const gasUsedWithoutDepositTx = block
+    ? block.gasUsed - (block.gasUsedDepositTx ?? 0n)
+    : 0n;
+  const burntFees =
+    block?.baseFeePerGas && block.baseFeePerGas * gasUsedWithoutDepositTx;
   const gasUsedPerc =
     block && Number((block.gasUsed * 10000n) / block.gasLimit) / 100;
 

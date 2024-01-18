@@ -14,7 +14,10 @@ import {
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
 import useKeyboardShortcut from "use-keyboard-shortcut";
-import { getOpFeeData, isOptimistic } from "../execution/op-tx-calculation";
+import {
+  getOpFeeData,
+  isOptimisticChain,
+} from "../execution/op-tx-calculation";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 import { formatter } from "../utils/formatter";
@@ -33,7 +36,7 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
 
       let fee: bigint;
       let gasPrice: bigint;
-      if (isOptimistic(provider._network.chainId)) {
+      if (isOptimisticChain(provider._network.chainId)) {
         const l1GasUsed: bigint = formatter.bigInt(_rawReceipt.l1GasUsed ?? 0n);
         const l1GasPrice: bigint = formatter.bigInt(
           _rawReceipt.l1GasPrice ?? 0n,

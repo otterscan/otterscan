@@ -9,9 +9,12 @@ export function multiplyByScalar(num: bigint, decimalStr: string): bigint {
   return num * numInteger;
 }
 
-export const isOptimistic = (chainId: bigint): boolean => {
+export function isOptimisticChain(chainId: bigint | undefined): boolean {
+  if (chainId === undefined) {
+    return false;
+  }
   return chainId === 10n || chainId === 11155420n;
-};
+}
 
 export function getOpFeeData(
   txType: number,
