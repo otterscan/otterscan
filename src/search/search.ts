@@ -14,6 +14,7 @@ import {
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
 import useKeyboardShortcut from "use-keyboard-shortcut";
+import { getOpFeeData, isOptimistic } from "../execution/op-tx-calculation";
 import { PAGE_SIZE } from "../params";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 import { formatter } from "../utils/formatter";
@@ -29,6 +30,28 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
       const _rawReceipt = _rawRes.receipts[i];
       const _receipt: TransactionReceiptParams =
         formatter.transactionReceiptParams(_rawReceipt);
+
+      let fee: bigint;
+      let gasPrice: bigint;
+      if (isOptimistic(provider._network.chainId)) {
+        const l1GasUsed: bigint = formatter.bigInt(_rawReceipt.l1GasUsed ?? 0n);
+        const l1GasPrice: bigint = formatter.bigInt(
+          _rawReceipt.l1GasPrice ?? 0n,
+        );
+        const l1FeeScalar: string = _rawReceipt.l1FeeScalar ?? "0";
+        ({ fee, gasPrice } = getOpFeeData(
+          t.type,
+          t.gasPrice!,
+          _receipt.gasUsed,
+          l1GasUsed,
+          l1GasPrice,
+          l1FeeScalar,
+        ));
+      } else {
+        fee = _receipt.gasUsed * t.gasPrice!;
+        gasPrice = t.gasPrice!;
+      }
+
       return {
         blockNumber: t.blockNumber!,
         timestamp: formatter.number(_rawReceipt.timestamp),
@@ -39,8 +62,8 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
         to: t.to ?? null,
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
-        fee: _receipt.gasUsed * t.gasPrice!,
-        gasPrice: t.gasPrice!,
+        fee,
+        gasPrice,
         data: t.data,
         status: _receipt.status!,
       };

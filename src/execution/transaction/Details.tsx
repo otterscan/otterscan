@@ -52,6 +52,7 @@ import { RuntimeContext } from "../../useRuntime";
 import { commify } from "../../utils/utils";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { calculateFee } from "../feeCalc";
+import { multiplyByScalar } from "../op-tx-calculation";
 import NavNonce from "./NavNonce";
 import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
@@ -391,23 +392,69 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         </InfoRow>
       )}
       {txData.confirmedData && (
-        <InfoRow title="Gas Used / Limit">
-          <div className="flex items-baseline space-x-3">
-            <div>
-              <RelativePosition
-                pos={commify(formatUnits(txData.confirmedData.gasUsed, 0))}
-                total={commify(formatUnits(txData.gasLimit, 0))}
+        <>
+          <InfoRow title="Gas Used / Limit">
+            <div className="flex items-baseline space-x-3">
+              <div>
+                <RelativePosition
+                  pos={commify(formatUnits(txData.confirmedData.gasUsed, 0))}
+                  total={commify(formatUnits(txData.gasLimit, 0))}
+                />
+              </div>
+              <PercentageBar
+                perc={
+                  Number(
+                    (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit,
+                  ) / 100
+                }
               />
             </div>
-            <PercentageBar
-              perc={
-                Number(
-                  (txData.confirmedData.gasUsed * 10000n) / txData.gasLimit,
-                ) / 100
-              }
-            />
-          </div>
-        </InfoRow>
+          </InfoRow>
+          {txData.confirmedData && txData.confirmedData.l1GasUsed && (
+            <InfoRow title="L1 Gas Used by Txn">
+              <span>{commify(txData.confirmedData.l1GasUsed)}</span>
+            </InfoRow>
+          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1FeeScalar !== undefined && (
+              <InfoRow title="L1 Fee Scalar">
+                <span>{txData.confirmedData.l1FeeScalar}</span>
+              </InfoRow>
+            )}
+          {txData.confirmedData && txData.confirmedData.l1GasPrice && (
+            <InfoRow title="L1 Gas Price">
+              <div className="flex items-baseline space-x-1">
+                <span>
+                  <FormattedBalance value={txData.confirmedData.l1GasPrice} />{" "}
+                  {symbol} (
+                  <FormattedBalance
+                    value={txData.confirmedData.l1GasPrice}
+                    decimals={9}
+                  />{" "}
+                  Gwei)
+                </span>
+              </div>
+            </InfoRow>
+          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1GasUsed &&
+            txData.confirmedData.l1GasPrice &&
+            txData.confirmedData.l1FeeScalar !== undefined && (
+              <InfoRow title="L1 Fees Paid">
+                <span>
+                  <NativeTokenAmountAndFiat
+                    value={multiplyByScalar(
+                      txData.confirmedData.l1GasUsed *
+                        txData.confirmedData.l1GasPrice,
+                      txData.confirmedData.l1FeeScalar,
+                    )}
+                    blockTag={txData.confirmedData?.blockNumber}
+                    {...feePreset}
+                  />
+                </span>
+              </InfoRow>
+            )}
+        </>
       )}
       {block && hasEIP1559 && (
         <InfoRow title="Block Base Fee">
