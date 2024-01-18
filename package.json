@@ -87,7 +87,7 @@
     "@storybook/addon-interactions": "7.6.9",
     "@storybook/addon-links": "7.6.9",
     "@storybook/blocks": "7.6.9",
-    "@storybook/react": "7.6.9",
+    "@storybook/react": "7.6.10",
     "@storybook/react-vite": "7.6.9",
     "@storybook/testing-library": "0.2.2",
     "@vitejs/plugin-react-swc": "^3.5.0",
