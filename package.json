@@ -39,7 +39,7 @@
     "react-helmet-async": "^2.0.4",
     "react-image": "^4.1.0",
     "react-intersection-observer": "^9.5.3",
-    "react-router-dom": "^6.21.2",
+    "react-router-dom": "^6.21.3",
     "react-syntax-highlighter": "^15.5.0",
     "swr": "^2.2.2",
     "use-keyboard-shortcut": "^1.1.6",
