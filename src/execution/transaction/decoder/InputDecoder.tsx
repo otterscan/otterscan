@@ -54,6 +54,7 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
                 fragment={resolvedTxDesc.fragment}
                 userMethod={userMethod}
                 devMethod={devMethod}
+                className="pt-1"
               />
               <DecodedParamsTable
                 args={resolvedTxDesc.args}

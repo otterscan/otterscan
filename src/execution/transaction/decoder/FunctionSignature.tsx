@@ -11,18 +11,20 @@ type FunctionSignatureProps = {
   userMethod?: UserMethod | undefined;
   devMethod?: DevMethod | undefined;
   fragment: FunctionFragment;
+  className?: string;
 };
 
 const FunctionSignature: FC<FunctionSignatureProps> = ({
   userMethod,
   devMethod,
   fragment,
+  className,
 }) => {
   const [showHelp, setShowHelp] = useState<boolean>(false);
   const hasHelp =
     (userMethod && userMethod.notice) || (devMethod && devMethod.details);
   return (
-    <div>
+    <div className={className}>
       <div>
         <span className="font-mono text-sm text-gray-800">
           <span className="font-bold">{fragment.name}</span>
@@ -48,26 +50,22 @@ const FunctionSignature: FC<FunctionSignatureProps> = ({
           </Switch>
         )}
       </div>
-      {hasHelp && (
-        <>
-          {showHelp && (
-            <div>
-              {userMethod && userMethod.notice && (
-                <div className="gap-x-2 pt-1 px-1 font-normal">
-                  {userMethod.notice}
-                </div>
-              )}
-              {devMethod && devMethod.details && (
-                <div className="gap-x-2 pt-1 px-1 font-normal">
-                  <span className="font-bold italic text-xs mr-2 select-none">
-                    dev{" "}
-                  </span>
-                  {devMethod.details}
-                </div>
-              )}
+      {hasHelp && showHelp && (
+        <blockquote className="font-semibold border-l-4 pl-1 mt-2 mb-3 py-1">
+          {userMethod && userMethod.notice && (
+            <div className="gap-x-2 mt-1 px-1 font-normal">
+              {userMethod.notice}
             </div>
           )}
-        </>
+          {devMethod && devMethod.details && (
+            <div className="gap-x-2 mt-1 px-1 font-normal">
+              <span className="font-bold italic text-xs mr-2 select-none">
+                dev{" "}
+              </span>
+              {devMethod.details}
+            </div>
+          )}
+        </blockquote>
       )}
     </div>
   );
