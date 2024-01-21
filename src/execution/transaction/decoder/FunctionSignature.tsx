@@ -3,7 +3,7 @@ import { faQuestionCircle as faQuestionCircleSolid } from "@fortawesome/free-sol
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Switch } from "@headlessui/react";
 import { FunctionFragment, ParamType } from "ethers";
-import { FC, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 import ParamDeclaration from "../../components/ParamDeclaration";
 
@@ -30,10 +30,10 @@ const FunctionSignature: FC<FunctionSignatureProps> = ({
           <span className="font-bold">{fragment.name}</span>
           {"("}
           {fragment.inputs.map((param: ParamType, index: number) => (
-            <>
+            <Fragment key={index}>
               <ParamDeclaration input={param} index={index} />
               {index !== fragment.inputs.length - 1 && <>, </>}
-            </>
+            </Fragment>
           ))}
           {")"}
         </span>
