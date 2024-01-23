@@ -39,6 +39,8 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           to: m.receipt.to,
           value: m.transaction.value,
           type: m.transaction.type,
+          // TODO: Token transfers for ERC-721 tokens
+          tokenTransfers: [],
         }),
       ),
     [results],
