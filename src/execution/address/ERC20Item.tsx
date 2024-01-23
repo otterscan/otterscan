@@ -1,4 +1,4 @@
-import { FC, memo, useContext } from "react";
+import { FC, memo } from "react";
 import BlockLink from "../../components/BlockLink";
 import MethodName from "../../components/MethodName";
 import NativeTokenAmount from "../../components/NativeTokenAmount";
@@ -7,7 +7,6 @@ import TransactionDirection from "../../components/TransactionDirection";
 import TransactionLink from "../../components/TransactionLink";
 import { TokenTransfer } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
 import { AddressAwareComponentProps } from "../types";
 import TokenAmount from "./TokenAmount";
@@ -38,7 +37,6 @@ const ERC20Item: FC<ERC20ItemProps> = ({
   type,
   tokenTransfers,
 }) => {
-  const { provider } = useContext(RuntimeContext);
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>
