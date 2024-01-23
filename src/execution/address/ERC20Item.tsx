@@ -7,7 +7,6 @@ import TransactionDirection from "../../components/TransactionDirection";
 import TransactionLink from "../../components/TransactionLink";
 import { TokenTransfer } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { useTokenTransfers, useTxData } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
 import { AddressAwareComponentProps } from "../types";
@@ -23,6 +22,7 @@ export type ERC20ItemProps = AddressAwareComponentProps & {
   to: string | null;
   value: bigint;
   type: number;
+  tokenTransfers: TokenTransfer[];
 };
 
 const ERC20Item: FC<ERC20ItemProps> = ({
@@ -36,10 +36,9 @@ const ERC20Item: FC<ERC20ItemProps> = ({
   to,
   value,
   type,
+  tokenTransfers,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const txData = useTxData(provider, hash);
-  const tokenTransfers = useTokenTransfers(txData);
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>

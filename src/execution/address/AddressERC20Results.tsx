@@ -6,6 +6,7 @@ import {
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
+import { findTokenTransfersInLogs } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { AddressAwareComponentProps } from "../types";
@@ -53,6 +54,7 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
           to: m.receipt.to,
           value: m.transaction.value,
           type: m.transaction.type,
+          tokenTransfers: findTokenTransfersInLogs(m.receipt.logs),
         }),
       ),
     [results],
