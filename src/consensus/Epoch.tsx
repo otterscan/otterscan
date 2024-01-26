@@ -68,7 +68,7 @@ const Epoch: FC = () => {
               <th>Root Hash</th>
               <th className="w-24">Attestations</th>
               <th className="w-48">Sync Participation</th>
-              <th className="w-24">Deposits</th>
+              <th className="w-40">Deposits/Withdrawals</th>
               <th className="w-28">Slashings A/P</th>
               <th className="w-24">Exits</th>
             </StandardTHead>
