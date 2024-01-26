@@ -3,16 +3,13 @@ import { FC, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import BlockLink from "../../components/BlockLink";
 import ContentFrame from "../../components/ContentFrame";
-import { balancePreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import InfoRow from "../../components/InfoRow";
-import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import RelevantNumericValue from "../../components/RelevantNumericValue";
 import StandardTBody from "../../components/StandardTBody";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTable from "../../components/StandardTable";
 import Timestamp from "../../components/Timestamp";
-import DecoratedAddressLink from "../../execution/components/DecoratedAddressLink";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
 import { usePageTitle } from "../../useTitle";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
@@ -24,6 +21,7 @@ import AggregationParticipation from "./AggregationParticipation";
 import BlockRoot from "./BlockRoot";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
+import WithdrawalDetailsRow from "./WithdrawalDetailsRow";
 
 const GWEI = 10n ** 9n;
 
@@ -163,26 +161,13 @@ const Overview: FC = () => {
                       <StandardTBody>
                         {slot.data.message.body.execution_payload.withdrawals.map(
                           (withdrawal: Withdrawal) => (
-                            <tr>
-                              <td>
-                                <CheckedValidatorLink
-                                  validatorIndex={Number(
-                                    withdrawal.validator_index,
-                                  )}
-                                />
-                              </td>
-                              <td>
-                                <DecoratedAddressLink
-                                  address={getAddress(withdrawal.address)}
-                                />
-                              </td>
-                              <td>
-                                <NativeTokenAmountAndFiat
-                                  value={BigInt(withdrawal.amount) * GWEI}
-                                  {...balancePreset}
-                                />
-                              </td>
-                            </tr>
+                            <WithdrawalDetailsRow
+                              validatorIndex={Number(
+                                withdrawal.validator_index,
+                              )}
+                              address={getAddress(withdrawal.address)}
+                              amount={BigInt(withdrawal.amount) * GWEI}
+                            />
                           ),
                         )}
                       </StandardTBody>
