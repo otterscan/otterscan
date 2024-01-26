@@ -11,3 +11,13 @@ export type EpochAwareComponentProps = {
 export type SlotAwareComponentProps = {
   slotNumber: number;
 };
+
+/**
+ * Withdrawal details
+ */
+export type Withdrawal = {
+  index: string;
+  validator_index: string;
+  address: string;
+  amount: string;
+};
