@@ -1,7 +1,7 @@
 import { FC, memo } from "react";
 import { balancePreset } from "../../components/FiatValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
-import DecoratedAddressLink from "../../execution/components/DecoratedAddressLink";
+import TransactionAddress from "../../execution/components/TransactionAddress";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
 
 const GWEI = 10n ** 9n;
@@ -22,8 +22,8 @@ const WithdrawalDetailsRow: FC<WithdrawalDetailsRowProps> = ({
       <td>
         <CheckedValidatorLink validatorIndex={validatorIndex} />
       </td>
-      <td>
-        <DecoratedAddressLink address={address} />
+      <td className="flex">
+        <TransactionAddress address={address} />
       </td>
       <td>
         <NativeTokenAmountAndFiat value={amount} {...balancePreset} />

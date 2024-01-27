@@ -162,6 +162,7 @@ const Overview: FC = () => {
                         {slot.data.message.body.execution_payload.withdrawals.map(
                           (withdrawal: Withdrawal) => (
                             <WithdrawalDetailsRow
+                              key={withdrawal.index}
                               validatorIndex={Number(
                                 withdrawal.validator_index,
                               )}
