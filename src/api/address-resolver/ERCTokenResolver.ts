@@ -1,5 +1,5 @@
 import { AbstractProvider, Contract, ZeroAddress } from "ethers";
-import erc20 from "../../erc20.json";
+import erc20 from "../../abi/erc20.json";
 import { TokenMeta } from "../../types";
 import { IAddressResolver } from "./address-resolver";
 
