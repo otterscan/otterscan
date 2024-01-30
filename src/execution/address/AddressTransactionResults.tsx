@@ -4,9 +4,10 @@ import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
+import StandardScrollableTable from "../../components/StandardScrollableTable";
+import StandardTBody from "../../components/StandardTBody";
 import TransactionLink from "../../components/TransactionLink";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
-import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
 import UndefinedPageControl from "../../search/UndefinedPageControl";
@@ -22,6 +23,7 @@ import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
 import PendingItem from "./PendingItem";
+import PendingPage from "./PendingPage";
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
@@ -139,25 +141,26 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           )}
         </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
-        <ResultHeader
-          feeDisplay={feeDisplay}
-          feeDisplayToggler={feeDisplayToggler}
-        />
-        {page ? (
-          <>
-            {page.map((tx) => (
-              <TransactionItem
-                key={tx.hash}
-                tx={tx}
-                selectedAddress={address}
-                feeDisplay={feeDisplay}
-              />
-            ))}
-            <NavBar address={address} page={page} controller={controller} />
-          </>
-        ) : (
-          <PendingResults />
-        )}
+        <StandardScrollableTable isAuto={true}>
+          <ResultHeader
+            feeDisplay={feeDisplay}
+            feeDisplayToggler={feeDisplayToggler}
+          />
+          {page ? (
+            <StandardTBody>
+              {page.map((tx) => (
+                <TransactionItem
+                  key={tx.hash}
+                  tx={tx}
+                  selectedAddress={address}
+                  feeDisplay={feeDisplay}
+                />
+              ))}
+            </StandardTBody>
+          ) : (
+            <PendingPage rows={1} cols={8} />
+          )}
+        </StandardScrollableTable>
       </StandardSelectionBoundary>
     </ContentFrame>
   );
