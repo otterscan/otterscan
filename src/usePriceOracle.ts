@@ -1,5 +1,3 @@
-import AggregatorV3Interface from "@chainlink/contracts/abi/v0.8/AggregatorV3Interface.json";
-import FeedRegistryInterface from "@chainlink/contracts/abi/v0.8/FeedRegistryInterface.json";
 import {
   BlockTag,
   Contract,
@@ -10,6 +8,8 @@ import {
 import { useContext } from "react";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import AggregatorV3Interface from "./abi/chainlink/AggregatorV3Interface.json";
+import FeedRegistryInterface from "./abi/chainlink/FeedRegistryInterface.json";
 import { ChecksummedAddress } from "./types";
 import { RuntimeContext } from "./useRuntime";
 import { commify } from "./utils/utils";

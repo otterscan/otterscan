@@ -16,7 +16,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import erc20 from "./erc20.json";
+import erc20 from "./abi/erc20.json";
 import {
   ChecksummedAddress,
   InternalOperation,
