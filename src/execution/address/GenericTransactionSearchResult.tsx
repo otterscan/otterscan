@@ -81,7 +81,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
             total={total}
             totalFormatter={totalFormatter}
           />
-          <StandardScrollableTable isAuto={false}>
+          <StandardScrollableTable>
             {header}
             {items !== undefined ? (
               <StandardSelectionBoundary>
