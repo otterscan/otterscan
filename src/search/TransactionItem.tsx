@@ -59,17 +59,17 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             blob={tx.type === 3}
           />
         </td>
-        {/* Set min-w-36 to reduce changing column widths when methods of different lengths show*/}
-        <td className="max-w-24 min-w-24">
+        {/* Set both min and max widths to reduce column width changes when items of different lengths appear */}
+        <td className="min-w-32 max-w-32">
           {tx.to !== null && <MethodName data={tx.data} to={tx.to} />}
         </td>
         <td className="max-w-28">
           <BlockLink blockTag={tx.blockNumber} />
         </td>
-        <td className="max-w-24">
+        <td className="min-w-36 max-w-36">
           <TimestampAge timestamp={tx.timestamp} />
         </td>
-        <td className="max-w-48">
+        <td className="max-w-52">
           <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
               {tx.from && (
@@ -87,7 +87,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
           </span>
         </td>
-        <td className="max-w-48">
+        <td className="max-w-52">
           <span
             className="col-span-2 flex items-baseline"
             title={tx.to ?? tx.createdContractAddress}
@@ -111,10 +111,10 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
           </span>
         </td>
-        <td className="min-w-28 max-w-28">
+        <td className="min-w-48 max-w-48">
           <NativeTokenAmount value={tx.value} />
         </td>
-        <td className="min-w-24 max-w-24">
+        <td className="min-w-40 max-w-40">
           <span className="truncate font-balance text-xs text-gray-500">
             {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
             {feeDisplay === FeeDisplay.TX_FEE_USD && (

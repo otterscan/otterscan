@@ -13,13 +13,13 @@ const ResultHeader: React.FC<ResultHeaderProps> = ({
 }) => (
   <StandardTHead>
     <th className="min-w-16 max-w-50">Txn Hash</th>
-    <th className="min-w-16 max-w-32">Method</th>
+    <th>Method</th>
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
     <th>From</th>
     <th>To</th>
-    <th className="min-w-16 max-w-42">Value</th>
-    <th className="min-w-16 max-w-24">
+    <th className="min-w-52">Value</th>
+    <th className="w-40">
       <button
         className="text-link-blue hover:text-link-blue-hover"
         onClick={feeDisplayToggler}
