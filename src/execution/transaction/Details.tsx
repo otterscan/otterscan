@@ -341,7 +341,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       >
         <TransactionType type={txData.type} />
       </InfoRow>
-      {txData.type === 2 && (
+      {(txData.type === 2 || txData.type === 3) && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
             <FormattedBalance

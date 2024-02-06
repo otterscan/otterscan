@@ -316,7 +316,9 @@ class Formatter {
     */
 
     if (
-      (transaction.type === 1 || transaction.type === 2) &&
+      (transaction.type === 1 ||
+        transaction.type === 2 ||
+        transaction.type === 3) &&
       transaction.accessList == null
     ) {
       transaction.accessList = [];

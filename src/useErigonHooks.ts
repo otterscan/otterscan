@@ -110,7 +110,7 @@ const blockTransactionsFetcher: Fetcher<
       }
 
       let effectiveGasPrice: bigint;
-      if (t.type === 2) {
+      if (t.type === 2 || t.type === 3) {
         const tip =
           t.maxFeePerGas! - _block.baseFeePerGas! < t.maxPriorityFeePerGas!
             ? t.maxFeePerGas! - _block.baseFeePerGas!
