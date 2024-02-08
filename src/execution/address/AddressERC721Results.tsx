@@ -38,6 +38,7 @@ const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
           from: m.receipt.from,
           to: m.receipt.to,
           value: m.transaction.value,
+          type: m.transaction.type,
         }),
       ),
     [results],

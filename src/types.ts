@@ -18,6 +18,7 @@ export type ProcessedTransaction = {
   to: string | null;
   createdContractAddress?: string;
   value: bigint;
+  type: number;
   fee: bigint;
   gasPrice: bigint;
   data: string;
