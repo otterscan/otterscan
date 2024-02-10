@@ -52,7 +52,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   return (
     <BlockNumberContext.Provider value={tx.blockNumber}>
       <tr>
-        <td className="max-w-36">
+        <td className="max-w-52">
           <TransactionLink
             txHash={tx.hash}
             fail={tx.status === 0}
@@ -114,7 +114,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <td className="min-w-48 max-w-48">
           <NativeTokenAmount value={tx.value} />
         </td>
-        <td className="min-w-40 max-w-40">
+        <td className="min-w-16 max-w-28">
           <span className="truncate font-balance text-xs text-gray-500">
             {feeDisplay === FeeDisplay.TX_FEE && formatValue(tx.fee, 18)}
             {feeDisplay === FeeDisplay.TX_FEE_USD && (
