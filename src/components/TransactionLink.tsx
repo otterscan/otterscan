@@ -1,6 +1,6 @@
 import {
   faExclamationCircle,
-  faMound,
+  faSplotch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
@@ -22,7 +22,7 @@ const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail, blob }) => (
     )}
     {blob && (
       <span className="text-purple-400" title="Blob transaction">
-        <FontAwesomeIcon icon={faMound} />
+        <FontAwesomeIcon icon={faSplotch} />
       </span>
     )}
     <span className="truncate">
