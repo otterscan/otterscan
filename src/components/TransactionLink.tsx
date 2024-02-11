@@ -21,7 +21,7 @@ const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail, blob }) => (
       </span>
     )}
     {blob && (
-      <span className="text-pink-400" title="Blob transaction">
+      <span className="text-rose-400" title="Blob transaction">
         <FontAwesomeIcon icon={faSplotch} />
       </span>
     )}
