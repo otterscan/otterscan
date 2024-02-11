@@ -7,7 +7,7 @@ import { TransactionData } from "../../types";
 import { useChainInfo } from "../../useChainInfo";
 import { useBlockDataFromTransaction } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
-import { calculateFee, getFeePercents } from "../../utils/feeCalc";
+import { calculateFee, getFeePercents } from "../feeCalc";
 
 type RewardSplitProps = {
   txData: TransactionData;

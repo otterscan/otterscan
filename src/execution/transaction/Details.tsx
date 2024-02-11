@@ -49,9 +49,9 @@ import {
   useTransactionError,
 } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
-import { calculateFee } from "../../utils/feeCalc";
 import { commify } from "../../utils/utils";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import { calculateFee } from "../feeCalc";
 import NavNonce from "./NavNonce";
 import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
