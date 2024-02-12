@@ -152,7 +152,7 @@ const Block: FC = () => {
           </InfoRow>
           {block.blobGasUsed !== null && block.blobGasUsed !== undefined && (
             <InfoRow title="Blob Gas Used">
-              {block.blobGasUsed.toString()}
+              {commify(block.blobGasUsed)}
             </InfoRow>
           )}
           {block.excessBlobGas !== null &&
