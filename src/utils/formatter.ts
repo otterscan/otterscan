@@ -41,6 +41,9 @@ class Formatter {
       miner: Formatter.address,
       extraData: Formatter.data,
 
+      receiptsRoot: Formatter.allowNull(Formatter.hash),
+      stateRoot: Formatter.allowNull(Formatter.hash),
+
       // TODO: Are there any situations where fetching only the block header
       // might cause ethers to believe the block has no transactions?
       transactions: Formatter.allowNull(Formatter.arrayOf(Formatter.hash), []),
@@ -49,6 +52,8 @@ class Formatter {
 
       blobGasUsed: Formatter.allowNull(Formatter.bigInt, null),
       excessBlobGas: Formatter.allowNull(Formatter.bigInt, null),
+
+      parentBeaconBlockRoot: Formatter.allowNull(Formatter.hash, null),
     },
     receipt: {
       to: Formatter.allowNull(Formatter.address, null),
