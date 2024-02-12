@@ -130,6 +130,7 @@ const blockTransactionsFetcher: Fetcher<
         to: t.to ?? null,
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
+        type: t.type,
         fee: formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice,
         gasPrice: effectiveGasPrice,
         data: t.data,

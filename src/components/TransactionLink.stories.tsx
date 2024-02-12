@@ -21,3 +21,10 @@ export const FailedTx: Story = {
     fail: true,
   },
 };
+
+export const BlobTx: Story = {
+  args: {
+    ...SimpleTx.args,
+    blob: true,
+  },
+};

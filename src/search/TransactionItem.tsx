@@ -59,7 +59,11 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         } px-2 py-3`}
       >
         <span className="col-span-2">
-          <TransactionLink txHash={tx.hash} fail={tx.status === 0} />
+          <TransactionLink
+            txHash={tx.hash}
+            fail={tx.status === 0}
+            blob={tx.type === 3}
+          />
         </span>
         {tx.to !== null ? (
           <MethodName data={tx.data} to={tx.to} />
