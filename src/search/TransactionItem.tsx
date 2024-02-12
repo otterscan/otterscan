@@ -52,7 +52,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   return (
     <BlockNumberContext.Provider value={tx.blockNumber}>
       <tr>
-        <td className="max-w-52">
+        <td className="max-w-[14.5rem]">
           <TransactionLink
             txHash={tx.hash}
             fail={tx.status === 0}
@@ -69,7 +69,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <td className="min-w-36 max-w-36">
           <TimestampAge timestamp={tx.timestamp} />
         </td>
-        <td className="max-w-56">
+        <td className="max-w-[14.5rem]">
           <span className="col-span-2 flex items-baseline justify-between space-x-2 pr-2">
             <span className="truncate">
               {tx.from && (
@@ -87,7 +87,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
           </span>
         </td>
-        <td className="max-w-56">
+        <td className="max-w-[14.5rem]">
           <span
             className="col-span-2 flex items-baseline"
             title={tx.to ?? tx.createdContractAddress}
