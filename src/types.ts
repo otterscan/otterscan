@@ -48,6 +48,8 @@ export type TransactionData = {
   gasLimit: bigint;
   nonce: bigint;
   data: string;
+  maxFeePerBlobGas?: bigint | undefined;
+  blobVersionedHashes?: string[] | undefined;
   confirmedData?: ConfirmedTransactionData | undefined;
 };
 
@@ -60,6 +62,8 @@ export type ConfirmedTransactionData = {
   fee: bigint;
   gasUsed: bigint;
   logs: Log[];
+  blobGasPrice?: bigint;
+  blobGasUsed?: bigint;
 };
 
 // The VOID...

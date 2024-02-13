@@ -233,6 +233,8 @@ export const useTxData = (
           gasLimit: _response.gasLimit,
           nonce: BigInt(_response.nonce),
           data: _response.data,
+          maxFeePerBlobGas: _response.maxFeePerBlobGas ?? undefined,
+          blobVersionedHashes: _response.blobVersionedHashes ?? undefined,
           confirmedData:
             _receipt === null
               ? undefined
@@ -246,6 +248,8 @@ export const useTxData = (
                   fee: _response.gasPrice! * _receipt.gasUsed,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
+                  blobGasPrice: _receipt.blobGasPrice ?? undefined,
+                  blobGasUsed: _receipt.blobGasUsed ?? undefined,
                 },
         });
       } catch (err) {

@@ -41,11 +41,19 @@ class Formatter {
       miner: Formatter.address,
       extraData: Formatter.data,
 
+      receiptsRoot: Formatter.allowNull(Formatter.hash),
+      stateRoot: Formatter.allowNull(Formatter.hash),
+
       // TODO: Are there any situations where fetching only the block header
       // might cause ethers to believe the block has no transactions?
       transactions: Formatter.allowNull(Formatter.arrayOf(Formatter.hash), []),
 
       baseFeePerGas: Formatter.allowNull(Formatter.bigInt),
+
+      blobGasUsed: Formatter.allowNull(Formatter.bigInt, null),
+      excessBlobGas: Formatter.allowNull(Formatter.bigInt, null),
+
+      parentBeaconBlockRoot: Formatter.allowNull(Formatter.hash, null),
     },
     receipt: {
       to: Formatter.allowNull(Formatter.address, null),
@@ -67,6 +75,9 @@ class Formatter {
       effectiveGasPrice: Formatter.allowNull(Formatter.bigInt),
       status: Formatter.allowNull(Formatter.number, null),
       type: Formatter.number,
+
+      blobGasPrice: Formatter.allowNull(Formatter.bigInt),
+      blobGasUsed: Formatter.allowNull(Formatter.bigInt),
     },
     receiptLog: {
       transactionIndex: Formatter.number,
@@ -104,6 +115,12 @@ class Formatter {
       value: Formatter.bigInt,
       nonce: Formatter.number,
       data: Formatter.data,
+
+      maxFeePerBlobGas: Formatter.allowNull(Formatter.bigInt, null),
+      blobVersionedHashes: Formatter.allowNull(
+        Formatter.arrayOf(Formatter.hash),
+        null,
+      ),
 
       r: Formatter.allowNull(Formatter.uint256),
       s: Formatter.allowNull(Formatter.uint256),
@@ -352,27 +369,10 @@ class Formatter {
         chainId = BigInt(chainId);
       }
 
-      // TODO: v shouldn't exist on this type, so double check that removing this doesn't break anything
-      /*
-      if (typeof(chainId) !== "bigint" && result.v != null) {
-          chainId = (result.v - 35) / 2;
-          if (chainId < 0) { chainId = 0; }
-          chainId = parseInt(chainId);
-      }
-      */
-
       if (typeof chainId !== "bigint") {
         chainId = 0n;
       }
     }
-
-    // 0x0000... should actually be null
-    // TODO: Remove?
-    /*
-    if (result.blockHash && result.blockHash.replace(/0/g, "") === "x") {
-        result.blockHash = null;
-    }
-    */
 
     const signature = Signature.from({
       r: parsedTx.r,

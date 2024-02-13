@@ -150,6 +150,17 @@ const Block: FC = () => {
               <PercentageBar perc={gasUsedPerc!} />
             </div>
           </InfoRow>
+          {block.blobGasUsed !== null && block.blobGasUsed !== undefined && (
+            <InfoRow title="Blob Gas Used">
+              {commify(block.blobGasUsed)}
+            </InfoRow>
+          )}
+          {block.excessBlobGas !== null &&
+            block.excessBlobGas !== undefined && (
+              <InfoRow title="Excess Blob Gas">
+                {commify(block.excessBlobGas)}
+              </InfoRow>
+            )}
           <InfoRow title="Extra Data">
             {extraStr} (Hex:{" "}
             <span className="break-all font-data">{block.extraData}</span>)
@@ -169,12 +180,22 @@ const Block: FC = () => {
           <InfoRow title="Parent Hash">
             <BlockLink blockTag={block.parentHash} />
           </InfoRow>
+          {block.parentBeaconBlockRoot && (
+            <InfoRow title="Parent Beacon Block Root">
+              <HexValue value={block.parentBeaconBlockRoot} />
+            </InfoRow>
+          )}
           <InfoRow title="Sha3Uncles">
             <HexValue value={block.sha3Uncles} />
           </InfoRow>
-          <InfoRow title="StateRoot">
+          <InfoRow title="State Root">
             <HexValue value={block.stateRoot} />
           </InfoRow>
+          {block.receiptsRoot !== null && block.receiptsRoot !== undefined && (
+            <InfoRow title="Receipts Root">
+              <HexValue value={block.receiptsRoot} />
+            </InfoRow>
+          )}
           <InfoRow title="Nonce">
             <span className="font-data">{block.nonce}</span>
           </InfoRow>
