@@ -459,16 +459,18 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         )}
       {txData.blobVersionedHashes && (
         <InfoRow title="Blob Versioned Hashes">
-          {txData.blobVersionedHashes.map(
-            (blobVersionedHash: string, i: number) => (
-              <div key={i} className="flex items-baseline space-x-2">
-                <span className="font-hash" data-test="tx-hash">
-                  {blobVersionedHash}
-                </span>
-                <Copy value={blobVersionedHash} />
-              </div>
-            ),
-          )}
+          <div className="space-y-1">
+            {txData.blobVersionedHashes.map(
+              (blobVersionedHash: string, i: number) => (
+                <div key={i} className="flex items-baseline space-x-2">
+                  <span className="font-hash" data-test="tx-hash">
+                    {blobVersionedHash}
+                  </span>
+                  <Copy value={blobVersionedHash} />
+                </div>
+              ),
+            )}
+          </div>
         </InfoRow>
       )}
       {txData.confirmedData && (
