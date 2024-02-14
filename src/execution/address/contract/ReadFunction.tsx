@@ -1,6 +1,8 @@
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faChartLine, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Disclosure } from "@headlessui/react";
 import {
+  AbiCoder,
   FunctionFragment,
   Interface,
   JsonRpcApiProvider,
@@ -12,6 +14,7 @@ import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
 import { RuntimeContext } from "../../../useRuntime";
 import ParamDeclaration from "../../components/ParamDeclaration";
 import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
+import BalanceGraph from "../BalanceGraph";
 import FunctionParamInput, {
   ParamComponentRef,
   ParamValue,
@@ -171,6 +174,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
   const childRefs = useRef<ParamComponentRef[]>(
     new Array(func.inputs.length).fill(null),
   );
+  let [encodedData, setEncodedData] = useState<string | null>(null);
   const { provider } = useContext(RuntimeContext);
 
   async function submitCall() {
@@ -190,6 +194,8 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
             ),
           ),
         );
+        setEncodedData(encodedData);
+        setResult(undefined);
         let resultData = await provider.call({
           to: address,
           data: encodedData,
@@ -201,6 +207,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
         setError(e.toString());
       }
     } else {
+      setEncodedData(null);
       setResult(null);
       setError("Provider not found");
     }
@@ -239,7 +246,39 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           type="submit"
         >
           Query
-        </button>{" "}
+        </button>
+        {encodedData !== null &&
+          func.outputs.length === 1 &&
+          /^(uint|int)\d+$/.test(func.outputs[0].type) && (
+            <Disclosure>
+              <Disclosure.Button className="mx-2 rounded border bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none">
+                <FontAwesomeIcon icon={faChartLine} />
+              </Disclosure.Button>
+
+              <Disclosure.Panel className="mt-2 max-w-4xl">
+                <BalanceGraph
+                  balanceAtBlock={(provider, block) =>
+                    provider
+                      .call({
+                        to: address,
+                        data: encodedData,
+                        blockTag: block.number,
+                      })
+                      .then(
+                        (result) =>
+                          AbiCoder.defaultAbiCoder().decode(
+                            [func.outputs[0].type],
+                            result,
+                          )[0],
+                      )
+                  }
+                  currencySymbol={""}
+                  currencyDecimals={0}
+                  key={encodedData}
+                />
+              </Disclosure.Panel>
+            </Disclosure>
+          )}{" "}
         {result === undefined && (
           <span className="self-center">
             <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
