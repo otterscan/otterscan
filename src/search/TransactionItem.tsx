@@ -64,7 +64,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           {tx.to !== null && <MethodName data={tx.data} to={tx.to} />}
         </td>
         <td className="max-w-28">
-          <BlockLink blockTag={tx.blockNumber} />
+          <span className="pr-1">
+            <BlockLink blockTag={tx.blockNumber} />
+          </span>
         </td>
         <td className="min-w-36 max-w-36">
           <TimestampAge timestamp={tx.timestamp} />
