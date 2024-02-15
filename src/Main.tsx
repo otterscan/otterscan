@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
+import ErrorFallback from "./components/ErrorFallback";
 import { SourcifySource } from "./sourcify/useSourcify";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
 
@@ -18,7 +20,9 @@ const Main: React.FC = () => {
   return (
     <AppConfigContext.Provider value={appConfig}>
       <Header />
-      <Outlet />
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        <Outlet />
+      </ErrorBoundary>
     </AppConfigContext.Provider>
   );
 };
