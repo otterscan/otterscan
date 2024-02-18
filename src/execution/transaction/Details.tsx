@@ -51,6 +51,7 @@ import {
 import { RuntimeContext } from "../../useRuntime";
 import { commify } from "../../utils/utils";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import { calculateFee } from "../feeCalc";
 import NavNonce from "./NavNonce";
 import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
@@ -115,6 +116,8 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
+
+  const { totalFees } = calculateFee(txData, block);
 
   return (
     <ContentFrame tabs>
@@ -422,13 +425,61 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           )
         </InfoRow>
       )}
+      {txData.maxFeePerBlobGas !== undefined && (
+        <InfoRow title="Max Fee Per Blob Gas">
+          <FormattedBalance value={txData.maxFeePerBlobGas!} symbol={symbol} />{" "}
+          (
+          <FormattedBalance
+            value={txData.maxFeePerBlobGas!}
+            decimals={9}
+            symbol="Gwei"
+          />
+          )
+        </InfoRow>
+      )}
+      {txData.confirmedData !== undefined &&
+        txData.confirmedData.blobGasPrice !== undefined && (
+          <InfoRow title="Blob Gas Price">
+            <div className="flex items-baseline space-x-1">
+              <span>
+                <FormattedBalance
+                  value={txData.confirmedData.blobGasPrice}
+                  symbol={symbol}
+                />{" "}
+                (
+                <FormattedBalance
+                  value={txData.confirmedData.blobGasPrice}
+                  decimals={9}
+                  symbol="Gwei"
+                />
+                )
+              </span>
+            </div>
+          </InfoRow>
+        )}
+      {txData.blobVersionedHashes && (
+        <InfoRow title="Blob Versioned Hashes">
+          <div className="space-y-1">
+            {txData.blobVersionedHashes.map(
+              (blobVersionedHash: string, i: number) => (
+                <div key={i} className="flex items-baseline space-x-2">
+                  <span className="font-hash" data-test="tx-hash">
+                    {blobVersionedHash}
+                  </span>
+                  <Copy value={blobVersionedHash} />
+                </div>
+              ),
+            )}
+          </div>
+        </InfoRow>
+      )}
       {txData.confirmedData && (
         <>
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
                 <NativeTokenAmountAndFiat
-                  value={txData.confirmedData.fee}
+                  value={totalFees}
                   blockTag={txData.confirmedData.blockNumber}
                   {...feePreset}
                 />
