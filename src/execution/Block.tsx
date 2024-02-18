@@ -47,7 +47,7 @@ const Block: React.FC = () => {
           />
         </div>
       </StandardSubtitle>
-      <BlockDetails />
+      <BlockDetails blockNumberOrHash={blockNumberOrHash} />
     </StandardFrame>
   );
 };

@@ -2,7 +2,7 @@ import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Utf8ErrorFuncs, formatUnits, toUtf8String } from "ethers";
 import { FC, useContext, useMemo } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import BlockLink from "../components/BlockLink";
 import BlockNotFound from "../components/BlockNotFound";
 import ContentFrame from "../components/ContentFrame";
@@ -23,9 +23,12 @@ import { commify } from "../utils/utils";
 import BlockReward from "./components/BlockReward";
 import DecoratedAddressLink from "./components/DecoratedAddressLink";
 
-const BlockDetails: FC = () => {
+interface BlockDetailsProps {
+  blockNumberOrHash: undefined | string;
+}
+
+const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
   const { provider } = useContext(RuntimeContext);
-  const { blockNumberOrHash } = useParams();
   if (blockNumberOrHash === undefined) {
     throw new Error("blockNumberOrHash couldn't be undefined here");
   }
