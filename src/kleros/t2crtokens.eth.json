@@ -6,10 +6,10 @@
     "kleros",
     "list"
   ],
-  "timestamp": "2024-02-08T17:06:05.046Z",
+  "timestamp": "2024-02-17T17:06:07.702Z",
   "version": {
     "major": 95,
-    "minor": 2,
+    "minor": 7,
     "patch": 0
   },
   "tokens": [
@@ -1046,6 +1046,14 @@
       "logoURI": "ipfs://QmaUWWwauRDLLRY94d1wf1MikX4pyTy8P3qtCLsZzk1H34"
     },
     {
+      "chainId": 10,
+      "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
+      "symbol": "USDT",
+      "name": "Tether",
+      "decimals": 6,
+      "logoURI": "ipfs://Qmb3xCbcXGs8pa1YMvmHvN4dyadcaUkW7ZDy9mZL7pZ4aF"
+    },
+    {
       "chainId": 1,
       "address": "0x779492d3644dDF4495Aa2d80C468E1B7be6AF1d2",
       "symbol": "CAS",
@@ -1060,6 +1068,14 @@
       "name": "Passive Income Bot",
       "decimals": 18,
       "logoURI": "ipfs://QmP3hk8jfKmXrLZiQVmSB7qtTq9f9q79rBBTmVy4ioyS1k"
+    },
+    {
+      "chainId": 10,
+      "address": "0x395Ae52bB17aef68C2888d941736A71dC6d4e125",
+      "symbol": "POOL",
+      "name": "PoolTogether",
+      "decimals": 18,
+      "logoURI": "ipfs://Qmd1f4NaF27puWeZ87fgymsr8co79Ue2obzH9QumYtjzkn"
     },
     {
       "chainId": 1,
@@ -1124,6 +1140,14 @@
       "name": "Kesef.Finance",
       "decimals": 18,
       "logoURI": "ipfs://QmdXhruDLRbHKSnvXwy6Xf5wdj1nmF8ckREiz5aZdU8KeV"
+    },
+    {
+      "chainId": 10,
+      "address": "0xFE8B128bA8C78aabC59d4c64cEE7fF28e9379921",
+      "symbol": "BAL",
+      "name": "Balancer",
+      "decimals": 18,
+      "logoURI": "ipfs://QmVkdh1F8BoNDvZQ4EAw6kzeMSpPibEvtrJJLVbZyK1dx2"
     },
     {
       "chainId": 1,
@@ -2334,6 +2358,14 @@
       "logoURI": "ipfs://QmP6FKs7HeEbATTmEXW6noZZkoqgJmUpF4XPx1U9S6Pqsz"
     },
     {
+      "chainId": 10,
+      "address": "0xC81D1F0EB955B0c020E5d5b264E1FF72c14d1401",
+      "symbol": "RPL",
+      "name": "Rocket Pool",
+      "decimals": 18,
+      "logoURI": "ipfs://QmNSj1BfWphbDaTStW6JvrmnzoEHpFJpPNNczNAheANF4f"
+    },
+    {
       "chainId": 1,
       "address": "0x49D09cDa1Deb8a1680F1270C5ed15218fc4B18f0",
       "symbol": "OVC",
@@ -2628,6 +2660,14 @@
       "name": "Basis Dollar Share",
       "decimals": 18,
       "logoURI": "ipfs://QmNygn8YL4qpwWGj5iTVqagnfSaWrUGnvznmK9S3feZxnP"
+    },
+    {
+      "chainId": 56,
+      "address": "0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F",
+      "symbol": "ALPACA",
+      "name": "Alpaca Finance",
+      "decimals": 18,
+      "logoURI": "ipfs://QmX52kb3uELLC5yagoxYdWqoqnVkvNjtJRUqh8v7vFsYgr"
     },
     {
       "chainId": 1,
@@ -4998,6 +5038,14 @@
       "logoURI": "ipfs://QmbDoNz75ZHCvDdmmvYCu1Q4Up6ygaJV1zQJtRGG7m2YaC"
     },
     {
+      "chainId": 10,
+      "address": "0xdC6fF44d5d932Cbd77B52E5612Ba0529DC6226F1",
+      "symbol": "WLD",
+      "name": "Worldcoin",
+      "decimals": 18,
+      "logoURI": "ipfs://QmZPdBuzk8HxZ1sH5sqr7ezn3T1AXuUgXqcVv1WMemwcYx"
+    },
+    {
       "chainId": 1,
       "address": "0xad3E3Fc59dff318BecEaAb7D00EB4F68b1EcF195",
       "symbol": "WCUSD",
@@ -6358,6 +6406,14 @@
       "logoURI": "ipfs://QmbpH9YQ6rmT4GTNk2B4pbEFX5rJdAxKW1uuwgFSpWz9vk"
     },
     {
+      "chainId": 324,
+      "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4",
+      "symbol": "USDC",
+      "name": "USDC",
+      "decimals": 6,
+      "logoURI": "ipfs://QmS7rV584ATvEk5Skugr78GyAEFBuEo5eMp2rDNRCRNSmr"
+    },
+    {
       "chainId": 56,
       "address": "0xbF7c81FFF98BbE61B40Ed186e4AfD6DDd01337fe",
       "symbol": "EGLD",
@@ -6612,6 +6668,14 @@
       "name": "Dirham Crypto",
       "decimals": 18,
       "logoURI": "ipfs://QmS2LRag2hd12KwxZQ2eaJ7pUfXYRFsZRwztTkcWDPJ2w1"
+    },
+    {
+      "chainId": 42161,
+      "address": "0x912CE59144191C1204E64559FE8253a0e49E6548",
+      "symbol": "ARB",
+      "name": "Arbitrum",
+      "decimals": 18,
+      "logoURI": "ipfs://QmZTMxDWvgVfYhuvVaE1opHmgknz26AcauHU3k2wGVDYkv"
     },
     {
       "chainId": 1,
@@ -8014,6 +8078,14 @@
       "logoURI": "ipfs://Qmf15uTtmviGrSsiqwsoVKGHUVXVEXx5EKXm1bYeg9kgEi"
     },
     {
+      "chainId": 10,
+      "address": "0x8700dAec35aF8Ff88c16BdF0418774CB3D7599B4",
+      "symbol": "SNX",
+      "name": "Synthetix Network",
+      "decimals": 18,
+      "logoURI": "ipfs://QmX3ov1SgUvUJ64HuEn19RsDkVE91zbUuaCfozReqbbMx5"
+    },
+    {
       "chainId": 1,
       "address": "0x514cdb9cd8A2fb2BdCf7A3b8DDd098CaF466E548",
       "symbol": "REDPANDA",
@@ -8196,6 +8268,14 @@
       "name": "Inspect",
       "decimals": 18,
       "logoURI": "ipfs://QmXHbrRkcscRkQfeXtCckvgpUwdYY2pcCtPJ5N4SUv3fre"
+    },
+    {
+      "chainId": 42161,
+      "address": "0x9623063377AD1B27544C965cCd7342f7EA7e88C7",
+      "symbol": "GRT",
+      "name": "The Graph",
+      "decimals": 18,
+      "logoURI": "ipfs://Qmf8sMWoxGHRThqGaHKBTsSndkZdbsEyp8DXQvisj6QGH7"
     },
     {
       "chainId": 1,
@@ -8492,6 +8572,14 @@
       "name": "Shiba Inu",
       "decimals": 18,
       "logoURI": "ipfs://QmZGG16WF6T62rhJgY7yWExBNNaYo4CiXrdesdxnbfbYfR"
+    },
+    {
+      "chainId": 10,
+      "address": "0xFdb794692724153d1488CcdBE0C56c252596735F",
+      "symbol": "LDO",
+      "name": "Lido DAO",
+      "decimals": 18,
+      "logoURI": "ipfs://QmTdQtLaPqXoXbHgbjVgYbXbbukvQAsNZtzq9bs14oVknY"
     },
     {
       "chainId": 1,
@@ -9676,6 +9764,14 @@
       "name": "Data Transaction Token",
       "decimals": 18,
       "logoURI": "ipfs://QmUMwVxeAMKV7VsSC6Puj1qTNZWdztMr18ENYBgQiohdiU"
+    },
+    {
+      "chainId": 42161,
+      "address": "0x13Ad51ed4F1B7e9Dc168d8a00cB3f4dDD85EfA60",
+      "symbol": "LDO",
+      "name": "Lido DAO",
+      "decimals": 18,
+      "logoURI": "ipfs://QmTdQtLaPqXoXbHgbjVgYbXbbukvQAsNZtzq9bs14oVknY"
     },
     {
       "chainId": 1,
@@ -11502,6 +11598,14 @@
       "logoURI": "ipfs://QmbEyp1qWnxeTvDN5Ucdk2yTgKwuCjTgvRbyfzz71bKu1y"
     },
     {
+      "chainId": 137,
+      "address": "0xC3C7d422809852031b44ab29EEC9F1EfF2A58756",
+      "symbol": "LDO",
+      "name": "Lido DAO",
+      "decimals": 18,
+      "logoURI": "ipfs://QmTdQtLaPqXoXbHgbjVgYbXbbukvQAsNZtzq9bs14oVknY"
+    },
+    {
       "chainId": 1,
       "address": "0x676Ad1b33ae6423c6618C1AEcf53BAa29cf39EE5",
       "symbol": "SDT",
@@ -11796,6 +11900,14 @@
       "name": "xKAWA",
       "decimals": 18,
       "logoURI": "ipfs://QmaziqAwXh5fkyonMZdHNDky81xhJDaVSjz8zgHkijdhGr"
+    },
+    {
+      "chainId": 42161,
+      "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+      "symbol": "DAI",
+      "name": "Dai",
+      "decimals": 18,
+      "logoURI": "ipfs://QmWcx6mu7PtPNM6eiUHwLwGuPsjXLoXiQ8ayBYteGJ7WFf"
     },
     {
       "chainId": 1,
@@ -12308,6 +12420,22 @@
       "name": "Synthetic THORChain",
       "decimals": 18,
       "logoURI": "ipfs://QmULP7aGKQB7j8QLoWipQaY4T53vEZzqv5yRKn7u7F8yu6"
+    },
+    {
+      "chainId": 10,
+      "address": "0xBC7B1Ff1c6989f006a1185318eD4E7b5796e66E1",
+      "symbol": "PENDLE",
+      "name": "Pendle",
+      "decimals": 18,
+      "logoURI": "ipfs://QmUgLTHTMw5TD3NmeH4L9VAcRH7EAevahe5AtP7vPVL4Gc"
+    },
+    {
+      "chainId": 42161,
+      "address": "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "decimals": 18,
+      "logoURI": "ipfs://Qmdn6E15MELheFNupKrMosD9KPDFZ9M3wVKkhCuacT1cVj"
     },
     {
       "chainId": 1,
