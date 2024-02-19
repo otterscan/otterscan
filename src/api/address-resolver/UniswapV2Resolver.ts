@@ -97,7 +97,7 @@ export class UniswapV2Resolver extends AddressResolver<UniswapV2PairMeta> {
     if (resolvedAddress === undefined) {
       return undefined;
     }
-    return `Uniswap V2 LP (${resolvedAddress.token0.symbol}/${resolvedAddress.token1.symbol})`;
+    return `Uniswap V2 LP: ${resolvedAddress.token0.symbol}/${resolvedAddress.token1.symbol}`;
   }
 
   trusted(resolvedAddress: UniswapV2PairMeta | undefined): boolean | undefined {

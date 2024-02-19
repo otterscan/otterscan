@@ -105,7 +105,7 @@ export class UniswapV3Resolver implements AddressResolver<UniswapV3PairMeta> {
     if (resolvedAddress === undefined) {
       return undefined;
     }
-    return `Uniswap V3 LP (${resolvedAddress.token0.symbol}/${resolvedAddress.token1.symbol}/${Number(resolvedAddress.fee) / 10000}%)`;
+    return `Uniswap V3 LP: ${resolvedAddress.token0.symbol}/${resolvedAddress.token1.symbol}/${Number(resolvedAddress.fee) / 10000}%`;
   }
 
   trusted(resolvedAddress: UniswapV3PairMeta | undefined): boolean | undefined {

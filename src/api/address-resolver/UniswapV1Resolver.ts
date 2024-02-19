@@ -67,7 +67,7 @@ export class UniswapV1Resolver extends AddressResolver<UniswapV1PairMeta> {
     if (resolvedAddress === undefined) {
       return undefined;
     }
-    return "Uniswap V1: " + resolvedAddress.token.symbol;
+    return `Uniswap V1: ${resolvedAddress.token.symbol}`;
   }
 
   trusted(resolvedAddress: UniswapV1PairMeta | undefined): boolean | undefined {
