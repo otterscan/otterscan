@@ -1,9 +1,9 @@
 import { JsonRpcApiProvider } from "ethers";
-import { IAddressResolver } from "./address-resolver";
+import { BasicAddressResolver } from "./address-resolver";
 
 type HardcodedAddressMap = Record<string, string | undefined>;
 
-export class HardcodedAddressResolver implements IAddressResolver<string> {
+export class HardcodedAddressResolver extends BasicAddressResolver {
   async resolveAddress(
     provider: JsonRpcApiProvider,
     address: string,
@@ -18,5 +18,9 @@ export class HardcodedAddressResolver implements IAddressResolver<string> {
       // Ignore on purpose
       return undefined;
     }
+  }
+
+  trusted(resolvedAddress: string | undefined): boolean | undefined {
+    return true;
   }
 }

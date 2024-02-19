@@ -1,7 +1,7 @@
 import { AbstractProvider, Contract, ZeroAddress } from "ethers";
 import { ChecksummedAddress, TokenMeta } from "../../types";
 import { ERCTokenResolver } from "./ERCTokenResolver";
-import { IAddressResolver } from "./address-resolver";
+import { AddressResolver } from "./address-resolver";
 
 const UNISWAP_V3_FACTORY = "0x1F98431c8aD98523631AE4a59f267346ea31F984";
 
@@ -39,7 +39,7 @@ export type UniswapV3PairMeta = {
 
 const ercResolver = new ERCTokenResolver();
 
-export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
+export class UniswapV3Resolver implements AddressResolver<UniswapV3PairMeta> {
   async resolveAddress(
     provider: AbstractProvider,
     address: string,
@@ -97,5 +97,18 @@ export class UniswapV3Resolver implements IAddressResolver<UniswapV3PairMeta> {
       // is not a token
     }
     return undefined;
+  }
+
+  resolveToString(
+    resolvedAddress: UniswapV3PairMeta | undefined,
+  ): string | undefined {
+    if (resolvedAddress === undefined) {
+      return undefined;
+    }
+    return `Uniswap V3 LP (${resolvedAddress.token0.symbol}/${resolvedAddress.token1.symbol}/${Number(resolvedAddress.fee) / 10000}%)`;
+  }
+
+  trusted(resolvedAddress: UniswapV3PairMeta | undefined): boolean | undefined {
+    return true;
   }
 }
