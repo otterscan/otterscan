@@ -31,7 +31,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
   let resolvedNameTrusted = resolvedAddress
     ? resolvedAddress[0].trusted(resolvedAddress[1])
     : undefined;
-  if (isENS) {
+  if (isENS && !resolvedName) {
     resolvedName = "ENS: " + addressOrName;
     resolvedNameTrusted = true;
   }
