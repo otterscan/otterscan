@@ -1,11 +1,7 @@
 {
   "name": "Kleros Tokens",
   "logoURI": "ipfs://QmRYXpD8X4sQZwA1E4SJvEjVZpEK1WtSrTqzTWvGpZVDwa",
-  "keywords": [
-    "t2cr",
-    "kleros",
-    "list"
-  ],
+  "keywords": ["t2cr", "kleros", "list"],
   "timestamp": "2024-02-17T17:06:07.702Z",
   "version": {
     "major": 95,
