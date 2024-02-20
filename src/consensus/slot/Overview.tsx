@@ -1,4 +1,4 @@
-import { toUtf8String } from "ethers";
+import { getAddress, toUtf8String } from "ethers";
 import { FC, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import BlockLink from "../../components/BlockLink";
@@ -6,17 +6,24 @@ import ContentFrame from "../../components/ContentFrame";
 import HexValue from "../../components/HexValue";
 import InfoRow from "../../components/InfoRow";
 import RelevantNumericValue from "../../components/RelevantNumericValue";
+import StandardTBody from "../../components/StandardTBody";
+import StandardTHead from "../../components/StandardTHead";
+import StandardTable from "../../components/StandardTable";
 import Timestamp from "../../components/Timestamp";
 import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
 import { usePageTitle } from "../../useTitle";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import EpochLink from "../components/EpochLink";
 import SlashingCount from "../components/SlashingCount";
+import { Withdrawal } from "../types";
 import AggregationBits from "./AggregationBits";
 import AggregationParticipation from "./AggregationParticipation";
 import BlockRoot from "./BlockRoot";
 import OverviewSkeleton from "./OverviewSkeleton";
 import SlotNotFound from "./SlotNotFound";
+import WithdrawalDetailsRow from "./WithdrawalDetailsRow";
+
+const GWEI = 10n ** 9n;
 
 const Overview: FC = () => {
   const { slotNumber } = useParams();
@@ -134,6 +141,42 @@ const Overview: FC = () => {
               value={slot.data.message.body.deposits.length}
             />
           </InfoRow>
+          {slot.data.message.body.execution_payload &&
+            slot.data.message.body.execution_payload.withdrawals && (
+              <InfoRow title="Withdrawals">
+                <RelevantNumericValue
+                  value={
+                    slot.data.message.body.execution_payload.withdrawals.length
+                  }
+                />
+                {slot.data.message.body.execution_payload.withdrawals.length >
+                  0 && (
+                  <div className="mt-3">
+                    <StandardTable>
+                      <StandardTHead>
+                        <th className="w-10">Validator</th>
+                        <th className="w-28">Withdrawal Address</th>
+                        <th className="w-20">Amount</th>
+                      </StandardTHead>
+                      <StandardTBody>
+                        {slot.data.message.body.execution_payload.withdrawals.map(
+                          (withdrawal: Withdrawal) => (
+                            <WithdrawalDetailsRow
+                              key={withdrawal.index}
+                              validatorIndex={Number(
+                                withdrawal.validator_index,
+                              )}
+                              address={getAddress(withdrawal.address)}
+                              amount={BigInt(withdrawal.amount) * GWEI}
+                            />
+                          ),
+                        )}
+                      </StandardTBody>
+                    </StandardTable>
+                  </div>
+                )}
+              </InfoRow>
+            )}
         </>
       )}
     </ContentFrame>

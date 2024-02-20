@@ -16,7 +16,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
-import erc20 from "./erc20.json";
+import erc20 from "./abi/erc20.json";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -110,7 +110,7 @@ const blockTransactionsFetcher: Fetcher<
       }
 
       let effectiveGasPrice: bigint;
-      if (t.type === 2) {
+      if (t.type === 2 || t.type === 3) {
         const tip =
           t.maxFeePerGas! - _block.baseFeePerGas! < t.maxPriorityFeePerGas!
             ? t.maxFeePerGas! - _block.baseFeePerGas!
@@ -130,6 +130,7 @@ const blockTransactionsFetcher: Fetcher<
         to: t.to ?? null,
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
+        type: t.type,
         fee: formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice,
         gasPrice: effectiveGasPrice,
         data: t.data,
@@ -232,6 +233,8 @@ export const useTxData = (
           gasLimit: _response.gasLimit,
           nonce: BigInt(_response.nonce),
           data: _response.data,
+          maxFeePerBlobGas: _response.maxFeePerBlobGas ?? undefined,
+          blobVersionedHashes: _response.blobVersionedHashes ?? undefined,
           confirmedData:
             _receipt === null
               ? undefined
@@ -245,6 +248,8 @@ export const useTxData = (
                   fee: _response.gasPrice! * _receipt.gasUsed,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
+                  blobGasPrice: _receipt.blobGasPrice ?? undefined,
+                  blobGasUsed: _receipt.blobGasUsed ?? undefined,
                 },
         });
       } catch (err) {

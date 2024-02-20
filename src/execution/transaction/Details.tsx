@@ -14,6 +14,7 @@ import ExpanderSwitch from "../../components/ExpanderSwitch";
 import ExternalLink from "../../components/ExternalLink";
 import { feePreset } from "../../components/FiatValue";
 import FormattedBalance from "../../components/FormattedBalance";
+import HelpButton from "../../components/HelpButton";
 import InfoRow from "../../components/InfoRow";
 import InternalTransactionOperation from "../../components/InternalTransactionOperation";
 import MethodName from "../../components/MethodName";
@@ -50,6 +51,7 @@ import {
 import { RuntimeContext } from "../../useRuntime";
 import { commify } from "../../utils/utils";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
+import { calculateFee } from "../feeCalc";
 import NavNonce from "./NavNonce";
 import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
@@ -113,6 +115,9 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     ? devDoc?.errors?.[errorDescription.signature]?.[0]
     : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
+
+  const { totalFees } = calculateFee(txData, block);
 
   return (
     <ContentFrame tabs>
@@ -284,7 +289,32 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       </InfoRow>
       {txData.to && (
         <InfoRow title="Transaction Action">
-          <MethodName data={txData.data} to={txData.to} />
+          <div className="flex space-x-1">
+            <MethodName data={txData.data} to={txData.to} />{" "}
+            {(userMethod || devMethod) && (
+              <HelpButton
+                checked={showFunctionHelp}
+                onChange={setShowFunctionHelp}
+              />
+            )}
+          </div>
+          {(userMethod || devMethod) && showFunctionHelp && (
+            <div className="mt-1 text-gray-800">
+              {userMethod && userMethod.notice && (
+                <div className="col-span-12 gap-x-2 pt-1 px-1 font-normal">
+                  {userMethod.notice}
+                </div>
+              )}
+              {devMethod && devMethod.details && (
+                <div className="col-span-12 gap-x-2 pt-1 px-1 font-normal">
+                  <span className="font-bold italic text-xs mr-2 select-none">
+                    dev{" "}
+                  </span>
+                  {devMethod.details}
+                </div>
+              )}
+            </div>
+          )}
         </InfoRow>
       )}
       {tokenTransfers && tokenTransfers.length > 0 && (
@@ -314,7 +344,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       >
         <TransactionType type={txData.type} />
       </InfoRow>
-      {txData.type === 2 && (
+      {(txData.type === 2 || txData.type === 3) && (
         <>
           <InfoRow title="Max Priority Fee Per Gas">
             <FormattedBalance
@@ -395,13 +425,61 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           )
         </InfoRow>
       )}
+      {txData.maxFeePerBlobGas !== undefined && (
+        <InfoRow title="Max Fee Per Blob Gas">
+          <FormattedBalance value={txData.maxFeePerBlobGas!} symbol={symbol} />{" "}
+          (
+          <FormattedBalance
+            value={txData.maxFeePerBlobGas!}
+            decimals={9}
+            symbol="Gwei"
+          />
+          )
+        </InfoRow>
+      )}
+      {txData.confirmedData !== undefined &&
+        txData.confirmedData.blobGasPrice !== undefined && (
+          <InfoRow title="Blob Gas Price">
+            <div className="flex items-baseline space-x-1">
+              <span>
+                <FormattedBalance
+                  value={txData.confirmedData.blobGasPrice}
+                  symbol={symbol}
+                />{" "}
+                (
+                <FormattedBalance
+                  value={txData.confirmedData.blobGasPrice}
+                  decimals={9}
+                  symbol="Gwei"
+                />
+                )
+              </span>
+            </div>
+          </InfoRow>
+        )}
+      {txData.blobVersionedHashes && (
+        <InfoRow title="Blob Versioned Hashes">
+          <div className="space-y-1">
+            {txData.blobVersionedHashes.map(
+              (blobVersionedHash: string, i: number) => (
+                <div key={i} className="flex items-baseline space-x-2">
+                  <span className="font-hash" data-test="tx-hash">
+                    {blobVersionedHash}
+                  </span>
+                  <Copy value={blobVersionedHash} />
+                </div>
+              ),
+            )}
+          </div>
+        </InfoRow>
+      )}
       {txData.confirmedData && (
         <>
           <InfoRow title="Transaction Fee">
             <div className="space-y-3">
               <div>
                 <NativeTokenAmountAndFiat
-                  value={txData.confirmedData.fee}
+                  value={totalFees}
                   blockTag={txData.confirmedData.blockNumber}
                   {...feePreset}
                 />

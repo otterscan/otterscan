@@ -34,6 +34,7 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
         timestamp: formatter.number(_rawReceipt.timestamp),
         idx: _receipt.index,
         hash: t.hash,
+        type: t.type,
         from: t.from,
         to: t.to ?? null,
         createdContractAddress: _receipt.contractAddress ?? undefined,

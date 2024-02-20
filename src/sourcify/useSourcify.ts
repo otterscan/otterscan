@@ -32,6 +32,7 @@ export type UserDoc = {
 export type DevMethod = {
   params?: Record<string, string>;
   returns?: Record<string, string>;
+  details?: string | undefined;
 };
 
 export type DevError = [

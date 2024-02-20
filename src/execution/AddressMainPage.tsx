@@ -20,7 +20,6 @@ import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
-import { usePageTitle } from "../useTitle";
 import AddressERC20Results from "./address/AddressERC20Results";
 import AddressERC721Results from "./address/AddressERC721Results";
 import AddressSubtitle from "./address/AddressSubtitle";
@@ -64,14 +63,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     provider?._network.chainId,
   );
   const proxyAttrs = useProxyAttributes(provider, checksummedAddress);
-
-  usePageTitle(
-    `Address ${
-      isENS || checksummedAddress === undefined
-        ? addressOrName
-        : checksummedAddress
-    }`,
-  );
 
   return (
     <StandardFrame>

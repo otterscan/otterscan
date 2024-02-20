@@ -1,8 +1,8 @@
 import { FC } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import StandardTHead from "../../components/StandardTHead";
-import StandardTable from "../../components/StandardTable";
 import { PAGE_SIZE } from "../../params";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import { getTotalFormatter } from "../../search/messages";
@@ -81,7 +81,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
             total={total}
             totalFormatter={totalFormatter}
           />
-          <StandardTable>
+          <StandardScrollableTable>
             {header}
             {items !== undefined ? (
               <StandardSelectionBoundary>
@@ -94,7 +94,7 @@ const GenericTransactionSearchResult = <T extends { hash: string }>({
             ) : (
               <PendingPage rows={PAGE_SIZE} cols={columns} />
             )}
-          </StandardTable>
+          </StandardScrollableTable>
           {total !== undefined && (
             <SearchResultNavBar
               pageNumber={pageNumber}

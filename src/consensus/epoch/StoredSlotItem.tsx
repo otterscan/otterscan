@@ -60,7 +60,16 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
         )}
       </td>
       <td>
-        <RelevantNumericValue value={slot.data.message.body.deposits.length} />
+        <RelevantNumericValue value={slot.data.message.body.deposits.length} />{" "}
+        /{" "}
+        {slot.data.message.body.execution_payload &&
+        slot.data.message.body.execution_payload.withdrawals ? (
+          <RelevantNumericValue
+            value={slot.data.message.body.execution_payload.withdrawals.length}
+          />
+        ) : (
+          "-"
+        )}
       </td>
       <td>
         <SlashingCount slot={slot} />

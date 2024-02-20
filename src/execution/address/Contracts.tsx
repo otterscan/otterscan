@@ -8,6 +8,7 @@ import InfoRow from "../../components/InfoRow";
 import { Match, MatchType } from "../../sourcify/useSourcify";
 import { openInRemixURL } from "../../url";
 import { RuntimeContext } from "../../useRuntime";
+import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
 import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
@@ -20,6 +21,7 @@ type ContractsProps = {
 
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
+  usePageTitle(`Contract | ${checksummedAddress}`);
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
