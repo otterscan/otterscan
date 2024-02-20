@@ -4,9 +4,10 @@ import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
+import StandardScrollableTable from "../../components/StandardScrollableTable";
+import StandardTBody from "../../components/StandardTBody";
 import TransactionLink from "../../components/TransactionLink";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
-import PendingResults from "../../search/PendingResults";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
 import UndefinedPageControl from "../../search/UndefinedPageControl";
@@ -17,10 +18,12 @@ import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import { usePageTitle } from "../../useTitle";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
 import PendingItem from "./PendingItem";
+import PendingPage from "./PendingPage";
 
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
@@ -32,6 +35,8 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
   }
+
+  usePageTitle(`Address ${addressOrName}`);
 
   const [searchParams] = useSearchParams();
   const hash = searchParams.get("h");
@@ -113,13 +118,15 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
-              <div className="flex divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex flex-col md:flex-row divide-x-2 divide-dotted divide-gray-300">
                 <TransactionAddressWithCopy
                   address={creator.creator}
                   showCodeIndicator
                 />
-                <div className="ml-3 flex items-baseline pl-3">
-                  <TransactionLink txHash={creator.hash} />
+                <div className="md:ml-3 flex items-baseline pl-3 truncate">
+                  <div className="truncate">
+                    <TransactionLink txHash={creator.hash} />
+                  </div>
                 </div>
               </div>
             </InfoRow>
@@ -134,25 +141,26 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           )}
         </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
-        <ResultHeader
-          feeDisplay={feeDisplay}
-          feeDisplayToggler={feeDisplayToggler}
-        />
-        {page ? (
-          <>
-            {page.map((tx) => (
-              <TransactionItem
-                key={tx.hash}
-                tx={tx}
-                selectedAddress={address}
-                feeDisplay={feeDisplay}
-              />
-            ))}
-            <NavBar address={address} page={page} controller={controller} />
-          </>
-        ) : (
-          <PendingResults />
-        )}
+        <StandardScrollableTable isAuto={true}>
+          <ResultHeader
+            feeDisplay={feeDisplay}
+            feeDisplayToggler={feeDisplayToggler}
+          />
+          {page ? (
+            <StandardTBody>
+              {page.map((tx) => (
+                <TransactionItem
+                  key={tx.hash}
+                  tx={tx}
+                  selectedAddress={address}
+                  feeDisplay={feeDisplay}
+                />
+              ))}
+            </StandardTBody>
+          ) : (
+            <PendingPage rows={1} cols={8} />
+          )}
+        </StandardScrollableTable>
       </StandardSelectionBoundary>
     </ContentFrame>
   );

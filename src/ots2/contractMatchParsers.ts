@@ -1,3 +1,4 @@
+import { getAddress } from "ethers";
 import { ChecksummedAddress } from "../types";
 import { ContractMatch, ContractResultParser } from "./usePrototypeHooks";
 
@@ -29,14 +30,14 @@ export const contractMatchParser: ContractResultParser<ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
+  address: getAddress(m.address),
 });
 
 export const erc20MatchParser: ContractResultParser<ERC20ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
+  address: getAddress(m.address),
   name: m.name,
   symbol: m.symbol,
   decimals: m.decimals,
@@ -46,7 +47,7 @@ export const erc4626MatchParser: ContractResultParser<ERC4626ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
+  address: getAddress(m.address),
   name: m.name,
   symbol: m.symbol,
   decimals: m.decimals,
@@ -58,7 +59,7 @@ export const erc721MatchParser: ContractResultParser<ERC721ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
+  address: getAddress(m.address),
   name: m.name,
   symbol: m.symbol,
 });
@@ -67,7 +68,7 @@ export const erc1155MatchParser: ContractResultParser<ERC1155ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
+  address: getAddress(m.address),
   name: m.name,
   symbol: m.symbol,
 });
@@ -76,6 +77,6 @@ export const erc1167MatchParser: ContractResultParser<ERC1167ContractMatch> = (
   m,
 ) => ({
   blockNumber: BigInt(m.blockNumber),
-  address: m.address,
-  implementation: m.implementation,
+  address: getAddress(m.address),
+  implementation: getAddress(m.implementation),
 });

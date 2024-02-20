@@ -1,9 +1,11 @@
 import { FunctionFragment } from "ethers";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import ContentFrame from "../../../components/ContentFrame";
+import LabeledSwitch from "../../../components/LabeledSwitch";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
 import { Match } from "../../../sourcify/useSourcify";
 import { RuntimeContext } from "../../../useRuntime";
+import { usePageTitle } from "../../../useTitle";
 import ReadFunction from "./ReadFunction";
 
 type ContractsProps = {
@@ -23,8 +25,14 @@ const ReadContract: React.FC<ContractsProps> = ({
   match,
 }) => {
   const { provider } = useContext(RuntimeContext);
+  const [showNonViewReturns, setShowNonViewReturns] = useState<boolean>(false);
+  usePageTitle(`Read Contract | ${checksummedAddress}`);
+
   const viewFunctions = match?.metadata.output.abi.filter((fn) =>
     isReadFunction(fn),
+  );
+  const nonViewReturns = match?.metadata.output.abi.filter(
+    (fn) => fn.outputs && fn.outputs.length > 0 && !isReadFunction(fn),
   );
 
   return (
@@ -40,11 +48,13 @@ const ReadContract: React.FC<ContractsProps> = ({
               Sourcify repository.
             </span>
           )}
+
           {viewFunctions && (
             <div>
               {viewFunctions.length === 0 &&
                 "This contract has no external view functions."}
-              {viewFunctions.length > 0 && (
+              {(viewFunctions.length > 0 ||
+                (nonViewReturns && nonViewReturns.length > 0)) && (
                 <ol className="marker:text-md list-inside list-decimal marker:text-gray-400">
                   {viewFunctions.map((fn, i) => (
                     <ReadFunction
@@ -53,6 +63,28 @@ const ReadContract: React.FC<ContractsProps> = ({
                       key={i}
                     />
                   ))}
+                  {nonViewReturns && nonViewReturns.length > 0 && (
+                    <>
+                      <LabeledSwitch
+                        defaultEnabled={showNonViewReturns}
+                        onToggle={setShowNonViewReturns}
+                      >
+                        Show non-view functions with return values
+                      </LabeledSwitch>
+                      {showNonViewReturns && (
+                        <>
+                          <hr className="pb-4" />
+                          {nonViewReturns.map((fn, i) => (
+                            <ReadFunction
+                              func={FunctionFragment.from(fn)}
+                              address={checksummedAddress}
+                              key={i}
+                            />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  )}
                 </ol>
               )}
             </div>

@@ -25,6 +25,13 @@ const TransactionType: React.FC<TransactionTypeProps> = ({ type }) => {
         </ExternalLink>
       );
       break;
+    case 3:
+      description = (
+        <ExternalLink href="https://eips.ethereum.org/EIPS/eip-4844">
+          EIP-4844 (Blob)
+        </ExternalLink>
+      );
+      break;
     default:
       description = "unknown";
   }

@@ -5,6 +5,7 @@ import ModeTab from "../../../components/ModeTab";
 import StandardTextarea from "../../../components/StandardTextarea";
 import { DevMethod, UserMethod } from "../../../sourcify/useSourcify";
 import DecodedParamsTable from "./DecodedParamsTable";
+import FunctionSignature from "./FunctionSignature";
 
 type InputDecoderProps = {
   fourBytes: string;
@@ -48,13 +49,21 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
           ) : resolvedTxDesc === null ? (
             <>Can't decode data</>
           ) : (
-            <DecodedParamsTable
-              args={resolvedTxDesc.args}
-              paramTypes={resolvedTxDesc.fragment.inputs}
-              hasParamNames={hasParamNames}
-              userMethod={userMethod}
-              devMethod={devMethod}
-            />
+            <div className="space-y-2">
+              <FunctionSignature
+                fragment={resolvedTxDesc.fragment}
+                userMethod={userMethod}
+                devMethod={devMethod}
+                className="pt-1"
+              />
+              <DecodedParamsTable
+                args={resolvedTxDesc.args}
+                paramTypes={resolvedTxDesc.fragment.inputs}
+                hasParamNames={hasParamNames}
+                userMethod={userMethod}
+                devMethod={devMethod}
+              />
+            </div>
           )}
         </Tab.Panel>
         <Tab.Panel>

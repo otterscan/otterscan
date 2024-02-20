@@ -1,4 +1,4 @@
-import { faBurn, faCoins } from "@fortawesome/free-solid-svg-icons";
+import { faBurn, faCoins, faSplotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext } from "react";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -7,6 +7,7 @@ import { TransactionData } from "../../types";
 import { useChainInfo } from "../../useChainInfo";
 import { useBlockDataFromTransaction } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
+import { calculateFee, getFeePercents } from "../feeCalc";
 
 type RewardSplitProps = {
   txData: TransactionData;
@@ -20,20 +21,15 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
-  const paidFees = txData.gasPrice! * txData.confirmedData!.gasUsed;
-  const burntFees = block
-    ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
-    : 0n;
 
-  const minerReward = paidFees - burntFees;
-  const burntPerc = Number((burntFees * 10000n) / paidFees) / 100;
-  const minerPerc = Math.round((100 - burntPerc) * 100) / 100;
+  const { totalFees, feeDist } = calculateFee(txData, block);
+  const feePerc = getFeePercents(feeDist);
 
   return (
     <div className="inline-block">
       <div className="grid grid-cols-2 items-center gap-x-2 gap-y-1 text-sm">
         <PercentageGauge
-          perc={burntPerc}
+          perc={feePerc.burned}
           bgColor="bg-orange-100"
           bgColorPerc="bg-orange-500"
           textColor="text-orange-800"
@@ -45,14 +41,14 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
             </span>
             <span>
               <span className="line-through">
-                <FormattedBalance value={burntFees} />
+                <FormattedBalance value={feeDist.burned} />
               </span>{" "}
               {symbol}
             </span>
           </span>
         </div>
         <PercentageGauge
-          perc={minerPerc}
+          perc={feePerc.tip}
           bgColor="bg-amber-100"
           bgColorPerc="bg-amber-300"
           textColor="text-amber-700"
@@ -63,10 +59,30 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>
-              <FormattedBalance value={minerReward} symbol={symbol} />
+              <FormattedBalance value={feeDist.tip} symbol={symbol} />
             </span>
           </span>
         </div>
+        {feeDist.blob > 0n && (
+          <>
+            <PercentageGauge
+              perc={feePerc.blob}
+              bgColor="bg-rose-100"
+              bgColorPerc="bg-rose-300"
+              textColor="text-rose-700"
+            />
+            <div className="flex items-baseline space-x-1">
+              <span className="flex space-x-1">
+                <span className="text-rose-300" title="Blob fee">
+                  <FontAwesomeIcon icon={faSplotch} size="1x" />
+                </span>
+                <span>
+                  <FormattedBalance value={feeDist.blob} symbol={symbol} />
+                </span>
+              </span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

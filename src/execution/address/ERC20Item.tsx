@@ -18,6 +18,7 @@ export type ERC20ItemProps = AddressAwareComponentProps & {
   from: string | undefined;
   to: string | null;
   value: bigint;
+  type: number;
 };
 
 const ERC20Item: FC<ERC20ItemProps> = ({
@@ -30,12 +31,17 @@ const ERC20Item: FC<ERC20ItemProps> = ({
   from,
   to,
   value,
+  type,
 }) => {
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>
         <td>
-          <TransactionLink txHash={hash} fail={status === 0} />
+          <TransactionLink
+            txHash={hash}
+            fail={status === 0}
+            blob={type === 3}
+          />
         </td>
         <td>{to !== null && <MethodName data={data} to={to} />}</td>
         <td>

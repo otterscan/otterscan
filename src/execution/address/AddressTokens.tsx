@@ -2,20 +2,22 @@ import { Switch } from "@headlessui/react";
 import { getAddress } from "ethers";
 import { FC, useContext, useMemo, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import StandardTHead from "../../components/StandardTHead";
-import StandardTable from "../../components/StandardTable";
 import { useTokenSet } from "../../kleros/useTokenList";
 import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { RuntimeContext } from "../../useRuntime";
+import { usePageTitle } from "../../useTitle";
 import { AddressAwareComponentProps } from "../types";
 import TokenBalance from "./TokenBalance";
 
 const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
   const erc20List = useERC20Holdings(provider, address);
+  usePageTitle(`Token Balances | ${address}`);
 
   const [enabled, setEnabled] = useState<boolean>(true);
   const tokenSet = useTokenSet(provider?._network.chainId);
@@ -37,10 +39,10 @@ const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
             filterApplied={enabled}
             applyFilter={setEnabled}
           />
-          <StandardTable>
+          <StandardScrollableTable>
             <StandardTHead>
               <th className="w-96">Token</th>
-              <th>Balance</th>
+              <th className="w-80">Balance</th>
             </StandardTHead>
             <StandardTBody>
               {tokenList.map((t) => (
@@ -51,7 +53,7 @@ const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
                 />
               ))}
             </StandardTBody>
-          </StandardTable>
+          </StandardScrollableTable>
           <TotalBar
             erc20List={erc20List}
             filteredList={filteredList}
