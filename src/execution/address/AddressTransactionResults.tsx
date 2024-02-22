@@ -17,6 +17,7 @@ import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
+import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
@@ -35,8 +36,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
   }
-
-  usePageTitle(`Address ${addressOrName}`);
 
   const [searchParams] = useSearchParams();
   const hash = searchParams.get("h");
@@ -102,6 +101,19 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
   const proxyAttributes = useProxyAttributes(provider, address);
+  const resolvedAddress = useResolvedAddress(provider, address);
+  const resolvedName = resolvedAddress
+    ? resolvedAddress[0].resolveToString(resolvedAddress[1])
+    : undefined;
+  const resolvedNameTrusted = resolvedAddress
+    ? resolvedAddress[0].trusted(resolvedAddress[1])
+    : undefined;
+
+  usePageTitle(
+    resolvedName && resolvedNameTrusted
+      ? `${resolvedName} | Address ${addressOrName}`
+      : `Address ${addressOrName}`,
+  );
 
   return (
     <ContentFrame tabs>

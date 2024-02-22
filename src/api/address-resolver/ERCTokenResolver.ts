@@ -1,11 +1,11 @@
 import { AbstractProvider, Contract, ZeroAddress } from "ethers";
 import erc20 from "../../abi/erc20.json";
 import { TokenMeta } from "../../types";
-import { IAddressResolver } from "./address-resolver";
+import { AddressResolver } from "./address-resolver";
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
-export class ERCTokenResolver implements IAddressResolver<TokenMeta> {
+export class ERCTokenResolver implements AddressResolver<TokenMeta> {
   async resolveAddress(
     provider: AbstractProvider,
     address: string,
@@ -40,5 +40,16 @@ export class ERCTokenResolver implements IAddressResolver<TokenMeta> {
       // is not a token
     }
     return undefined;
+  }
+
+  resolveToString(resolvedAddress: TokenMeta | undefined): string | undefined {
+    if (resolvedAddress === undefined) {
+      return undefined;
+    }
+    return `${resolvedAddress.name} (${resolvedAddress.symbol})`;
+  }
+
+  trusted(resolvedAddress: TokenMeta | undefined): boolean | undefined {
+    return true;
   }
 }
