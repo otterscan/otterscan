@@ -353,7 +353,7 @@ export type StateDiffGroup = {
 
 export const useStateDiffTrace = (
   provider: JsonRpcApiProvider | undefined,
-  txHash: string
+  txHash: string,
 ): StateDiffGroup[] | undefined => {
   const [traceGroups, setTraceGroups] = useState<
     StateDiffGroup[] | undefined
@@ -385,7 +385,7 @@ export const useStateDiffTrace = (
 
         function addChangeType(
           changeType: string,
-          changes: any
+          changes: any,
         ): StateDiffGroup | StateDiffElement | null {
           if (changes === "=") {
             // No change
@@ -399,7 +399,7 @@ export const useStateDiffTrace = (
               diffs: [],
             };
             for (const [storageSlot, storageChange] of Object.entries(
-              changes
+              changes,
             )) {
               let storageGroup: StateDiffGroup = {
                 title: storageSlot,
