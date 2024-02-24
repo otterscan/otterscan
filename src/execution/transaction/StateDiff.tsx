@@ -1,4 +1,4 @@
-import { formatEther } from "ethers";
+import { formatEther, getAddress } from "ethers";
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import HexValue from "../../components/HexValue";
@@ -32,6 +32,12 @@ const buildStateDiffTree = (
     return <></>;
   }
   let result = [];
+
+  // Filter out state diffs with no changes
+  groups = groups.filter(
+    (group) => !(isStateDiffGroup(group) && group.diffs.length === 0),
+  );
+
   for (let i = 0; i < groups.length; i++) {
     const group = groups[i];
 
@@ -52,38 +58,38 @@ const buildStateDiffTree = (
     }
 
     if (isStateDiffGroup(group)) {
-      if (group.diffs.length === 0) {
-        continue;
-      }
       result.push(
-        <div className={depth > 0 ? "relative flex" : ""}>
-          {getBranch()}
-          <div
-            className={
-              depth === 0
-                ? ""
-                : depth < 3
-                  ? "ml-5 rounded border px-1 py-0.5 hover:border-gray-500"
-                  : "ml-5 py-0.5"
-            }
-          >
-            {depth === 0 ? (
-              <div className="relative flex">
-                <div className="rounded border px-1 py-0.5 hover:border-gray-500">
-                  <TransactionAddress
-                    address={group.title}
-                    showCodeIndicator={true}
-                  />
+        <>
+          {depth === 1 && getBranch()}
+          <div className={depth > 0 ? "relative flex" : ""}>
+            {depth !== 1 && getBranch()}
+            <div
+              className={
+                depth === 0
+                  ? ""
+                  : depth < 3
+                    ? "ml-5 rounded border px-1 py-0.5 hover:border-gray-500"
+                    : "ml-5 py-0.5"
+              }
+            >
+              {depth === 0 ? (
+                <div className="relative flex">
+                  <div className="rounded border px-1 py-0.5 hover:border-gray-500">
+                    <TransactionAddress
+                      address={getAddress(group.title)}
+                      showCodeIndicator={true}
+                    />
+                  </div>
                 </div>
+              ) : (
+                <div className="mb-3">{group.title}</div>
+              )}
+              <div className="ml-5 space-y-3 self-stretch">
+                {buildStateDiffTree(group.diffs, depth + 1)}
               </div>
-            ) : (
-              <div className="mb-3">{group.title}</div>
-            )}
-            <div className="ml-5 space-y-3 self-stretch">
-              {buildStateDiffTree(group.diffs, depth + 1)}
             </div>
           </div>
-        </div>,
+        </>,
       );
     } else {
       result.push(getBranch());
@@ -147,7 +153,7 @@ const buildStateDiffTree = (
       let expanded = false;
       result.push(
         <>
-          <div className="relative flex">
+          <div className={`relative flex ${last ? "" : "border-l"}`}>
             <div
               className={`ml-5 rounded border px-1 py-0.5 hover:border-gray-500 ${
                 expanded ? "w-full" : ""
