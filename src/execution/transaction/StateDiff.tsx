@@ -48,7 +48,7 @@ const buildStateDiffTree = (
         return (
           <>
             <div className="absolute h-6 w-5 -translate-y-3 border-b border-l"></div>
-            {!last && (
+            {!last && depth > 1 && (
               <div className="absolute left-0 h-full w-5 translate-y-3 border-l"></div>
             )}
           </>
