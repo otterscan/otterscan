@@ -1,7 +1,10 @@
-import { formatEther, getAddress } from "ethers";
+import { getAddress } from "ethers";
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
+import DisplayInteger from "../../components/DisplayInteger";
+import { balancePreset, neutralPreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
+import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import { TransactionData } from "../../types";
 import {
   StateDiffElement,
@@ -10,6 +13,7 @@ import {
 } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
+import Uint256Decoder from "./decoder/Uint256Decoder";
 
 type StateDiffProps = {
   txData: TransactionData;
@@ -82,7 +86,7 @@ const buildStateDiffTree = (
                   </div>
                 </div>
               ) : (
-                <div className="mb-3">{group.title}</div>
+                <div className="mb-3 font-code">{group.title}</div>
               )}
               <div className="ml-5 space-y-3 self-stretch">
                 {buildStateDiffTree(group.diffs, depth + 1)}
@@ -107,11 +111,11 @@ const buildStateDiffTree = (
           content = (values, extra) => (
             <div>
               <div>
-                <HexValue value={values[0]} />
+                <Uint256Decoder r={BigInt(values[0])} />
               </div>
               &#8594;
               <div>
-                <HexValue value={values[1]} />
+                <Uint256Decoder r={BigInt(values[1])} />
               </div>
             </div>
           );
@@ -124,23 +128,51 @@ const buildStateDiffTree = (
                 group.from == null ? null : BigInt(group.from).toString(),
                 group.to === null ? null : BigInt(group.to).toString(),
               ];
+              content = (values, extra) => (
+                <span>
+                  {values[0] !== null && (
+                    <DisplayInteger numberStr={values[0]} />
+                  )}{" "}
+                  <span className="px-2">&#8594;</span>{" "}
+                  {values[1] !== null && (
+                    <DisplayInteger numberStr={values[1]} />
+                  )}
+                </span>
+              );
               break;
             case "balance":
+              let diffElement: null | React.ReactElement = null;
               if (values[0] !== null && values[1] !== null) {
                 let balanceDiff = BigInt(values[1]) - BigInt(values[0]);
-                extra =
-                  " (" +
-                  (balanceDiff >= 0n ? "+" : "") +
-                  formatEther(balanceDiff) +
-                  " ETH)";
+                diffElement = (
+                  <span className="ml-2">
+                    ({balanceDiff >= 0n ? "+" : ""}
+                    <NativeTokenAmountAndFiat
+                      value={balanceDiff}
+                      {...neutralPreset}
+                    />
+                    )
+                  </span>
+                );
               }
-              values = values.map((value) => {
-                if (value === null) {
-                  return null;
-                }
-                // TODO: Use native currency symbol
-                return formatEther(BigInt(value)) + " ETH";
-              }) as [string | null, string | null];
+              content = (values, extra) => (
+                <span>
+                  {values[0] !== null && (
+                    <NativeTokenAmountAndFiat
+                      value={BigInt(values[0])}
+                      {...balancePreset}
+                    />
+                  )}{" "}
+                  <span className="px-2">&#8594;</span>{" "}
+                  {values[1] !== null && (
+                    <NativeTokenAmountAndFiat
+                      value={BigInt(values[1])}
+                      {...balancePreset}
+                    />
+                  )}{" "}
+                  {diffElement}
+                </span>
+              );
               break;
             default:
               break;
@@ -160,7 +192,9 @@ const buildStateDiffTree = (
               }`}
             >
               <div>
-                {showType ? group.type : null}
+                <span className="font-code">
+                  {showType ? group.type : null}
+                </span>
                 <div>
                   <div
                     className={showType ? "ml-5 space-y-3 self-stretch" : ""}
@@ -184,7 +218,7 @@ const StateDiff: React.FC<StateDiffProps> = ({ txData }) => {
 
   return (
     <ContentFrame tabs>
-      <div className="mb-5 mt-4 flex flex-col items-start space-y-3 overflow-x-auto font-code text-sm">
+      <div className="mb-5 mt-4 flex flex-col items-start space-y-3 overflow-x-auto text-sm">
         {traces ? (
           <>
             <div className="ml-5 space-y-3 self-stretch">
