@@ -6,7 +6,7 @@
   "type": "module",
   "dependencies": {
     "@fontsource/fira-code": "^5.0.17",
-    "@fontsource/roboto": "^5.0.8",
+    "@fontsource/roboto": "^5.0.12",
     "@fontsource/roboto-mono": "^5.0.16",
     "@fontsource/space-grotesk": "^5.0.16",
     "@fortawesome/fontawesome-svg-core": "^6.5.1",
