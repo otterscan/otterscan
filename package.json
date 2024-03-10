@@ -41,7 +41,7 @@
     "react-intersection-observer": "^9.8.1",
     "react-router-dom": "^6.22.3",
     "react-syntax-highlighter": "^15.5.0",
-    "swr": "^2.2.2",
+    "swr": "^2.2.5",
     "use-keyboard-shortcut": "^1.1.6",
     "web-vitals": "^3.5.2"
   },
