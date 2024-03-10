@@ -9,7 +9,16 @@ type BlockRewardProps = {
 };
 
 const BlockReward: FC<BlockRewardProps> = ({ block }) => {
-  const netFeeReward = block?.feeReward ?? 0n;
+  const totalFees = block?.feeReward ?? 0n;
+
+  // Optimism-specific: subtract deposit transaction's gas, which does not pay the basefee
+  const gasUsedWithoutDepositTx =
+    block.gasUsed - (block.gasUsedDepositTx ?? 0n);
+  const burntFees =
+    (block?.baseFeePerGas && block.baseFeePerGas * gasUsedWithoutDepositTx) ??
+    0n;
+  const netFeeReward = totalFees - burntFees;
+
   const totalReward = block.blockReward + netFeeReward;
   const fiatValue = useFiatValue(totalReward, block.number);
 

@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
+import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -40,6 +41,8 @@ export interface ExtendedBlock extends BlockParams {
   stateRoot: string;
   totalDifficulty: bigint;
   transactionCount: number;
+  // Optimism-specific
+  gasUsedDepositTx?: bigint;
 }
 
 export const readBlock = async (
@@ -75,6 +78,8 @@ export const readBlock = async (
     stateRoot: _rawBlock.block.stateRoot,
     totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
     transactionCount: formatter.number(_rawBlock.block.transactionCount),
+    // Optimism-specific; gas used by the deposit transaction
+    gasUsedDepositTx: formatter.bigInt(_rawBlock.gasUsedDepositTx ?? 0n),
     ..._block,
   };
   return extBlock;
@@ -109,6 +114,7 @@ const blockTransactionsFetcher: Fetcher<
         throw new Error("blockTransactionsFetcher: unknown tx hash");
       }
 
+      let fee: bigint;
       let effectiveGasPrice: bigint;
       if (t.type === 2 || t.type === 3) {
         const tip =
@@ -118,6 +124,31 @@ const blockTransactionsFetcher: Fetcher<
         effectiveGasPrice = _block.baseFeePerGas! + tip;
       } else {
         effectiveGasPrice = t.gasPrice!;
+      }
+
+      // Handle Optimism-specific values
+      let l1GasUsed: bigint | undefined;
+      let l1GasPrice: bigint | undefined;
+      let l1FeeScalar: string | undefined;
+      if (isOptimisticChain(provider._network.chainId)) {
+        if (t.type === 126) {
+          fee = 0n;
+          effectiveGasPrice = 0n;
+        } else {
+          l1GasUsed = formatter.bigInt(_rawReceipt.l1GasUsed);
+          l1GasPrice = formatter.bigInt(_rawReceipt.l1GasPrice);
+          l1FeeScalar = _rawReceipt.l1FeeScalar;
+          ({ fee, gasPrice: effectiveGasPrice } = getOpFeeData(
+            t.type,
+            effectiveGasPrice,
+            _receipt.gasUsed!,
+            l1GasUsed,
+            l1GasPrice,
+            l1FeeScalar ?? "0",
+          ));
+        }
+      } else {
+        fee = formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice;
       }
 
       return {
@@ -131,7 +162,7 @@ const blockTransactionsFetcher: Fetcher<
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
         type: t.type,
-        fee: formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice,
+        fee,
         gasPrice: effectiveGasPrice,
         data: t.data,
         status: formatter.number(_receipt.status),
@@ -221,6 +252,39 @@ export const useTxData = (
           return;
         }
 
+        let fee: bigint;
+        let gasPrice: bigint;
+
+        // Handle Optimism-specific values
+        let l1GasUsed: bigint | undefined;
+        let l1GasPrice: bigint | undefined;
+        let l1FeeScalar: string | undefined;
+        if (isOptimisticChain(provider._network.chainId)) {
+          if (_response.type === 0x7e) {
+            fee = 0n;
+            gasPrice = 0n;
+          } else {
+            const _rawReceipt = await provider.send(
+              "eth_getTransactionReceipt",
+              [txhash],
+            );
+            l1GasUsed = formatter.bigInt(_rawReceipt.l1GasUsed);
+            l1GasPrice = formatter.bigInt(_rawReceipt.l1GasPrice);
+            l1FeeScalar = _rawReceipt.l1FeeScalar;
+            ({ fee, gasPrice } = getOpFeeData(
+              _response.type,
+              _response.gasPrice!,
+              _receipt ? _receipt.gasUsed! : 0n,
+              l1GasUsed,
+              l1GasPrice,
+              l1FeeScalar ?? "0",
+            ));
+          }
+        } else {
+          fee = _response.gasPrice! * _receipt!.gasUsed!;
+          gasPrice = _response.gasPrice!;
+        }
+
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
@@ -229,7 +293,7 @@ export const useTxData = (
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas ?? undefined,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas ?? undefined,
-          gasPrice: _response.gasPrice!,
+          gasPrice,
           gasLimit: _response.gasLimit,
           nonce: BigInt(_response.nonce),
           data: _response.data,
@@ -245,11 +309,14 @@ export const useTxData = (
                   // TODO: Does awaiting this Promise induce another RPC call?
                   confirmations: await _receipt.confirmations(),
                   createdContractAddress: _receipt.contractAddress ?? undefined,
-                  fee: _response.gasPrice! * _receipt.gasUsed,
+                  fee,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
                   blobGasPrice: _receipt.blobGasPrice ?? undefined,
                   blobGasUsed: _receipt.blobGasUsed ?? undefined,
+                  l1GasUsed,
+                  l1GasPrice,
+                  l1FeeScalar,
                 },
         });
       } catch (err) {
