@@ -48,5 +48,19 @@
   "0x94A1B5CdB22c43faab4AbEb5c74999895464Ddaf": "Tornado Cash: Old Proxy",
   "0xCa0840578f57fE71599D29375e16783424023357": "Tornado Cash: Nova",
   "0x56Eddb7aa87536c09CCc2793473599fD21A8b17F": "Binance",
-  "0x9696f59E4d72E237BE84fFD425DCaD154Bf96976": "Binance"
+  "0x9696f59E4d72E237BE84fFD425DCaD154Bf96976": "Binance",
+  "0x229047fed2591dbec1eF1118d64F7aF3dB9EB290": "Optimism: System Config",
+  "0xFF00000000000000000000000000000000000010": "Optimism: Batch Inbox",
+  "0x73a79fab69143498ed3712e519a88a918e1f4072": "Base: System Config",
+  "0xff00000000000000000000000000000000008453": "Base: Batch Inbox",
+  "0xA3cAB0126d5F504B071b81a3e8A2BBBF17930d86": "Zora: System Config",
+  "0x6F54Ca6F6EdE96662024Ffd61BFd18f3f4e34DFf": "Zora: Batch Inbox",
+  "0x0e4c4cdd01cecb01070e9fdfe7600871e4ae996e": "Lyra: System Config",
+  "0x5f7f7f6db967f0ef10bda0678964dba185d16c50": "Lyra: Batch Inbox",
+  "0x5e6432f18bc5d497b1ab2288a025fbf9d69e2221": "Mode: System Config",
+  "0x24e59d9d3bd73ccc28dc54062af7ef7bff58bd67": "Mode: Batch Inbox",
+  "0x886b187c3d293b1449a3a0f23ca9e2269e0f2664": "Orderly: System Config",
+  "0x08aa34cc843ceebcc88a627f18430294aa9780be": "Orderly: Batch Inbox",
+  "0x7Df716EAD1d83a2BF35B416B7BC84bd0700357C9": "PGN: System Config",
+  "0xC1B90E1e459aBBDcEc4DCF90dA45ba077d83BFc5": "PGN: Batch Inbox"
 }
