@@ -11,6 +11,6 @@ type Story = StoryObj<typeof meta>;
 export const ExampleError: Story = {
   args: {
     error: new Error("Example error"),
-    resetErrorBoundary: ()=>{},
+    resetErrorBoundary: () => {},
   },
 };
