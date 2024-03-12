@@ -62,7 +62,13 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
   );
-  const proxyAttrs = useProxyAttributes(provider, checksummedAddress);
+  const proxyAttrs = config?.experimental
+    ? useProxyAttributes(provider, checksummedAddress)
+    : {
+        proxyHasCode: undefined,
+        proxyMatch: undefined,
+        logicAddress: undefined,
+      };
 
   return (
     <StandardFrame>

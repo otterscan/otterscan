@@ -29,7 +29,7 @@ import PendingPage from "./PendingPage";
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
 }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const { addressOrName, direction } = useParams();
@@ -100,7 +100,13 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
-  const proxyAttributes = useProxyAttributes(provider, address);
+  const proxyAttributes = config?.experimental
+    ? useProxyAttributes(provider, address)
+    : {
+        proxyHasCode: undefined,
+        proxyMatch: undefined,
+        logicAddress: undefined,
+      };
   const resolvedAddress = useResolvedAddress(provider, address);
   const resolvedName = resolvedAddress
     ? resolvedAddress[0].resolveToString(resolvedAddress[1])
