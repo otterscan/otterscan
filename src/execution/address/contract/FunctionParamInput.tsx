@@ -58,7 +58,7 @@ interface FunctionParamInputProps {
 }
 
 /**
- * Creates an input for a single paramter, automatically creating child
+ * Creates an input for a single parameter, automatically creating child
  * components for tuples and arrays. Buttons for adding and removing elements
  * are included for dynamic-length array parameters. The expanded state of
  * entered elements can be computed via refs with
