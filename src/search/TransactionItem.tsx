@@ -83,7 +83,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
             <span>
               <TransactionDirection
-                direction={undefined}
+                direction={direction}
                 flags={sendsToMiner ? Flags.MINER : undefined}
               />
             </span>
