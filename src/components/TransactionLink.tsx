@@ -1,6 +1,7 @@
 import {
   faExclamationCircle,
   faSplotch,
+  faTurnDown,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
@@ -11,9 +12,15 @@ type TransactionLinkProps = {
   txHash: string;
   fail?: boolean;
   blob?: boolean;
+  deposit?: boolean;
 };
 
-const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail, blob }) => (
+const TransactionLink: FC<TransactionLinkProps> = ({
+  txHash,
+  fail,
+  blob,
+  deposit = false,
+}) => (
   <span className="flex-no-wrap flex space-x-1">
     {fail && (
       <span className="text-red-600" title="Transaction reverted">
@@ -23,6 +30,11 @@ const TransactionLink: FC<TransactionLinkProps> = ({ txHash, fail, blob }) => (
     {blob && (
       <span className="text-rose-400" title="Blob transaction">
         <FontAwesomeIcon icon={faSplotch} />
+      </span>
+    )}
+    {deposit && (
+      <span className="text-gray-600" title="Deposit transaction">
+        <FontAwesomeIcon icon={faTurnDown} />
       </span>
     )}
     <span className="truncate">

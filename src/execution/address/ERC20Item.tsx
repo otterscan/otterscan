@@ -41,6 +41,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
             txHash={hash}
             fail={status === 0}
             blob={type === 3}
+            deposit={type === 126}
           />
         </td>
         <td>{to !== null && <MethodName data={data} to={to} />}</td>
