@@ -173,6 +173,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
             <PendingPage rows={1} cols={8} />
           )}
         </StandardScrollableTable>
+        <NavBar address={address} page={page} controller={controller} />
       </StandardSelectionBoundary>
     </ContentFrame>
   );
