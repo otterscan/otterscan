@@ -29,6 +29,51 @@ import AddressWithdrawals from "./address/AddressWithdrawals";
 import BlocksRewarded from "./address/BlocksRewarded";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
+import { AddressAwareComponentProps } from "./types";
+
+const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
+  const { addressOrName } = useParams();
+  const { config, provider } = useContext(RuntimeContext);
+  const proxyAttrs = useProxyAttributes(provider, address);
+  return (
+    <>
+      {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
+        <NavTab href={`/address/${addressOrName}/proxyLogicContract`}>
+          <span className={`flex items-baseline space-x-2`}>
+            <span>Logic Contract</span>
+            <SourcifyLogo />
+          </span>
+        </NavTab>
+      )}
+      {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
+        <NavTab href={`/address/${addressOrName}/readContractAsProxy`}>
+          <span>Read as Proxy</span>
+        </NavTab>
+      )}
+    </>
+  );
+};
+
+const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
+  const { config, provider } = useContext(RuntimeContext);
+  const proxyAttrs = useProxyAttributes(provider, address);
+  return (
+    <Contracts
+      checksummedAddress={proxyAttrs.logicAddress!}
+      match={proxyAttrs.proxyMatch}
+    />
+  );
+};
+
+const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
+  address,
+}) => {
+  const { config, provider } = useContext(RuntimeContext);
+  const proxyAttrs = useProxyAttributes(provider, address);
+  return (
+    <ReadContract checksummedAddress={address} match={proxyAttrs.proxyMatch} />
+  );
+};
 
 type AddressMainPageProps = {};
 
@@ -62,7 +107,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
   );
-  const proxyAttrs = useProxyAttributes(provider, checksummedAddress);
 
   return (
     <StandardFrame>
@@ -131,14 +175,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
-                  <NavTab href={`/address/${addressOrName}/proxyLogicContract`}>
-                    <span className={`flex items-baseline space-x-2`}>
-                      <span>Logic Contract</span>
-                      <SourcifyLogo />
-                    </span>
-                  </NavTab>
-                )}
                 {hasCode && match && (
                   <NavTab href={`/address/${addressOrName}/readContract`}>
                     <span className={`flex items-baseline space-x-2`}>
@@ -146,12 +182,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
-                  <NavTab
-                    href={`/address/${addressOrName}/readContractAsProxy`}
-                  >
-                    <span>Read as Proxy</span>
-                  </NavTab>
+                {config?.experimental && (
+                  <ProxyTabs address={checksummedAddress} />
                 )}
               </Tab.List>
               <Tab.Panels>
@@ -209,17 +241,6 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
-                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
-                    <Route
-                      path="proxyLogicContract"
-                      element={
-                        <Contracts
-                          checksummedAddress={proxyAttrs.logicAddress}
-                          match={proxyAttrs.proxyMatch}
-                        />
-                      }
-                    />
-                  )}
                   <Route
                     path="readContract"
                     element={
@@ -229,16 +250,21 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                       />
                     }
                   />
-                  {proxyAttrs.logicAddress && proxyAttrs.proxyMatch && (
-                    <Route
-                      path="readContractAsProxy"
-                      element={
-                        <ReadContract
-                          checksummedAddress={checksummedAddress}
-                          match={proxyAttrs.proxyMatch}
-                        />
-                      }
-                    />
+                  {config?.experimental && (
+                    <>
+                      <Route
+                        path="proxyLogicContract"
+                        element={
+                          <ProxyContracts address={checksummedAddress} />
+                        }
+                      />
+                      <Route
+                        path="readContractAsProxy"
+                        element={
+                          <ProxyReadContract address={checksummedAddress} />
+                        }
+                      />
+                    </>
                   )}
                 </Routes>
               </Tab.Panels>

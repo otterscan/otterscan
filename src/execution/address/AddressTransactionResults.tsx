@@ -26,10 +26,27 @@ import { AddressAwareComponentProps } from "../types";
 import PendingItem from "./PendingItem";
 import PendingPage from "./PendingPage";
 
+const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
+  const { provider } = useContext(RuntimeContext);
+  const proxyAttributes = useProxyAttributes(provider, address);
+  return (
+    <>
+      {proxyAttributes && proxyAttributes.proxyType && (
+        <InfoRow title="Proxy type">{proxyAttributes.proxyType}</InfoRow>
+      )}
+      {proxyAttributes && proxyAttributes.logicAddress && (
+        <InfoRow title="Logic contract">
+          <DecoratedAddressLink address={proxyAttributes.logicAddress} />
+        </InfoRow>
+      )}
+    </>
+  );
+};
+
 const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   address,
 }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
   const { addressOrName, direction } = useParams();
@@ -100,7 +117,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
-  const proxyAttributes = useProxyAttributes(provider, address);
   const resolvedAddress = useResolvedAddress(provider, address);
   const resolvedName = resolvedAddress
     ? resolvedAddress[0].resolveToString(resolvedAddress[1])
@@ -143,14 +159,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
               </div>
             </InfoRow>
           )}
-          {proxyAttributes && proxyAttributes.proxyType && (
-            <InfoRow title="Proxy type">{proxyAttributes.proxyType}</InfoRow>
-          )}
-          {proxyAttributes && proxyAttributes.logicAddress && (
-            <InfoRow title="Logic contract">
-              <DecoratedAddressLink address={proxyAttributes.logicAddress} />
-            </InfoRow>
-          )}
+          {config && config.experimental && <ProxyInfo address={address} />}
         </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
         <StandardScrollableTable isAuto={true}>
