@@ -19,7 +19,7 @@ const TransactionLink: FC<TransactionLinkProps> = ({
   txHash,
   fail,
   blob,
-  deposit = false,
+  deposit,
 }) => (
   <span className="flex-no-wrap flex space-x-1">
     {fail && (
