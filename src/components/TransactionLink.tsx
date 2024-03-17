@@ -33,7 +33,7 @@ const TransactionLink: FC<TransactionLinkProps> = ({
       </span>
     )}
     {deposit && (
-      <span className="text-gray-600" title="Deposit transaction">
+      <span className="text-emerald-600" title="Deposit transaction">
         <FontAwesomeIcon icon={faTurnDown} />
       </span>
     )}
