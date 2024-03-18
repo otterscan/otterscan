@@ -20,7 +20,12 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   const { provider } = useContext(RuntimeContext);
   const balance = useTokenBalance(provider, holderAddress, tokenAddress);
   const metadata = useTokenMetadata(provider, tokenAddress);
-  const [quote, decimals] = useTokenUSDOracle(provider, "latest", tokenAddress);
+  const [quote, decimals] = useTokenUSDOracle(
+    provider,
+    "latest",
+    tokenAddress,
+    metadata?.decimals !== undefined ? BigInt(metadata?.decimals) : undefined,
+  );
 
   return (
     <tr>

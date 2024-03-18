@@ -41,6 +41,17 @@ export type ChainInfo = {
   };
 };
 
+export type PriceOracleInfo = {
+  chainlink?: {
+    ethUSDOracleAddress: string;
+    ethUSDOracleDecimals: number;
+  };
+  wrappedEthAddress?: string;
+  uniswapV2?: {
+    factoryAddress: string;
+  };
+};
+
 export const defaultChainInfo: ChainInfo = {
   name: "",
   faucets: [],
@@ -116,6 +127,8 @@ export type OtterscanConfig = {
    * "central_server" whose values are their respective root URLs.
    */
   sourcifySources?: { [key: string]: string };
+
+  priceOracleInfo?: PriceOracleInfo;
 };
 
 /**

@@ -10,10 +10,10 @@ import { RuntimeContext } from "./useRuntime";
 import { commify } from "./utils/utils";
 
 // TODO: encapsulate this magic number
-const ETH_FEED_DECIMALS = 8n;
+const ETH_FEED_DEFAULT_DECIMALS = 8n;
 
 const PriceBox: React.FC = () => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const {
     nativeCurrency: { symbol },
   } = useChainInfo();
@@ -30,7 +30,13 @@ const PriceBox: React.FC = () => {
     }
 
     const price: bigint =
-      latestPriceData.answer / 10n ** (ETH_FEED_DECIMALS - 2n);
+      latestPriceData.answer /
+      10n **
+        (BigInt(
+          config?.priceOracleInfo?.chainlink?.ethUSDOracleDecimals ??
+            ETH_FEED_DEFAULT_DECIMALS,
+        ) -
+          2n);
     const formattedPrice = commify(formatUnits(price, 2));
 
     const timestamp = new Date(Number(latestPriceData.updatedAt) * 1000);

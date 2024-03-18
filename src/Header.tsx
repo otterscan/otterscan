@@ -44,7 +44,8 @@ const Header: FC = () => {
           </div>
         </div>
         <div className="flex items-baseline gap-x-3">
-          {provider?._network.chainId === 1n && (
+          {(provider?._network.chainId === 1n ||
+            config?.priceOracleInfo?.chainlink?.ethUSDOracleAddress) && (
             <div className="hidden lg:inline">
               <PriceBox />
             </div>
