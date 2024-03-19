@@ -89,7 +89,7 @@
     "@storybook/addon-links": "^8.0.0",
     "@storybook/blocks": "^8.0.0",
     "@storybook/react": "^8.0.0",
-    "@storybook/react-vite": "^8.0.0",
+    "@storybook/react-vite": "^8.0.2",
     "@vitejs/plugin-react-swc": "^3.6.0",
     "autoprefixer": "^10.4.18",
     "cypress": "^13.7.0",
