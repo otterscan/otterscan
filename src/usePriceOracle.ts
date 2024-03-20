@@ -44,6 +44,9 @@ const mainnetPriceOracleInfo: PriceOracleInfo = {
   uniswapV2: {
     factoryAddress: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
   },
+  uniswapV3: {
+    factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+  },
 };
 
 type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
@@ -78,10 +81,7 @@ const feedRegistryFetcher =
 
     // FeedRegistry is supported only on mainnet, see:
     // https://docs.chain.link/docs/feed-registry/
-    if (
-      provider!._network.chainId === 1n ||
-      priceOracleInfo?.chainlink?.ethUSDOracleAddress
-    ) {
+    if (provider!._network.chainId === 1n) {
       try {
         // Let SWR handle error
         // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
@@ -236,14 +236,15 @@ const ethUSDFetcher =
     if (
       provider === undefined ||
       (provider?._network.chainId !== 1n &&
-        priceOracleInfo?.chainlink?.ethUSDOracleAddress === undefined)
+        priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress === undefined)
     ) {
       return undefined;
     }
 
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const c = ETH_USD_FEED_PROTOTYPE.connect(provider).attach(
-      priceOracleInfo?.chainlink?.ethUSDOracleAddress || "eth-usd.data.eth",
+      priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress ||
+        "eth-usd.data.eth",
     ) as Contract;
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
@@ -257,7 +258,7 @@ export const useETHUSDOracle = (
   const fetcher = ethUSDFetcher(provider, config?.priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   const decimals = BigInt(
-    config?.priceOracleInfo?.chainlink?.ethUSDOracleDecimals ?? 8,
+    config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ?? 8,
   );
   if (error) {
     return { price: undefined, decimals };

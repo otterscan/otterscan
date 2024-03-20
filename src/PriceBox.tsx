@@ -33,7 +33,7 @@ const PriceBox: React.FC = () => {
     }
 
     const priceDecimals =
-      config?.priceOracleInfo?.chainlink?.ethUSDOracleDecimals ??
+      config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ??
       ETH_FEED_DEFAULT_DECIMALS;
     const formattedPrice = formatFiatValue(
       FixedNumber.fromValue(latestPriceData.answer, priceDecimals),
