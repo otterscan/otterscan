@@ -1,13 +1,16 @@
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatUnits } from "ethers";
+import { FixedNumber } from "ethers";
 import React, { useContext, useMemo } from "react";
 import { formatValue } from "./components/formatter";
 import { useChainInfo } from "./useChainInfo";
 import { useLatestBlockHeader } from "./useLatestBlock";
-import { useETHUSDRawOracle, useFastGasRawOracle } from "./usePriceOracle";
+import {
+  formatFiatValue,
+  useETHUSDRawOracle,
+  useFastGasRawOracle,
+} from "./usePriceOracle";
 import { RuntimeContext } from "./useRuntime";
-import { commify } from "./utils/utils";
 
 // TODO: encapsulate this magic number
 const ETH_FEED_DEFAULT_DECIMALS = 8n;
@@ -29,15 +32,13 @@ const PriceBox: React.FC = () => {
       return [undefined, undefined];
     }
 
-    const price: bigint =
-      latestPriceData.answer /
-      10n **
-        (BigInt(
-          config?.priceOracleInfo?.chainlink?.ethUSDOracleDecimals ??
-            ETH_FEED_DEFAULT_DECIMALS,
-        ) -
-          2n);
-    const formattedPrice = commify(formatUnits(price, 2));
+    const priceDecimals =
+      config?.priceOracleInfo?.chainlink?.ethUSDOracleDecimals ??
+      ETH_FEED_DEFAULT_DECIMALS;
+    const formattedPrice = formatFiatValue(
+      FixedNumber.fromValue(latestPriceData.answer, priceDecimals),
+      2,
+    );
 
     const timestamp = new Date(Number(latestPriceData.updatedAt) * 1000);
     return [formattedPrice, timestamp];

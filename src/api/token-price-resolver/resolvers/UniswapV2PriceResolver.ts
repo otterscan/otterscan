@@ -15,7 +15,7 @@ export default class UniswapV2PriceResolver implements TokenPriceResolver {
     referenceTokenAddress: string,
     targetTokenAddress: string,
     blockTag: BlockTag = "latest",
-  ): Promise<bigint | undefined> {
+  ): Promise<{ price: bigint; confidence: bigint } | undefined> {
     const factoryAbi = [
       "function getPair(address tokenA, address tokenB) view returns (address pair)",
     ];
@@ -54,8 +54,11 @@ export default class UniswapV2PriceResolver implements TokenPriceResolver {
       // Not enough liquidity
       return undefined;
     }
-    return (
-      (10n ** 18n * reserves[1 - targetTokenIndex]) / reserves[targetTokenIndex]
-    );
+    return {
+      price:
+        (10n ** 18n * reserves[1 - targetTokenIndex]) /
+        reserves[targetTokenIndex],
+      confidence: reserves[1 - targetTokenIndex],
+    };
   }
 }

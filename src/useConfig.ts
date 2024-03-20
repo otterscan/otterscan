@@ -50,6 +50,9 @@ export type PriceOracleInfo = {
   uniswapV2?: {
     factoryAddress: string;
   };
+  uniswapV3?: {
+    factoryAddress: string;
+  };
 };
 
 export const defaultChainInfo: ChainInfo = {

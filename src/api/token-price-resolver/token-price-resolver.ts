@@ -6,13 +6,15 @@ export abstract class TokenPriceResolver {
    * @param provider - The provider to the make calls
    * @param referenceTokenAddress - Token address of the reference token, e.g. WETH
    * @param targetTokenAddress - Token address for which we want to fetch price data
-   * @returns A promise resolving into a bigint representing the reference token value of 1e18 units of the target token,
-     or undefined if no such price can be calculated.
+   * @returns A promise resolving into an object containing price, a bigint representing
+     the reference token value of 1e18 units of the target token, and confidence, a
+     measure of the estimated amount of pair liquidity in the pool to back the price.
+     If no such price can be calculated, promise instead resolves to undefined.
    */
   abstract resolveTokenPrice(
     provider: AbstractProvider,
     referenceTokenAddress: string,
     targetTokenAddress: string,
     blockTag?: BlockTag,
-  ): Promise<bigint | undefined>;
+  ): Promise<{ price: bigint; confidence: bigint } | undefined>;
 }

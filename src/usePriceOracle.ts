@@ -11,6 +11,7 @@ import useSWRImmutable from "swr/immutable";
 import AggregatorV3Interface from "./abi/chainlink/AggregatorV3Interface.json";
 import FeedRegistryInterface from "./abi/chainlink/FeedRegistryInterface.json";
 import UniswapV2PriceResolver from "./api/token-price-resolver/resolvers/UniswapV2PriceResolver";
+import UniswapV3PriceResolver from "./api/token-price-resolver/resolvers/UniswapV3PriceResolver";
 import { TokenPriceResolver } from "./api/token-price-resolver/token-price-resolver";
 import { ChecksummedAddress } from "./types";
 import { type PriceOracleInfo } from "./useConfig";
@@ -133,6 +134,19 @@ const feedRegistryFetcher =
           );
         }
       }
+      if (priceOracleInfo.uniswapV3) {
+        if (!priceOracleInfo.uniswapV3.factoryAddress) {
+          console.error(
+            "Invalid config: UniswapV3 factory address not defined",
+          );
+        } else {
+          resolvers.push(
+            new UniswapV3PriceResolver(
+              priceOracleInfo.uniswapV3.factoryAddress,
+            ),
+          );
+        }
+      }
 
       const _priceOracleInfo = priceOracleInfo;
       const results = await Promise.all(
@@ -145,14 +159,21 @@ const feedRegistryFetcher =
           ),
         ),
       );
-      for (let result of results) {
-        if (result !== undefined) {
-          return [
-            result * ethPriceData.price,
-            ethPriceData.decimals + 18n + (18n - tokenDecimals),
-          ];
-        }
+      const mostConfidentPool = results.reduce(
+        (acc, cur) =>
+          cur !== undefined &&
+          (acc === undefined || cur.confidence > acc.confidence)
+            ? cur
+            : acc,
+        undefined,
+      );
+      if (mostConfidentPool === undefined) {
+        return [undefined, undefined];
       }
+      return [
+        mostConfidentPool.price * ethPriceData.price,
+        ethPriceData.decimals + 18n + (18n - tokenDecimals),
+      ];
     }
     return [undefined, undefined];
   };
