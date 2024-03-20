@@ -18,6 +18,9 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
   const tokenMeta = useTokenMetadata(provider, t.token);
+  // NOTE: Prices are estimated from the previous block so as not to skew the
+  // estimate in favor of future price movements within this block, including
+  // those possibly coming from this transaction.
   const [quote, decimals] = useTokenUSDOracle(
     provider,
     blockNumber !== undefined && typeof blockNumber === "number"
