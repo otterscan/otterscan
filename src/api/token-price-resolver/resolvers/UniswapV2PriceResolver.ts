@@ -43,7 +43,7 @@ export default class UniswapV2PriceResolver implements TokenPriceResolver {
 
     let reserves: [bigint, bigint];
     try {
-      reserves = await pairContract["getReserves"]({ blockTag });
+      reserves = await pairContract.getReserves({ blockTag });
     } catch (err) {
       return undefined;
     }
