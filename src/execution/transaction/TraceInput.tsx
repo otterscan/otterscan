@@ -33,6 +33,9 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const sigText =
     raw4Bytes === null ? "<fallback>" : fourBytes?.name ?? raw4Bytes;
   const hasParams = t.input.length > 10;
+  const hasSig = t.input.length >= 10;
+  const isFallback = t.input.length === 2;
+  const hasSmallData = t.input.length > 2 && t.input.length < 10;
 
   const fourBytesTxDesc = useTransactionDescription(
     fourBytes,
@@ -57,6 +60,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const txDesc = sourcifyTxDesc ?? fourBytesTxDesc;
 
   const [expanded, setExpanded] = useState<boolean>(false);
+  const isContractCreation = t.type === "CREATE" || t.type === "CREATE2";
 
   return (
     <div
@@ -73,35 +77,36 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
         ) : (
           <>
             <span>
-              <TransactionAddress address={t.to} showCodeIndicator />
+              <TransactionAddress
+                address={t.to}
+                showCodeIndicator
+                creation={isContractCreation || undefined}
+              />
             </span>
-            {t.type !== "CREATE" && t.type !== "CREATE2" && (
+            {!isContractCreation && (isFallback || hasSig) && (
               <>
                 <span>.</span>
                 <FunctionSignature callType={t.type} sig={sigText} />
-                {t.value && t.value !== 0n && (
-                  <span className="whitespace-nowrap text-red-700">
-                    {"{"}value:{" "}
-                    <FormattedBalance value={t.value} symbol={symbol} />
-                    {"}"}
-                  </span>
-                )}
-                <span className="whitespace-nowrap">
-                  (
-                  {hasParams && (
-                    <ExpanderSwitch
-                      expanded={expanded}
-                      setExpanded={setExpanded}
-                    />
-                  )}
-                  {(!hasParams || !expanded) && <>)</>}
-                </span>
               </>
             )}
+            {t.value && t.value !== 0n && (
+              <span className="whitespace-nowrap text-red-700">
+                {"{"}value: <FormattedBalance value={t.value} symbol={symbol} />
+                {"}"}
+              </span>
+            )}
+            <span className="whitespace-nowrap">
+              (
+              {(hasParams || hasSmallData || isContractCreation) && (
+                <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
+              )}
+              {(!(hasParams || hasSmallData || isContractCreation) ||
+                !expanded) && <>)</>}
+            </span>
           </>
         )}
       </div>
-      {hasParams && expanded && (
+      {(hasParams || hasSmallData || isContractCreation) && expanded && (
         <>
           <div className="my-2 ml-5 mr-1">
             <InputDecoder
