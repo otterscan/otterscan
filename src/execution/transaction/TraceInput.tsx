@@ -76,7 +76,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
           </span>
         ) : (
           <>
-            <span>
+            <span className="font-sans">
               <TransactionAddress
                 address={t.to}
                 showCodeIndicator
