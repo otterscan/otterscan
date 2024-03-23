@@ -21,13 +21,14 @@ export function calculateFee(
     };
   }
   const blobFee =
-    txData.confirmedData!.blobGasUsed && txData.confirmedData!.blobGasUsed
+    txData.confirmedData!.blobGasUsed && txData.confirmedData!.blobGasPrice
       ? txData.confirmedData!.blobGasUsed! * txData.confirmedData!.blobGasPrice!
       : 0n;
   const paidFees = txData.gasPrice! * txData.confirmedData!.gasUsed;
-  const burntFees = block
-    ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
-    : 0n;
+  const burntFees =
+    block && block.baseFeePerGas
+      ? block.baseFeePerGas * txData.confirmedData!.gasUsed
+      : 0n;
   let opL1Fee = 0n;
   if (
     txData.confirmedData &&
