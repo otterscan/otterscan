@@ -1,12 +1,13 @@
 import { AbstractProvider, BlockTag, Contract, ZeroAddress } from "ethers";
 import erc20 from "../../../abi/erc20.json";
-import { TokenPriceResolver } from "../token-price-resolver";
+import { PriceOracleSource, TokenPriceResolver } from "../token-price-resolver";
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 export default class UniswapV3PriceResolver implements TokenPriceResolver {
   factoryAddress: string;
   minEthInPool: bigint;
+  source: PriceOracleSource = "Uniswap";
 
   constructor(factoryAddress: string, minEthInPool: bigint = 10n ** 17n) {
     this.factoryAddress = factoryAddress;

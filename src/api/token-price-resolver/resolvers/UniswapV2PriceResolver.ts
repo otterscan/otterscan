@@ -1,9 +1,10 @@
 import { AbstractProvider, BlockTag, Contract } from "ethers";
-import { TokenPriceResolver } from "../token-price-resolver";
+import { PriceOracleSource, TokenPriceResolver } from "../token-price-resolver";
 
 export default class UniswapV2PriceResolver implements TokenPriceResolver {
   factoryAddress: string;
   minEthInPool: bigint;
+  source: PriceOracleSource = "Uniswap";
 
   constructor(factoryAddress: string, minEthInPool: bigint = 10n ** 17n) {
     this.factoryAddress = factoryAddress;

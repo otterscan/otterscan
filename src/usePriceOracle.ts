@@ -12,7 +12,10 @@ import AggregatorV3Interface from "./abi/chainlink/AggregatorV3Interface.json";
 import FeedRegistryInterface from "./abi/chainlink/FeedRegistryInterface.json";
 import UniswapV2PriceResolver from "./api/token-price-resolver/resolvers/UniswapV2PriceResolver";
 import UniswapV3PriceResolver from "./api/token-price-resolver/resolvers/UniswapV3PriceResolver";
-import { TokenPriceResolver } from "./api/token-price-resolver/token-price-resolver";
+import {
+  PriceOracleSource,
+  TokenPriceResolver,
+} from "./api/token-price-resolver/token-price-resolver";
 import { ChecksummedAddress } from "./types";
 import { type PriceOracleInfo } from "./useConfig";
 import { RuntimeContext } from "./useRuntime";
@@ -75,7 +78,11 @@ const defaultPriceOracleInfo: Map<bigint, PriceOracleInfo> = new Map<
 ]);
 
 type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
-type FeedRegistryFetcherData = [bigint | undefined, number | undefined];
+type FeedRegistryFetcherData = {
+  price: bigint | undefined;
+  decimals: bigint | undefined;
+  source: PriceOracleSource | undefined;
+};
 
 const feedRegistryFetcherKey = (
   tokenAddress: ChecksummedAddress,
@@ -101,7 +108,7 @@ const feedRegistryFetcher =
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
   async ([tokenAddress, blockTag]) => {
     if (provider === undefined) {
-      return [undefined, undefined];
+      return { price: undefined, decimals: undefined, source: undefined };
     }
 
     // FeedRegistry is supported only on mainnet, see:
@@ -124,7 +131,7 @@ const feedRegistryFetcher =
         const decimals = await feedRegistry.decimals(tokenAddress, USD, {
           blockTag,
         });
-        return [quote, decimals];
+        return { price: quote, decimals, source: "Chainlink" };
       } catch (e) {}
 
       if (priceOracleInfo === undefined) {
@@ -145,7 +152,11 @@ const feedRegistryFetcher =
       }
       // Special case for Wrapped ETH
       if (tokenAddress === priceOracleInfo.wrappedEthAddress) {
-        return [ethPriceData.price, ethPriceData.decimals];
+        return {
+          price: ethPriceData.price,
+          decimals: ethPriceData.decimals,
+          source: "Equivalence",
+        };
       }
 
       const resolvers: TokenPriceResolver[] = [];
@@ -179,12 +190,19 @@ const feedRegistryFetcher =
       const _priceOracleInfo = priceOracleInfo;
       const results = await Promise.all(
         resolvers.map((resolver) =>
-          resolver.resolveTokenPrice(
-            provider,
-            _priceOracleInfo.wrappedEthAddress!,
-            tokenAddress,
-            blockTag,
-          ),
+          resolver
+            .resolveTokenPrice(
+              provider,
+              _priceOracleInfo.wrappedEthAddress!,
+              tokenAddress,
+              blockTag,
+            )
+            .then((result) => {
+              if (result === undefined) {
+                return result;
+              }
+              return { ...result, source: resolver.source };
+            }),
         ),
       );
       const mostConfidentPool = results.reduce(
@@ -196,14 +214,15 @@ const feedRegistryFetcher =
         undefined,
       );
       if (mostConfidentPool === undefined) {
-        return [undefined, undefined];
+        return { price: undefined, decimals: undefined, source: undefined };
       }
-      return [
-        mostConfidentPool.price * ethPriceData.price,
-        ethPriceData.decimals + 18n + (18n - tokenDecimals),
-      ];
+      return {
+        price: mostConfidentPool.price * ethPriceData.price,
+        decimals: ethPriceData.decimals + 18n + (18n - tokenDecimals),
+        source: mostConfidentPool.source,
+      };
     }
-    return [undefined, undefined];
+    return { price: undefined, decimals: undefined, source: undefined };
   };
 
 export const useTokenUSDOracle = (
@@ -211,7 +230,7 @@ export const useTokenUSDOracle = (
   blockTag: BlockTag | undefined,
   tokenAddress: ChecksummedAddress,
   tokenDecimals: bigint | undefined,
-): [bigint | undefined, number | undefined] => {
+): FeedRegistryFetcherData => {
   const netTokenEquivMap = tokenEquivMap.get(provider?._network.chainId);
   if (netTokenEquivMap !== undefined) {
     const tokenEquiv = netTokenEquivMap.get(tokenAddress);
@@ -241,9 +260,9 @@ export const useTokenUSDOracle = (
     fetcher,
   );
   if (error) {
-    return [undefined, undefined];
+    return { price: undefined, decimals: undefined, source: undefined };
   }
-  return data ?? [undefined, undefined];
+  return data ?? { price: undefined, decimals: undefined, source: undefined };
 };
 
 const ethUSDFetcherKey = (blockTag: BlockTag | undefined) => {

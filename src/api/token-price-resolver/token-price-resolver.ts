@@ -1,5 +1,7 @@
 import { AbstractProvider, BlockTag } from "ethers";
 
+export type PriceOracleSource = "Chainlink" | "Uniswap" | "Equivalence";
+
 export abstract class TokenPriceResolver {
   /**
    * Fetches the current token price in the reference token per 1e18 of the target token
@@ -17,4 +19,7 @@ export abstract class TokenPriceResolver {
     targetTokenAddress: string,
     blockTag?: BlockTag,
   ): Promise<{ price: bigint; confidence: bigint } | undefined>;
+
+  // Indicates where the price data came from
+  public abstract readonly source: PriceOracleSource;
 }

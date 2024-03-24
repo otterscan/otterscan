@@ -1,4 +1,5 @@
 import { FC, useContext } from "react";
+import { getPriceOraclePreset } from "../../components/FiatValue";
 import USDAmount from "../../components/USDAmount";
 import { useTokenBalance } from "../../ots2/usePrototypeTransferHooks";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
@@ -20,7 +21,11 @@ const TokenBalance: FC<TokenBalanceProps> = ({
   const { provider } = useContext(RuntimeContext);
   const balance = useTokenBalance(provider, holderAddress, tokenAddress);
   const metadata = useTokenMetadata(provider, tokenAddress);
-  const [quote, decimals] = useTokenUSDOracle(
+  const {
+    price: quote,
+    decimals,
+    source: priceSource,
+  } = useTokenUSDOracle(
     provider,
     "latest",
     tokenAddress,
@@ -48,7 +53,8 @@ const TokenBalance: FC<TokenBalanceProps> = ({
               amount={balance}
               amountDecimals={metadata.decimals}
               quote={quote}
-              quoteDecimals={decimals}
+              quoteDecimals={Number(decimals ?? 0)}
+              colorScheme={getPriceOraclePreset(priceSource)}
             />
           )}
       </td>
