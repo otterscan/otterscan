@@ -8,6 +8,7 @@ import {
   CompositeAddressResolver,
   SelectedResolvedName,
 } from "./CompositeAddressResolver";
+import { CustomLabelResolver } from "./CustomLabelResolver";
 import { ENSAddressResolver } from "./ENSAddressResolver";
 import { ERCTokenResolver } from "./ERCTokenResolver";
 import { HardcodedAddressResolver } from "./HardcodedAddressResolver";
@@ -25,8 +26,10 @@ const uniswapV2Resolver = new UniswapV2Resolver();
 const uniswapV3Resolver = new UniswapV3Resolver();
 const ercTokenResolver = new ERCTokenResolver();
 const hardcodedResolver = new HardcodedAddressResolver();
+export const customLabelResolver = new CustomLabelResolver();
 
 const _mainnetResolver = new CompositeAddressResolver();
+_mainnetResolver.addResolver(customLabelResolver);
 _mainnetResolver.addResolver(ensResolver);
 _mainnetResolver.addResolver(uniswapV3Resolver);
 _mainnetResolver.addResolver(uniswapV2Resolver);
@@ -35,6 +38,7 @@ _mainnetResolver.addResolver(ercTokenResolver);
 _mainnetResolver.addResolver(hardcodedResolver);
 
 const _defaultResolver = new CompositeAddressResolver();
+_defaultResolver.addResolver(customLabelResolver);
 _defaultResolver.addResolver(ercTokenResolver);
 _defaultResolver.addResolver(hardcodedResolver);
 
@@ -63,3 +67,4 @@ resolverRendererRegistry.set(uniswapV2Resolver, uniswapV2PairRenderer);
 resolverRendererRegistry.set(uniswapV3Resolver, uniswapV3PairRenderer);
 resolverRendererRegistry.set(ercTokenResolver, tokenRenderer);
 resolverRendererRegistry.set(hardcodedResolver, plainStringRenderer);
+resolverRendererRegistry.set(customLabelResolver, plainStringRenderer);
