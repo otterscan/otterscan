@@ -40,15 +40,39 @@ const tokenEquivMap = new Map<
   ],
 ]);
 
-const mainnetPriceOracleInfo: PriceOracleInfo = {
-  wrappedEthAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-  uniswapV2: {
-    factoryAddress: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-  },
-  uniswapV3: {
-    factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-  },
-};
+const defaultPriceOracleInfo: Map<bigint, PriceOracleInfo> = new Map<
+  bigint,
+  PriceOracleInfo
+>([
+  [
+    1n,
+    {
+      wrappedEthAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      uniswapV2: {
+        factoryAddress: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+      },
+      uniswapV3: {
+        factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      },
+    },
+  ],
+  [
+    10n,
+    {
+      nativeTokenPrice: {
+        ethUSDOracleAddress: "0x13e3Ee699D1909E989722E753853AE30b17e08c5",
+        ethUSDOracleDecimals: 8,
+      },
+      wrappedEthAddress: "0x4200000000000000000000000000000000000006",
+      uniswapV2: {
+        factoryAddress: "0x0c3c1c532F1e39EdF36BE9Fe0bE1410313E074Bf",
+      },
+      uniswapV3: {
+        factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      },
+    },
+  ],
+]);
 
 type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
 type FeedRegistryFetcherData = [bigint | undefined, number | undefined];
@@ -104,9 +128,12 @@ const feedRegistryFetcher =
       } catch (e) {}
 
       if (priceOracleInfo === undefined) {
-        priceOracleInfo = mainnetPriceOracleInfo;
+        priceOracleInfo = defaultPriceOracleInfo.get(1n);
       }
+    } else if (priceOracleInfo === undefined) {
+      priceOracleInfo = defaultPriceOracleInfo.get(provider!._network.chainId);
     }
+
     if (
       priceOracleInfo &&
       priceOracleInfo.wrappedEthAddress &&
@@ -256,10 +283,15 @@ export const useETHUSDOracle = (
   blockTag: BlockTag | undefined,
 ): { price: bigint | undefined; decimals: bigint } => {
   const { config } = useContext(RuntimeContext);
-  const fetcher = ethUSDFetcher(provider, config?.priceOracleInfo);
+  const priceOracleInfo =
+    config?.priceOracleInfo ??
+    (provider
+      ? defaultPriceOracleInfo.get(provider._network.chainId)
+      : undefined);
+  const fetcher = ethUSDFetcher(provider, priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   const decimals = BigInt(
-    config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ?? 8,
+    priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ?? 8,
   );
   if (error) {
     return { price: undefined, decimals };
