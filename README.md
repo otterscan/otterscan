@@ -90,6 +90,13 @@ Test-in-Prod, the makers of OP-Erigon, also host instances for Optimism:
 - OP-Sepolia testnet: https://otterscan.sepolia.testinprod.io/
 - OP-Mainnet: https://otterscan.mainnet.testinprod.io/
 
+## Commercial offerings
+
+Some node providers offer Otterscan API for their customers. Please check with them their business conditions as we are not affiliated to them:
+
+- Llamanodes: https://llamanodes.com/
+- Quicknode: https://www.quicknode.com/
+
 ## Install instructions
 
 [Here](./docs/install.md).
