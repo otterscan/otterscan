@@ -34,10 +34,8 @@ const InternalTransfer: FC<InternalTransferProps> = ({
     block?.miner !== undefined && internalOp.from === block.miner;
   const toMiner = block?.miner !== undefined && internalOp.to === block.miner;
 
-  const blockETHUSDPrice: bigint | undefined = useETHUSDOracle(
-    provider,
-    txData.confirmedData?.blockNumber,
-  );
+  const { price: blockETHUSDPrice, decimals: ethPriceDecimals } =
+    useETHUSDOracle(provider, txData.confirmedData?.blockNumber);
   const fromHasCode = useHasCode(
     provider,
     internalOp.from,
@@ -106,8 +104,7 @@ const InternalTransfer: FC<InternalTransferProps> = ({
               amount={internalOp.value}
               amountDecimals={decimals}
               quote={blockETHUSDPrice}
-              // TODO: migrate to SWR and standardize this magic number
-              quoteDecimals={8}
+              quoteDecimals={Number(ethPriceDecimals)}
             />
           )}
         </div>

@@ -1,6 +1,7 @@
 import { faCaretRight, faSackDollar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo, useContext } from "react";
+import { getPriceOraclePreset } from "../../components/FiatValue";
 import USDAmount from "../../components/USDAmount";
 import FormattedBalanceHighlighter from "../../selection/FormattedBalanceHighlighter";
 import { AddressContext, TokenTransfer } from "../../types";
@@ -17,8 +18,22 @@ type TokenTransferItemProps = {
 const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
   const { provider } = useContext(RuntimeContext);
   const blockNumber = useBlockNumberContext();
-  const [quote, decimals] = useTokenUSDOracle(provider, blockNumber, t.token);
   const tokenMeta = useTokenMetadata(provider, t.token);
+  // NOTE: Prices are estimated from the previous block so as not to skew the
+  // estimate in favor of future price movements within this block, including
+  // those possibly coming from this transaction.
+  const {
+    price: quote,
+    decimals,
+    source: priceSource,
+  } = useTokenUSDOracle(
+    provider,
+    blockNumber !== undefined && typeof blockNumber === "number"
+      ? blockNumber - 1
+      : blockNumber,
+    t.token,
+    tokenMeta?.decimals !== undefined ? BigInt(tokenMeta?.decimals) : undefined,
+  );
 
   return (
     <div className="flex items-baseline space-x-2 truncate px-2 py-1 hover:bg-gray-100">
@@ -56,7 +71,8 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
               amount={t.value}
               amountDecimals={tokenMeta.decimals}
               quote={quote}
-              quoteDecimals={decimals}
+              quoteDecimals={Number(decimals ?? 0)}
+              colorScheme={getPriceOraclePreset(priceSource)}
             />
           )}
         </div>

@@ -1,12 +1,13 @@
 import { FixedNumber } from "ethers";
 import { FC, memo } from "react";
-import FiatValue, { neutralPreset } from "./FiatValue";
+import FiatValue, { FiatBoxProps, neutralPreset } from "./FiatValue";
 
 type USDAmountProps = {
   amount: bigint;
   amountDecimals: number;
   quote: bigint;
   quoteDecimals: number;
+  colorScheme?: FiatBoxProps;
 };
 
 // TODO: fix the duplication mess with other currency display components
@@ -20,16 +21,17 @@ const USDAmount: FC<USDAmountProps> = ({
   amountDecimals,
   quote,
   quoteDecimals,
+  colorScheme = neutralPreset,
 }) => {
   const value = amount * quote;
   const decimals = amountDecimals + quoteDecimals;
   const fiatAmount = FixedNumber.fromValue(
     value,
     decimals,
-    `ufixed256x${decimals}`,
+    `ufixed512x${decimals}`,
   );
 
-  return <FiatValue value={fiatAmount} {...neutralPreset} />;
+  return <FiatValue value={fiatAmount} {...colorScheme} />;
 };
 
 export default memo(USDAmount);

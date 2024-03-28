@@ -781,7 +781,7 @@ const tokenMetadataFetcher =
       return {
         name,
         symbol,
-        decimals,
+        decimals: Number(decimals),
       };
     } catch (err) {
       // Ignore on purpose; this indicates the probe failed and the address

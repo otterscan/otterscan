@@ -10,7 +10,14 @@ import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import AggregatorV3Interface from "./abi/chainlink/AggregatorV3Interface.json";
 import FeedRegistryInterface from "./abi/chainlink/FeedRegistryInterface.json";
+import UniswapV2PriceResolver from "./api/token-price-resolver/resolvers/UniswapV2PriceResolver";
+import UniswapV3PriceResolver from "./api/token-price-resolver/resolvers/UniswapV3PriceResolver";
+import {
+  PriceOracleSource,
+  TokenPriceResolver,
+} from "./api/token-price-resolver/token-price-resolver";
 import { ChecksummedAddress } from "./types";
+import { type PriceOracleInfo } from "./useConfig";
 import { RuntimeContext } from "./useRuntime";
 import { commify } from "./utils/utils";
 
@@ -36,8 +43,46 @@ const tokenEquivMap = new Map<
   ],
 ]);
 
+const defaultPriceOracleInfo: Map<bigint, PriceOracleInfo> = new Map<
+  bigint,
+  PriceOracleInfo
+>([
+  [
+    1n,
+    {
+      wrappedEthAddress: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      uniswapV2: {
+        factoryAddress: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+      },
+      uniswapV3: {
+        factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      },
+    },
+  ],
+  [
+    10n,
+    {
+      nativeTokenPrice: {
+        ethUSDOracleAddress: "0x13e3Ee699D1909E989722E753853AE30b17e08c5",
+        ethUSDOracleDecimals: 8,
+      },
+      wrappedEthAddress: "0x4200000000000000000000000000000000000006",
+      uniswapV2: {
+        factoryAddress: "0x0c3c1c532F1e39EdF36BE9Fe0bE1410313E074Bf",
+      },
+      uniswapV3: {
+        factoryAddress: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+      },
+    },
+  ],
+]);
+
 type FeedRegistryFetcherKey = [ChecksummedAddress, BlockTag];
-type FeedRegistryFetcherData = [bigint | undefined, number | undefined];
+type FeedRegistryFetcherData = {
+  price: bigint | undefined;
+  decimals: bigint | undefined;
+  source: PriceOracleSource | undefined;
+};
 
 const feedRegistryFetcherKey = (
   tokenAddress: ChecksummedAddress,
@@ -57,38 +102,135 @@ const FEED_REGISTRY_MAINNET_PROTOTYPE = new Contract(
 const feedRegistryFetcher =
   (
     provider: JsonRpcApiProvider | undefined,
+    priceOracleInfo: PriceOracleInfo | undefined,
+    ethPriceData: { price: bigint | undefined; decimals: bigint },
+    tokenDecimals: bigint,
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
   async ([tokenAddress, blockTag]) => {
     if (provider === undefined) {
-      return [undefined, undefined];
+      return { price: undefined, decimals: undefined, source: undefined };
     }
 
-    // It work works on ethereum mainnet and kovan, see:
+    // FeedRegistry is supported only on mainnet, see:
     // https://docs.chain.link/docs/feed-registry/
-    if (provider!._network.chainId !== 1n) {
-      throw new Error("FeedRegistry is supported only on mainnet");
+    if (provider!._network.chainId === 1n) {
+      try {
+        // Let SWR handle error
+        // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+        const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(
+          provider,
+        ) as Contract;
+        const priceData = await feedRegistry.latestRoundData(
+          tokenAddress,
+          USD,
+          {
+            blockTag,
+          },
+        );
+        const quote = BigInt(priceData.answer);
+        const decimals = await feedRegistry.decimals(tokenAddress, USD, {
+          blockTag,
+        });
+        return { price: quote, decimals, source: "Chainlink" };
+      } catch (e) {}
+
+      if (priceOracleInfo === undefined) {
+        priceOracleInfo = defaultPriceOracleInfo.get(1n);
+      }
+    } else if (priceOracleInfo === undefined) {
+      priceOracleInfo = defaultPriceOracleInfo.get(provider!._network.chainId);
     }
 
-    // Let SWR handle error
-    // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(
-      provider,
-    ) as Contract;
-    const priceData = await feedRegistry.latestRoundData(tokenAddress, USD, {
-      blockTag,
-    });
-    const quote = BigInt(priceData.answer);
-    const decimals = await feedRegistry.decimals(tokenAddress, USD, {
-      blockTag,
-    });
-    return [quote, decimals];
+    if (
+      priceOracleInfo &&
+      priceOracleInfo.wrappedEthAddress &&
+      ethPriceData.decimals + 18n + (18n - tokenDecimals) >= 0n
+    ) {
+      // ETH price has not come in yet
+      if (ethPriceData.price === undefined) {
+        throw new Error("ETH price unknown");
+      }
+      // Special case for Wrapped ETH
+      if (tokenAddress === priceOracleInfo.wrappedEthAddress) {
+        return {
+          price: ethPriceData.price,
+          decimals: ethPriceData.decimals,
+          source: "Equivalence",
+        };
+      }
+
+      const resolvers: TokenPriceResolver[] = [];
+      if (priceOracleInfo.uniswapV2) {
+        if (!priceOracleInfo.uniswapV2.factoryAddress) {
+          console.error(
+            "Invalid config: UniswapV2 factory address not defined",
+          );
+        } else {
+          resolvers.push(
+            new UniswapV2PriceResolver(
+              priceOracleInfo.uniswapV2.factoryAddress,
+            ),
+          );
+        }
+      }
+      if (priceOracleInfo.uniswapV3) {
+        if (!priceOracleInfo.uniswapV3.factoryAddress) {
+          console.error(
+            "Invalid config: UniswapV3 factory address not defined",
+          );
+        } else {
+          resolvers.push(
+            new UniswapV3PriceResolver(
+              priceOracleInfo.uniswapV3.factoryAddress,
+            ),
+          );
+        }
+      }
+
+      const _priceOracleInfo = priceOracleInfo;
+      const results = await Promise.all(
+        resolvers.map((resolver) =>
+          resolver
+            .resolveTokenPrice(
+              provider,
+              _priceOracleInfo.wrappedEthAddress!,
+              tokenAddress,
+              blockTag,
+            )
+            .then((result) => {
+              if (result === undefined) {
+                return result;
+              }
+              return { ...result, source: resolver.source };
+            }),
+        ),
+      );
+      const mostConfidentPool = results.reduce(
+        (acc, cur) =>
+          cur !== undefined &&
+          (acc === undefined || cur.confidence > acc.confidence)
+            ? cur
+            : acc,
+        undefined,
+      );
+      if (mostConfidentPool === undefined) {
+        return { price: undefined, decimals: undefined, source: undefined };
+      }
+      return {
+        price: mostConfidentPool.price * ethPriceData.price,
+        decimals: ethPriceData.decimals + 18n + (18n - tokenDecimals),
+        source: mostConfidentPool.source,
+      };
+    }
+    return { price: undefined, decimals: undefined, source: undefined };
   };
 
 export const useTokenUSDOracle = (
   provider: JsonRpcApiProvider | undefined,
   blockTag: BlockTag | undefined,
   tokenAddress: ChecksummedAddress,
-): [bigint | undefined, number | undefined] => {
+  tokenDecimals: bigint | undefined,
+): FeedRegistryFetcherData => {
   const netTokenEquivMap = tokenEquivMap.get(provider?._network.chainId);
   if (netTokenEquivMap !== undefined) {
     const tokenEquiv = netTokenEquivMap.get(tokenAddress);
@@ -96,15 +238,31 @@ export const useTokenUSDOracle = (
       tokenAddress = tokenEquiv;
     }
   }
-  const fetcher = feedRegistryFetcher(provider);
+  const { price: ethPrice, decimals: ethPriceDecimals } = useETHUSDOracle(
+    provider,
+    blockTag,
+  );
+  const { config } = useContext(RuntimeContext);
+  const fetcher = feedRegistryFetcher(
+    provider,
+    config?.priceOracleInfo,
+    {
+      price: ethPrice,
+      decimals: ethPriceDecimals,
+    },
+    tokenDecimals ?? 0n,
+  );
+  // Conditional data fetching, since token price resolvers depend on the ETH price
   const { data, error } = useSWRImmutable(
-    feedRegistryFetcherKey(tokenAddress, blockTag),
+    ethPrice !== undefined && tokenDecimals !== undefined
+      ? feedRegistryFetcherKey(tokenAddress, blockTag)
+      : null,
     fetcher,
   );
   if (error) {
-    return [undefined, undefined];
+    return { price: undefined, decimals: undefined, source: undefined };
   }
-  return data ?? [undefined, undefined];
+  return data ?? { price: undefined, decimals: undefined, source: undefined };
 };
 
 const ethUSDFetcherKey = (blockTag: BlockTag | undefined) => {
@@ -119,15 +277,21 @@ const ETH_USD_FEED_PROTOTYPE = new Contract(ZeroAddress, AggregatorV3Interface);
 const ethUSDFetcher =
   (
     provider: JsonRpcApiProvider | undefined,
+    priceOracleInfo: PriceOracleInfo | undefined,
   ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
   async ([_, blockTag]) => {
-    if (provider?._network.chainId !== 1n) {
+    if (
+      provider === undefined ||
+      (provider?._network.chainId !== 1n &&
+        priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress === undefined)
+    ) {
       return undefined;
     }
 
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const c = ETH_USD_FEED_PROTOTYPE.connect(provider).attach(
-      "eth-usd.data.eth",
+      priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress ||
+        "eth-usd.data.eth",
     ) as Contract;
     const priceData = await c.latestRoundData({ blockTag });
     return priceData;
@@ -136,13 +300,23 @@ const ethUSDFetcher =
 export const useETHUSDOracle = (
   provider: JsonRpcApiProvider | undefined,
   blockTag: BlockTag | undefined,
-): bigint | undefined => {
-  const fetcher = ethUSDFetcher(provider);
+): { price: bigint | undefined; decimals: bigint } => {
+  const { config } = useContext(RuntimeContext);
+  const priceOracleInfo =
+    config?.priceOracleInfo ??
+    (provider
+      ? defaultPriceOracleInfo.get(provider._network.chainId)
+      : undefined);
+  const fetcher = ethUSDFetcher(provider, priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
+  const decimals = BigInt(
+    priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ?? 8,
+  );
   if (error) {
-    return undefined;
+    return { price: undefined, decimals };
   }
-  return data !== undefined ? BigInt(data.answer) : undefined;
+  const price = data !== undefined ? BigInt(data.answer) : undefined;
+  return { price, decimals };
 };
 
 /**
@@ -152,14 +326,20 @@ export const useFiatValue = (
   ethAmount: bigint,
   blockTag: BlockTag | undefined,
 ) => {
-  const { provider } = useContext(RuntimeContext);
-  const eth2USDValue = useETHUSDOracle(provider, blockTag);
+  const { config, provider } = useContext(RuntimeContext);
+  const { price: ethPrice, decimals: ethPriceDecimals } = useETHUSDOracle(
+    provider,
+    blockTag,
+  );
 
-  if (ethAmount === 0n || eth2USDValue === undefined) {
+  if (ethAmount === 0n || ethPrice === undefined) {
     return undefined;
   }
 
-  return FixedNumber.fromValue((ethAmount * eth2USDValue) / 10n ** 8n, 18);
+  return FixedNumber.fromValue(
+    (ethAmount * ethPrice) / 10n ** ethPriceDecimals,
+    18,
+  );
 };
 
 export const formatFiatValue = (
@@ -185,7 +365,8 @@ export const useETHUSDRawOracle = (
   provider: JsonRpcApiProvider | undefined,
   blockTag: BlockTag | undefined,
 ): any | undefined => {
-  const fetcher = ethUSDFetcher(provider);
+  const { config } = useContext(RuntimeContext);
+  const fetcher = ethUSDFetcher(provider, config?.priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   if (error) {
     return undefined;
