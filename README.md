@@ -112,6 +112,8 @@ To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
 To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node in a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the modifications Otterscan requires possible.
 
+To the [Test-in-Prod](https://www.testinprod.io/) team that made OP-Erigon possible. Their effort made it possible to run Otterscan against any Optimism Superchain.
+
 To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fast database that empowers Erigon.
 
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsors and makes available their icons under a permissive license.
