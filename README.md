@@ -54,6 +54,28 @@ The UI was intentionally made very similar to the most popular Ethereum block ex
 
 However, you will see that we made many UI improvements.
 
+## Supported networks
+
+Otterscan runs on any network that has a client implementing the [Otterscan API](#otterscan-json-rpc-api-extensions).
+
+### Erigon
+
+The reference implementation is maintained by us and comes out-of-box in any Erigon installation.
+
+So, it runs on any network supported by Erigon, which at the moment of writing are:
+
+- Ethereum mainnet + all testnets
+- Gnosis chain
+- Polygon
+
+### Optimism
+
+[Test-in-Prod](https://www.testinprod.io/) made and maintain OP-Erigon, which is a fork of Erigon that can sync any Optimism Superchain (Optimism, BASE, Zora, etc.).
+
+### Anvil
+
+Anvil [implements the Otterscan API](https://book.getfoundry.sh/reference/anvil/#otterscan-methods), so you can point your Otterscan installation to an Anvil RPC endpoint and have an explorer for your local devnet.
+
 ## Public instances
 
 Otterscan is meant to be run on your own environment ([see install instructions below](#install-instructions)).
