@@ -54,6 +54,20 @@ The UI was intentionally made very similar to the most popular Ethereum block ex
 
 However, you will see that we made many UI improvements.
 
+## Public instances
+
+Otterscan is meant to be run on your own environment ([see install instructions below](#install-instructions)).
+
+However, we host some testnet instances as a showcase of our features:
+
+- Sepolia testnet: https://sepolia.otterscan.io/
+- Holesky testnet: https://holesky.otterscan.io/
+
+Test-in-Prod, the makers of OP-Erigon, also host instances for Optimism:
+
+- OP-Sepolia testnet: https://otterscan.sepolia.testinprod.io/
+- OP-Mainnet: https://otterscan.mainnet.testinprod.io/
+
 ## Install instructions
 
 [Here](./docs/install.md).
