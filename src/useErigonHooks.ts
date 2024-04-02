@@ -824,10 +824,8 @@ const l1EpochFetcher =
       provider,
     ).attach(l1BlockContractAddress) as Contract;
     try {
-      console.log("FETCHING");
       return l1BlockContract.number({ blockTag });
     } catch (err) {
-      // Call failed
       return null;
     }
   };
