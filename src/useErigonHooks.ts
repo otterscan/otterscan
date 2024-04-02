@@ -17,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
+import L1Block from "./abi/optimism/L1Block.json";
 import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
 import {
   ChecksummedAddress,
@@ -805,4 +806,41 @@ export const useTokenMetadata = (
     return undefined;
   }
   return data;
+};
+
+const l1BlockContractAddress = "0x4200000000000000000000000000000000000015";
+const L1BLOCK_PROTOTYPE = new Contract(l1BlockContractAddress, L1Block);
+const l1EpochFetcher =
+  (
+    provider: JsonRpcApiProvider | undefined,
+  ): Fetcher<bigint | null, ["l1epoch", BlockTag]> =>
+  async ([_, blockTag]) => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const l1BlockContract: Contract = L1BLOCK_PROTOTYPE.connect(
+      provider,
+    ).attach(l1BlockContractAddress) as Contract;
+    try {
+      console.log("FETCHING");
+      return l1BlockContract.number({ blockTag });
+    } catch (err) {
+      // Call failed
+      return null;
+    }
+  };
+
+export const useL1Epoch = (
+  provider: JsonRpcApiProvider | undefined,
+  blockTag: BlockTag | null,
+): bigint | null | undefined => {
+  const fetcher = l1EpochFetcher(provider);
+  const key =
+    provider !== undefined && isOptimisticChain(provider._network.chainId)
+      ? ["l1epoch", blockTag]
+      : null;
+  const { data, error } = useSWRImmutable(key, fetcher);
+  return error ? undefined : data;
 };

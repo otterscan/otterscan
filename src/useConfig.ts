@@ -174,6 +174,17 @@ export type OtterscanConfig = {
    * of the native token and all other tokens.
    */
   priceOracleInfo?: PriceOracleInfo;
+
+  /**
+   * Optional settings for chains that follow the OP Stack.
+   */
+  opChainSettings?: {
+    /**
+     * The root URL of a block explorer for the layer-1 of this chain, without
+     * a trailing forward slash, e.g. "https://sepolia.otterscan.io".
+     */
+    l1ExplorerURL?: string;
+  };
 };
 
 /**
