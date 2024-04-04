@@ -42,18 +42,12 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
   const highlighter = useHighlighter();
   useEffect(() => {
     if (source !== undefined && source !== null && highlighter) {
-      (async () => {
-        try {
-          setCode(
-            highlighter.codeToHtml(source, {
-              lang: langName,
-              theme: "github-light",
-            }),
-          );
-        } catch (e) {
-          console.error(e);
-        }
-      })();
+      setCode(
+        highlighter.codeToHtml(source, {
+          lang: langName,
+          theme: "github-light",
+        }),
+      );
     } else {
       setCode("");
     }
