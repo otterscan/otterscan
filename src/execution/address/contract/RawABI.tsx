@@ -1,16 +1,20 @@
 import { FC, memo } from "react";
-import { SyntaxHighlighter, docco } from "../../../highlight-init";
 import { ABIAwareComponentProps } from "../../types";
+import HighlightedSource from "./HighlightedSource";
 
-const RawABI: FC<ABIAwareComponentProps> = ({ abi }) => (
-  <SyntaxHighlighter
-    className="h-60 w-full border font-code text-base"
-    language="json"
-    style={docco}
-    showLineNumbers
-  >
-    {JSON.stringify(abi, null, "  ") ?? ""}
-  </SyntaxHighlighter>
-);
+type HighlightedSolidityProps = {
+  source?: string | null;
+};
+
+const RawABI: FC<ABIAwareComponentProps> = ({ abi }) => {
+  return (
+    <div className="h-60 w-full border font-code text-base overflow-auto">
+      <HighlightedSource
+        source={JSON.stringify(abi, null, "  ") ?? ""}
+        langName="json"
+      />
+    </div>
+  );
+};
 
 export default memo(RawABI);
