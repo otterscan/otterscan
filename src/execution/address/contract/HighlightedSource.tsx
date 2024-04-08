@@ -55,7 +55,7 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
 
   return (
     <div
-      className="h-full w-full border font-code text-sm p-3"
+      className="h-full w-full border font-code text-sm p-3 [&_code]:[counter-reset:step] [&_code]:[counter-increment:step_0] [&_span.line]:before:content-[counter(step)] [&_span.line]:before:[counter-increment:step] [&_span.line]:before:w-4 [&_span.line]:before:mr-6 [&_span.line]:before:inline-block [&_span.line]:before:text-right [&_span.line]:before:text-source-line-numbers"
       dangerouslySetInnerHTML={{ __html: code }}
     />
   );
