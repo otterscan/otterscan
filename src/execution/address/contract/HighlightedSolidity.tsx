@@ -1,6 +1,4 @@
-import { FC, lazy } from "react";
-
-import React from "react";
+import { FC, lazy, memo } from "react";
 
 const HighlightedSource = lazy(() => import("./HighlightedSource"));
 
@@ -12,4 +10,4 @@ const HighlightedSolidity: FC<HighlightedSolidityProps> = ({ source }) => {
   return <HighlightedSource source={source} langName="solidity" />;
 };
 
-export default React.memo(HighlightedSolidity);
+export default memo(HighlightedSolidity);
