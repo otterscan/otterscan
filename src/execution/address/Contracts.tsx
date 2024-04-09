@@ -1,7 +1,7 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu } from "@headlessui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { lazy, useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
@@ -12,9 +12,12 @@ import { useGetCode } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
-import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
 import ContractABI from "./contract/ContractABI";
+
+const HighlightedSolidity = lazy(
+  () => import("./contract/HighlightedSolidity"),
+);
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -131,8 +134,8 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
               {selected && (
                 <>
                   {match.metadata.sources[selected].content ? (
-                    <Contract
-                      content={match.metadata.sources[selected].content}
+                    <HighlightedSolidity
+                      source={match.metadata.sources[selected].content}
                     />
                   ) : (
                     <ContractFromRepo

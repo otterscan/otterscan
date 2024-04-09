@@ -17,6 +17,7 @@ export default {
         "link-blue-hover": "#0468ab",
         "verified-contract": "#2b50aa",
         "verified-contract-hover": "#26007b",
+        "source-line-numbers": "#738a9486",
       },
       fontFamily: {
         sans: ["Roboto"],
