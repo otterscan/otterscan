@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import BlockLink from "../components/BlockLink";
 import BlockNotFound from "../components/BlockNotFound";
 import ContentFrame from "../components/ContentFrame";
+import ExternalBlockLink from "../components/ExternalBlockLink";
 import FormattedBalance from "../components/FormattedBalance";
 import HexValue from "../components/HexValue";
 import InfoRow from "../components/InfoRow";
@@ -16,7 +17,7 @@ import RelativePosition from "../components/RelativePosition";
 import Timestamp from "../components/Timestamp";
 import { blockTxsURL } from "../url";
 import { useChainInfo } from "../useChainInfo";
-import { useBlockData } from "../useErigonHooks";
+import { useBlockData, useL1Epoch } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import { useBlockPageTitle } from "../useTitle";
 import { commify } from "../utils/utils";
@@ -28,7 +29,7 @@ interface BlockDetailsProps {
 }
 
 const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   if (blockNumberOrHash === undefined) {
     throw new Error("blockNumberOrHash couldn't be undefined here");
   }
@@ -51,6 +52,10 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
     block?.baseFeePerGas && block.baseFeePerGas * gasUsedWithoutDepositTx;
   const gasUsedPerc =
     block && Number((block.gasUsed * 10000n) / block.gasLimit) / 100;
+
+  const l1Epoch = useL1Epoch(provider, block ? block.number : null);
+  const l1ExplorerUrl: string | undefined =
+    config?.opChainSettings?.l1ExplorerURL;
 
   return (
     <>
@@ -171,6 +176,14 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
           {block.parentBeaconBlockRoot && (
             <InfoRow title="Parent Beacon Block Root">
               <HexValue value={block.parentBeaconBlockRoot} />
+            </InfoRow>
+          )}
+          {l1Epoch !== undefined && l1Epoch !== null && (
+            <InfoRow title="L1 Epoch">
+              <ExternalBlockLink
+                blockTag={l1Epoch}
+                explorerUrl={l1ExplorerUrl}
+              />
             </InfoRow>
           )}
           <InfoRow title="Sha3Uncles">
