@@ -1,5 +1,4 @@
 import { TransactionData } from "../types";
-import { multiplyByScalar } from "./op-tx-calculation";
 
 const feeTypes = ["blob", "burned", "tip", "opL1Fee"];
 type FeeType = (typeof feeTypes)[number];
@@ -30,16 +29,8 @@ export function calculateFee(
       ? block.baseFeePerGas * txData.confirmedData!.gasUsed
       : 0n;
   let opL1Fee = 0n;
-  if (
-    txData.confirmedData &&
-    txData.confirmedData.l1GasUsed &&
-    txData.confirmedData.l1GasPrice &&
-    txData.confirmedData.l1FeeScalar !== undefined
-  ) {
-    opL1Fee = multiplyByScalar(
-      txData.confirmedData.l1GasUsed * txData.confirmedData.l1GasPrice,
-      txData.confirmedData.l1FeeScalar,
-    );
+  if (txData.confirmedData && txData.confirmedData.l1Fee !== undefined) {
+    opL1Fee = txData.confirmedData.l1Fee;
   }
 
   const fees: Record<FeeType, bigint> = {
