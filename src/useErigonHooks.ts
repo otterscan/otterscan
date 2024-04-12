@@ -128,24 +128,18 @@ const blockTransactionsFetcher: Fetcher<
       }
 
       // Handle Optimism-specific values
-      let l1GasUsed: bigint | undefined;
-      let l1GasPrice: bigint | undefined;
-      let l1FeeScalar: string | undefined;
+      let l1Fee: bigint | undefined;
       if (isOptimisticChain(provider._network.chainId)) {
         if (t.type === 126) {
           fee = 0n;
           effectiveGasPrice = 0n;
         } else {
-          l1GasUsed = formatter.bigInt(_rawReceipt.l1GasUsed);
-          l1GasPrice = formatter.bigInt(_rawReceipt.l1GasPrice);
-          l1FeeScalar = _rawReceipt.l1FeeScalar;
+          l1Fee = formatter.bigInt(_rawReceipt.l1Fee);
           ({ fee, gasPrice: effectiveGasPrice } = getOpFeeData(
             t.type,
             effectiveGasPrice,
             _receipt.gasUsed!,
-            l1GasUsed,
-            l1GasPrice,
-            l1FeeScalar ?? "0",
+            l1Fee,
           ));
         }
       } else {
@@ -260,6 +254,7 @@ export const useTxData = (
         let l1GasUsed: bigint | undefined;
         let l1GasPrice: bigint | undefined;
         let l1FeeScalar: string | undefined;
+        let l1Fee: bigint | undefined;
         if (isOptimisticChain(provider._network.chainId)) {
           if (_response.type === 0x7e) {
             fee = 0n;
@@ -272,13 +267,12 @@ export const useTxData = (
             l1GasUsed = formatter.bigInt(_rawReceipt.l1GasUsed);
             l1GasPrice = formatter.bigInt(_rawReceipt.l1GasPrice);
             l1FeeScalar = _rawReceipt.l1FeeScalar;
+            l1Fee = formatter.bigInt(_rawReceipt.l1Fee);
             ({ fee, gasPrice } = getOpFeeData(
               _response.type,
               _response.gasPrice!,
               _receipt ? _receipt.gasUsed! : 0n,
-              l1GasUsed,
-              l1GasPrice,
-              l1FeeScalar ?? "0",
+              l1Fee,
             ));
           }
         } else {
@@ -318,6 +312,7 @@ export const useTxData = (
                   l1GasUsed,
                   l1GasPrice,
                   l1FeeScalar,
+                  l1Fee,
                 },
         });
       } catch (err) {

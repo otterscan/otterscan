@@ -37,18 +37,12 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
       let fee: bigint;
       let gasPrice: bigint;
       if (isOptimisticChain(provider._network.chainId)) {
-        const l1GasUsed: bigint = formatter.bigInt(_rawReceipt.l1GasUsed ?? 0n);
-        const l1GasPrice: bigint = formatter.bigInt(
-          _rawReceipt.l1GasPrice ?? 0n,
-        );
-        const l1FeeScalar: string = _rawReceipt.l1FeeScalar ?? "0";
+        const l1Fee: bigint = formatter.bigInt(_rawReceipt.l1Fee ?? 0n);
         ({ fee, gasPrice } = getOpFeeData(
           t.type,
           t.gasPrice!,
           _receipt.gasUsed,
-          l1GasUsed,
-          l1GasPrice,
-          l1FeeScalar,
+          l1Fee,
         ));
       } else {
         fee = _receipt.gasUsed * t.gasPrice!;

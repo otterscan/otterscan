@@ -69,6 +69,7 @@ export type ConfirmedTransactionData = {
   l1GasUsed?: bigint;
   l1GasPrice?: bigint;
   l1FeeScalar?: string;
+  l1Fee?: bigint;
 };
 
 // The VOID...
