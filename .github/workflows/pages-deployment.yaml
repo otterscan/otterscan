@@ -18,10 +18,10 @@ jobs:
         run: npm ci
       - name: Build Otterscan
         run: npm run build
-      - name: Publish
-        uses: cloudflare/pages-action@1
         env:
           VITE_CONFIG_JSON: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_SETTINGS }}
+      - name: Publish
+        uses: cloudflare/pages-action@1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
