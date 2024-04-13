@@ -7,12 +7,11 @@ on:
         required: true
 
 jobs:
-  deploy:
+  deploy-cloudflare:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
-    name: Deploy to Gnosis Integration Server
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,10 +25,10 @@ jobs:
       - name: Build Otterscan
         run: npm run build
         env:
-          VITE_CONFIG_JSON: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_SETTINGS }}
+          VITE_CONFIG_JSON: ${{ secrets.viteConfigJson }}
       - name: Publish
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ secrets.CLOUDFLARE_INTEG_GNOSIS_PROJECT }} --commit-dirty=true
+          command: pages deploy dist --project-name=${{ secrets.projectName }} --commit-dirty=true
