@@ -1,6 +1,10 @@
 on:
   workflow_call:
     secrets:
+      apiToken:
+        required: true
+      accountId:
+        required: true
       projectName:
         required: true
       viteConfigJson:
@@ -29,6 +33,6 @@ jobs:
       - name: Publish
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ secrets.apiToken }}
+          accountId: ${{ secrets.accountId }}
           command: pages deploy dist --project-name=${{ secrets.projectName }} --commit-dirty=true

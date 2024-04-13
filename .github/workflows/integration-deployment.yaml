@@ -3,5 +3,7 @@ jobs:
   deploy-gnosis:
     uses: ./.github/workflows/pages-deployment.yaml
     secrets:
+      apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       projectName: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_PROJECT }}
       viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_SETTINGS }}
