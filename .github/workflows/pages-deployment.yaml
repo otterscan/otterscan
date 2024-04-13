@@ -1,4 +1,11 @@
-on: [push]
+on:
+  workflow_call:
+    secrets:
+      projectName:
+        required: true
+      viteConfigJson:
+        required: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

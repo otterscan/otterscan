@@ -1,0 +1,7 @@
+on: [push]
+jobs:
+  deploy-gnosis:
+    uses: ./.github/workflows/pages-deployment.yaml
+    secrets:
+      projectName: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_PROJECT }}
+      viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_SETTINGS }}
