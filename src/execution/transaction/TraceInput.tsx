@@ -86,7 +86,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   return (
     <div
       className={`ml-5 rounded border px-1 py-0.5 hover:border-gray-500 ${
-        expanded ? "w-full" : ""
+        expanded || retValExpanded ? "w-full" : ""
       }`}
     >
       <div className="flex items-baseline">
