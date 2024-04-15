@@ -1,5 +1,12 @@
 on: [push]
 jobs:
+  deploy-mainnet:
+    uses: ./.github/workflows/pages-deployment.yaml
+    secrets:
+      apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      projectName: ${{ secrets.CLOUDFLARE_INTEG_MAINNET_PROJECT }}
+      viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_MAINNET_SETTINGS }}
   deploy-gnosis:
     uses: ./.github/workflows/pages-deployment.yaml
     secrets:
