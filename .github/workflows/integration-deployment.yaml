@@ -21,3 +21,10 @@ jobs:
       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       projectName: ${{ secrets.CLOUDFLARE_INTEG_OP_MAINNET_PROJECT }}
       viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_OP_MAINNET_SETTINGS }}
+  deploy-e3-sepolia:
+    uses: ./.github/workflows/pages-deployment.yaml
+    secrets:
+      apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      projectName: ${{ secrets.CLOUDFLARE_INTEG_E3_SEPOLIA_PROJECT }}
+      viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_E3_SEPOLIA_SETTINGS }}
