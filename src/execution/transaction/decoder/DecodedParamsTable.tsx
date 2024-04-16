@@ -46,7 +46,11 @@ const DecodedParamsTable: FC<DecodedParamsTableProps> = ({
           i={i}
           r={r}
           paramType={paramTypes[i]}
-          help={devMethod?.params?.[paramTypes[i].name]}
+          help={
+            devMethod?.[defaultNameBase === "ret" ? "returns" : "params"]?.[
+              paramTypes[i].name !== "" ? paramTypes[i].name : "_" + i
+            ]
+          }
           defaultNameBase={defaultNameBase}
         />
       ))}

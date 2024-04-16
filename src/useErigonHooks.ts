@@ -405,6 +405,7 @@ export type TraceEntry = {
   to: string;
   value: bigint;
   input: string;
+  output?: string;
 };
 
 export type TraceGroup = TraceEntry & {

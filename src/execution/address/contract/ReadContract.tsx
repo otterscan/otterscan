@@ -60,6 +60,11 @@ const ReadContract: React.FC<ContractsProps> = ({
                     <ReadFunction
                       func={FunctionFragment.from(fn)}
                       address={checksummedAddress}
+                      devMethod={
+                        match?.metadata?.output?.devdoc?.methods?.[
+                          FunctionFragment.from(fn).format("sighash")
+                        ]
+                      }
                       key={i}
                     />
                   ))}
@@ -78,6 +83,11 @@ const ReadContract: React.FC<ContractsProps> = ({
                             <ReadFunction
                               func={FunctionFragment.from(fn)}
                               address={checksummedAddress}
+                              devMethod={
+                                match?.metadata?.output?.devdoc?.methods?.[
+                                  FunctionFragment.from(fn).format("sighash")
+                                ]
+                              }
                               key={i}
                             />
                           ))}

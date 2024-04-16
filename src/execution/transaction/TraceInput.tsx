@@ -1,5 +1,6 @@
 import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AbiCoder } from "ethers";
 import React, { useContext, useState } from "react";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -18,6 +19,7 @@ import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
 import FunctionSignature from "./FunctionSignature";
 import InputDecoder from "./decoder/InputDecoder";
+import OutputDecoder from "./decoder/OutputDecoder";
 
 type TraceInputProps = {
   t: TraceEntry;
@@ -51,6 +53,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   });
   const userDoc = metadata?.output.userdoc;
   const devDoc = metadata?.output.devdoc;
+  // TODO: Consider checking stateVariables too
   const userMethod = sourcifyTxDesc
     ? userDoc?.methods[sourcifyTxDesc.signature]
     : undefined;
@@ -60,12 +63,30 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const txDesc = sourcifyTxDesc ?? fourBytesTxDesc;
 
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [retValExpanded, setRetValExpanded] = useState<boolean>(false);
   const isContractCreation = t.type === "CREATE" || t.type === "CREATE2";
+
+  const hasRetVal = t.output !== undefined && t.output !== "0x";
+  const retValExpander = (
+    <>
+      <span className="whitespace-nowrap px-1">
+        <span className="text-gray-500">returns</span>
+      </span>
+      <span>
+        (
+        <ExpanderSwitch
+          expanded={retValExpanded}
+          setExpanded={setRetValExpanded}
+        />
+        {!retValExpanded && ")"}
+      </span>
+    </>
+  );
 
   return (
     <div
       className={`ml-5 rounded border px-1 py-0.5 hover:border-gray-500 ${
-        expanded ? "w-full" : ""
+        expanded || retValExpanded ? "w-full" : ""
       }`}
     >
       <div className="flex items-baseline">
@@ -103,6 +124,8 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
               {(!(hasParams || hasSmallData || isContractCreation) ||
                 !expanded) && <>)</>}
             </span>
+
+            {!expanded && hasRetVal && retValExpander}
           </>
         )}
       </div>
@@ -115,6 +138,28 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
               hasParamNames={txDesc === sourcifyTxDesc}
               data={t.input}
               userMethod={userMethod}
+              devMethod={devMethod}
+            />
+          </div>
+          <div className="flex items-baseline">
+            ) {hasRetVal && retValExpander}
+          </div>
+        </>
+      )}
+      {t.output !== undefined && t.output !== "0x" && retValExpanded && (
+        <>
+          <div className="my-2 ml-5 mr-1">
+            <OutputDecoder
+              args={
+                txDesc
+                  ? AbiCoder.defaultAbiCoder().decode(
+                      txDesc.fragment.outputs,
+                      t.output,
+                    )
+                  : undefined
+              }
+              paramTypes={txDesc?.fragment?.outputs}
+              data={t.output}
               devMethod={devMethod}
             />
           </div>
