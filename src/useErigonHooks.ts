@@ -4,6 +4,7 @@ import {
   BlockTag,
   Contract,
   JsonRpcApiProvider,
+  Log,
   TransactionReceiptParams,
   TransactionResponseParams,
   ZeroAddress,
@@ -327,22 +328,31 @@ export const useTxData = (
   return txData;
 };
 
+export const findTokenTransfersInLogs = (
+  logs: readonly Log[],
+): TokenTransfer[] => {
+  return logs
+    .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
+    .map((l) => ({
+      token: l.address,
+      from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
+      to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
+      value: BigInt(l.data),
+    }));
+};
+
 export const useTokenTransfers = (
-  txData: TransactionData,
+  txData?: TransactionData | null,
 ): TokenTransfer[] | undefined => {
   const transfers = useMemo(() => {
+    if (txData === undefined || txData === null) {
+      return undefined;
+    }
     if (!txData.confirmedData) {
       return undefined;
     }
 
-    return txData.confirmedData.logs
-      .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
-      .map((l) => ({
-        token: l.address,
-        from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
-        to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
-        value: BigInt(l.data),
-      }));
+    return findTokenTransfersInLogs(txData.confirmedData.logs);
   }, [txData]);
 
   return transfers;
