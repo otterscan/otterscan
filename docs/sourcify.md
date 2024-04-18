@@ -148,3 +148,9 @@ Here is how you would deploy a smart contract called `MyContract` with construct
 ```shell
 ./forge create --verify --verifier sourcify --verifier-url http://localhost:5555/ --interactive --optimize --rpc-url http://localhost:8545/ MyContract --constructor-args 0x67b1d87101671b127f5f8714789C7192f7ad340e 123456
 ```
+
+3. To verify a contract that already has been deployed, you can use `forge verify-contract`. Here is an example of a verification of the above `MyContract` contract example to address `0xADC11306fcD68F47698D66047d923a52816Ee44F`. Forge can usually infer constructor arguments automatically:
+
+```shell
+./forge verify-contract --verifier sourcify --verifier-url http://localhost:5555/ --optimizer-runs 200 --rpc-url http://localhost:8545/ 0xADC11306fcD68F47698D66047d923a52816Ee44F MyContract
+```
