@@ -73,7 +73,7 @@ Launch an Otterscan-compatible local Ethereum RPC node hosting your development 
 1. Clone the Sourcify repository:
 
 ```shell
-git clone https://github.com/ethereum/sourcify.git`
+git clone https://github.com/ethereum/sourcify.git
 ```
 
 2. To add support for your local blockchain, create a JSON file `services/server/src/sourcify-chains.json`:
