@@ -2,18 +2,25 @@ import { FC, memo } from "react";
 import { useHeadSlotNumber } from "../../useConsensus";
 import { commify } from "../../utils/utils";
 import SlotLink from "../components/SlotLink";
-import { SlotAwareComponentProps } from "../types";
 
-const SlotNotFound: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
+interface SlotNotFoundProps {
+  slot: number | string;
+}
+
+const SlotNotFound: FC<SlotNotFoundProps> = ({ slot }) => {
   const headSlotNumber = useHeadSlotNumber();
 
   return (
     <div className="space-y-2 py-4 text-sm">
-      <p>Slot {commify(slotNumber)} data not found.</p>
-      {headSlotNumber !== undefined && slotNumber > headSlotNumber ? (
+      <p>
+        Slot {typeof slot === "number" ? commify(slot) : slot} data not found.
+      </p>
+      {headSlotNumber !== undefined &&
+      typeof slot === "number" &&
+      slot > headSlotNumber ? (
         <p className="flex space-x-2">
           <span>Head slot is:</span>
-          <SlotLink slotNumber={headSlotNumber} />
+          <SlotLink slot={headSlotNumber} />
         </p>
       ) : (
         <>

@@ -5,30 +5,31 @@ import { FC, memo } from "react";
 import { NavLink } from "react-router-dom";
 import { slotURL } from "../../url";
 import { commify } from "../../utils/utils";
-import { SlotAwareComponentProps } from "../types";
 
-type SlotLinkProps = SlotAwareComponentProps & {
+type SlotLinkProps = {
+  slot: number | string;
   missed?: boolean;
   scheduled?: boolean;
   slashings?: boolean;
 };
 
 const SlotLink: FC<SlotLinkProps> = ({
-  slotNumber,
+  slot,
   missed,
   scheduled,
   slashings,
 }) => {
-  let text = commify(slotNumber);
+  const isNum = typeof slot === "number";
+  let text = isNum ? commify(slot) : slot;
 
   return (
     <NavLink
-      className={`flex items-baseline space-x-2 ${
+      className={`flex items-baseline ${
         missed
           ? "text-red-500 line-through hover:text-red-800"
           : "text-link-blue hover:text-link-blue-hover"
-      } font-blocknum`}
-      to={slotURL(slotNumber)}
+      } ${isNum ? "font-blocknum space-x-2" : "font-hash space-x-1"}`}
+      to={slotURL(slot)}
     >
       <FontAwesomeIcon
         className={`self-center ${slashings ? "text-red-600" : ""}`}

@@ -15,6 +15,7 @@ import NativeTokenPrice from "../components/NativeTokenPrice";
 import PercentageBar from "../components/PercentageBar";
 import RelativePosition from "../components/RelativePosition";
 import Timestamp from "../components/Timestamp";
+import SlotLink from "../consensus/components/SlotLink";
 import { blockTxsURL } from "../url";
 import { useChainInfo } from "../useChainInfo";
 import { useBlockData, useL1Epoch } from "../useErigonHooks";
@@ -175,7 +176,11 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
           </InfoRow>
           {block.parentBeaconBlockRoot && (
             <InfoRow title="Parent Beacon Block Root">
-              <HexValue value={block.parentBeaconBlockRoot} />
+              {config?.beaconAPI === undefined ? (
+                <HexValue value={block.parentBeaconBlockRoot} />
+              ) : (
+                <SlotLink slot={block.parentBeaconBlockRoot} />
+              )}
             </InfoRow>
           )}
           {l1Epoch !== undefined && l1Epoch !== null && (

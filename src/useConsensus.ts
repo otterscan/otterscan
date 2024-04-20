@@ -66,12 +66,12 @@ const useBeaconHeaderURL = (tag: string) => {
   return `${config.beaconAPI}/eth/v1/beacon/headers/${tag}`;
 };
 
-const useBeaconBlockURL = (slotNumber: number) => {
+const useBeaconBlockURL = (slot: number | string) => {
   const { config } = useContext(RuntimeContext);
   if (config?.beaconAPI === undefined) {
     return null;
   }
-  return `${config.beaconAPI}/eth/v2/beacon/blocks/${slotNumber}`;
+  return `${config.beaconAPI}/eth/v2/beacon/blocks/${slot}`;
 };
 
 const useBlockRootURL = (slotNumber: number) => {
@@ -110,8 +110,8 @@ const useCommitteeURL = (
   return `${config.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`;
 };
 
-export const useSlot = (slotNumber: number) => {
-  const url = useBeaconBlockURL(slotNumber);
+export const useSlot = (slot: number | string) => {
+  const url = useBeaconBlockURL(slot);
   const { data, error, isLoading, isValidating } = useSWR(
     url,
     jsonFetcherWithErrorHandling,

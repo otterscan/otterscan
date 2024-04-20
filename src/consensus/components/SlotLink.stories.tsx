@@ -10,19 +10,19 @@ type Story = StoryObj<typeof meta>;
 
 export const GenesisSlot: Story = {
   args: {
-    slotNumber: 0,
+    slot: 0,
   },
 };
 
 export const RecentMainnetSlotNumber: Story = {
   args: {
-    slotNumber: 5_700_000,
+    slot: 5_700_000,
   },
 };
 
 export const BigSlotNumber: Story = {
   args: {
-    slotNumber: 5_700_000_000,
+    slot: 5_700_000_000,
   },
 };
 

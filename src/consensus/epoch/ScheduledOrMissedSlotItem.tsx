@@ -25,11 +25,7 @@ const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
   return (
     <tr>
       <td>
-        <SlotLink
-          slotNumber={slotNumber}
-          missed={missed}
-          scheduled={scheduled}
-        />
+        <SlotLink slot={slotNumber} missed={missed} scheduled={scheduled} />
       </td>
       <td className={`${isValidating ? "italic text-gray-400" : ""}`}>
         {missed && "Missed"}
