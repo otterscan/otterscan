@@ -46,3 +46,9 @@ export const SlotContainingSlashing: Story = {
     slashings: true,
   },
 };
+
+export const BlockRoot: Story = {
+  args: {
+    slot: "0x1baac88e41f597e21a780e89dfe7add5da50e522ee4b535e7799995d807ad743",
+  },
+};
