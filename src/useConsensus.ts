@@ -72,6 +72,7 @@ export const useBeaconSpec = (): Record<string, string> | undefined => {
     error ||
     !data ||
     typeof data !== "object" ||
+    !("data" in data) ||
     !data.data ||
     typeof data.data !== "object"
   ) {
