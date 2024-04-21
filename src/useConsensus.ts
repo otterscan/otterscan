@@ -4,17 +4,19 @@ import useSWRImmutable from "swr/immutable";
 import { jsonFetcher, jsonFetcherWithErrorHandling } from "./fetcher";
 import { RuntimeContext } from "./useRuntime";
 
-// TODO: get these from config
-export const SLOTS_PER_EPOCH = 32;
-export const SECONDS_PER_SLOT = 12;
+const DEFAULT_SLOTS_PER_EPOCH = 32;
+const DEFAULT_SECONDS_PER_SLOT = 12;
 export const EPOCHS_AFTER_HEAD = 1;
 
-export const HEAD_SLOT_REFRESH_INTERVAL = 12 * 1000;
 export const HEAD_EPOCH_REFRESH_INTERVAL = 60 * 1000;
 export const FINALIZED_SLOT_REFRESH_INTERVAL = 60 * 1000;
 
-export const slot2Epoch = (slotNumber: number) =>
-  Math.floor(slotNumber / SLOTS_PER_EPOCH);
+function toNumberWithDefault(item: any, defaultVal: number): number {
+  if (item === undefined || item === null) {
+    return defaultVal;
+  }
+  return Number(item);
+}
 
 const useGenesisURL = () => {
   const { config } = useContext(RuntimeContext);
@@ -28,10 +30,7 @@ export const useGenesisTime = (): number | undefined => {
   const url = useGenesisURL();
   const { data, error } = useSWRImmutable(url, jsonFetcher);
 
-  if (!error && !data) {
-    return undefined;
-  }
-  if (error) {
+  if (error || !data) {
     return undefined;
   }
 
@@ -56,6 +55,37 @@ export const useGenesisTime = (): number | undefined => {
     return undefined;
   }
   return genesisTime;
+};
+
+const useBeaconSpecURL = () => {
+  const { config } = useContext(RuntimeContext);
+  if (config?.beaconAPI === undefined) {
+    return null;
+  }
+  return `${config.beaconAPI}/eth/v1/config/spec`;
+};
+
+export const useBeaconSpec = (): Record<string, string> | undefined => {
+  const url = useBeaconSpecURL();
+  const { data, error } = useSWRImmutable(url, jsonFetcher);
+  if (
+    error ||
+    !data ||
+    typeof data !== "object" ||
+    !data.data ||
+    typeof data.data !== "object"
+  ) {
+    return undefined;
+  }
+  return data.data as Record<string, string>;
+};
+
+export const useSlotToEpoch = (slotNumber: number): number => {
+  const slotsPerEpochStr = useBeaconSpec()?.SLOTS_PER_EPOCH;
+  const slotsPerEpoch: number = slotsPerEpochStr
+    ? Number(slotsPerEpochStr)
+    : DEFAULT_SLOTS_PER_EPOCH;
+  return Math.floor(slotNumber / slotsPerEpoch);
 };
 
 const useBeaconHeaderURL = (tag: string) => {
@@ -181,9 +211,13 @@ export const useValidator = (validatorIndex: number | string) => {
 };
 
 export const useSlotsFromEpoch = (epochNumber: number): number[] => {
+  const slotsPerEpoch = toNumberWithDefault(
+    useBeaconSpec()?.SLOTS_PER_EPOCH,
+    DEFAULT_SLOTS_PER_EPOCH,
+  );
   const slots = useMemo(() => {
-    const startSlot = epochNumber * SLOTS_PER_EPOCH;
-    const endSlot = startSlot + SLOTS_PER_EPOCH - 1;
+    const startSlot = epochNumber * slotsPerEpoch;
+    const endSlot = startSlot + slotsPerEpoch - 1;
 
     const s: number[] = [];
     for (let i = startSlot; i <= endSlot; i++) {
@@ -251,6 +285,15 @@ export const useProposerMap = (epochNumber: number) => {
 const MAX_EPOCH = "18446744073709551615";
 
 export const useEpochTimestamp = (epoch: any) => {
+  const beaconSpec = useBeaconSpec();
+  const slotsPerEpoch = toNumberWithDefault(
+    beaconSpec?.SLOTS_PER_EPOCH,
+    DEFAULT_SLOTS_PER_EPOCH,
+  );
+  const secondsPerSlot = toNumberWithDefault(
+    beaconSpec?.SECONDS_PER_SLOT,
+    DEFAULT_SECONDS_PER_SLOT,
+  );
   const genesisTime = useGenesisTime();
   if (epoch === undefined || genesisTime === undefined) {
     return undefined;
@@ -258,19 +301,24 @@ export const useEpochTimestamp = (epoch: any) => {
   if (epoch === MAX_EPOCH) {
     return undefined;
   }
-  return genesisTime + epoch * SLOTS_PER_EPOCH * SECONDS_PER_SLOT;
+  return genesisTime + epoch * slotsPerEpoch * secondsPerSlot;
 };
 
 export const useSlotTimestamp = (slot: number | undefined) => {
   const genesisTime = useGenesisTime();
+  const beaconSpec = useBeaconSpec();
+  const secondsPerSlot = toNumberWithDefault(
+    beaconSpec?.SECONDS_PER_SLOT,
+    DEFAULT_SECONDS_PER_SLOT,
+  );
   if (slot === undefined || genesisTime === undefined) {
     return undefined;
   }
-  return genesisTime + slot * SECONDS_PER_SLOT;
+  return genesisTime + slot * secondsPerSlot;
 };
 
 export const useCommittee = (slotNumber: number, committeeIndex: number) => {
-  const epochNumber = slot2Epoch(slotNumber);
+  const epochNumber = useSlotToEpoch(slotNumber);
   const url = useCommitteeURL(epochNumber, slotNumber, committeeIndex);
   const { data, error } = useSWRImmutable(url, jsonFetcherWithErrorHandling);
   if (error) {
@@ -340,8 +388,17 @@ const parseSlotNumber = (slot: unknown): number | undefined => {
 
 // TODO: useMemo
 export const useHeadSlotNumber = (
-  refreshInterval: number = HEAD_SLOT_REFRESH_INTERVAL,
+  refreshInterval?: number,
 ): number | undefined => {
+  const beaconSpec = useBeaconSpec();
+  const defaultRefreshInterval =
+    toNumberWithDefault(
+      beaconSpec?.SECONDS_PER_SLOT,
+      DEFAULT_SECONDS_PER_SLOT,
+    ) * 1000;
+  if (refreshInterval === undefined) {
+    refreshInterval = defaultRefreshInterval;
+  }
   const slot = useDynamicHeader("head", refreshInterval);
   return parseSlotNumber(slot);
 };
@@ -360,5 +417,5 @@ export const useHeadEpochNumber = (
   if (headSlot === undefined) {
     return undefined;
   }
-  return slot2Epoch(headSlot);
+  return useSlotToEpoch(headSlot);
 };
