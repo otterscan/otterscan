@@ -49,7 +49,7 @@ const buildStateDiffTree = (
     const last = i == groups.length - 1;
     function getBranch() {
       // This is the L-shaped line that drops down to a child element
-      if (depth > 0) {
+      if (depth > 0 && depth < 3) {
         return (
           <>
             <div className="absolute h-6 w-5 -translate-y-3 border-b border-l"></div>
@@ -89,7 +89,9 @@ const buildStateDiffTree = (
               ) : (
                 <div className="mb-3 font-code">{group.title}</div>
               )}
-              <div className="ml-5 space-y-3 self-stretch">
+              <div
+                className={`${depth < 2 ? "ml-5" : ""} space-y-3 self-stretch`}
+              >
                 {buildStateDiffTree(group.diffs, depth + 1)}
               </div>
             </div>
