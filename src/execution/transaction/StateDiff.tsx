@@ -2,6 +2,7 @@ import { getAddress } from "ethers";
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import DisplayInteger from "../../components/DisplayInteger";
+import ElementDiff from "../../components/ElementDiff";
 import { balancePreset, neutralPreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
@@ -97,111 +98,59 @@ const buildStateDiffTree = (
       );
     } else {
       result.push(getBranch());
-      let content = (values: [string, string]) => (
-        <>
-          <HexValue value={values[0]} /> &#8594; <HexValue value={values[1]} />{" "}
-        </>
-      );
-      let showType = true;
       let values: [string | null, string | null] = [group.from, group.to];
+      let formatter: (value: string) => React.ReactNode | null = (
+        value: string,
+      ) => <>{value}</>;
+      let showType = true;
+      let showBorder = true;
       switch (group.type) {
         case "storageChange":
-          content = (values) => (
-            <div>
-              {values[0] !== null && values[0].startsWith("0x") ? (
-                <div>
-                  <Uint256Decoder r={BigInt(values[0])} />
-                </div>
-              ) : (
-                <div>{values[0]}</div>
-              )}
-              &#8594;
-              {values[1] !== null && values[1].startsWith("0x") ? (
-                <div>
-                  <Uint256Decoder r={BigInt(values[1])} />
-                </div>
-              ) : (
-                <div>{values[1]}</div>
-              )}
-            </div>
-          );
+          formatter = (value: string) => <Uint256Decoder r={BigInt(value)} />;
           showType = false;
+          showBorder = false;
+          break;
+        case "code":
+          formatter = (value: string) => <HexValue value={value} />;
+          break;
+        case "nonce":
+          values = [
+            group.from == null ? null : BigInt(group.from).toString(),
+            group.to === null ? null : BigInt(group.to).toString(),
+          ];
+          formatter = (value: string) => <DisplayInteger numberStr={value} />;
+          break;
+        case "balance":
+          let diffElement: null | React.ReactElement = null;
+          if (values[0] !== null && values[1] !== null) {
+            let balanceDiff = BigInt(values[1]) - BigInt(values[0]);
+            diffElement = (
+              <span className="ml-2">
+                ({balanceDiff >= 0n ? "+" : ""}
+                <NativeTokenAmountAndFiat
+                  value={balanceDiff}
+                  {...neutralPreset}
+                />
+                )
+              </span>
+            );
+          }
+          formatter = (value: string) => (
+            <NativeTokenAmountAndFiat
+              value={BigInt(value)}
+              {...balancePreset}
+            />
+          );
           break;
         default:
-          switch (group.type) {
-            case "nonce":
-              values = [
-                group.from == null ? null : BigInt(group.from).toString(),
-                group.to === null ? null : BigInt(group.to).toString(),
-              ];
-              content = (values) => (
-                <span>
-                  {values[0] !== null && values[0].startsWith("0x") ? (
-                    <DisplayInteger numberStr={values[0]} />
-                  ) : (
-                    values[0]
-                  )}{" "}
-                  <span className="px-2">&#8594;</span>{" "}
-                  {values[1] !== null && values[1].startsWith("0x") ? (
-                    <DisplayInteger numberStr={values[1]} />
-                  ) : (
-                    values[1]
-                  )}
-                </span>
-              );
-              break;
-            case "balance":
-              let diffElement: null | React.ReactElement = null;
-              if (values[0] !== null && values[1] !== null) {
-                let balanceDiff = BigInt(values[1]) - BigInt(values[0]);
-                diffElement = (
-                  <span className="ml-2">
-                    ({balanceDiff >= 0n ? "+" : ""}
-                    <NativeTokenAmountAndFiat
-                      value={balanceDiff}
-                      {...neutralPreset}
-                    />
-                    )
-                  </span>
-                );
-              }
-              content = (values) => (
-                <span>
-                  {values[0] !== null && values[0].startsWith("0x") ? (
-                    <NativeTokenAmountAndFiat
-                      value={BigInt(values[0])}
-                      {...balancePreset}
-                    />
-                  ) : (
-                    values[0]
-                  )}{" "}
-                  <span className="px-2">&#8594;</span>{" "}
-                  {values[1] !== null && values[1].startsWith("0x") ? (
-                    <NativeTokenAmountAndFiat
-                      value={BigInt(values[1])}
-                      {...balancePreset}
-                    />
-                  ) : (
-                    values[1]
-                  )}{" "}
-                  {diffElement}
-                </span>
-              );
-              break;
-            default:
-              break;
-          }
+          break;
       }
-      let valuesStrs: [string, string] = [
-        values[0] ?? "(new)",
-        values[1] ?? "(removed)",
-      ];
-      let expanded = false;
+      const expanded = false;
       result.push(
         <>
           <div className={`relative flex ${last ? "" : "border-l"}`}>
             <div
-              className={`ml-5 rounded border px-2 py-1 hover:border-gray-500 ${
+              className={`ml-5 py-1 ${showBorder ? "px-2 rounded border hover:border-gray-500" : ""} ${
                 expanded ? "w-full" : ""
               }`}
             >
@@ -213,7 +162,10 @@ const buildStateDiffTree = (
                   <div
                     className={showType ? "ml-5 space-y-3 self-stretch" : ""}
                   >
-                    {content(valuesStrs)}
+                    <ElementDiff
+                      oldElem={values[0] !== null ? formatter(values[0]) : null}
+                      newElem={values[1] !== null ? formatter(values[1]) : null}
+                    />
                   </div>
                 </div>
               </div>
