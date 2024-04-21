@@ -72,7 +72,7 @@ const buildStateDiffTree = (
                 depth === 0
                   ? ""
                   : depth < 3
-                    ? "ml-5 rounded border px-1 py-0.5 hover:border-gray-500"
+                    ? "ml-5 rounded border px-2 pt-1 pb-2 hover:border-gray-500"
                     : "ml-5 py-0.5"
               }
             >
@@ -201,7 +201,7 @@ const buildStateDiffTree = (
         <>
           <div className={`relative flex ${last ? "" : "border-l"}`}>
             <div
-              className={`ml-5 rounded border px-1 py-0.5 hover:border-gray-500 ${
+              className={`ml-5 rounded border px-2 py-1 hover:border-gray-500 ${
                 expanded ? "w-full" : ""
               }`}
             >
