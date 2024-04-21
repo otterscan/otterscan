@@ -97,18 +97,16 @@ const buildStateDiffTree = (
       );
     } else {
       result.push(getBranch());
-      let content = (values: [string, string], extra: string | null) => (
+      let content = (values: [string, string]) => (
         <>
           <HexValue value={values[0]} /> &#8594; <HexValue value={values[1]} />{" "}
-          {extra}
         </>
       );
       let showType = true;
       let values: [string | null, string | null] = [group.from, group.to];
-      let extra = null;
       switch (group.type) {
         case "storageChange":
-          content = (values, extra) => (
+          content = (values) => (
             <div>
               {values[0] !== null && values[0].startsWith("0x") ? (
                 <div>
@@ -136,7 +134,7 @@ const buildStateDiffTree = (
                 group.from == null ? null : BigInt(group.from).toString(),
                 group.to === null ? null : BigInt(group.to).toString(),
               ];
-              content = (values, extra) => (
+              content = (values) => (
                 <span>
                   {values[0] !== null && values[0].startsWith("0x") ? (
                     <DisplayInteger numberStr={values[0]} />
@@ -167,7 +165,7 @@ const buildStateDiffTree = (
                   </span>
                 );
               }
-              content = (values, extra) => (
+              content = (values) => (
                 <span>
                   {values[0] !== null && values[0].startsWith("0x") ? (
                     <NativeTokenAmountAndFiat
@@ -215,7 +213,7 @@ const buildStateDiffTree = (
                   <div
                     className={showType ? "ml-5 space-y-3 self-stretch" : ""}
                   >
-                    {content(valuesStrs, extra)}
+                    {content(valuesStrs)}
                   </div>
                 </div>
               </div>
