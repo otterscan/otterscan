@@ -110,13 +110,21 @@ const buildStateDiffTree = (
         case "storageChange":
           content = (values, extra) => (
             <div>
-              <div>
-                <Uint256Decoder r={BigInt(values[0])} />
-              </div>
+              {values[0] !== null && values[0].startsWith("0x") ? (
+                <div>
+                  <Uint256Decoder r={BigInt(values[0])} />
+                </div>
+              ) : (
+                <div>{values[0]}</div>
+              )}
               &#8594;
-              <div>
-                <Uint256Decoder r={BigInt(values[1])} />
-              </div>
+              {values[1] !== null && values[1].startsWith("0x") ? (
+                <div>
+                  <Uint256Decoder r={BigInt(values[1])} />
+                </div>
+              ) : (
+                <div>{values[1]}</div>
+              )}
             </div>
           );
           showType = false;
@@ -130,12 +138,16 @@ const buildStateDiffTree = (
               ];
               content = (values, extra) => (
                 <span>
-                  {values[0] !== null && (
+                  {values[0] !== null && values[0].startsWith("0x") ? (
                     <DisplayInteger numberStr={values[0]} />
+                  ) : (
+                    values[0]
                   )}{" "}
                   <span className="px-2">&#8594;</span>{" "}
-                  {values[1] !== null && (
+                  {values[1] !== null && values[1].startsWith("0x") ? (
                     <DisplayInteger numberStr={values[1]} />
+                  ) : (
+                    values[1]
                   )}
                 </span>
               );
@@ -157,18 +169,22 @@ const buildStateDiffTree = (
               }
               content = (values, extra) => (
                 <span>
-                  {values[0] !== null && (
+                  {values[0] !== null && values[0].startsWith("0x") ? (
                     <NativeTokenAmountAndFiat
                       value={BigInt(values[0])}
                       {...balancePreset}
                     />
+                  ) : (
+                    values[0]
                   )}{" "}
                   <span className="px-2">&#8594;</span>{" "}
-                  {values[1] !== null && (
+                  {values[1] !== null && values[1].startsWith("0x") ? (
                     <NativeTokenAmountAndFiat
                       value={BigInt(values[1])}
                       {...balancePreset}
                     />
+                  ) : (
+                    values[1]
                   )}{" "}
                   {diffElement}
                 </span>
