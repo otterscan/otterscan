@@ -28,8 +28,13 @@ const BlockReward: FC<BlockRewardProps> = ({ block }) => {
       {netFeeReward !== 0n && (
         <>
           {" "}
-          (<NativeTokenAmount value={block.blockReward} hideUnit /> +{" "}
-          <NativeTokenAmount value={netFeeReward} hideUnit />)
+          (
+          <NativeTokenAmount
+            data-test="block-reward"
+            value={block.blockReward}
+            hideUnit
+          />{" "}
+          + <NativeTokenAmount value={netFeeReward} hideUnit />)
         </>
       )}
       {fiatValue && (
