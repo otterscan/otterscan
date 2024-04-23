@@ -14,7 +14,7 @@ const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   return (
     <tr>
       <td>
-        <SlotLink slotNumber={slotNumber} scheduled />
+        <SlotLink slot={slotNumber} scheduled />
       </td>
       <td>
         <ContentLoader viewBox="0 0 30 4">

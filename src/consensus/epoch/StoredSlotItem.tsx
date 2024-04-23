@@ -19,7 +19,7 @@ const StoredSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
     <tr>
       <td>
         <SlotLink
-          slotNumber={slotNumber}
+          slot={slotNumber}
           slashings={
             slot.data.message.body.attester_slashings.length !== 0 ||
             slot.data.message.body.proposer_slashings.length !== 0

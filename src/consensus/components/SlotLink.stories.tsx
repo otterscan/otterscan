@@ -10,19 +10,19 @@ type Story = StoryObj<typeof meta>;
 
 export const GenesisSlot: Story = {
   args: {
-    slotNumber: 0,
+    slot: 0,
   },
 };
 
 export const RecentMainnetSlotNumber: Story = {
   args: {
-    slotNumber: 5_700_000,
+    slot: 5_700_000,
   },
 };
 
 export const BigSlotNumber: Story = {
   args: {
-    slotNumber: 5_700_000_000,
+    slot: 5_700_000_000,
   },
 };
 
@@ -44,5 +44,11 @@ export const SlotContainingSlashing: Story = {
   args: {
     ...RecentMainnetSlotNumber.args,
     slashings: true,
+  },
+};
+
+export const BlockRoot: Story = {
+  args: {
+    slot: "0x1baac88e41f597e21a780e89dfe7add5da50e522ee4b535e7799995d807ad743",
   },
 };
