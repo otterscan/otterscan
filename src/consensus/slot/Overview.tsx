@@ -10,7 +10,7 @@ import StandardTBody from "../../components/StandardTBody";
 import StandardTHead from "../../components/StandardTHead";
 import StandardTable from "../../components/StandardTable";
 import Timestamp from "../../components/Timestamp";
-import { slot2Epoch, useSlot, useSlotTimestamp } from "../../useConsensus";
+import { useSlot, useSlotTimestamp, useSlotToEpoch } from "../../useConsensus";
 import { usePageTitle } from "../../useTitle";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import EpochLink from "../components/EpochLink";
@@ -34,7 +34,7 @@ const Overview: FC = () => {
   const { slot, error, isLoading } = useSlot(slotAsNumber);
   usePageTitle(slotNumber === undefined ? undefined : `Slot #${slotNumber}`);
 
-  const epoch = slot2Epoch(slotAsNumber);
+  const epoch = useSlotToEpoch(slotAsNumber);
   const slotTimestamp = useSlotTimestamp(slotAsNumber);
 
   const graffiti = useMemo(() => {

@@ -1,6 +1,6 @@
 import { FC, memo } from "react";
 import ContentLoader from "react-content-loader";
-import { slot2Epoch, useProposerMap } from "../../useConsensus";
+import { useProposerMap, useSlotToEpoch } from "../../useConsensus";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import SlotLink from "../components/SlotLink";
 import { SlotAwareComponentProps } from "../types";
@@ -18,7 +18,7 @@ const ScheduledOrMissedSlotItem: FC<ScheduledOrMissedSlotItemProps> = ({
   scheduled,
   isValidating,
 }) => {
-  const epochNumber = slot2Epoch(slotNumber);
+  const epochNumber = useSlotToEpoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
 
