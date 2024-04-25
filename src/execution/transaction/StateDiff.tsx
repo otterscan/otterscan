@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import DisplayInteger from "../../components/DisplayInteger";
 import ElementDiff from "../../components/ElementDiff";
-import { balancePreset, neutralPreset } from "../../components/FiatValue";
+import { balancePreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import { TransactionData } from "../../types";
@@ -101,6 +101,7 @@ const buildStateDiffTree = (
     } else {
       result.push(getBranch());
       let values: [string | null, string | null] = [group.from, group.to];
+      let diffElement: null | React.ReactElement = null;
       let formatter: (value: string) => React.ReactNode | null = (
         value: string,
       ) => <>{value}</>;
@@ -123,18 +124,16 @@ const buildStateDiffTree = (
           formatter = (value: string) => <DisplayInteger numberStr={value} />;
           break;
         case "balance":
-          let diffElement: null | React.ReactElement = null;
           if (values[0] !== null && values[1] !== null) {
             let balanceDiff = BigInt(values[1]) - BigInt(values[0]);
             diffElement = (
-              <span className="ml-2">
-                ({balanceDiff >= 0n ? "+" : ""}
+              <>
+                {balanceDiff >= 0n ? "+" : ""}
                 <NativeTokenAmountAndFiat
                   value={balanceDiff}
-                  {...neutralPreset}
+                  {...balancePreset}
                 />
-                )
-              </span>
+              </>
             );
           }
           formatter = (value: string) => (
@@ -167,6 +166,7 @@ const buildStateDiffTree = (
                     <ElementDiff
                       oldElem={values[0] !== null ? formatter(values[0]) : null}
                       newElem={values[1] !== null ? formatter(values[1]) : null}
+                      diffElem={diffElement}
                     />
                   </div>
                 </div>
