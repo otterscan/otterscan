@@ -7,7 +7,7 @@
   "dependencies": {
     "@fontsource/fira-code": "^5.0.17",
     "@fontsource/roboto": "^5.0.13",
-    "@fontsource/roboto-mono": "^5.0.17",
+    "@fontsource/roboto-mono": "^5.0.18",
     "@fontsource/space-grotesk": "^5.0.18",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
