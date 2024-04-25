@@ -1,4 +1,7 @@
-on: [push]
+on:
+  push:
+    branches:
+      - develop
 jobs:
   deploy-mainnet:
     uses: ./.github/workflows/pages-deployment.yaml
