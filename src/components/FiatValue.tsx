@@ -75,7 +75,13 @@ const FiatValue: FC<FiatValueProps> = ({
       bgColor ?? ""
     } text-xs ${fgColor ?? ""}`}
   >
-    $<span className="font-balance">{formatFiatValue(value, decimals)}</span>
+    {value.isNegative() ? <span className="font-balance">-</span> : null}$
+    <span className="font-balance">
+      {formatFiatValue(
+        value.isNegative() ? value.mul(FixedNumber.fromValue(-1n)) : value,
+        decimals,
+      )}
+    </span>
   </span>
 );
 
