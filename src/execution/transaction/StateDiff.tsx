@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import DisplayInteger from "../../components/DisplayInteger";
 import ElementDiff from "../../components/ElementDiff";
-import { balancePreset } from "../../components/FiatValue";
+import { neutralPreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
 import { TransactionData } from "../../types";
@@ -131,7 +131,8 @@ const buildStateDiffTree = (
                 {balanceDiff >= 0n ? "+" : ""}
                 <NativeTokenAmountAndFiat
                   value={balanceDiff}
-                  {...balancePreset}
+                  explicitPlus={true}
+                  {...neutralPreset}
                 />
               </>
             );
@@ -139,7 +140,7 @@ const buildStateDiffTree = (
           formatter = (value: string) => (
             <NativeTokenAmountAndFiat
               value={BigInt(value)}
-              {...balancePreset}
+              {...neutralPreset}
             />
           );
           break;

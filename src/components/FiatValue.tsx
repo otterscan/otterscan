@@ -9,6 +9,7 @@ export type FiatBoxProps = {
   borderColor?: string;
   bgColor?: string;
   fgColor?: string;
+  explicitPlus?: boolean;
 };
 
 export const feePreset = {
@@ -69,13 +70,17 @@ const FiatValue: FC<FiatValueProps> = ({
   borderColor,
   bgColor,
   fgColor,
+  explicitPlus = false,
 }) => (
   <span
     className={`px-2 ${borderColor ?? ""} rounded-lg border ${
       bgColor ?? ""
     } text-xs ${fgColor ?? ""}`}
   >
-    {value.isNegative() ? <span className="font-balance">-</span> : null}$
+    {(explicitPlus || value.isNegative()) && !value.isZero() ? (
+      <span className="font-balance">{value.isNegative() ? "-" : "+"}</span>
+    ) : null}
+    $
     <span className="font-balance">
       {formatFiatValue(
         value.isNegative() ? value.mul(FixedNumber.fromValue(-1n)) : value,
