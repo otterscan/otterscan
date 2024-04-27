@@ -23,6 +23,18 @@ async function setAddressLabel(address: string, label: string | null) {
   mutate(address, [customLabelResolver, trimmedLabel]);
 }
 
+export async function clearAllLabels() {
+  const customLabelFetcher = CustomLabelFetcher.getInstance();
+  const addresses: string[] = customLabelFetcher.getAllAddresses();
+  await customLabelFetcher.updateLabels(
+    addresses.reduce(
+      (obj: Record<string, string>, key: string) => ({ ...obj, [key]: "" }),
+      {},
+    ),
+  );
+  addresses.forEach((address) => mutate(address));
+}
+
 const EditableAddressTag: FC<EditableAddressTagProps> = ({
   address,
   defaultTag,

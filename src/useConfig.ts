@@ -185,6 +185,12 @@ export type OtterscanConfig = {
      */
     l1ExplorerURL?: string;
   };
+
+  /**
+   * Temporary config option, until address labels are complete: Enables setting
+   * address labels which are kept in local storage.
+   */
+  WIP_customAddressLabels?: boolean;
 };
 
 /**

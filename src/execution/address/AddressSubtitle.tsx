@@ -1,4 +1,9 @@
-import { faPencil, faTag, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPencil,
+  faTag,
+  faTimes,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useContext, useState } from "react";
 import Blockies from "react-blockies";
@@ -10,7 +15,7 @@ import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
-import EditableAddressTag from "./EditableAddressTag";
+import EditableAddressTag, { clearAllLabels } from "./EditableAddressTag";
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
   isENS: boolean | undefined;
@@ -64,25 +69,39 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
             <span className="pl-1 text-nowrap">{resolvedName}</span>
           </div>
         )}
-        <div className="flex flex-no-wrap space-x-1">
-          {editingAddressTag && (
-            <EditableAddressTag
-              address={address}
-              defaultTag={resolvedName}
-              editedCallback={(address: string) => setEditingAddressTag(false)}
-            />
-          )}
-          <button
-            className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-none transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow`}
-            title={editingAddressTag ? "Cancel changes" : "Edit address label"}
-            onClick={() => setEditingAddressTag(!editingAddressTag)}
-          >
-            <FontAwesomeIcon
-              icon={editingAddressTag ? faTimes : faPencil}
-              size="1x"
-            />
-          </button>
-        </div>
+        {config?.WIP_customAddressLabels && (
+          <div className="flex flex-no-wrap space-x-1">
+            {editingAddressTag && (
+              <EditableAddressTag
+                address={address}
+                defaultTag={resolvedName}
+                editedCallback={(address: string) =>
+                  setEditingAddressTag(false)
+                }
+              />
+            )}
+            <button
+              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-none transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow`}
+              title={
+                editingAddressTag ? "Cancel changes" : "Edit address label"
+              }
+              onClick={() => setEditingAddressTag(!editingAddressTag)}
+            >
+              <FontAwesomeIcon
+                icon={editingAddressTag ? faTimes : faPencil}
+                size="1x"
+              />
+            </button>
+            {/* For debugging only; we'll want to create an address label management page. */}
+            <button
+              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-red-500 focus:outline-none transition-shadows h-7 w-7 rounded-full bg-red-200 text-xs transition-colors hover:bg-red-500 hover:text-gray-200 hover:shadow`}
+              title={"Delete all labels"}
+              onClick={clearAllLabels}
+            >
+              <FontAwesomeIcon icon={faTrash} size="1x" />
+            </button>
+          </div>
+        )}
       </div>
     </StandardSubtitle>
   );

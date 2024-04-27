@@ -98,6 +98,15 @@ export class CustomLabelFetcher {
       return undefined;
     }
   }
+
+  public getAllAddresses(): string[] {
+    return Array.from(this.localStorageLabels.keys());
+  }
+
+  public clearAll() {
+    this.localStorageLabels.clear();
+    this.localStorageLabels.clear();
+  }
 }
 
 export class CustomLabelResolver extends BasicAddressResolver {
