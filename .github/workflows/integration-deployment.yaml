@@ -1,7 +1,32 @@
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  workflow_dispatch:
+
 jobs:
+  check-secrets:
+    runs-on: ubuntu-latest
+    outputs:
+      has-secrets: ${{ steps.has-secrets.outputs.defined }}
+    steps:
+      - name: Check if deployment secrets are available
+        id: has-secrets
+        shell: bash
+        run: |
+          if [ "${{ secrets.CLOUDFLARE_API_TOKEN }}" != '' ] && [ "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" != '' ] && [ "${{ secrets.CLOUDFLARE_INTEG_MAINNET_PROJECT }}" != '' ]; then
+            echo "defined=true" >> $GITHUB_OUTPUT;
+          else
+            echo "defined=false" >> $GITHUB_OUTPUT;
+          fi
   deploy-mainnet:
     uses: ./.github/workflows/pages-deployment.yaml
+    needs: [check-secrets]
+    if: ${{ needs.check-secrets.outputs.has-secrets == 'true' }}
     secrets:
       apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -9,6 +34,8 @@ jobs:
       viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_MAINNET_SETTINGS }}
   deploy-gnosis:
     uses: ./.github/workflows/pages-deployment.yaml
+    needs: [check-secrets]
+    if: ${{ needs.check-secrets.outputs.has-secrets == 'true' }}
     secrets:
       apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -16,6 +43,8 @@ jobs:
       viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_GNOSIS_SETTINGS }}
   deploy-op-mainnet:
     uses: ./.github/workflows/pages-deployment.yaml
+    needs: [check-secrets]
+    if: ${{ needs.check-secrets.outputs.has-secrets == 'true' }}
     secrets:
       apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -23,6 +52,8 @@ jobs:
       viteConfigJson: ${{ secrets.CLOUDFLARE_INTEG_OP_MAINNET_SETTINGS }}
   deploy-e3-sepolia:
     uses: ./.github/workflows/pages-deployment.yaml
+    needs: [check-secrets]
+    if: ${{ needs.check-secrets.outputs.has-secrets == 'true' }}
     secrets:
       apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
