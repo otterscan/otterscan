@@ -1,9 +1,12 @@
+import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, useContext } from "react";
 import Blockies from "react-blockies";
 import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import { useChainInfo } from "../../useChainInfo";
+import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
@@ -18,8 +21,20 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
   isENS,
   addressOrName,
 }) => {
-  const { config } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const { faucets } = useChainInfo();
+
+  const resolvedAddress = useResolvedAddress(provider, address);
+  let resolvedName = resolvedAddress
+    ? resolvedAddress[0].resolveToString(resolvedAddress[1])
+    : undefined;
+  let resolvedNameTrusted = resolvedAddress
+    ? resolvedAddress[0].trusted(resolvedAddress[1])
+    : undefined;
+  if (isENS && !resolvedName) {
+    resolvedName = "ENS: " + addressOrName;
+    resolvedNameTrusted = true;
+  }
 
   return (
     <StandardSubtitle>
@@ -39,12 +54,12 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
-        {isENS && (
-          <span className="rounded-lg bg-gray-200 px-2 py-1 text-xs text-gray-500">
-            ENS: {addressOrName}
-          </span>
-        )}
         {config?.experimental && <AddressAttributes address={address} full />}
+        {resolvedName && resolvedNameTrusted && (
+          <div className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500">
+            <FontAwesomeIcon icon={faTag} size="1x" /> {resolvedName}
+          </div>
+        )}
       </div>
     </StandardSubtitle>
   );

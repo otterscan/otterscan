@@ -4,6 +4,7 @@ import {
   BlockTag,
   Contract,
   JsonRpcApiProvider,
+  Log,
   TransactionReceiptParams,
   TransactionResponseParams,
   ZeroAddress,
@@ -17,6 +18,8 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
+import L1Block from "./abi/optimism/L1Block.json";
+import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -40,6 +43,8 @@ export interface ExtendedBlock extends BlockParams {
   stateRoot: string;
   totalDifficulty: bigint;
   transactionCount: number;
+  // Optimism-specific
+  gasUsedDepositTx?: bigint;
 }
 
 export const readBlock = async (
@@ -75,6 +80,8 @@ export const readBlock = async (
     stateRoot: _rawBlock.block.stateRoot,
     totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
     transactionCount: formatter.number(_rawBlock.block.transactionCount),
+    // Optimism-specific; gas used by the deposit transaction
+    gasUsedDepositTx: formatter.bigInt(_rawBlock.gasUsedDepositTx ?? 0n),
     ..._block,
   };
   return extBlock;
@@ -109,6 +116,7 @@ const blockTransactionsFetcher: Fetcher<
         throw new Error("blockTransactionsFetcher: unknown tx hash");
       }
 
+      let fee: bigint;
       let effectiveGasPrice: bigint;
       if (t.type === 2 || t.type === 3) {
         const tip =
@@ -118,6 +126,25 @@ const blockTransactionsFetcher: Fetcher<
         effectiveGasPrice = _block.baseFeePerGas! + tip;
       } else {
         effectiveGasPrice = t.gasPrice!;
+      }
+
+      // Handle Optimism-specific values
+      let l1Fee: bigint | undefined;
+      if (isOptimisticChain(provider._network.chainId)) {
+        if (t.type === 126) {
+          fee = 0n;
+          effectiveGasPrice = 0n;
+        } else {
+          l1Fee = formatter.bigInt(_rawReceipt.l1Fee);
+          ({ fee, gasPrice: effectiveGasPrice } = getOpFeeData(
+            t.type,
+            effectiveGasPrice,
+            _receipt.gasUsed!,
+            l1Fee,
+          ));
+        }
+      } else {
+        fee = formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice;
       }
 
       return {
@@ -131,7 +158,7 @@ const blockTransactionsFetcher: Fetcher<
         createdContractAddress: _receipt.contractAddress ?? undefined,
         value: t.value,
         type: t.type,
-        fee: formatter.bigInt(_receipt.gasUsed) * effectiveGasPrice,
+        fee,
         gasPrice: effectiveGasPrice,
         data: t.data,
         status: formatter.number(_receipt.status),
@@ -221,6 +248,39 @@ export const useTxData = (
           return;
         }
 
+        let fee: bigint;
+        let gasPrice: bigint;
+
+        // Handle Optimism-specific values
+        let l1GasUsed: bigint | undefined;
+        let l1GasPrice: bigint | undefined;
+        let l1FeeScalar: string | undefined;
+        let l1Fee: bigint | undefined;
+        if (isOptimisticChain(provider._network.chainId)) {
+          if (_response.type === 0x7e) {
+            fee = 0n;
+            gasPrice = 0n;
+          } else {
+            const _rawReceipt = await provider.send(
+              "eth_getTransactionReceipt",
+              [txhash],
+            );
+            l1GasUsed = formatter.bigInt(_rawReceipt.l1GasUsed);
+            l1GasPrice = formatter.bigInt(_rawReceipt.l1GasPrice);
+            l1FeeScalar = _rawReceipt.l1FeeScalar;
+            l1Fee = formatter.bigInt(_rawReceipt.l1Fee);
+            ({ fee, gasPrice } = getOpFeeData(
+              _response.type,
+              _response.gasPrice!,
+              _receipt ? _receipt.gasUsed! : 0n,
+              l1Fee,
+            ));
+          }
+        } else {
+          fee = _response.gasPrice! * _receipt!.gasUsed!;
+          gasPrice = _response.gasPrice!;
+        }
+
         setTxData({
           transactionHash: _response.hash,
           from: _response.from,
@@ -229,7 +289,7 @@ export const useTxData = (
           type: _response.type ?? 0,
           maxFeePerGas: _response.maxFeePerGas ?? undefined,
           maxPriorityFeePerGas: _response.maxPriorityFeePerGas ?? undefined,
-          gasPrice: _response.gasPrice!,
+          gasPrice,
           gasLimit: _response.gasLimit,
           nonce: BigInt(_response.nonce),
           data: _response.data,
@@ -245,11 +305,15 @@ export const useTxData = (
                   // TODO: Does awaiting this Promise induce another RPC call?
                   confirmations: await _receipt.confirmations(),
                   createdContractAddress: _receipt.contractAddress ?? undefined,
-                  fee: _response.gasPrice! * _receipt.gasUsed,
+                  fee,
                   gasUsed: _receipt.gasUsed,
                   logs: Array.from(_receipt.logs),
                   blobGasPrice: _receipt.blobGasPrice ?? undefined,
                   blobGasUsed: _receipt.blobGasUsed ?? undefined,
+                  l1GasUsed,
+                  l1GasPrice,
+                  l1FeeScalar,
+                  l1Fee,
                 },
         });
       } catch (err) {
@@ -264,22 +328,31 @@ export const useTxData = (
   return txData;
 };
 
+export const findTokenTransfersInLogs = (
+  logs: readonly Log[],
+): TokenTransfer[] => {
+  return logs
+    .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
+    .map((l) => ({
+      token: l.address,
+      from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
+      to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
+      value: BigInt(l.data),
+    }));
+};
+
 export const useTokenTransfers = (
-  txData: TransactionData,
+  txData?: TransactionData | null,
 ): TokenTransfer[] | undefined => {
   const transfers = useMemo(() => {
+    if (txData === undefined || txData === null) {
+      return undefined;
+    }
     if (!txData.confirmedData) {
       return undefined;
     }
 
-    return txData.confirmedData.logs
-      .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
-      .map((l) => ({
-        token: l.address,
-        from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
-        to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
-        value: BigInt(l.data),
-      }));
+    return findTokenTransfersInLogs(txData.confirmedData.logs);
   }, [txData]);
 
   return transfers;
@@ -335,6 +408,133 @@ export const useSendsToMiner = (
   return [send, ops];
 };
 
+export type StateDiffElement = {
+  type: string;
+  from: string | null;
+  to: string | null;
+
+  // "+": new
+  // "*": modified
+  // "-": removed
+  storageChange: string;
+};
+
+export type StateDiffGroup = {
+  title: string;
+  diffs: (StateDiffElement | StateDiffGroup)[];
+};
+
+export const useStateDiffTrace = (
+  provider: JsonRpcApiProvider | undefined,
+  txHash: string,
+): StateDiffGroup[] | undefined => {
+  const [traceGroups, setTraceGroups] = useState<
+    StateDiffGroup[] | undefined
+  >();
+
+  useEffect(() => {
+    if (!provider) {
+      setTraceGroups(undefined);
+      return;
+    }
+
+    const stateDiffTrace = async () => {
+      const results = await provider.send("trace_replayTransaction", [
+        txHash,
+        ["stateDiff"],
+      ]);
+      const entries: StateDiffGroup[] = [];
+      let address: string;
+      let highLevelChange: any;
+
+      // Iterate over each address with a state change
+      for ([address, highLevelChange] of Object.entries(results.stateDiff)) {
+        const sdGroup: StateDiffGroup = {
+          title: address,
+          diffs: [],
+        };
+        let changeType: string;
+        let changes: any;
+
+        function addChangeType(
+          changeType: string,
+          changes: any,
+        ): StateDiffGroup | StateDiffElement | null {
+          if (changes === "=") {
+            // No change
+            return null;
+          }
+
+          if (changeType === "storage") {
+            // Create a "storage" subgroup and a subgroup for each storage slot
+            let group: StateDiffGroup = {
+              title: "storage",
+              diffs: [],
+            };
+            for (const [storageSlot, storageChange] of Object.entries(
+              changes,
+            )) {
+              let storageGroup: StateDiffGroup = {
+                title: storageSlot,
+                diffs: [],
+              };
+              let change = addChangeType("storageChange", storageChange);
+              if (change !== null) {
+                storageGroup.diffs.push(change);
+              }
+              group.diffs.push(storageGroup);
+            }
+            return group;
+          }
+
+          let storageChanges = Object.keys(changes);
+          if (storageChanges.length !== 1) {
+            throw new Error("More than one storage change type found");
+          }
+          // storageChange is "*", "+", or "-"
+          let storageChange = storageChanges[0];
+
+          if (storageChange === "+") {
+            // Just the new value is stored
+            return {
+              type: changeType,
+              from: null,
+              to: changes[storageChange],
+              storageChange,
+            };
+          } else if (storageChange === "-") {
+            return {
+              type: changeType,
+              from: changes[storageChange],
+              to: null,
+              storageChange,
+            };
+          }
+
+          return {
+            type: changeType,
+            from: changes[storageChange].from,
+            to: changes[storageChange].to,
+            storageChange,
+          };
+        }
+
+        // Add each of the state changes from this acddress
+        for ([changeType, changes] of Object.entries(highLevelChange)) {
+          let change = addChangeType(changeType, changes);
+          if (change !== null) {
+            sdGroup.diffs.push(change);
+          }
+        }
+        entries.push(sdGroup);
+      }
+      setTraceGroups(entries);
+    };
+    stateDiffTrace();
+  }, [provider, txHash]);
+  return traceGroups;
+};
+
 export type TraceEntry = {
   type: string;
   depth: number;
@@ -342,6 +542,7 @@ export type TraceEntry = {
   to: string;
   value: bigint;
   input: string;
+  output?: string;
 };
 
 export type TraceGroup = TraceEntry & {
@@ -664,6 +865,22 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
+export const useGetCode = (
+  provider: JsonRpcApiProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  blockTag: BlockTag = "latest",
+): string | undefined => {
+  const fetcher = providerFetcher(provider);
+  const { data, error } = useSWRImmutable(
+    ["eth_getCode", address, blockTag],
+    fetcher,
+  );
+  if (error) {
+    return undefined;
+  }
+  return data as string | undefined;
+};
+
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const tokenMetadataFetcher =
@@ -698,7 +915,7 @@ const tokenMetadataFetcher =
       return {
         name,
         symbol,
-        decimals,
+        decimals: Number(decimals),
       };
     } catch (err) {
       // Ignore on purpose; this indicates the probe failed and the address
@@ -722,4 +939,39 @@ export const useTokenMetadata = (
     return undefined;
   }
   return data;
+};
+
+const l1BlockContractAddress = "0x4200000000000000000000000000000000000015";
+const L1BLOCK_PROTOTYPE = new Contract(l1BlockContractAddress, L1Block);
+const l1EpochFetcher =
+  (
+    provider: JsonRpcApiProvider | undefined,
+  ): Fetcher<bigint | null, ["l1epoch", BlockTag]> =>
+  async ([_, blockTag]) => {
+    if (provider === undefined) {
+      return null;
+    }
+
+    // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
+    const l1BlockContract: Contract = L1BLOCK_PROTOTYPE.connect(
+      provider,
+    ).attach(l1BlockContractAddress) as Contract;
+    try {
+      return l1BlockContract.number({ blockTag });
+    } catch (err) {
+      return null;
+    }
+  };
+
+export const useL1Epoch = (
+  provider: JsonRpcApiProvider | undefined,
+  blockTag: BlockTag | null,
+): bigint | null | undefined => {
+  const fetcher = l1EpochFetcher(provider);
+  const key =
+    provider !== undefined && isOptimisticChain(provider._network.chainId)
+      ? ["l1epoch", blockTag]
+      : null;
+  const { data, error } = useSWRImmutable(key, fetcher);
+  return error ? undefined : data;
 };

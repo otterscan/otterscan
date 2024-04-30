@@ -14,10 +14,13 @@ const TransactionItemFiatFee: React.FC<TransactionItemFiatFeeProps> = ({
   fee,
 }) => {
   const { provider } = useContext(RuntimeContext);
-  const eth2USDValue = useETHUSDOracle(provider, blockTag);
+  const { price: eth2USDValue, decimals: ethPriceDecimals } = useETHUSDOracle(
+    provider,
+    blockTag,
+  );
   const fiatValue =
     eth2USDValue !== undefined
-      ? (fee * eth2USDValue) / 100_000_000n
+      ? (fee * eth2USDValue) / 10n ** ethPriceDecimals
       : undefined;
 
   return fiatValue ? (

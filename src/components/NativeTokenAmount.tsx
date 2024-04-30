@@ -16,13 +16,17 @@ type NativeTokenAmountProps = {
  * - Cut out decimal part if it is 0 to reduce UI clutter, i.e., show
  * 123 instead of 123.00
  */
-const NativeTokenAmount: FC<NativeTokenAmountProps> = ({ value, hideUnit }) => {
+const NativeTokenAmount: FC<NativeTokenAmountProps> = ({
+  value,
+  hideUnit,
+  ...rest
+}) => {
   const {
     nativeCurrency: { symbol, decimals },
   } = useChainInfo();
 
   return (
-    <span className={`text-sm ${value === 0n ? "opacity-30" : ""}`}>
+    <span className={`text-sm ${value === 0n ? "opacity-30" : ""}`} {...rest}>
       <FormattedBalance
         value={value}
         decimals={decimals}

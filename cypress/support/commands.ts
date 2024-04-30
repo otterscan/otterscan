@@ -27,7 +27,8 @@ Cypress.Commands.add("sendTx", (txReq) => {
         Cypress.env("DEVNET_ERIGON_URL"),
       );
       const wallet = new ethers.Wallet(
-        ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),
+        Cypress.env("DEVNET_ACCOUNT_KEY") ||
+          ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),
         provider,
       );
       const tx = await wallet.sendTransaction(txReq);

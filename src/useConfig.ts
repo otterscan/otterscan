@@ -41,6 +41,58 @@ export type ChainInfo = {
   };
 };
 
+/**
+ * Defines the sources for price information on the chain. Other than from
+ * trusted oracle sources, price information can be manipulated.
+ */
+export type PriceOracleInfo = {
+  /**
+   * If set, shows the native token price.
+   */
+  nativeTokenPrice?: {
+    /**
+     * A Chainlink AggregatorV3 compatible smart contract address acting
+     * as an oracle for the native token's price in USD.
+     *
+     * Note: You can deploy a contract that is compatible with the AggregatorV3
+     * interface but does not actually use Chainlink oracles; for instance,
+     * a custom contract that estimates the native token's USD price from an
+     * on-chain source could be deployed.
+     */
+    ethUSDOracleAddress: string;
+    /**
+     * Number of decimals used by the oracle contract, output by calling
+     * `decimals()`.
+     */
+    ethUSDOracleDecimals: number;
+  };
+
+  /**
+   * The address of the wrapped native token contract, which should match the
+   * WETH variable in Uniswap router contracts. This is used to estimate the
+   * price of tokens which have at least one Uniswap pool with the wrapped
+   * native token.
+   */
+  wrappedEthAddress?: string;
+
+  /**
+   * If defined, considers UniswapV2 pairs when estimating token prices for
+   * tokens which do not have a Chainlink oracle.
+   */
+  uniswapV2?: {
+    factoryAddress: string;
+  };
+
+  /**
+   * If defined, considers UniswapV3 pairs when estimating token prices for
+   * tokens which do not have a Chainlink oracle. 0.01%, 0.05%, 0.3%, and 1%
+   * fee tiers are checked.
+   */
+  uniswapV3?: {
+    factoryAddress: string;
+  };
+};
+
 export const defaultChainInfo: ChainInfo = {
   name: "",
   faucets: [],
@@ -116,6 +168,23 @@ export type OtterscanConfig = {
    * "central_server" whose values are their respective root URLs.
    */
   sourcifySources?: { [key: string]: string };
+
+  /**
+   * Optional custom price oracle information for estimating the current price
+   * of the native token and all other tokens.
+   */
+  priceOracleInfo?: PriceOracleInfo;
+
+  /**
+   * Optional settings for chains that follow the OP Stack.
+   */
+  opChainSettings?: {
+    /**
+     * The root URL of a block explorer for the layer-1 of this chain, without
+     * a trailing forward slash, e.g. "https://sepolia.otterscan.io".
+     */
+    l1ExplorerURL?: string;
+  };
 };
 
 /**

@@ -4,7 +4,7 @@ import FormattedBalance, {
 } from "../components/FormattedBalance";
 import { useSelectionContext } from "./useSelection";
 
-// TODO: replace all occurences with SelectionHighlighter and remove this component
+// TODO: replace all occurrences with SelectionHighlighter and remove this component
 const FormattedBalanceHighlighter: FC<FormattedBalanceProps> = ({
   value,
   ...rest

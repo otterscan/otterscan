@@ -1,6 +1,6 @@
 import { TransactionData } from "../types";
 
-const feeTypes = ["blob", "burned", "tip"];
+const feeTypes = ["blob", "burned", "tip", "opL1Fee"];
 type FeeType = (typeof feeTypes)[number];
 export function calculateFee(
   txData: TransactionData,
@@ -20,18 +20,24 @@ export function calculateFee(
     };
   }
   const blobFee =
-    txData.confirmedData!.blobGasUsed && txData.confirmedData!.blobGasUsed
+    txData.confirmedData!.blobGasUsed && txData.confirmedData!.blobGasPrice
       ? txData.confirmedData!.blobGasUsed! * txData.confirmedData!.blobGasPrice!
       : 0n;
   const paidFees = txData.gasPrice! * txData.confirmedData!.gasUsed;
-  const burntFees = block
-    ? block.baseFeePerGas! * txData.confirmedData!.gasUsed
-    : 0n;
+  const burntFees =
+    block && block.baseFeePerGas
+      ? block.baseFeePerGas * txData.confirmedData!.gasUsed
+      : 0n;
+  let opL1Fee = 0n;
+  if (txData.confirmedData && txData.confirmedData.l1Fee !== undefined) {
+    opL1Fee = txData.confirmedData.l1Fee;
+  }
 
   const fees: Record<FeeType, bigint> = {
     blob: blobFee,
     burned: burntFees,
     tip: paidFees - burntFees,
+    opL1Fee,
   };
   const totalFees = Object.values(fees).reduce((a, b) => a + b, 0n);
 

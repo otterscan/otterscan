@@ -28,3 +28,10 @@ export const BlobTx: Story = {
     blob: true,
   },
 };
+
+export const DepositTx: Story = {
+  args: {
+    ...SimpleTx.args,
+    deposit: true,
+  },
+};

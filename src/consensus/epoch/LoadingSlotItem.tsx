@@ -1,20 +1,20 @@
 import { FC, memo } from "react";
 import ContentLoader from "react-content-loader";
-import { slot2Epoch, useProposerMap } from "../../useConsensus";
+import { useProposerMap, useSlotToEpoch } from "../../useConsensus";
 import CheckedValidatorLink from "../components/CheckedValidatorLink";
 import SlotLink from "../components/SlotLink";
 import { SlotAwareComponentProps } from "../types";
 import SlotTimestamp from "./SlotTimestamp";
 
 const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
-  const epochNumber = slot2Epoch(slotNumber);
+  const epochNumber = useSlotToEpoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
   const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
 
   return (
     <tr>
       <td>
-        <SlotLink slotNumber={slotNumber} scheduled />
+        <SlotLink slot={slotNumber} scheduled />
       </td>
       <td>
         <ContentLoader viewBox="0 0 30 4">

@@ -24,6 +24,7 @@ const AllERC1155 = lazy(() => import("./token/AllERC1155"));
 const AllERC1167 = lazy(() => import("./token/AllERC1167"));
 const Epoch = lazy(() => import("./consensus/Epoch"));
 const Slot = lazy(() => import("./consensus/Slot"));
+const SlotByBlockRoot = lazy(() => import("./consensus/slot/SlotByBlockRoot"));
 const Validator = lazy(() => import("./consensus/Validator"));
 const London = lazy(() => import("./special/london/London"));
 const Faucets = lazy(() => import("./Faucets"));
@@ -99,6 +100,10 @@ const App = () => {
                     )}
                     <Route path="epoch/:epochNumber/*" element={<Epoch />} />
                     <Route path="slot/:slotNumber/*" element={<Slot />} />
+                    <Route
+                      path="slotByBlockRoot/:blockRoot/*"
+                      element={<SlotByBlockRoot />}
+                    />
                     <Route
                       path="validator/:validatorIndex/*"
                       element={<Validator />}

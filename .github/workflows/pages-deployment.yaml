@@ -1,0 +1,38 @@
+on:
+  workflow_call:
+    secrets:
+      apiToken:
+        required: true
+      accountId:
+        required: true
+      projectName:
+        required: true
+      viteConfigJson:
+        required: true
+
+jobs:
+  deploy-cloudflare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+      - name: Install packages
+        run: npm ci
+      - name: Build Otterscan
+        run: npm run build
+        env:
+          VITE_CONFIG_JSON: ${{ secrets.viteConfigJson }}
+      - name: Publish
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.apiToken }}
+          accountId: ${{ secrets.accountId }}
+          command: pages deploy dist --project-name=${{ secrets.projectName }} --commit-dirty=true

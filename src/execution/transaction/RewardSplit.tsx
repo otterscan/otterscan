@@ -1,3 +1,4 @@
+import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { faBurn, faCoins, faSplotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext } from "react";
@@ -78,6 +79,26 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
                 </span>
                 <span>
                   <FormattedBalance value={feeDist.blob} symbol={symbol} />
+                </span>
+              </span>
+            </div>
+          </>
+        )}
+        {feePerc.opL1Fee > 0n && (
+          <>
+            <PercentageGauge
+              perc={feePerc.opL1Fee}
+              bgColor="bg-blue-100"
+              bgColorPerc="bg-blue-300"
+              textColor="text-blue-700"
+            />
+            <div className="flex items-baseline space-x-1">
+              <span className="flex space-x-1">
+                <span className="text-blue-300" title="L1 Security fees">
+                  <FontAwesomeIcon icon={faEthereum} size="1x" />
+                </span>
+                <span>
+                  <FormattedBalance value={feeDist.opL1Fee} symbol={symbol} />
                 </span>
               </span>
             </div>

@@ -22,7 +22,8 @@ export const chainInfoURL = (
 
 export const epochURL = (epochNumber: number) => `/epoch/${epochNumber}`;
 
-export const slotURL = (slotNumber: number) => `/slot/${slotNumber}`;
+export const slotURL = (slot: number | string) =>
+  typeof slot === "number" ? `/slot/${slot}` : `/slotByBlockRoot/${slot}`;
 
 export const slotAttestationsURL = (slotNumber: number) =>
   `/slot/${slotNumber}/attestations`;

@@ -1,5 +1,6 @@
 import { FixedNumber } from "ethers";
 import { FC, memo } from "react";
+import { PriceOracleSource } from "../api/token-price-resolver/token-price-resolver";
 import { formatFiatValue } from "../usePriceOracle";
 
 const DEFAULT_DECIMALS = 2;
@@ -8,6 +9,7 @@ export type FiatBoxProps = {
   borderColor?: string;
   bgColor?: string;
   fgColor?: string;
+  explicitPlus?: boolean;
 };
 
 export const feePreset = {
@@ -34,6 +36,25 @@ export const rewardPreset = {
   fgColor: "text-amber-600",
 } satisfies FiatBoxProps;
 
+export const uniswapPreset = {
+  borderColor: "border-fuchsia-200",
+  bgColor: "bg-fuchsia-100",
+  fgColor: "text-fuchsia-600",
+} satisfies FiatBoxProps;
+
+export function getPriceOraclePreset(
+  source: PriceOracleSource | undefined,
+): FiatBoxProps {
+  switch (source) {
+    case "Chainlink":
+    case "Equivalence":
+      return neutralPreset;
+    case "Uniswap":
+      return uniswapPreset;
+  }
+  return neutralPreset;
+}
+
 type FiatValueProps = FiatBoxProps & {
   value: FixedNumber;
   decimals?: number;
@@ -49,13 +70,23 @@ const FiatValue: FC<FiatValueProps> = ({
   borderColor,
   bgColor,
   fgColor,
+  explicitPlus = false,
 }) => (
   <span
     className={`px-2 ${borderColor ?? ""} rounded-lg border ${
       bgColor ?? ""
     } text-xs ${fgColor ?? ""}`}
   >
-    $<span className="font-balance">{formatFiatValue(value, decimals)}</span>
+    {(explicitPlus || value.isNegative()) && !value.isZero() ? (
+      <span className="font-balance">{value.isNegative() ? "-" : "+"}</span>
+    ) : null}
+    $
+    <span className="font-balance">
+      {formatFiatValue(
+        value.isNegative() ? value.mul(FixedNumber.fromValue(-1n)) : value,
+        decimals,
+      )}
+    </span>
   </span>
 );
 

@@ -1,15 +1,30 @@
 import { FC, useContext, useMemo } from "react";
+import StandardTHead from "../../components/StandardTHead";
 import {
   useGenericTransactionCount,
   useGenericTransactionList,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
+import { findTokenTransfersInLogs } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { AddressAwareComponentProps } from "../types";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
+
+const tableHeader = (
+  <StandardTHead>
+    <th className="w-56">Txn Hash</th>
+    <th className="w-28">Method</th>
+    <th className="w-28">Block</th>
+    <th className="w-28">Age</th>
+    <th>From</th>
+    <th>To</th>
+    <th className="w-48">Token</th>
+    <th>Value</th>
+  </StandardTHead>
+);
 
 const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
@@ -39,6 +54,7 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
           to: m.receipt.to,
           value: m.transaction.value,
           type: m.transaction.type,
+          tokenTransfers: findTokenTransfersInLogs(m.receipt.logs),
         }),
       ),
     [results],
@@ -52,6 +68,8 @@ const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
       total={total}
       items={items}
       Item={(i) => <ERC20Item {...i} />}
+      header={tableHeader}
+      columns={8}
     />
   );
 };

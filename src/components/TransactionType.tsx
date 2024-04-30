@@ -32,6 +32,13 @@ const TransactionType: React.FC<TransactionTypeProps> = ({ type }) => {
         </ExternalLink>
       );
       break;
+    case 126:
+      description = (
+        <ExternalLink href="https://specs.optimism.io/protocol/deposits.html#the-deposited-transaction-type">
+          Optimism: Deposit
+        </ExternalLink>
+      );
+      break;
     default:
       description = "unknown";
   }

@@ -1,14 +1,14 @@
 import { AbstractProvider } from "ethers";
-import { IAddressResolver } from "./address-resolver";
+import { AddressResolver } from "./address-resolver";
 
-export type SelectedResolvedName<T> = [IAddressResolver<T>, T] | null;
+export type SelectedResolvedName<T> = [AddressResolver<T>, T] | null;
 
 export class CompositeAddressResolver<T = any>
-  implements IAddressResolver<SelectedResolvedName<T>>
+  implements AddressResolver<SelectedResolvedName<T>>
 {
-  private resolvers: IAddressResolver<T>[] = [];
+  private resolvers: AddressResolver<T>[] = [];
 
-  addResolver(resolver: IAddressResolver<T>) {
+  addResolver(resolver: AddressResolver<T>) {
     this.resolvers.push(resolver);
   }
 
@@ -29,5 +29,23 @@ export class CompositeAddressResolver<T = any>
     }
 
     return null;
+  }
+
+  resolveToString(
+    resolvedAddress: SelectedResolvedName<T> | undefined,
+  ): string | undefined {
+    if (!resolvedAddress) {
+      return undefined;
+    }
+    return resolvedAddress[0].resolveToString(resolvedAddress[1]);
+  }
+
+  trusted(
+    resolvedAddress: SelectedResolvedName<T> | undefined,
+  ): boolean | undefined {
+    if (!resolvedAddress) {
+      return undefined;
+    }
+    return resolvedAddress[0].trusted(resolvedAddress[1]);
   }
 }
