@@ -20,12 +20,17 @@ Cypress.Commands.add(
 );
 
 // Send a transaction using the devnet key
-Cypress.Commands.add("sendTx", (txReq) => {
+Cypress.Commands.add("sendTx", (txReq: TransactionRequest) => {
   return cy.wrap(
     (async () => {
       const provider = new ethers.JsonRpcProvider(
         Cypress.env("DEVNET_ERIGON_URL"),
+        undefined,
+        // Speed up polling time from 4000ms => 100ms
+        { polling: true, pollingInterval: 100 },
       );
+      // Temporary fix for https://github.com/ethers-io/ethers.js/issues/4713
+      provider.pollingInterval = 100;
       const wallet = new ethers.Wallet(
         Cypress.env("DEVNET_ACCOUNT_KEY") ||
           ethers.sha256(ethers.toUtf8Bytes("erigon devnet key")),

@@ -180,11 +180,6 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // Already on this page
-    if (this.txs[this.pageEnd - 1].hash === hash) {
-      return this;
-    }
-
     if (this.txs[this.pageStart].hash === hash) {
       const overflowPage = this.txs.slice(0, this.pageStart);
       const baseBlock = this.txs[0].blockNumber;
@@ -209,11 +204,6 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // Already on this page
-    if (this.txs[this.pageStart].hash === hash) {
-      return this;
-    }
-
     if (this.txs[this.pageEnd - 1].hash === hash) {
       const overflowPage = this.txs.slice(this.pageEnd);
       const baseBlock = this.txs[this.txs.length - 1].blockNumber;
