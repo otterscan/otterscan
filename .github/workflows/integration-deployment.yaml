@@ -2,6 +2,12 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  workflow_dispatch:
+
 jobs:
   deploy-mainnet:
     uses: ./.github/workflows/pages-deployment.yaml
