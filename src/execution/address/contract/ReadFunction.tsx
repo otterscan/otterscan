@@ -9,9 +9,10 @@ import {
   type ParamType,
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
+import { DevMethod } from "../../../sourcify/useSourcify";
 import { RuntimeContext } from "../../../useRuntime";
 import ParamDeclaration from "../../components/ParamDeclaration";
-import DecodedParamsTable from "../../transaction/decoder/DecodedParamsTable";
+import OutputDecoder from "../../transaction/decoder/OutputDecoder";
 import FunctionParamInput, {
   ParamComponentRef,
   ParamValue,
@@ -21,6 +22,7 @@ import { parse } from "./contractInputDataParser";
 interface ReadFunctionProps {
   address: string;
   func: FunctionFragment;
+  devMethod?: DevMethod;
 }
 
 /**
@@ -165,8 +167,10 @@ async function parseStructuredArgument(
   throw new Error("Unhandled parse sequence: " + argType.format("full"));
 }
 
-const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
-  let [result, setResult] = useState<Result | null | undefined>(null);
+const ReadFunction: FC<ReadFunctionProps> = ({ address, func, devMethod }) => {
+  let [result, setResult] = useState<
+    { result: Result; data: string } | null | undefined
+  >(null);
   let [error, setError] = useState<string | null>(null);
   const childRefs = useRef<ParamComponentRef[]>(
     new Array(func.inputs.length).fill(null),
@@ -194,7 +198,10 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
           to: address,
           data: encodedData,
         });
-        setResult(int.decodeFunctionResult(func.name, resultData));
+        setResult({
+          result: int.decodeFunctionResult(func.name, resultData),
+          data: resultData,
+        });
         setError(null);
       } catch (e: any) {
         setResult(null);
@@ -248,10 +255,11 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func }) => {
       </form>
       <div className="mt-2 pl-6">
         {result && (
-          <DecodedParamsTable
-            args={result}
+          <OutputDecoder
+            args={result.result}
             paramTypes={func.outputs || []}
-            defaultNameBase="ret"
+            data={result.data}
+            devMethod={devMethod}
           />
         )}
         {error && <p className="break-words font-mono text-red-500">{error}</p>}

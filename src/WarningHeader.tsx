@@ -17,10 +17,14 @@ const WarningHeader: React.FC = () => {
     chainMsg = "Rinkeby Testnet";
   } else if (chainId === 5n) {
     chainMsg = "Görli Testnet";
+  } else if (chainId === 10n) {
+    chainMsg = "OP Mainnet";
   } else if (chainId === 42n) {
     chainMsg = "Kovan Testnet";
   } else if (chainId === 11155111n) {
     chainMsg = "Sepolia Testnet";
+  } else if (chainId === 11155420n) {
+    chainMsg = "OP Sepolia";
   } else if (chainId === 17000n) {
     chainMsg = "Holesky Testnet";
   } else if (name) {

@@ -1,18 +1,23 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu } from "@headlessui/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { lazy, useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
+import StandardTextarea from "../../components/StandardTextarea";
 import { Match, MatchType } from "../../sourcify/useSourcify";
 import { openInRemixURL } from "../../url";
+import { useGetCode } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
-import Contract from "./Contract";
 import ContractFromRepo from "./ContractFromRepo";
 import ContractABI from "./contract/ContractABI";
+
+const HighlightedSolidity = lazy(
+  () => import("./contract/HighlightedSolidity"),
+);
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -22,6 +27,7 @@ type ContractsProps = {
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
   usePageTitle(`Contract | ${checksummedAddress}`);
+  const code = useGetCode(provider, checksummedAddress);
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
@@ -128,8 +134,8 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
               {selected && (
                 <>
                   {match.metadata.sources[selected].content ? (
-                    <Contract
-                      content={match.metadata.sources[selected].content}
+                    <HighlightedSolidity
+                      source={match.metadata.sources[selected].content}
                     />
                   ) : (
                     <ContractFromRepo
@@ -142,6 +148,15 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 </>
               )}
             </div>
+          </>
+        )}
+      </div>
+      <div className="py-5">
+        {code === undefined && <span>Getting contract bytecode...</span>}
+        {code && (
+          <>
+            <div className="pb-2">Contract Bytecode</div>
+            <StandardTextarea value={code} />
           </>
         )}
       </div>

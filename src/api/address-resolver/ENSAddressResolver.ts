@@ -1,7 +1,7 @@
 import { AbstractProvider } from "ethers";
-import { IAddressResolver } from "./address-resolver";
+import { BasicAddressResolver } from "./address-resolver";
 
-export class ENSAddressResolver implements IAddressResolver<string> {
+export class ENSAddressResolver extends BasicAddressResolver {
   async resolveAddress(
     provider: AbstractProvider,
     address: string,
@@ -11,5 +11,9 @@ export class ENSAddressResolver implements IAddressResolver<string> {
       return undefined;
     }
     return name;
+  }
+
+  trusted(resolvedAddress: string | undefined): boolean | undefined {
+    return true;
   }
 }

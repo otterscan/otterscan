@@ -57,6 +57,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             txHash={tx.hash}
             fail={tx.status === 0}
             blob={tx.type === 3}
+            deposit={tx.type === 126}
           />
         </td>
         {/* Set both min and max widths to reduce column width changes when items of different lengths appear */}
@@ -83,7 +84,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
             <span>
               <TransactionDirection
-                direction={undefined}
+                direction={direction}
                 flags={sendsToMiner ? Flags.MINER : undefined}
               />
             </span>

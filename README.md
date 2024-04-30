@@ -54,6 +54,49 @@ The UI was intentionally made very similar to the most popular Ethereum block ex
 
 However, you will see that we made many UI improvements.
 
+## Supported networks
+
+Otterscan runs on any network that has a client implementing the [Otterscan API](#otterscan-json-rpc-api-extensions).
+
+### Erigon
+
+The reference implementation is maintained by us and comes out-of-box in any Erigon installation.
+
+So, it runs on any network supported by Erigon, which at the moment of writing are:
+
+- Ethereum mainnet + all testnets
+- Gnosis chain
+- Polygon
+
+### Optimism
+
+[Test-in-Prod](https://www.testinprod.io/) made and maintain OP-Erigon, which is a fork of Erigon that can sync any Optimism Superchain (Optimism, BASE, Zora, etc.).
+
+### Anvil
+
+Anvil [implements the Otterscan API](https://book.getfoundry.sh/reference/anvil/#otterscan-methods), so you can point your Otterscan installation to an Anvil RPC endpoint and have an explorer for your local devnet.
+
+## Public instances
+
+Otterscan is meant to be run on your own environment ([see install instructions below](#install-instructions)).
+
+However, we host some testnet instances as a showcase of our features:
+
+- Sepolia testnet: https://sepolia.otterscan.io/
+- Holesky testnet: https://holesky.otterscan.io/
+
+Test-in-Prod, the makers of OP-Erigon, also host instances for Optimism:
+
+- OP-Sepolia testnet: https://otterscan.sepolia.testinprod.io/
+- OP-Mainnet: https://otterscan.mainnet.testinprod.io/
+
+## Commercial offerings
+
+Some node providers offer Otterscan API for their customers. Please check with them their business conditions as we are not affiliated to them:
+
+- Llamanodes: https://llamanodes.com/
+- Quicknode: https://www.quicknode.com/
+
 ## Install instructions
 
 [Here](./docs/install.md).
@@ -75,6 +118,8 @@ We make use of many open-source software and integrate many public datasources, 
 To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
 To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node in a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the modifications Otterscan requires possible.
+
+To the [Test-in-Prod](https://www.testinprod.io/) team that made OP-Erigon possible. Their effort made it possible to run Otterscan against any Optimism Superchain.
 
 To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fast database that empowers Erigon.
 

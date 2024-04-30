@@ -23,7 +23,7 @@ const Attestations: FC = () => {
       {isLoading ? (
         <OverviewSkeleton />
       ) : error ? (
-        <SlotNotFound slotNumber={slotAsNumber} />
+        <SlotNotFound slot={slotAsNumber} />
       ) : (
         <>
           {slot.data.message.body.attestations.map((att: any, i: any) => (

@@ -1,9 +1,12 @@
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { lazy } from "react";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
-import Contract from "./Contract";
+
+const HighlightedSolidity = lazy(
+  () => import("./contract/HighlightedSolidity"),
+);
 
 type ContractFromRepoProps = {
   checksummedAddress: string;
@@ -40,7 +43,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
           </span>
         </div>
       )}
-      {content !== undefined && <Contract content={content} />}
+      {content !== undefined && <HighlightedSolidity source={content} />}
     </>
   );
 };

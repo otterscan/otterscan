@@ -64,6 +64,12 @@ export type ConfirmedTransactionData = {
   logs: Log[];
   blobGasPrice?: bigint;
   blobGasUsed?: bigint;
+
+  // Optimism-specific
+  l1GasUsed?: bigint;
+  l1GasPrice?: bigint;
+  l1FeeScalar?: string;
+  l1Fee?: bigint;
 };
 
 // The VOID...
