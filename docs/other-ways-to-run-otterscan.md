@@ -71,3 +71,25 @@ npm start
 ```
 
 Otterscan should now be running at `http://localhost:5173`.
+
+## (Alternative 3) Run a production build from a simple Python Flask server
+Hosting Otterscan is similar to hosting a basic HTTP server except that any files that aren't found are served `index.html`. It's easy to host from a simple Flask server like this.
+
+Start by installing Flask via `pip`:
+
+```
+pip install flask
+```
+
+Build production scripts and assets to the `dist` folder:
+```
+npm install
+npm run build
+```
+
+Edit `public/config.json` with the correct configuration parameters
+
+Run the Flask server on port 5173:
+```
+flask --app scripts/flask_server.py run -p 5173
+```
