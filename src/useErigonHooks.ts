@@ -648,12 +648,12 @@ export const useTransactionError = (
     const readCodes = async () => {
       const result = (await provider.send("ots_getTransactionError", [
         txHash,
-      ])) as string;
+      ])) as string | null;
 
       // Empty or success
-      if (result === "0x") {
+      if (result === "0x" || typeof result !== "string") {
         setErrorMsg(undefined);
-        setData(result);
+        setData("0x");
         setCustomError(false);
         return;
       }
