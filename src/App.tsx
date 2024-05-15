@@ -29,6 +29,7 @@ const Validator = lazy(() => import("./consensus/Validator"));
 const London = lazy(() => import("./special/london/London"));
 const Faucets = lazy(() => import("./Faucets"));
 const PageNotFound = lazy(() => import("./PageNotFound"));
+const Settings = lazy(() => import("./Settings"));
 
 const App = () => {
   const runtime = useRuntime();
@@ -109,6 +110,7 @@ const App = () => {
                       element={<Validator />}
                     />
                     <Route path="faucets/*" element={<Faucets />} />
+                    <Route path="settings/*" element={<Settings />} />
                     <Route path="*" element={<PageNotFound />} />
                   </Route>
                 </Routes>
