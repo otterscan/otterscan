@@ -19,5 +19,7 @@ else
 fi
 
 # Overwrite base image config.json with our own and let nginx do the rest
-echo $PARAMS > /usr/share/nginx/html/config.json
+if [ ! "$DISABLE_CONFIG_OVERWRITE" ]; then
+  echo $PARAMS > /usr/share/nginx/html/config.json
+fi
 exec nginx -g "daemon off;"
