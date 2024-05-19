@@ -1,13 +1,18 @@
 import { FC } from "react";
+import { Link } from "react-router-dom";
 
 type LogIndexProps = {
   idx: number;
 };
 
 const LogIndex: FC<LogIndexProps> = ({ idx }) => (
-  <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
+  <Link
+    to={"#log-" + idx}
+    className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-50 text-emerald-500"
+    id={"log-" + idx}
+  >
     {idx}
-  </span>
+  </Link>
 );
 
 export default LogIndex;
