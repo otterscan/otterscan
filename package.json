@@ -83,7 +83,7 @@
   "devDependencies": {
     "@storybook/addon-essentials": "^8.0.9",
     "@storybook/addon-interactions": "^8.0.9",
-    "@storybook/addon-links": "^8.0.9",
+    "@storybook/addon-links": "^8.1.2",
     "@storybook/blocks": "^8.0.9",
     "@storybook/react": "^8.0.9",
     "@storybook/react-vite": "^8.0.9",
