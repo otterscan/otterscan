@@ -1,12 +1,18 @@
 import { FC, TextareaHTMLAttributes } from "react";
 
-const StandardTextarea: FC<TextareaHTMLAttributes<HTMLTextAreaElement>> = ({
+interface StandardTextareaProps
+  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  readOnly?: boolean;
+}
+
+const StandardTextarea: FC<StandardTextareaProps> = ({
+  readOnly = true,
   ...rest
 }) => (
   <textarea
-    className="h-40 w-full rounded border bg-gray-50 p-2 font-mono text-gray-500 focus:outline-none"
+    className={`h-40 w-full rounded border font-mono ${readOnly ? "bg-gray-50 text-gray-500" : "text-gray-800"} p-2 focus:outline-none`}
     {...rest}
-    readOnly
+    readOnly={readOnly}
   />
 );
 
