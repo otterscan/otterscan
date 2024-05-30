@@ -81,7 +81,9 @@ export const useBeaconSpec = (): Record<string, string> | undefined => {
   return data.data as Record<string, string>;
 };
 
-export const useSlotToEpoch = <T extends number | undefined>(slotNumber: T): T => {
+export const useSlotToEpoch = <T extends number | undefined>(
+  slotNumber: T,
+): T => {
   const slotsPerEpochStr = useBeaconSpec()?.SLOTS_PER_EPOCH;
   const slotsPerEpoch: number = slotsPerEpochStr
     ? Number(slotsPerEpochStr)
