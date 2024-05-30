@@ -14,7 +14,7 @@ const ElementDiff: React.FC<ElementDiffProps> = ({
   <div className="flex flex-row overflow-hidden items-center gap-3">
     <div className="flex flex-col rounded overflow-hidden">
       {oldElem !== null && (
-        <div className="bg-opacity-10 bg-red-500 px-2 py-1">
+        <div className="bg-opacity-10 dark:bg-opacity-30 bg-red-500 px-2 py-1">
           <div className="flex items-start">
             <span className="text-gray-500 mr-4 font-data select-none">-</span>
             {oldElem}
@@ -22,7 +22,7 @@ const ElementDiff: React.FC<ElementDiffProps> = ({
         </div>
       )}
       {newElem !== null && (
-        <div className="bg-opacity-20 bg-green-300 px-2 py-1">
+        <div className="bg-opacity-20 dark:bg-green-300 bg-green-300 px-2 py-1">
           <div className="flex items-start">
             <span className="text-gray-500 mr-4 font-data select-none">+</span>
             {newElem}
