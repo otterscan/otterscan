@@ -81,12 +81,15 @@ export const useBeaconSpec = (): Record<string, string> | undefined => {
   return data.data as Record<string, string>;
 };
 
-export const useSlotToEpoch = (slotNumber: number): number => {
+export const useSlotToEpoch = <T extends number | undefined>(slotNumber: T): T => {
   const slotsPerEpochStr = useBeaconSpec()?.SLOTS_PER_EPOCH;
   const slotsPerEpoch: number = slotsPerEpochStr
     ? Number(slotsPerEpochStr)
     : DEFAULT_SLOTS_PER_EPOCH;
-  return Math.floor(slotNumber / slotsPerEpoch);
+  if (slotNumber === undefined) {
+    return undefined as T;
+  }
+  return Math.floor(slotNumber / slotsPerEpoch) as T;
 };
 
 const useBeaconHeaderURL = (tag: string) => {
@@ -415,8 +418,5 @@ export const useHeadEpochNumber = (
   refreshInterval: number = HEAD_EPOCH_REFRESH_INTERVAL,
 ) => {
   const headSlot = useHeadSlotNumber(refreshInterval);
-  if (headSlot === undefined) {
-    return undefined;
-  }
   return useSlotToEpoch(headSlot);
 };
