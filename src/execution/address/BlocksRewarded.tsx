@@ -13,16 +13,8 @@ import { AddressAwareComponentProps } from "../types";
 import BlockRewardedItem, { BlockRewardedItemProps } from "./BlockRewardedItem";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
-const searchHeader = (
-  <StandardTHead>
-    <th className="w-28">Block</th>
-    <th className="w-36">Age</th>
-    <th className="w-36">Block fees</th>
-  </StandardTHead>
-);
-
 const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
   const total = useGenericTransactionCount(provider, "BlocksRewarded", address);
@@ -49,6 +41,20 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
     [results],
   );
 
+  const searchHeader = (
+    <StandardTHead>
+      <th className="w-28">Block</th>
+      <th className="w-32">Age</th>
+      <th className="w-36">Block fees</th>
+      {config?.beaconAPI && (
+        <>
+          <th className="w-28">Slot</th>
+          <th className="w-28">Validator</th>
+        </>
+      )}
+    </StandardTHead>
+  );
+
   usePageTitle(`Blocks Rewarded | ${address}`);
 
   return (
@@ -59,7 +65,7 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
       Item={(i) => <BlockRewardedItem {...i} />}
       header={searchHeader}
       typeName="block"
-      columns={3}
+      columns={config?.beaconAPI === undefined ? 3 : 5}
     />
   );
 };
