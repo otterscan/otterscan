@@ -115,6 +115,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
               <TokenAmount
                 tokenAddress={transfer.token}
                 amount={transfer.value}
+                blockTag={blockNumber}
               />
             </tr>
           ) : null,

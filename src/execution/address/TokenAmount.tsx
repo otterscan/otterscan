@@ -11,9 +11,14 @@ import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy
 type TokenAmountProps = {
   tokenAddress: ChecksummedAddress;
   amount?: bigint | null;
+  blockTag?: string | number;
 };
 
-const TokenAmount: FC<TokenAmountProps> = ({ tokenAddress, amount }) => {
+const TokenAmount: FC<TokenAmountProps> = ({
+  tokenAddress,
+  amount,
+  blockTag = "latest",
+}) => {
   const { provider } = useContext(RuntimeContext);
   const metadata = useTokenMetadata(provider, tokenAddress);
   const {
@@ -22,7 +27,7 @@ const TokenAmount: FC<TokenAmountProps> = ({ tokenAddress, amount }) => {
     source: priceSource,
   } = useTokenUSDOracle(
     provider,
-    "latest",
+    blockTag,
     tokenAddress,
     metadata?.decimals !== undefined ? BigInt(metadata?.decimals) : undefined,
   );
