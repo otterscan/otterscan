@@ -16,10 +16,16 @@ import { useFeeToggler } from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
+import {
+  useAddressBalance,
+  useContractCreator,
+  useHasCode,
+  useTransactionCount,
+} from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
+import { commify } from "../../utils/utils";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
@@ -58,6 +64,13 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   const hash = searchParams.get("h");
 
   const [controller, setController] = useState<SearchController>();
+
+  const hasCode = useHasCode(provider, address);
+  const transactionCount = useTransactionCount(
+    provider,
+    hasCode === false ? address : undefined,
+  );
+
   useEffect(() => {
     if (!provider || !address) {
       return;
@@ -161,7 +174,12 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           )}
           {config && config.experimental && <ProxyInfo address={address} />}
         </BlockNumberContext.Provider>
-        <NavBar address={address} page={page} controller={controller} />
+        <NavBar
+          address={address}
+          page={page}
+          controller={controller}
+          transactionCount={transactionCount}
+        />
         <StandardScrollableTable isAuto={true}>
           <ResultHeader
             feeDisplay={feeDisplay}
@@ -191,9 +209,15 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 type NavBarProps = AddressAwareComponentProps & {
   page: ProcessedTransaction[] | undefined;
   controller: SearchController | undefined;
+  transactionCount?: bigint;
 };
 
-const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
+const NavBar: FC<NavBarProps> = ({
+  address,
+  page,
+  controller,
+  transactionCount,
+}) => (
   <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {page === undefined ? (
@@ -201,7 +225,16 @@ const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
       ) : (
         <>
           <span data-test="page-count">{page.length}</span> transactions on this
-          page
+          page{" "}
+          {transactionCount !== undefined && (
+            <>
+              <span className="mx-1.5">/</span>{" "}
+              <span className="text-gray-600">
+                {commify(transactionCount)} transaction
+                {transactionCount !== 1n && "s"} sent
+              </span>
+            </>
+          )}
         </>
       )}
     </div>
