@@ -2,6 +2,17 @@ import { ChartData, ChartOptions } from "chart.js";
 import { ExtendedBlock } from "../../useErigonHooks";
 import { commify } from "../../utils/utils";
 
+function rgbToHex(red: number, green: number, blue: number): string {
+  return `#${((red << 16) + (green << 8) + blue).toString(16).padStart(6, "0")}`;
+}
+
+function interpolateColor(gasUsed: number, gasLimit: number): string {
+  const red = Math.floor(255 + (gasUsed / gasLimit) * (0 - 255));
+  const green = Math.floor(255 + (gasUsed / gasLimit) * (0 - 255));
+  const blue = 255;
+  return rgbToHex(red, green, blue);
+}
+
 export const burntFeesChartOptions: ChartOptions<"line"> = {
   animation: false,
   plugins: {
@@ -123,15 +134,15 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
       fill: true,
       segment: {
         backgroundColor: (ctx, x) =>
-          ctx.p1.parsed.y >
-          Math.round(Number(blocks[ctx.p1DataIndex].gasLimit) / 2)
-            ? "#22C55E70"
-            : "#EF444470",
+          interpolateColor(
+            ctx.p1.parsed.y,
+            Number(blocks[ctx.p1DataIndex].gasLimit),
+          ) + "70",
         borderColor: (ctx) =>
-          ctx.p1.parsed.y >
-          Math.round(Number(blocks[ctx.p1DataIndex].gasLimit) / 2)
-            ? "#22C55E"
-            : "#EF4444",
+          interpolateColor(
+            ctx.p1.parsed.y,
+            Number(blocks[ctx.p1DataIndex].gasLimit),
+          ),
       },
       tension: 0.2,
     },

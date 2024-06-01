@@ -26,7 +26,7 @@ const Epoch = lazy(() => import("./consensus/Epoch"));
 const Slot = lazy(() => import("./consensus/Slot"));
 const SlotByBlockRoot = lazy(() => import("./consensus/slot/SlotByBlockRoot"));
 const Validator = lazy(() => import("./consensus/Validator"));
-const London = lazy(() => import("./special/london/London"));
+const LiveBlocks = lazy(() => import("./special/london/LiveBlocks"));
 const Faucets = lazy(() => import("./Faucets"));
 const PageNotFound = lazy(() => import("./PageNotFound"));
 
@@ -54,7 +54,7 @@ const App = () => {
               <Router>
                 <Routes>
                   <Route index element={<Home />} />
-                  <Route path="/special/london" element={<London />} />
+                  <Route path="/special/liveBlocks" element={<LiveBlocks />} />
                   <Route path="*" element={<Main />}>
                     <Route
                       path="block/:blockNumberOrHash"
