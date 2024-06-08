@@ -158,7 +158,7 @@ export const useSlot = (slot: number | string) => {
 
 export const useSlotHeader = (slot: number | string | null) => {
   const url = useBeaconHeaderURL(slot === null ? "" : slot.toString());
-  const { data, error, isLoading, isValidating } = useSWR(
+  const { data, error, isLoading, isValidating } = useSWRImmutable(
     slot === null ? null : url,
     jsonFetcherWithErrorHandling,
   );
