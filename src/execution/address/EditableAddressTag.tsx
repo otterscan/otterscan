@@ -25,7 +25,7 @@ async function setAddressLabel(address: string, label: string | null) {
 
 export async function clearAllLabels() {
   const customLabelFetcher = CustomLabelFetcher.getInstance();
-  const addresses: string[] = customLabelFetcher.getAllAddresses();
+  const addresses: string[] = await customLabelFetcher.getAllAddresses();
   await customLabelFetcher.updateLabels(
     addresses.reduce(
       (obj: Record<string, string>, key: string) => ({ ...obj, [key]: "" }),

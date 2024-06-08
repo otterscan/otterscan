@@ -1,12 +1,16 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu } from "@headlessui/react";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { SourcifySource } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
+import { RuntimeContext } from "./useRuntime";
 
 const SourcifyMenu: React.FC = () => {
+  const { config } = useContext(RuntimeContext);
   const { sourcifySource, setSourcifySource } = useAppConfigContext();
+  const navigate = useNavigate();
 
   return (
     <Menu>
@@ -30,6 +34,19 @@ const SourcifyMenu: React.FC = () => {
           >
             Sourcify Servers
           </SourcifyMenuItem>
+          {config?.WIP_customAddressLabels && (
+            <>
+              <div className="my-1 h-0.5 bg-gray bg-opacity-5" />
+              <SourcifyMenuItem
+                checked={false}
+                onClick={() => {
+                  navigate("/settings");
+                }}
+              >
+                Settings
+              </SourcifyMenuItem>
+            </>
+          )}
         </Menu.Items>
       </div>
     </Menu>
