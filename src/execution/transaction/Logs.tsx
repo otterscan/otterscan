@@ -9,11 +9,11 @@ type LogsProps = {
 };
 
 const Logs: FC<LogsProps> = ({ logs }) => {
-  let location = useLocation();
+  const location = useLocation();
   useEffect(() => {
     setTimeout(() => {
       if (location.hash) {
-        // Scroll to fragment, e.g. "#log-3"
+        // Scroll to fragment, e.g. "#3"
         let foundElement = document.getElementById(location.hash.slice(1));
         if (foundElement) {
           foundElement.scrollIntoView({
