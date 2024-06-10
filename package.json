@@ -41,7 +41,7 @@
     "shiki": "^1.4.0",
     "swr": "^2.2.2",
     "use-keyboard-shortcut": "^1.1.6",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^4.1.0"
   },
   "scripts": {
     "start": "vite",
