@@ -38,7 +38,7 @@
     "react-image": "^4.1.0",
     "react-intersection-observer": "^9.10.3",
     "react-router-dom": "^6.23.0",
-    "shiki": "^1.4.0",
+    "shiki": "^1.6.3",
     "swr": "^2.2.2",
     "use-keyboard-shortcut": "^1.1.6",
     "web-vitals": "^3.5.2"
