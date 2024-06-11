@@ -17,7 +17,7 @@
     "@headlessui/react": "^1.7.19",
     "@otterscan/react-qr-reader": "^5.2.0",
     "@storybook/test": "^8.1.6",
-    "@testing-library/jest-dom": "^6.4.5",
+    "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^15.0.5",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
