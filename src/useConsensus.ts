@@ -161,6 +161,21 @@ export const useSlot = (slot: number | string) => {
   };
 };
 
+export const useSlotHeader = (slot: number | string | null) => {
+  const url = useBeaconHeaderURL(slot === null ? "" : slot.toString());
+  const { data, error, isLoading, isValidating } = useSWRImmutable(
+    slot === null ? null : url,
+    jsonFetcherWithErrorHandling,
+  );
+
+  return {
+    slot: data,
+    error,
+    isLoading,
+    isValidating,
+  };
+};
+
 export const useBlockRoot = (slotNumber: number) => {
   const url = useBlockRootURL(slotNumber);
   const { data, error, isLoading, isValidating } = useSWRImmutable(
