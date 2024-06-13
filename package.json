@@ -92,7 +92,7 @@
     "cypress": "^13.11.0",
     "jest": "^29.7.0",
     "postcss": "^8.4.38",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "release-it": "^17.3.0",
     "source-map-explorer": "^2.5.3",
