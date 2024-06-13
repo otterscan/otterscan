@@ -2,11 +2,14 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SourcifySource } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
 
 const SourcifyMenu: React.FC = () => {
   const { sourcifySource, setSourcifySource } = useAppConfigContext();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <Menu>
@@ -29,6 +32,15 @@ const SourcifyMenu: React.FC = () => {
             onClick={() => setSourcifySource(SourcifySource.CENTRAL_SERVER)}
           >
             Sourcify Servers
+          </SourcifyMenuItem>
+          <div className="my-1 border-b border-gray-300" />
+          <SourcifyMenuItem
+            checked={location.pathname !== "/broadcastTx"}
+            onClick={() => {
+              navigate("/broadcastTx");
+            }}
+          >
+            Broadcast Transaction
           </SourcifyMenuItem>
         </Menu.Items>
       </div>
