@@ -107,11 +107,11 @@ Otterscan makes use of on-chain [Chainlink data feeds](https://docs.chain.link/d
 **NOTE:** The prices estimated from on-chain decentralized exchanges can be manipulated, especially when tokens have low liquidity or are unable to be traded normally. This price estimation feature returns "best guess" prices; Otterscan certainly cannot guarantee that all tokens with an estimated price have a liquid market or that the prices shown are accurate.
 
 To configure Otterscan's price oracle usage, configure the `priceOracleInfo` key in the config:
-* `nativeTokenPrice`: **Required for showing price data.** Shows the native token price at the top of the page.
+* `nativeTokenPrice`: **Required for showing any price data.** Shows the native token price at the top of the page.
   * `ethUSDOracleAddress`: AggregatorV3-compatible smart contract that returns the price of the native token in USD. If Chainlink does not support your chain, you may consider deploying a smart contract which implements the AggregatorV3 interface yet derives price data from on-chain sources.
   * `ethUSDOracleDecimals`: Number of decimals used by the oracle smart contract.
 
-You may also include the following in `priceOracleInfo` to let Otterscan estimate token prices from on-chain decentralized exchanges. Note that a native price token oracle is required.
+You may also include the following in `priceOracleInfo` to let Otterscan estimate token prices from on-chain decentralized exchanges. The native token price oracle (above) must be configured.
 * `wrappedEthAddress`: The address of the wrapped native token contract, which should match the WETH variable in Uniswap router contracts. This is used to estimate the price of tokens which have at least one Uniswap pool paired with the wrapped native token. Required for Uniswap price sources.
 * `uniswapV2`: If configured, uses UniswapV2 pairs as sources of price information.
   * `factoryAddress`: The UniswapV2 factory address.
