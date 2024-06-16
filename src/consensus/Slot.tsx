@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList } from "@headlessui/react";
 import { FC, Suspense } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import NavTab from "../components/NavTab";
@@ -20,14 +20,14 @@ const Slot: FC = () => {
     <StandardFrame>
       <SlotSubtitle slotNumber={slotAsNumber} />
       <StandardSelectionBoundary>
-        <Tab.Group>
-          <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
+        <TabGroup>
+          <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
             <NavTab href=".">Overview</NavTab>
             <NavTab href="attestations">
               <AttestationsTabTitle slotNumber={slotAsNumber} />
             </NavTab>
-          </Tab.List>
-        </Tab.Group>
+          </TabList>
+        </TabGroup>
         <Suspense fallback={null}>
           <Routes>
             <Route index element={<Overview />} />

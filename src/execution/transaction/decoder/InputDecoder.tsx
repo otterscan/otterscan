@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { TransactionDescription, toUtf8String } from "ethers";
 import React, { useMemo } from "react";
 import ModeTab from "../../../components/ModeTab";
@@ -34,14 +34,14 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
   }, [data]);
 
   return (
-    <Tab.Group>
-      <Tab.List className="mb-1 flex space-x-1">
+    <TabGroup>
+      <TabList className="mb-1 flex space-x-1">
         <ModeTab disabled={!resolvedTxDesc}>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
         <ModeTab disabled={utfInput === undefined}>UTF-8</ModeTab>
-      </Tab.List>
-      <Tab.Panels>
-        <Tab.Panel>
+      </TabList>
+      <TabPanels>
+        <TabPanel>
           {fourBytes === "0x" ? (
             <>No parameters</>
           ) : resolvedTxDesc === undefined ? (
@@ -65,15 +65,15 @@ const InputDecoder: React.FC<InputDecoderProps> = ({
               />
             </div>
           )}
-        </Tab.Panel>
-        <Tab.Panel>
+        </TabPanel>
+        <TabPanel>
           <StandardTextarea value={data} />
-        </Tab.Panel>
-        <Tab.Panel>
+        </TabPanel>
+        <TabPanel>
           <StandardTextarea value={utfInput} />
-        </Tab.Panel>
-      </Tab.Panels>
-    </Tab.Group>
+        </TabPanel>
+      </TabPanels>
+    </TabGroup>
   );
 };
 

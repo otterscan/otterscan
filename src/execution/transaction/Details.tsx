@@ -3,7 +3,7 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { formatUnits } from "ethers";
 import { FC, memo, useContext, useState } from "react";
 import BlockConfirmations from "../../components/BlockConfirmations";
@@ -183,13 +183,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               )}
             </div>
             {expanded && (
-              <Tab.Group>
-                <Tab.List className="mb-1 mt-2 flex space-x-1">
+              <TabGroup>
+                <TabList className="mb-1 mt-2 flex space-x-1">
                   <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
                   <ModeTab>Raw</ModeTab>
-                </Tab.List>
-                <Tab.Panels>
-                  <Tab.Panel>
+                </TabList>
+                <TabPanels>
+                  <TabPanel>
                     {errorDescription === undefined ? (
                       <>Waiting for data...</>
                     ) : errorDescription === null ? (
@@ -205,12 +205,12 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                         devMethod={devError}
                       />
                     )}
-                  </Tab.Panel>
-                  <Tab.Panel>
+                  </TabPanel>
+                  <TabPanel>
                     <StandardTextarea value={outputData} />
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
+                  </TabPanel>
+                </TabPanels>
+              </TabGroup>
             )}
           </>
         )}

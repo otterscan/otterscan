@@ -182,6 +182,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         </div>
         {blocks.map((b, i, all) => (
           <Transition
+            as="div"
             key={b.hash}
             show={i < MAX_BLOCK_HISTORY}
             appear

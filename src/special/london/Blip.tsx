@@ -10,6 +10,7 @@ const Blip: React.FC<BlipProps> = ({ value }) => {
 
   return (
     <Transition
+      as="div"
       show
       appear
       enter="transition ease-in duration-1000 translate-x-full pl-3"
