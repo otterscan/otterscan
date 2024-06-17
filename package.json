@@ -108,6 +108,6 @@
     "wrangler": "^3.60.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.17.2"
+    "@rollup/rollup-linux-x64-gnu": "^4.18.0"
   }
 }
