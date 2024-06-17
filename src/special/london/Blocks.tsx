@@ -50,10 +50,9 @@ const PREV_BLOCK_COUNT = 15;
 
 type BlocksProps = {
   latestBlock: Block;
-  targetBlockNumber: number;
 };
 
-const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
+const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
   const { provider } = useContext(RuntimeContext);
   const [blocks, setBlocks] = useState<ExtendedBlock[]>([]);
   const [toggleChart, setToggleChart] = useState<boolean>(true);
@@ -61,11 +60,6 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
   const addBlock = useCallback(
     async (blockNumber: number) => {
       if (!provider) {
-        return;
-      }
-
-      // Skip blocks before the hard fork during the transition
-      if (blockNumber < targetBlockNumber) {
         return;
       }
 
@@ -92,7 +86,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
         return newBlocks;
       });
     },
-    [provider, targetBlockNumber],
+    [provider],
   );
 
   useEffect(() => {
@@ -129,14 +123,8 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock, targetBlockNumber }) => {
     <div className="w-full grow">
       <div className="divide-y-2 px-9 pb-12 pt-3">
         <div className="relative">
-          <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-lg text-orange-500 ">
-            <span>
-              <FontAwesomeIcon icon={faBurn} />
-            </span>
-            <span>EIP-1559 is activated. Watch the fees burn.</span>
-            <span>
-              <FontAwesomeIcon icon={faBurn} />
-            </span>
+          <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-xl text-gray-800">
+            Latest Blocks
           </div>
           <div className="absolute right-0 top-0 rounded border px-2 py-1 text-sm text-link-blue shadow-md hover:bg-gray-50 hover:text-link-blue-hover">
             <button onClick={() => setToggleChart(!toggleChart)}>
