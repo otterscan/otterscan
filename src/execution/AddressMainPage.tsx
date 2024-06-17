@@ -1,7 +1,7 @@
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanels } from "@headlessui/react";
 import React, { useCallback, useContext } from "react";
 import {
   Route,
@@ -126,8 +126,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
               address={checksummedAddress}
               isENS={isENS}
             />
-            <Tab.Group>
-              <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
+            <TabGroup>
+              <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
                 {config?.experimental && (
                   <>
@@ -185,8 +185,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                 {config?.experimental && (
                   <ProxyTabs address={checksummedAddress} />
                 )}
-              </Tab.List>
-              <Tab.Panels>
+              </TabList>
+              <TabPanels>
                 <Routes>
                   <Route
                     index
@@ -267,8 +267,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </>
                   )}
                 </Routes>
-              </Tab.Panels>
-            </Tab.Group>
+              </TabPanels>
+            </TabGroup>
           </>
         )
       )}

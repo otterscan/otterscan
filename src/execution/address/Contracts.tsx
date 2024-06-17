@@ -1,6 +1,6 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import React, { lazy, useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
@@ -93,12 +93,12 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             <div>
               <Menu>
                 <div className="flex items-baseline justify-between space-x-2">
-                  <Menu.Button className="flex space-x-2 rounded-t border-l border-r border-t px-2 py-1 text-sm">
+                  <MenuButton className="flex space-x-2 rounded-t border-l border-r border-t px-2 py-1 text-sm">
                     <span>{selected}</span>
                     <span className="self-center">
                       <FontAwesomeIcon icon={faChevronDown} size="xs" />
                     </span>
-                  </Menu.Button>
+                  </MenuButton>
                   {provider && (
                     <div className="text-sm">
                       <ExternalLink
@@ -113,9 +113,9 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                   )}
                 </div>
                 <div className="relative">
-                  <Menu.Items className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
+                  <MenuItems className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
                     {Object.entries(match.metadata.sources).map(([k]) => (
-                      <Menu.Item key={k}>
+                      <MenuItem key={k}>
                         <button
                           className={`flex px-2 py-1 text-sm ${
                             selected === k
@@ -126,9 +126,9 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         >
                           {k}
                         </button>
-                      </Menu.Item>
+                      </MenuItem>
                     ))}
-                  </Menu.Items>
+                  </MenuItems>
                 </div>
               </Menu>
               {selected && (

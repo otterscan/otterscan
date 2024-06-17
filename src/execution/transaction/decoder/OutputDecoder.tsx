@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { ParamType, Result } from "ethers";
 import React from "react";
 import ModeTab from "../../../components/ModeTab";
@@ -19,13 +19,13 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
   data,
   devMethod,
 }) => (
-  <Tab.Group>
-    <Tab.List className="mb-1 flex space-x-1">
+  <TabGroup>
+    <TabList className="mb-1 flex space-x-1">
       <ModeTab disabled={!paramTypes}>Decoded</ModeTab>
       <ModeTab>Raw</ModeTab>
-    </Tab.List>
-    <Tab.Panels>
-      <Tab.Panel>
+    </TabList>
+    <TabPanels>
+      <TabPanel>
         {data === "0x" ? (
           <>No data</>
         ) : paramTypes === undefined || args === undefined ? (
@@ -43,12 +43,12 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
             />
           </div>
         )}
-      </Tab.Panel>
-      <Tab.Panel>
+      </TabPanel>
+      <TabPanel>
         <StandardTextarea value={data} />
-      </Tab.Panel>
-    </Tab.Panels>
-  </Tab.Group>
+      </TabPanel>
+    </TabPanels>
+  </TabGroup>
 );
 
 export default OutputDecoder;

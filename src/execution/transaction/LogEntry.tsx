@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { Fragment, Interface, Log } from "ethers";
 import React, { FC, memo, useContext, useMemo } from "react";
 import ModeTab from "../../components/ModeTab";
@@ -76,17 +76,17 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
         <TwoColumnPanel leftPanel={<span className="font-bold">Address</span>}>
           <TransactionAddressWithCopy address={log.address} />
         </TwoColumnPanel>
-        <Tab.Group>
-          <Tab.List as={React.Fragment}>
+        <TabGroup>
+          <TabList as={React.Fragment}>
             <TwoColumnPanel leftPanel="Parameters">
               <div className="mb-1 flex space-x-1">
                 <ModeTab>Decoded</ModeTab>
                 <ModeTab>Raw</ModeTab>
               </div>
             </TwoColumnPanel>
-          </Tab.List>
-          <Tab.Panels as={React.Fragment}>
-            <Tab.Panel>
+          </TabList>
+          <TabPanels as={React.Fragment}>
+            <TabPanel>
               {resolvedLogDesc === undefined ? (
                 <TwoColumnPanel>Waiting for data...</TwoColumnPanel>
               ) : resolvedLogDesc === null ? (
@@ -101,12 +101,12 @@ const LogEntry: FC<LogEntryProps> = ({ log }) => {
                   />
                 </TwoColumnPanel>
               )}
-            </Tab.Panel>
-            <Tab.Panel as={React.Fragment}>
+            </TabPanel>
+            <TabPanel as={React.Fragment}>
               <RawLog topics={log.topics} data={log.data} />
-            </Tab.Panel>
-          </Tab.Panels>
-        </Tab.Group>
+            </TabPanel>
+          </TabPanels>
+        </TabGroup>
       </div>
     </div>
   );

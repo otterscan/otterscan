@@ -1,6 +1,6 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SourcifySource } from "./sourcify/useSourcify";
@@ -14,10 +14,10 @@ const SourcifyMenu: React.FC = () => {
   return (
     <Menu>
       <div className="relative self-stretch h-full">
-        <Menu.Button className="flex h-full w-full items-center justify-center space-x-2 rounded border px-2 py-1 text-sm">
+        <MenuButton className="flex h-full w-full items-center justify-center space-x-2 rounded border px-2 py-1 text-sm">
           <FontAwesomeIcon icon={faBars} size="1x" />
-        </Menu.Button>
-        <Menu.Items className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
+        </MenuButton>
+        <MenuItems className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
           <div className="border-b border-gray-300 px-2 py-1 text-xs">
             Sourcify Datasource
           </div>
@@ -42,7 +42,7 @@ const SourcifyMenu: React.FC = () => {
           >
             Broadcast Transaction
           </SourcifyMenuItem>
-        </Menu.Items>
+        </MenuItems>
       </div>
     </Menu>
   );
@@ -58,11 +58,11 @@ const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
   onClick,
   children,
 }) => (
-  <Menu.Item>
-    {({ active }) => (
+  <MenuItem>
+    {({ focus }) => (
       <button
         className={`px-2 py-1 text-left text-sm ${
-          active ? "border-orange-200 text-gray-500" : "text-gray-400"
+          focus ? "border-orange-200 text-gray-500" : "text-gray-400"
         } transition-colors transition-transform duration-75 ${
           checked ? "text-gray-900" : ""
         }`}
@@ -71,7 +71,7 @@ const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
         {children}
       </button>
     )}
-  </Menu.Item>
+  </MenuItem>
 );
 
 export default React.memo(SourcifyMenu);
