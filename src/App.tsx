@@ -1,5 +1,11 @@
-import { lazy, Suspense } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { FC, lazy, Suspense } from "react";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Outlet,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import Home from "./Home";
@@ -33,7 +39,7 @@ const BroadcastTransactionPage = lazy(
   () => import("./execution/BroadcastTransactionPage"),
 );
 
-const App = () => {
+const Layout: FC = () => {
   const runtime = useRuntime();
   // TODO: fix internal hack
   let chainInfo = useChainInfoFromMetadataFile(runtime);
@@ -54,72 +60,7 @@ const App = () => {
           <ChainInfoContext.Provider value={chainInfo}>
             <div className="flex h-screen flex-col">
               <WarningHeader />
-              <Router>
-                <Routes>
-                  <Route index element={<Home />} />
-                  <Route path="/special/liveBlocks" element={<LiveBlocks />} />
-                  <Route path="*" element={<Main />}>
-                    <Route
-                      path="block/:blockNumberOrHash"
-                      element={<Block />}
-                    />
-                    <Route
-                      path="block/:blockNumber/txs"
-                      element={<BlockTransactions />}
-                    />
-                    <Route
-                      path="block/:blockNumberOrHash/tx/:txIndex"
-                      element={<BlockTransactionByIndex />}
-                    />
-                    <Route path="tx/:txhash/*" element={<Transaction />} />
-                    <Route
-                      path="address/:addressOrName/*"
-                      element={<Address />}
-                    />
-                    {runtime.config?.experimental && (
-                      <>
-                        <Route path="contracts/*" element={<AllContracts />} />
-                        <Route
-                          path="contracts/erc20/*"
-                          element={<AllERC20 />}
-                        />
-                        <Route
-                          path="contracts/erc4626/*"
-                          element={<AllERC4626 />}
-                        />
-                        <Route
-                          path="contracts/erc721/*"
-                          element={<AllERC721 />}
-                        />
-                        <Route
-                          path="contracts/erc1155/*"
-                          element={<AllERC1155 />}
-                        />
-                        <Route
-                          path="contracts/erc1167/*"
-                          element={<AllERC1167 />}
-                        />
-                      </>
-                    )}
-                    <Route path="epoch/:epochNumber/*" element={<Epoch />} />
-                    <Route path="slot/:slotNumber/*" element={<Slot />} />
-                    <Route
-                      path="slotByBlockRoot/:blockRoot/*"
-                      element={<SlotByBlockRoot />}
-                    />
-                    <Route
-                      path="validator/:validatorIndex/*"
-                      element={<Validator />}
-                    />
-                    <Route path="faucets/*" element={<Faucets />} />
-                    <Route
-                      path="broadcastTx"
-                      element={<BroadcastTransactionPage />}
-                    />
-                    <Route path="*" element={<PageNotFound />} />
-                  </Route>
-                </Routes>
-              </Router>
+              <Outlet />
               <Footer />
             </div>
           </ChainInfoContext.Provider>
@@ -128,5 +69,46 @@ const App = () => {
     </Suspense>
   );
 };
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<Layout />}>
+      <Route index element={<Home />} />
+      <Route path="/special/liveBlocks" element={<LiveBlocks />} />
+      <Route path="*" element={<Main />}>
+        <Route path="block/:blockNumberOrHash" element={<Block />} />
+        <Route path="block/:blockNumber/txs" element={<BlockTransactions />} />
+        <Route
+          path="block/:blockNumberOrHash/tx/:txIndex"
+          element={<BlockTransactionByIndex />}
+        />
+        <Route path="tx/:txhash/*" element={<Transaction />} />
+        <Route path="address/:addressOrName/*" element={<Address />} />
+
+        {/* EXPERIMENTAL ROUTES */}
+        <Route path="contracts/*" element={<AllContracts />} />
+        <Route path="contracts/erc20/*" element={<AllERC20 />} />
+        <Route path="contracts/erc4626/*" element={<AllERC4626 />} />
+        <Route path="contracts/erc721/*" element={<AllERC721 />} />
+        <Route path="contracts/erc1155/*" element={<AllERC1155 />} />
+        <Route path="contracts/erc1167/*" element={<AllERC1167 />} />
+        {/* EXPERIMENTAL ROUTES */}
+
+        <Route path="epoch/:epochNumber/*" element={<Epoch />} />
+        <Route path="slot/:slotNumber/*" element={<Slot />} />
+        <Route
+          path="slotByBlockRoot/:blockRoot/*"
+          element={<SlotByBlockRoot />}
+        />
+        <Route path="validator/:validatorIndex/*" element={<Validator />} />
+        <Route path="faucets/*" element={<Faucets />} />
+        <Route path="broadcastTx" element={<BroadcastTransactionPage />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
+    </Route>,
+  ),
+);
+
+const App = () => <RouterProvider router={router} />;
 
 export default App;
