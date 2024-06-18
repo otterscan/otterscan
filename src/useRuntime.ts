@@ -1,7 +1,9 @@
 import { JsonRpcApiProvider, JsonRpcProvider, Network } from "ethers";
 import { createContext, useMemo } from "react";
+import useSWRImmutable from "swr/immutable";
+import { jsonFetcherWithErrorHandling } from "./fetcher";
 import { ConnectionStatus } from "./types";
-import { OtterscanConfig, useConfig } from "./useConfig";
+import { DEFAULT_CONFIG_FILE, OtterscanConfig } from "./useConfig";
 import { useProvider } from "./useProvider";
 
 /**
@@ -27,7 +29,34 @@ export type OtterscanRuntime = {
 };
 
 export const useRuntime = (): OtterscanRuntime => {
-  const config = useConfig();
+  const configURL = DEFAULT_CONFIG_FILE;
+  const { data } = useSWRImmutable(configURL, jsonFetcherWithErrorHandling);
+
+  const config = useMemo(() => {
+    if (data === undefined) {
+      return undefined;
+    }
+
+    // Override config for local dev
+    const _config: OtterscanConfig = { ...data };
+    if (import.meta.env.DEV) {
+      _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
+      _config.beaconAPI =
+        import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
+      _config.assetsURLPrefix =
+        import.meta.env.VITE_ASSETS_URL ?? _config.assetsURLPrefix;
+      _config.experimental =
+        import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
+      if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
+        _config.experimentalFixedChainId = parseInt(
+          import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID,
+        );
+      }
+    }
+    console.info("Loaded app config");
+    console.info(_config);
+    return _config;
+  }, [data]);
 
   // TODO: fix internal hack
   const hardCodedConfig = useMemo(() => {
