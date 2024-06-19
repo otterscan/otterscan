@@ -193,3 +193,59 @@ export type OtterscanConfig = {
  * Default location for fetching the config file.
  */
 export const DEFAULT_CONFIG_FILE = "/config.json";
+
+/**
+ * Loads the global configuration according to the following criteria:
+ *
+ * - if the entire JSON is informed via VITE_CONFIG_JSON env variable, use it
+ * - otherwise fetch the JSON from default config URL
+ * - if fetching the JSON, allows to override some keys using VITE_ env variables
+ */
+export const loadOtterscanConfig = async (): Promise<OtterscanConfig> => {
+  // vite config override has precedence over everything
+  if (import.meta.env.VITE_CONFIG_JSON !== undefined) {
+    console.log("Using hardcoded config: ");
+    console.log(import.meta.env.VITE_CONFIG_JSON);
+
+    // We trust the contents of VITE_CONFIG_JSON to be a valid
+    // Otterscan JSON configuration
+    try {
+      return JSON.parse(import.meta.env.VITE_CONFIG_JSON);
+    } catch (err) {
+      throw new Error("Error while reading config file", { cause: err });
+    }
+  }
+
+  // We fetch the config file from the deployment site, optionally overriding
+  // some keys during development time
+  const configURL = DEFAULT_CONFIG_FILE;
+  try {
+    const res = await fetch(configURL);
+    const data = await res.json();
+
+    // Override config for local dev
+    const config: OtterscanConfig = { ...data };
+    if (import.meta.env.DEV) {
+      config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? config.erigonURL;
+      config.beaconAPI =
+        import.meta.env.VITE_BEACON_API_URL ?? config.beaconAPI;
+      config.assetsURLPrefix =
+        import.meta.env.VITE_ASSETS_URL ?? config.assetsURLPrefix;
+      config.experimental =
+        import.meta.env.VITE_EXPERIMENTAL ?? config.experimental;
+      if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
+        config.experimentalFixedChainId = parseInt(
+          import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID,
+        );
+      }
+    }
+    console.info("Loaded app config");
+    console.info(config);
+
+    return config;
+  } catch (err) {
+    throw new Error(`Error while reading config file: ${configURL}`, {
+      cause: err,
+    });
+  }
+};
