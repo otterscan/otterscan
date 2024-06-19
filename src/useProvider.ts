@@ -53,6 +53,13 @@ export const createAndProbeProvider = async (
 
   try {
     await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
+
+    // Already resolved, so no blocking here
+    const level = await probeOtsAPI;
+    if (level < MIN_API_LEVEL) {
+      throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+    }
+
     return provider;
   } catch (err) {
     // If any was rejected, then check them sequencially in order to
@@ -77,10 +84,7 @@ export const createAndProbeProvider = async (
 
     // Check if it has Otterscan patches by probing a lightweight method
     try {
-      const level = await probeOtsAPI;
-      if (level < MIN_API_LEVEL) {
-        throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
-      }
+      await probeOtsAPI;
     } catch (err) {
       console.log(err);
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
