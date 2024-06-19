@@ -16,7 +16,12 @@ import { useFeeToggler } from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { useAddressBalance, useContractCreator } from "../../useErigonHooks";
+import {
+  useAddressBalance,
+  useContractCreator,
+  useHasCode,
+  useTransactionCount,
+} from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
@@ -58,6 +63,13 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   const hash = searchParams.get("h");
 
   const [controller, setController] = useState<SearchController>();
+
+  const hasCode = useHasCode(provider, address);
+  const transactionCount = useTransactionCount(
+    provider,
+    hasCode === false ? address : undefined,
+  );
+
   useEffect(() => {
     if (!provider || !address) {
       return;
@@ -136,13 +148,30 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
           <InfoRow title="Balance">
-            {balance !== null && balance !== undefined ? (
-              <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
-            ) : (
-              <div className="w-80">
-                <PendingItem />
+            <div className="grid grid-cols-3 flex divide-x-2 divide-dotted divide-gray-300 text-sm">
+              <div
+                className={`${transactionCount !== undefined ? "col-span-1" : ""}`}
+              >
+                {balance !== null && balance !== undefined ? (
+                  <NativeTokenAmountAndFiat
+                    value={balance}
+                    {...balancePreset}
+                  />
+                ) : (
+                  <div className="w-80">
+                    <PendingItem />
+                  </div>
+                )}
               </div>
-            )}
+              {transactionCount !== undefined && (
+                <div className="pl-4 col-span-2 grid grid-cols-2">
+                  <div className="col-span-1">Transactions sent:</div>
+                  <div className="col-span-1">
+                    {transactionCount.toString()}
+                  </div>
+                </div>
+              )}
+            </div>
           </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
