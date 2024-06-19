@@ -25,7 +25,6 @@ import {
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { commify } from "../../utils/utils";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
@@ -149,13 +148,30 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
           <InfoRow title="Balance">
-            {balance !== null && balance !== undefined ? (
-              <NativeTokenAmountAndFiat value={balance} {...balancePreset} />
-            ) : (
-              <div className="w-80">
-                <PendingItem />
+            <div className="grid grid-cols-3 flex divide-x-2 divide-dotted divide-gray-300 text-sm">
+              <div
+                className={`${transactionCount !== undefined ? "col-span-1" : ""}`}
+              >
+                {balance !== null && balance !== undefined ? (
+                  <NativeTokenAmountAndFiat
+                    value={balance}
+                    {...balancePreset}
+                  />
+                ) : (
+                  <div className="w-80">
+                    <PendingItem />
+                  </div>
+                )}
               </div>
-            )}
+              {transactionCount !== undefined && (
+                <div className="pl-4 col-span-2 grid grid-cols-2">
+                  <div className="col-span-1">Transactions sent:</div>
+                  <div className="col-span-1">
+                    {transactionCount.toString()}
+                  </div>
+                </div>
+              )}
+            </div>
           </InfoRow>
           {creator && (
             <InfoRow title="Contract creator">
@@ -174,12 +190,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           )}
           {config && config.experimental && <ProxyInfo address={address} />}
         </BlockNumberContext.Provider>
-        <NavBar
-          address={address}
-          page={page}
-          controller={controller}
-          transactionCount={transactionCount}
-        />
+        <NavBar address={address} page={page} controller={controller} />
         <StandardScrollableTable isAuto={true}>
           <ResultHeader
             feeDisplay={feeDisplay}
@@ -209,15 +220,9 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 type NavBarProps = AddressAwareComponentProps & {
   page: ProcessedTransaction[] | undefined;
   controller: SearchController | undefined;
-  transactionCount?: bigint;
 };
 
-const NavBar: FC<NavBarProps> = ({
-  address,
-  page,
-  controller,
-  transactionCount,
-}) => (
+const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
   <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {page === undefined ? (
@@ -225,16 +230,7 @@ const NavBar: FC<NavBarProps> = ({
       ) : (
         <>
           <span data-test="page-count">{page.length}</span> transactions on this
-          page{" "}
-          {transactionCount !== undefined && (
-            <>
-              <span className="mx-1.5">/</span>{" "}
-              <span className="text-gray-600">
-                {commify(transactionCount)} transaction
-                {transactionCount !== 1n && "s"} sent
-              </span>
-            </>
-          )}
+          page
         </>
       )}
     </div>
