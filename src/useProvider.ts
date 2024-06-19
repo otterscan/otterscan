@@ -47,31 +47,45 @@ export const createAndProbeProvider = async (
   }
 
   // Check if it is at least a regular ETH node
-  let blockNumber: number = 0;
-  try {
-    blockNumber = await provider.getBlockNumber();
-  } catch (err) {
-    console.log(err);
-    throw new ProbeError(ConnectionStatus.NOT_ETH_NODE, erigonURL);
-  }
+  const probeBlockNumber = provider.getBlockNumber();
+  const probeHeader1 = provider.send("erigon_getHeaderByNumber", [1]);
+  const probeOtsAPI = provider.send("ots_getApiLevel", []);
 
-  // Check if it is an Erigon node by probing a lightweight method
   try {
-    await provider.send("erigon_getHeaderByNumber", [blockNumber]);
-  } catch (err) {
-    console.log(err);
-    throw new ProbeError(ConnectionStatus.NOT_ERIGON, erigonURL);
-  }
-
-  // Check if it has Otterscan patches by probing a lightweight method
-  try {
-    const level = await provider.send("ots_getApiLevel", []);
-    if (level < MIN_API_LEVEL) {
-      throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
-    }
+    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
     return provider;
   } catch (err) {
-    console.log(err);
-    throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+    // If any was rejected, then check them sequencially in order to
+    // narrow the error cause, but we need to await them individually
+    // because we don't know if all of them have been finished
+
+    try {
+      await probeBlockNumber;
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_ETH_NODE, erigonURL);
+    }
+
+    // Check if it is an Erigon node by probing a lightweight method
+    try {
+      // Get header for block 1
+      await probeHeader1;
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_ERIGON, erigonURL);
+    }
+
+    // Check if it has Otterscan patches by probing a lightweight method
+    try {
+      const level = await probeOtsAPI;
+      if (level < MIN_API_LEVEL) {
+        throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+      }
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+    }
+
+    throw new Error("Must not happen", { cause: err });
   }
 };
