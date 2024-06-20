@@ -1,18 +1,26 @@
 import { FC, lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import {
+  Await,
   createBrowserRouter,
   createRoutesFromElements,
+  defer,
+  LoaderFunction,
   Outlet,
   Route,
   RouterProvider,
+  useLoaderData,
 } from "react-router-dom";
+import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
+import ProbeErrorHandler from "./ProbeErrorHandler";
 import { ConnectionStatus } from "./types";
-import { ChainInfoContext, useChainInfoFromMetadataFile } from "./useChainInfo";
-import { RuntimeContext, useRuntime } from "./useRuntime";
+import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
+import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
+import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
 const Block = lazy(() => import("./execution/Block"));
@@ -39,40 +47,64 @@ const BroadcastTransactionPage = lazy(
   () => import("./execution/BroadcastTransactionPage"),
 );
 
+/**
+ * Triggers both config loading and runtime probing/building in parallel.
+ *
+ * Makes config available in a separate data variable in order to show
+ * progress during probing.
+ */
+const loader: LoaderFunction = async () => {
+  const config = loadOtterscanConfig();
+
+  return defer({
+    config,
+    rt: populateChainInfo(createRuntime(config)),
+  });
+};
+
 const Layout: FC = () => {
-  const runtime = useRuntime();
-  // TODO: fix internal hack
-  let chainInfo = useChainInfoFromMetadataFile(runtime);
-  if (runtime.config?.chainInfo !== undefined) {
-    chainInfo = runtime.config.chainInfo;
-  }
+  // Config + rt map; typings are not available here :(
+  const data: any = useLoaderData();
 
   return (
-    <Suspense fallback={null}>
-      {runtime.connStatus !== ConnectionStatus.CONNECTED ||
-      chainInfo === undefined ? (
-        <ConnectionErrorPanel
-          connStatus={runtime.connStatus}
-          config={runtime.config}
-        />
-      ) : (
-        <RuntimeContext.Provider value={runtime}>
-          <ChainInfoContext.Provider value={chainInfo}>
-            <div className="flex h-screen flex-col">
-              <WarningHeader />
-              <Outlet />
-              <Footer />
-            </div>
-          </ChainInfoContext.Provider>
-        </RuntimeContext.Provider>
-      )}
-    </Suspense>
+    // Catch all error boundary
+    <ErrorBoundary FallbackComponent={ErrorFallback}>
+      {/* await for config load */}
+      <Await resolve={data.config}>
+        {(config: OtterscanConfig) => (
+          // Await for runtime building + probing; suspend while probing
+          <Suspense
+            fallback={
+              <ConnectionErrorPanel
+                connStatus={ConnectionStatus.CONNECTING}
+                nodeURL={config.erigonURL!}
+              />
+            }
+          >
+            <Await resolve={data.rt} errorElement={<ProbeErrorHandler />}>
+              {(runtime) => (
+                // App is healthy from here
+                <RuntimeContext.Provider value={runtime}>
+                  <ChainInfoContext.Provider value={runtime.config!.chainInfo}>
+                    <div className="flex h-screen flex-col">
+                      <WarningHeader />
+                      <Outlet />
+                      <Footer />
+                    </div>
+                  </ChainInfoContext.Provider>
+                </RuntimeContext.Provider>
+              )}
+            </Await>
+          </Suspense>
+        )}
+      </Await>
+    </ErrorBoundary>
   );
 };
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route element={<Layout />}>
+    <Route element={<Layout />} loader={loader}>
       <Route index element={<Home />} />
       <Route path="/special/liveBlocks" element={<LiveBlocks />} />
       <Route path="*" element={<Main />}>

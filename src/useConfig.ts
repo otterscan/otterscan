@@ -1,7 +1,3 @@
-import { useEffect, useMemo } from "react";
-import useSWRImmutable from "swr/immutable";
-import { jsonFetcherWithErrorHandling } from "./fetcher";
-
 /**
  * Defines a set of metadata for a certain chain.
  *
@@ -199,47 +195,57 @@ export type OtterscanConfig = {
 export const DEFAULT_CONFIG_FILE = "/config.json";
 
 /**
- * Fetches the config file and parse it into proper config object.
+ * Loads the global configuration according to the following criteria:
  *
- * On development environment, allows the config to be set by overriding
- * specific params over the default "/public/config.json" by using Vite's
- * env mechanism: https://vitejs.dev/guide/env-and-mode.html
+ * - if the entire JSON is informed via VITE_CONFIG_JSON env variable, use it
+ * - otherwise fetch the JSON from default config URL
+ * - if fetching the JSON, allows to override some keys using VITE_ env variables
  */
-export const useConfig = (
-  configURL: string = DEFAULT_CONFIG_FILE,
-): OtterscanConfig | undefined => {
-  const { data } = useSWRImmutable(configURL, jsonFetcherWithErrorHandling);
-  const config = useMemo(() => {
-    if (data === undefined) {
-      return undefined;
+export const loadOtterscanConfig = async (): Promise<OtterscanConfig> => {
+  // vite config override has precedence over everything
+  if (import.meta.env.VITE_CONFIG_JSON !== undefined) {
+    console.log("Using hardcoded config: ");
+    console.log(import.meta.env.VITE_CONFIG_JSON);
+
+    // We trust the contents of VITE_CONFIG_JSON to be a valid
+    // Otterscan JSON configuration
+    try {
+      return JSON.parse(import.meta.env.VITE_CONFIG_JSON);
+    } catch (err) {
+      throw new Error("Error while reading config file", { cause: err });
     }
+  }
+
+  // We fetch the config file from the deployment site, optionally overriding
+  // some keys during development time
+  const configURL = DEFAULT_CONFIG_FILE;
+  try {
+    const res = await fetch(configURL);
+    const data = await res.json();
 
     // Override config for local dev
-    const _config: OtterscanConfig = { ...data };
+    const config: OtterscanConfig = { ...data };
     if (import.meta.env.DEV) {
-      _config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? _config.erigonURL;
-      _config.beaconAPI =
-        import.meta.env.VITE_BEACON_API_URL ?? _config.beaconAPI;
-      _config.assetsURLPrefix =
-        import.meta.env.VITE_ASSETS_URL ?? _config.assetsURLPrefix;
-      _config.experimental =
-        import.meta.env.VITE_EXPERIMENTAL ?? _config.experimental;
+      config.erigonURL = import.meta.env.VITE_ERIGON_URL ?? config.erigonURL;
+      config.beaconAPI =
+        import.meta.env.VITE_BEACON_API_URL ?? config.beaconAPI;
+      config.assetsURLPrefix =
+        import.meta.env.VITE_ASSETS_URL ?? config.assetsURLPrefix;
+      config.experimental =
+        import.meta.env.VITE_EXPERIMENTAL ?? config.experimental;
       if (import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID !== undefined) {
-        _config.experimentalFixedChainId = parseInt(
+        config.experimentalFixedChainId = parseInt(
           import.meta.env.VITE_EXPERIMENTAL_FIXED_CHAIN_ID,
         );
       }
     }
-    return _config;
-  }, [data]);
-
-  useEffect(() => {
-    if (data === undefined) {
-      return;
-    }
     console.info("Loaded app config");
     console.info(config);
-  }, [config]);
 
-  return config;
+    return config;
+  } catch (err) {
+    throw new Error(`Error while reading config file: ${configURL}`, {
+      cause: err,
+    });
+  }
 };

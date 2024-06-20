@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/react";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { SelectionContext } from "../../selection/useSelection";
 import { SourcifySource } from "../../sourcify/useSourcify";
-import { AddressContext, ConnectionStatus } from "../../types";
+import { AddressContext } from "../../types";
 import { AppConfigContext } from "../../useAppConfig";
 import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "./TransactionAddress";
@@ -11,9 +11,7 @@ const meta = {
   component: TransactionAddress,
   decorators: [
     (Story) => (
-      <RuntimeContext.Provider
-        value={{ connStatus: ConnectionStatus.CONNECTED }}
-      >
+      <RuntimeContext.Provider value={{}}>
         <AppConfigContext.Provider
           value={{
             sourcifySource: SourcifySource.CENTRAL_SERVER,

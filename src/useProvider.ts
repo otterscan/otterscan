@@ -4,20 +4,16 @@ import {
   Network,
   WebSocketProvider,
 } from "ethers";
-import { useEffect, useState } from "react";
+import { ProbeError } from "./ProbeError";
 import { MIN_API_LEVEL } from "./params";
 import { ConnectionStatus } from "./types";
 
 export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
-export const useProvider = (
+export const createAndProbeProvider = async (
   erigonURL?: string,
   experimentalFixedChainId?: number,
-): [ConnectionStatus, JsonRpcApiProvider | undefined] => {
-  const [connStatus, setConnStatus] = useState<ConnectionStatus>(
-    ConnectionStatus.CONNECTING,
-  );
-
+): Promise<JsonRpcApiProvider | undefined> => {
   if (erigonURL !== undefined) {
     if (erigonURL === "") {
       console.info(`Using default erigon URL: ${DEFAULT_ERIGON_URL}`);
@@ -27,79 +23,70 @@ export const useProvider = (
     }
   }
 
-  const [provider, setProvider] = useState<JsonRpcApiProvider | undefined>();
-  useEffect(() => {
-    // Skip probing?
-    if (experimentalFixedChainId !== undefined) {
-      console.log("Skipping node probe");
-      setConnStatus(ConnectionStatus.CONNECTED);
-      const network = Network.from(experimentalFixedChainId);
-      setProvider(
-        new JsonRpcProvider(erigonURL, network, { staticNetwork: network }),
-      );
-      return;
+  // Skip probing?
+  if (experimentalFixedChainId !== undefined) {
+    console.log("Skipping node probe");
+    const network = Network.from(experimentalFixedChainId);
+    return new JsonRpcProvider(erigonURL, network, { staticNetwork: network });
+  }
+
+  if (erigonURL === undefined) {
+    throw new ProbeError(ConnectionStatus.NOT_ETH_NODE, "");
+  }
+
+  let provider: JsonRpcApiProvider;
+  if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
+    provider = new WebSocketProvider(erigonURL, undefined, {
+      staticNetwork: true,
+    });
+  } else {
+    // Batching takes place by default
+    provider = new JsonRpcProvider(erigonURL, undefined, {
+      staticNetwork: true,
+    });
+  }
+
+  // Check if it is at least a regular ETH node
+  const probeBlockNumber = provider.getBlockNumber();
+  const probeHeader1 = provider.send("erigon_getHeaderByNumber", [1]);
+  const probeOtsAPI = provider.send("ots_getApiLevel", []).then((level) => {
+    if (level < MIN_API_LEVEL) {
+      throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+    }
+  });
+
+  try {
+    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
+    return provider;
+  } catch (err) {
+    // If any was rejected, then check them sequencially in order to
+    // narrow the error cause, but we need to await them individually
+    // because we don't know if all of them have been finished
+
+    try {
+      await probeBlockNumber;
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_ETH_NODE, erigonURL);
     }
 
-    if (erigonURL === undefined) {
-      setConnStatus(ConnectionStatus.NOT_ETH_NODE);
-      setProvider(undefined);
-      return;
+    // Check if it is an Erigon node by probing a lightweight method
+    try {
+      // Get header for block 1
+      await probeHeader1;
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_ERIGON, erigonURL);
     }
 
-    setConnStatus(ConnectionStatus.CONNECTING);
+    // Check if it has Otterscan patches by probing a lightweight method
+    try {
+      await probeOtsAPI;
+    } catch (err) {
+      console.log(err);
+      throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
+    }
 
-    const tryToConnect = async () => {
-      let provider: JsonRpcApiProvider;
-      if (erigonURL?.startsWith("ws://") || erigonURL?.startsWith("wss://")) {
-        provider = new WebSocketProvider(erigonURL, undefined, {
-          staticNetwork: true,
-        });
-      } else {
-        // Batching takes place by default
-        provider = new JsonRpcProvider(erigonURL, undefined, {
-          staticNetwork: true,
-        });
-      }
-
-      // Check if it is at least a regular ETH node
-      let blockNumber: number = 0;
-      try {
-        blockNumber = await provider.getBlockNumber();
-      } catch (err) {
-        console.log(err);
-        setConnStatus(ConnectionStatus.NOT_ETH_NODE);
-        setProvider(undefined);
-        return;
-      }
-
-      // Check if it is an Erigon node by probing a lightweight method
-      try {
-        await provider.send("erigon_getHeaderByNumber", [blockNumber]);
-      } catch (err) {
-        console.log(err);
-        setConnStatus(ConnectionStatus.NOT_ERIGON);
-        setProvider(undefined);
-        return;
-      }
-
-      // Check if it has Otterscan patches by probing a lightweight method
-      try {
-        const level = await provider.send("ots_getApiLevel", []);
-        if (level < MIN_API_LEVEL) {
-          setConnStatus(ConnectionStatus.NOT_OTTERSCAN_PATCHED);
-          setProvider(undefined);
-        } else {
-          setConnStatus(ConnectionStatus.CONNECTED);
-          setProvider(provider);
-        }
-      } catch (err) {
-        console.log(err);
-        setConnStatus(ConnectionStatus.NOT_OTTERSCAN_PATCHED);
-        setProvider(undefined);
-      }
-    };
-    tryToConnect();
-  }, [erigonURL, experimentalFixedChainId]);
-
-  return [connStatus, provider];
+    throw new Error("Must not happen", { cause: err });
+  }
 };

@@ -1,53 +1,41 @@
 import { createContext, useContext } from "react";
-import { Fetcher } from "swr";
-import useSWRImmutable from "swr/immutable";
 import { chainInfoURL } from "./url";
 import { ChainInfo, defaultChainInfo } from "./useConfig";
 import { OtterscanRuntime } from "./useRuntime";
 
-export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
+export const populateChainInfo = async (
+  rtPromise: Promise<OtterscanRuntime>,
+): Promise<OtterscanRuntime> => {
+  const runtime = await rtPromise;
 
-const chainInfoFetcher: (
-  runtime: OtterscanRuntime | undefined,
-) => Fetcher<ChainInfo, [string, bigint]> =
-  (runtime) =>
-  async ([assetsURLPrefix, chainId]) => {
-    // Hardcoded chainInfo; DON'T fetch it
-    if (runtime?.config?.chainInfo !== undefined) {
-      return runtime.config.chainInfo;
-    }
+  // Hardcoded chainInfo; DON'T fetch it
+  const hardcodedChainInfo = runtime.config?.chainInfo !== undefined;
+  if (hardcodedChainInfo) {
+    return rtPromise;
+  }
 
-    const url = chainInfoURL(assetsURLPrefix, chainId);
+  // TODO: check the assertions
+  const assetsURLPrefix = runtime.config!.assetsURLPrefix!;
+  const chainId = runtime.provider!._network!.chainId;
+
+  const url = chainInfoURL(assetsURLPrefix, chainId);
+  try {
     const res = await fetch(url);
     if (!res.ok) {
-      return defaultChainInfo;
+      runtime.config!.chainInfo = defaultChainInfo;
+      return Promise.resolve(runtime);
     }
 
     const info: ChainInfo = await res.json();
-    return info;
-  };
-
-export const useChainInfoFromMetadataFile = (
-  runtime: OtterscanRuntime | undefined,
-): ChainInfo | undefined => {
-  const hardcodedChainInfo = runtime?.config?.chainInfo !== undefined;
-  const assetsURLPrefix = runtime?.config?.assetsURLPrefix;
-  const chainId = runtime?.provider?._network?.chainId;
-
-  const { data, error } = useSWRImmutable(
-    !hardcodedChainInfo &&
-      (assetsURLPrefix === undefined || chainId === undefined)
-      ? null
-      : [assetsURLPrefix, chainId],
-    hardcodedChainInfo
-      ? () => runtime?.config?.chainInfo
-      : chainInfoFetcher(runtime),
-  );
-  if (error) {
-    return defaultChainInfo;
+    runtime.config!.chainInfo = info;
+    return Promise.resolve(runtime);
+  } catch (err) {
+    runtime.config!.chainInfo = defaultChainInfo;
+    return Promise.resolve(runtime);
   }
-  return data;
 };
+
+export const ChainInfoContext = createContext<ChainInfo | undefined>(undefined);
 
 export const useChainInfo = (): ChainInfo => {
   const chainInfo = useContext(ChainInfoContext);
