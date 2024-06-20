@@ -49,17 +49,14 @@ export const createAndProbeProvider = async (
   // Check if it is at least a regular ETH node
   const probeBlockNumber = provider.getBlockNumber();
   const probeHeader1 = provider.send("erigon_getHeaderByNumber", [1]);
-  const probeOtsAPI = provider.send("ots_getApiLevel", []);
-
-  try {
-    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
-
-    // Already resolved, so no blocking here
-    const level = await probeOtsAPI;
+  const probeOtsAPI = provider.send("ots_getApiLevel", []).then((level) => {
     if (level < MIN_API_LEVEL) {
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
     }
+  });
 
+  try {
+    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
     return provider;
   } catch (err) {
     // If any was rejected, then check them sequencially in order to
