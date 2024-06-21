@@ -9,7 +9,7 @@ RUN npm run build
 
 # Add brotli module to official nginx image
 # Based on: https://github.com/nginxinc/docker-nginx/tree/master/modules
-FROM nginx:1.21.3-alpine as nginxbuilder
+FROM nginx:1.21.3-alpine AS nginxbuilder
 
 RUN set -ex \
     && apk update \
