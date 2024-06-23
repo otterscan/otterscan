@@ -53,7 +53,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             <FontAwesomeIcon icon={faWarning} className="mr-2" />
             <span className="text-md">
               Contract not found in Sourcify respository. Below is an estimate
-              of the ABI from its bytecode using known function selectors:
+              of the ABI from its bytecode:
             </span>
           </div>
         </>
@@ -102,7 +102,10 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
         {match !== undefined && match !== null && (
           <>
             {match.metadata.output.abi && (
-              <ContractABI abi={match.metadata.output.abi} />
+              <ContractABI
+                abi={match.metadata.output.abi}
+                unknownSelectors={match.unknownSelectors}
+              />
             )}
             {match.type !== MatchType.WHATSABI_GUESS && (
               <div>

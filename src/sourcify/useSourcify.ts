@@ -159,6 +159,7 @@ export enum MatchType {
 export type Match = {
   type: MatchType;
   metadata: Metadata;
+  unknownSelectors?: string[];
 };
 
 function whatsabiFetcher(
@@ -173,6 +174,11 @@ function whatsabiFetcher(
         selectors.map(async (selector) => {
           try {
             const result = await fetch(fourBytesURL(assetsURLPrefix, selector));
+            if (!result.ok) {
+              throw new Error(
+                `4bytes fetch returned ${result.status} response`,
+              );
+            }
             const text = await result.text();
             const sig = text.split(";")[0];
             if (sig.length > 0) {
@@ -181,6 +187,9 @@ function whatsabiFetcher(
           } catch (e) {}
           return null;
         }),
+      );
+      const unknownSelectors = selectors.filter(
+        (selector, i) => decodedFunctions[i] === null,
       );
       const functions: string[] = decodedFunctions.filter(
         (sig) => sig !== null,
@@ -197,9 +206,11 @@ function whatsabiFetcher(
           abi,
         },
       };
+
       return {
         type: MatchType.WHATSABI_GUESS,
         metadata: metadata,
+        unknownSelectors,
       };
     }
 
