@@ -1,4 +1,4 @@
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import React, { lazy, useContext, useEffect, useState } from "react";
@@ -44,7 +44,21 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
 
   return (
     <ContentFrame tabs>
-      {match && (
+      {match && match.type === MatchType.WHATSABI_GUESS && (
+        <>
+          <div
+            className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 px-3 py-2.5 mb-4 rounded mt-2"
+            role="alert"
+          >
+            <FontAwesomeIcon icon={faWarning} className="mr-2" />
+            <span className="text-md">
+              Contract not found in Sourcify respository. Below is an estimate
+              of the ABI from its bytecode using known function selectors:
+            </span>
+          </div>
+        </>
+      )}
+      {match && match.type !== MatchType.WHATSABI_GUESS && (
         <>
           {match.metadata.settings?.compilationTarget && (
             <InfoRow title="Name">
@@ -90,64 +104,66 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             {match.metadata.output.abi && (
               <ContractABI abi={match.metadata.output.abi} />
             )}
-            <div>
-              <Menu>
-                <div className="flex items-baseline justify-between space-x-2">
-                  <MenuButton className="flex space-x-2 rounded-t border-l border-r border-t px-2 py-1 text-sm">
-                    <span>{selected}</span>
-                    <span className="self-center">
-                      <FontAwesomeIcon icon={faChevronDown} size="xs" />
-                    </span>
-                  </MenuButton>
-                  {provider && (
-                    <div className="text-sm">
-                      <ExternalLink
-                        href={openInRemixURL(
-                          checksummedAddress,
-                          provider._network.chainId,
-                        )}
-                      >
-                        Open in Remix
-                      </ExternalLink>
-                    </div>
-                  )}
-                </div>
-                <div className="relative">
-                  <MenuItems className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
-                    {Object.entries(match.metadata.sources).map(([k]) => (
-                      <MenuItem key={k}>
-                        <button
-                          className={`flex px-2 py-1 text-sm ${
-                            selected === k
-                              ? "bg-gray-200 font-bold text-gray-500"
-                              : "text-gray-400 transition-colors duration-75 hover:text-gray-500"
-                          }`}
-                          onClick={() => setSelected(k)}
+            {match.type !== MatchType.WHATSABI_GUESS && (
+              <div>
+                <Menu>
+                  <div className="flex items-baseline justify-between space-x-2">
+                    <MenuButton className="flex space-x-2 rounded-t border-l border-r border-t px-2 py-1 text-sm">
+                      <span>{selected}</span>
+                      <span className="self-center">
+                        <FontAwesomeIcon icon={faChevronDown} size="xs" />
+                      </span>
+                    </MenuButton>
+                    {provider && (
+                      <div className="text-sm">
+                        <ExternalLink
+                          href={openInRemixURL(
+                            checksummedAddress,
+                            provider._network.chainId,
+                          )}
                         >
-                          {k}
-                        </button>
-                      </MenuItem>
-                    ))}
-                  </MenuItems>
-                </div>
-              </Menu>
-              {selected && (
-                <>
-                  {match.metadata.sources[selected].content ? (
-                    <HighlightedSolidity
-                      source={match.metadata.sources[selected].content}
-                    />
-                  ) : (
-                    <ContractFromRepo
-                      checksummedAddress={checksummedAddress}
-                      networkId={provider!._network.chainId}
-                      filename={selected}
-                      type={match.type}
-                    />
-                  )}
-                </>
-              )}
-            </div>
+                          Open in Remix
+                        </ExternalLink>
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <MenuItems className="absolute z-10 flex flex-col rounded-b border bg-white p-1">
+                      {Object.entries(match.metadata.sources).map(([k]) => (
+                        <MenuItem key={k}>
+                          <button
+                            className={`flex px-2 py-1 text-sm ${
+                              selected === k
+                                ? "bg-gray-200 font-bold text-gray-500"
+                                : "text-gray-400 transition-colors duration-75 hover:text-gray-500"
+                            }`}
+                            onClick={() => setSelected(k)}
+                          >
+                            {k}
+                          </button>
+                        </MenuItem>
+                      ))}
+                    </MenuItems>
+                  </div>
+                </Menu>
+                {selected && (
+                  <>
+                    {match.metadata.sources[selected].content ? (
+                      <HighlightedSolidity
+                        source={match.metadata.sources[selected].content}
+                      />
+                    ) : (
+                      <ContractFromRepo
+                        checksummedAddress={checksummedAddress}
+                        networkId={provider!._network.chainId}
+                        filename={selected}
+                        type={match.type}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>
