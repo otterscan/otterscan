@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, lazy, memo, useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "./Logo";
+import SourcifyMenu from "./SourcifyMenu";
 import Timestamp from "./components/Timestamp";
 import { useGenericSearch } from "./search/search";
 import { blockURL, slotURL } from "./url";
@@ -26,78 +27,84 @@ const Home: FC = () => {
   usePageTitle("Home");
 
   return (
-    <div className="flex grow flex-col items-center pb-5">
-      {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
-      <div className="mb-10 mt-5 flex max-h-64 grow items-end">
-        <Logo />
+    <>
+      <div className="flex justify-end py-2 px-3 lg:px-9">
+        <SourcifyMenu />
       </div>
-      <form
-        className="flex min-w-[24rem] w-1/3 flex-col"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-        spellCheck={false}
-      >
-        <div className="mb-10 flex">
-          <input
-            className="w-full rounded-l border-b border-l border-t px-2 py-1 focus:outline-none"
-            type="text"
-            size={50}
-            data-test="home-search-input"
-            placeholder={`Search by address / txn hash / block number${
-              provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
-              null
-                ? " / ENS name"
-                : ""
-            }`}
-            onChange={handleChange}
-            ref={searchRef}
-            autoFocus
-          />
-          <button
-            className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
-            type="button"
-            onClick={() => setScanning(true)}
-            title="Scan an ETH address using your camera"
-          >
-            <FontAwesomeIcon icon={faQrcode} />
-          </button>
+      <div className="flex grow flex-col items-center pb-5">
+        {isScanning && <CameraScanner turnOffScan={() => setScanning(false)} />}
+        <div className="mb-10 mt-5 flex max-h-64 grow items-end">
+          <Logo />
         </div>
-        <button
-          className="mx-auto mb-10 rounded bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-none"
-          type="submit"
+        <form
+          className="flex min-w-[24rem] w-1/3 flex-col"
+          onSubmit={handleSubmit}
+          autoComplete="off"
+          spellCheck={false}
         >
-          Search
-        </button>
-      </form>
-      {!(config?.branding?.hideAnnouncements ?? false) &&
-        config?.experimental && (
-          <NavLink
-            className="text-md font-bold text-green-600 hover:text-green-800"
-            to="contracts/all"
+          <div className="mb-10 flex">
+            <input
+              className="w-full rounded-l border-b border-l border-t px-2 py-1 focus:outline-none"
+              type="text"
+              size={50}
+              data-test="home-search-input"
+              placeholder={`Search by address / txn hash / block number${
+                provider?._network.getPlugin(
+                  "org.ethers.plugins.network.Ens",
+                ) !== null
+                  ? " / ENS name"
+                  : ""
+              }`}
+              onChange={handleChange}
+              ref={searchRef}
+              autoFocus
+            />
+            <button
+              className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+              type="button"
+              onClick={() => setScanning(true)}
+              title="Scan an ETH address using your camera"
+            >
+              <FontAwesomeIcon icon={faQrcode} />
+            </button>
+          </div>
+          <button
+            className="mx-auto mb-10 rounded bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-none"
+            type="submit"
           >
-            🧪 EXPERIMENTAL CONTRACT BROWSER 🧪
+            Search
+          </button>
+        </form>
+        {!(config?.branding?.hideAnnouncements ?? false) &&
+          config?.experimental && (
+            <NavLink
+              className="text-md font-bold text-green-600 hover:text-green-800"
+              to="contracts/all"
+            >
+              🧪 EXPERIMENTAL CONTRACT BROWSER 🧪
+            </NavLink>
+          )}
+        {latestBlock && (
+          <NavLink
+            className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
+            to={blockURL(latestBlock.number)}
+            data-test="home-latest-block-header"
+          >
+            <div>Latest block: {commify(latestBlock.number)}</div>
+            <Timestamp value={latestBlock.timestamp} />
           </NavLink>
         )}
-      {latestBlock && (
-        <NavLink
-          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
-          to={blockURL(latestBlock.number)}
-          data-test="home-latest-block-header"
-        >
-          <div>Latest block: {commify(latestBlock.number)}</div>
-          <Timestamp value={latestBlock.timestamp} />
-        </NavLink>
-      )}
-      {finalizedSlotNumber !== undefined && (
-        <NavLink
-          className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
-          to={slotURL(finalizedSlotNumber)}
-        >
-          <div>Finalized slot: {commify(finalizedSlotNumber)}</div>
-          {slotTime && <Timestamp value={slotTime} />}
-        </NavLink>
-      )}
-    </div>
+        {finalizedSlotNumber !== undefined && (
+          <NavLink
+            className="mt-5 flex flex-col items-center space-y-1 text-sm text-gray-500 hover:text-link-blue"
+            to={slotURL(finalizedSlotNumber)}
+          >
+            <div>Finalized slot: {commify(finalizedSlotNumber)}</div>
+            {slotTime && <Timestamp value={slotTime} />}
+          </NavLink>
+        )}
+      </div>
+    </>
   );
 };
 

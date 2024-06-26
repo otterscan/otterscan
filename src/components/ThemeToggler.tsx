@@ -1,4 +1,4 @@
-import { faCog, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import { faCog, faLightbulb, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 
@@ -48,18 +48,21 @@ const ThemeToggler: React.FC = () => {
       <button
         className={`px-4 py-2 rounded-full border-2 ${theme === "light" ? "border-gray-500" : "border-gray-300"} hover:border-yellow-500 active:border-yellow-600 text-gray-600`}
         onClick={() => handleThemeChange("light")}
+        title="Light theme"
       >
-        <FontAwesomeIcon icon={faSun} size="lg" />
+        <FontAwesomeIcon icon={faLightbulb} size="lg" />
       </button>
       <button
         className={`px-4 py-2 rounded-full border-2 ${theme === "dark" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-700 text-gray-600`}
         onClick={() => handleThemeChange("dark")}
+        title="Dark theme"
       >
         <FontAwesomeIcon icon={faMoon} size="lg" />
       </button>
       <button
         className={`px-4 py-2 rounded-full border-2 ${theme === "system" ? "border-gray-500" : "border-gray-300"} hover:border-gray-600 active:border-gray-800 text-gray-600`}
         onClick={() => handleThemeChange("system")}
+        title="System preference"
       >
         <FontAwesomeIcon icon={faCog} size="lg" />
       </button>

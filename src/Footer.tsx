@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import ThemeToggler from "./components/ThemeToggler";
 import { RuntimeContext } from "./useRuntime";
 
 const Footer: React.FC = () => {
@@ -7,9 +6,6 @@ const Footer: React.FC = () => {
 
   return (
     <>
-      <div className="bg-white">
-        <ThemeToggler />
-      </div>
       <div
         className={`w-full border-t border-t-gray-100 px-2 py-1 text-xs ${
           provider?._network.chainId === 1n
