@@ -173,7 +173,9 @@ function whatsabiFetcher(
       const decodedFunctions: (string | null)[] = await Promise.all(
         selectors.map(async (selector) => {
           try {
-            const result = await fetch(fourBytesURL(assetsURLPrefix, selector));
+            const result = await fetch(
+              fourBytesURL(assetsURLPrefix, selector.slice(2)),
+            );
             if (!result.ok) {
               throw new Error(
                 `4bytes fetch returned ${result.status} response`,
