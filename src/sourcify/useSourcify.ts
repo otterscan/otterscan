@@ -193,9 +193,9 @@ function whatsabiFetcher(
       const unknownSelectors = selectors.filter(
         (selector, i) => decodedFunctions[i] === null,
       );
-      const functions: string[] = decodedFunctions.filter(
-        (sig) => sig !== null,
-      ) as string[];
+      const functions: string[] = decodedFunctions
+        .filter((sig) => sig !== null)
+        .sort() as string[];
       const int = Interface.from([...functions]);
       const abi = JSON.parse(int.formatJson());
       const metadata = {
