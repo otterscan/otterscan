@@ -16,6 +16,7 @@ import StandardFrame from "../components/StandardFrame";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
@@ -107,6 +108,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
   );
+  const whatsabiMatch = useWhatsabiMetadata(
+    match === null && hasCode ? checksummedAddress : undefined,
+    provider?._network.chainId,
+    provider,
+    config?.assetsURLPrefix,
+  );
 
   return (
     <StandardFrame>
@@ -175,7 +182,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {hasCode && match && (
+                {hasCode && (match || whatsabiMatch) && (
                   <NavTab href={`/address/${addressOrName}/readContract`}>
                     <span className={`flex items-baseline space-x-2`}>
                       <span>Read Contract</span>
@@ -237,7 +244,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     element={
                       <Contracts
                         checksummedAddress={checksummedAddress}
-                        match={match}
+                        match={match ?? whatsabiMatch}
                       />
                     }
                   />
@@ -246,7 +253,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     element={
                       <ReadContract
                         checksummedAddress={checksummedAddress}
-                        match={match}
+                        match={match ?? whatsabiMatch}
                       />
                     }
                   />

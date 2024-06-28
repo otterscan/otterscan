@@ -6,7 +6,7 @@ import { ABIAwareComponentProps } from "../../types";
 import DecodedABI from "./DecodedABI";
 import RawABI from "./RawABI";
 
-const ContractABI: FC<ABIAwareComponentProps> = ({ abi }) => (
+const ContractABI: FC<ABIAwareComponentProps> = ({ abi, unknownSelectors }) => (
   <div className="mb-3">
     <TabGroup>
       <TabList className="mb-1 flex items-baseline space-x-1">
@@ -19,7 +19,7 @@ const ContractABI: FC<ABIAwareComponentProps> = ({ abi }) => (
       </TabList>
       <TabPanels>
         <TabPanel>
-          <DecodedABI abi={abi} />
+          <DecodedABI abi={abi} unknownSelectors={unknownSelectors} />
         </TabPanel>
         <TabPanel>
           <RawABI abi={abi} />
