@@ -1,4 +1,5 @@
-import { faCog, faLightbulb, faMoon } from "@fortawesome/free-solid-svg-icons";
+import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
+import { faDisplay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 
@@ -43,28 +44,28 @@ const ThemeToggler: React.FC = () => {
 
   return (
     <div
-      className={`max-w-max mx-2 my-1 flex justify-left gap-1 bg-gray-100 rounded-full [&_>button]:transition [&_>button]:duration-100 [&_>button]:ease-in-out text-xs`}
+      className={`max-w-max mx-2 my-0.5 flex justify-left gap-1 bg-gray-50 rounded-full [&_>button]:transition [&_>button]:duration-100 [&_>button]:ease-in-out text-xs`}
     >
       <button
-        className={`px-4 py-2 rounded-full border-2 ${theme === "light" ? "border-gray-500" : "border-gray-300"} hover:border-yellow-500 active:border-yellow-600 text-gray-600`}
+        className={`px-3 py-1.5 rounded-full border ${theme === "light" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-800 text-gray-500`}
         onClick={() => handleThemeChange("light")}
         title="Light theme"
       >
-        <FontAwesomeIcon icon={faLightbulb} size="lg" />
+        <FontAwesomeIcon icon={faSun} size="lg" />
       </button>
       <button
-        className={`px-4 py-2 rounded-full border-2 ${theme === "dark" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-700 text-gray-600`}
+        className={`px-3 py-1.5 rounded-full border ${theme === "dark" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-800 text-gray-500`}
         onClick={() => handleThemeChange("dark")}
         title="Dark theme"
       >
         <FontAwesomeIcon icon={faMoon} size="lg" />
       </button>
       <button
-        className={`px-4 py-2 rounded-full border-2 ${theme === "system" ? "border-gray-500" : "border-gray-300"} hover:border-gray-600 active:border-gray-800 text-gray-600`}
+        className={`px-3 py-1.5 rounded-full border ${theme === "system" ? "border-gray-500" : "border-gray-300"} hover:border-gray-600 active:border-gray-800 text-gray-500`}
         onClick={() => handleThemeChange("system")}
         title="System preference"
       >
-        <FontAwesomeIcon icon={faCog} size="lg" />
+        <FontAwesomeIcon icon={faDisplay} size="lg" />
       </button>
     </div>
   );
