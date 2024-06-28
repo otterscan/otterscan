@@ -15,10 +15,8 @@ import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
-import {
-  useSourcifyMetadata,
-  useWhatsabiMetadata,
-} from "../sourcify/useSourcify";
+import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
