@@ -35,6 +35,7 @@ const ReadContract: React.FC<ContractsProps> = ({
   const nonViewReturns = match?.metadata.output.abi.filter(
     (fn) => fn.outputs && fn.outputs.length > 0 && !isReadFunction(fn),
   );
+  const showDecodedOutputs = match?.type !== MatchType.WHATSABI_GUESS;
 
   return (
     <StandardSelectionBoundary>
@@ -69,6 +70,7 @@ const ReadContract: React.FC<ContractsProps> = ({
                           FunctionFragment.from(fn).format("sighash")
                         ]
                       }
+                      showDecodedOutputs={showDecodedOutputs}
                       key={i}
                     />
                   ))}
@@ -92,6 +94,7 @@ const ReadContract: React.FC<ContractsProps> = ({
                                   FunctionFragment.from(fn).format("sighash")
                                 ]
                               }
+                              showDecodedOutputs={showDecodedOutputs}
                               key={i}
                             />
                           ))}

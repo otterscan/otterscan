@@ -19,12 +19,6 @@ import FunctionParamInput, {
 } from "./FunctionParamInput";
 import { parse } from "./contractInputDataParser";
 
-interface ReadFunctionProps {
-  address: string;
-  func: FunctionFragment;
-  devMethod?: DevMethod;
-}
-
 /**
  * Prepares an unprocessed argument string by coercing it into the proper
  * format in some cases as a convenience feature
@@ -167,7 +161,19 @@ async function parseStructuredArgument(
   throw new Error("Unhandled parse sequence: " + argType.format("full"));
 }
 
-const ReadFunction: FC<ReadFunctionProps> = ({ address, func, devMethod }) => {
+interface ReadFunctionProps {
+  address: string;
+  func: FunctionFragment;
+  devMethod?: DevMethod;
+  showDecodedOutputs?: boolean;
+}
+
+const ReadFunction: FC<ReadFunctionProps> = ({
+  address,
+  func,
+  devMethod,
+  showDecodedOutputs = true,
+}) => {
   let [result, setResult] = useState<
     { result: Result; data: string } | null | undefined
   >(null);
@@ -257,7 +263,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({ address, func, devMethod }) => {
         {result && (
           <OutputDecoder
             args={result.result}
-            paramTypes={func.outputs || []}
+            paramTypes={showDecodedOutputs ? func.outputs ?? [] : null}
             data={result.data}
             devMethod={devMethod}
           />
