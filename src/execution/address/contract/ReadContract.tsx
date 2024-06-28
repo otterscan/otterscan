@@ -3,9 +3,10 @@ import React, { useContext, useState } from "react";
 import ContentFrame from "../../../components/ContentFrame";
 import LabeledSwitch from "../../../components/LabeledSwitch";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
-import { Match } from "../../../sourcify/useSourcify";
+import { Match, MatchType } from "../../../sourcify/useSourcify";
 import { RuntimeContext } from "../../../useRuntime";
 import { usePageTitle } from "../../../useTitle";
+import WhatsabiWarning from "../WhatsabiWarning";
 import ReadFunction from "./ReadFunction";
 
 type ContractsProps = {
@@ -38,6 +39,9 @@ const ReadContract: React.FC<ContractsProps> = ({
   return (
     <StandardSelectionBoundary>
       <ContentFrame tabs>
+        {match && match.type === MatchType.WHATSABI_GUESS && (
+          <WhatsabiWarning />
+        )}
         <div className="py-5">
           {match === undefined && (
             <span>Getting data from Sourcify repository...</span>
