@@ -53,7 +53,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             <FontAwesomeIcon icon={faWarning} className="mr-2" />
             <span className="text-md">
               Contract not found in Sourcify respository. Below is an estimate
-              of the ABI from its bytecode:
+              of the ABI from its bytecode.
             </span>
           </div>
         </>
