@@ -58,20 +58,20 @@ const ThemeToggler: React.FC = () => {
         checked={theme === "light"}
         onClick={() => handleThemeChange("light")}
       >
-        <FontAwesomeIcon icon={faSun} className="w-4 mr-0.5" /> Light theme
+        <FontAwesomeIcon icon={faSun} className="w-4 mr-0.5" /> Light
       </SourcifyMenuItem>
       <SourcifyMenuItem
         checked={theme === "dark"}
         onClick={() => handleThemeChange("dark")}
       >
-        <FontAwesomeIcon icon={faMoon} className="w-4 mr-0.5" /> Dark theme
+        <FontAwesomeIcon icon={faMoon} className="w-4 mr-0.5" /> Dark
       </SourcifyMenuItem>
       <SourcifyMenuItem
         checked={theme === "system"}
         onClick={() => handleThemeChange("system")}
       >
         <FontAwesomeIcon icon={faDisplay} className="w-4 mr-0.5" /> System
-        default theme
+        default
       </SourcifyMenuItem>
     </>
   );
