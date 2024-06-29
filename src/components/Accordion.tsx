@@ -4,16 +4,14 @@ import React, { ReactNode, useState } from "react";
 
 interface AccordionProps {
   children: ReactNode;
-  initialVisible?: boolean;
   title?: string;
 }
 
 const Accordion: React.FC<AccordionProps> = ({
   children,
-  initialVisible = false,
   title,
 }) => {
-  const [isVisible, setIsVisible] = useState(initialVisible);
+  const [isVisible, setIsVisible] = useState(false);
 
   const handleToggle = () => {
     setIsVisible(!isVisible);
