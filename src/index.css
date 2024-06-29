@@ -28,3 +28,17 @@
     --color-table-row-hover: 2, 132, 199;
   }
 }
+
+@layer components {
+  .dark-mode {
+    @apply dark:invert dark:-hue-rotate-180 dark:brightness-90;
+  }
+
+  .dark-no-invert {
+    @apply dark:invert dark:hue-rotate-180 dark:saturate-[1.25];
+  }
+
+  img {
+    @apply dark-no-invert;
+  }
+}

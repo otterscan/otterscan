@@ -56,7 +56,10 @@ const RewardSplit: React.FC<RewardSplitProps> = ({ txData }) => {
         />
         <div className="flex items-baseline space-x-1">
           <span className="flex space-x-1">
-            <span className="text-amber-300" title="Miner fees">
+            <span
+              className="text-amber-300 dark:text-amber-700"
+              title="Miner fees"
+            >
               <FontAwesomeIcon icon={faCoins} size="1x" />
             </span>
             <span>
