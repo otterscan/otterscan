@@ -40,6 +40,8 @@ const SourcifyMenu: React.FC = () => {
               <div className="my-1 border-b border-gray-300" />
             </>
           )}
+          <ThemeToggler />
+          <div className="my-1 border-b border-gray-300" />
           <SourcifyMenuItem
             checked={location.pathname !== "/broadcastTx"}
             onClick={() => {
@@ -48,8 +50,6 @@ const SourcifyMenu: React.FC = () => {
           >
             Broadcast Transaction
           </SourcifyMenuItem>
-          <div className="my-1 border-b border-gray-300" />
-          <ThemeToggler />
         </MenuItems>
       </div>
     </Menu>
