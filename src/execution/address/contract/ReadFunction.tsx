@@ -10,7 +10,7 @@ import {
   type ParamType,
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
-import ShowHide from "../../../components/ShowHide";
+import Accordion from "../../../components/Accordion";
 import { DevMethod } from "../../../sourcify/useSourcify";
 import { useChainInfo } from "../../../useChainInfo";
 import { RuntimeContext } from "../../../useRuntime";
@@ -241,7 +241,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
   return (
     <li key={func.format()} className="pb-4" data-test="read-function">
       <span className="text-md font-medium">{func.name}</span>
-      <ShowHide title="Call options">
+      <Accordion title="Call options">
         <form onSubmit={onFormSubmit}>
           <div className="ml-6">
             <div className="text-xs">Block Number</div>
@@ -271,7 +271,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             <button type="submit" className="hidden"></button>
           </div>
         </form>
-      </ShowHide>
+      </Accordion>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         <ul className="ml-2 list-inside">
           {func.inputs &&

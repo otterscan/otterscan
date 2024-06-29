@@ -2,13 +2,13 @@ import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ReactNode, useState } from "react";
 
-interface ShowHideProps {
+interface AccordionProps {
   children: ReactNode;
   initialVisible?: boolean;
   title?: string;
 }
 
-const ShowHide: React.FC<ShowHideProps> = ({
+const Accordion: React.FC<AccordionProps> = ({
   children,
   initialVisible = false,
   title,
@@ -47,4 +47,4 @@ const ShowHide: React.FC<ShowHideProps> = ({
   );
 };
 
-export default ShowHide;
+export default Accordion;
