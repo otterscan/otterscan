@@ -7,10 +7,7 @@ interface AccordionProps {
   title?: string;
 }
 
-const Accordion: React.FC<AccordionProps> = ({
-  children,
-  title,
-}) => {
+const Accordion: React.FC<AccordionProps> = ({ children, title }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const handleToggle = () => {
