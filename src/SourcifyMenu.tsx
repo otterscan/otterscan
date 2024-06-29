@@ -24,9 +24,7 @@ const SourcifyMenu: React.FC = () => {
         <MenuItems className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
           {sourcifySource !== null && (
             <>
-              <div className="border-b border-gray-300 px-2 py-1 text-xs">
-                Sourcify Datasource
-              </div>
+              <SourcifyMenuTitle>Sourcify Datasource</SourcifyMenuTitle>
               <SourcifyMenuItem
                 checked={sourcifySource === SourcifySource.IPFS_IPNS}
                 onClick={() => setSourcifySource(SourcifySource.IPFS_IPNS)}
@@ -51,14 +49,7 @@ const SourcifyMenu: React.FC = () => {
             Broadcast Transaction
           </SourcifyMenuItem>
           <div className="my-1 border-b border-gray-300" />
-          <SourcifyMenuItem
-            checked={false}
-            onClick={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <ThemeToggler />
-          </SourcifyMenuItem>
+          <ThemeToggler />
         </MenuItems>
       </div>
     </Menu>
@@ -70,11 +61,9 @@ type SourcifyMenuItemProps = {
   onClick: (event?: any) => void;
 };
 
-const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
-  checked = false,
-  onClick,
-  children,
-}) => (
+export const SourcifyMenuItem: React.FC<
+  PropsWithChildren<SourcifyMenuItemProps>
+> = ({ checked = false, onClick, children }) => (
   <MenuItem>
     {({ focus }) => (
       <button
@@ -89,6 +78,12 @@ const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
       </button>
     )}
   </MenuItem>
+);
+
+export const SourcifyMenuTitle: React.FC<PropsWithChildren> = ({
+  children,
+}) => (
+  <div className="border-b border-gray-300 px-2 py-1 text-xs">{children}</div>
 );
 
 export default React.memo(SourcifyMenu);

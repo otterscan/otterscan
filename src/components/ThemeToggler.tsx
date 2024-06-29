@@ -2,8 +2,20 @@ import { faMoon, faSun } from "@fortawesome/free-regular-svg-icons";
 import { faDisplay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import { SourcifyMenuItem, SourcifyMenuTitle } from "../SourcifyMenu";
 
 type Theme = "light" | "dark" | "system";
+
+function updateTheme(theme: Theme) {
+  const darkModeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const isDarkMode =
+    theme === "dark" || (theme === "system" && darkModeQuery.matches);
+  if (isDarkMode) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}
 
 const ThemeToggler: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(localStorage.theme ?? "system");
@@ -24,50 +36,44 @@ const ThemeToggler: React.FC = () => {
   }, [theme, setTheme, setUpdated]);
 
   useEffect(() => {
-    const isDarkMode =
-      theme === "dark" || (theme === "system" && darkModeQuery.matches);
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    updateTheme(theme);
   }, [theme, updated]);
 
   const handleThemeChange = (newTheme: Theme) => {
+    console.log("Starting");
     if (newTheme === "system") {
       localStorage.removeItem("theme");
     } else {
       localStorage.theme = newTheme;
     }
     setTheme(newTheme);
+    updateTheme(newTheme);
+    console.log("Ending");
   };
 
   return (
-    <div
-      className={`max-w-max mx-2 my-0.5 flex justify-left gap-1 bg-gray-50 rounded-full [&_>button]:transition [&_>button]:duration-100 [&_>button]:ease-in-out text-xs`}
-    >
-      <button
-        className={`px-3 py-1.5 rounded-full border ${theme === "light" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-800 text-gray-500`}
+    <>
+      <SourcifyMenuTitle>Theme</SourcifyMenuTitle>
+      <SourcifyMenuItem
+        checked={theme === "light"}
         onClick={() => handleThemeChange("light")}
-        title="Light theme"
       >
-        <FontAwesomeIcon icon={faSun} size="lg" />
-      </button>
-      <button
-        className={`px-3 py-1.5 rounded-full border ${theme === "dark" ? "border-gray-500" : "border-gray-300"} hover:border-gray-700 active:border-gray-800 text-gray-500`}
+        <FontAwesomeIcon icon={faSun} className="w-4 mr-0.5" /> Light theme
+      </SourcifyMenuItem>
+      <SourcifyMenuItem
+        checked={theme === "dark"}
         onClick={() => handleThemeChange("dark")}
-        title="Dark theme"
       >
-        <FontAwesomeIcon icon={faMoon} size="lg" />
-      </button>
-      <button
-        className={`px-3 py-1.5 rounded-full border ${theme === "system" ? "border-gray-500" : "border-gray-300"} hover:border-gray-600 active:border-gray-800 text-gray-500`}
+        <FontAwesomeIcon icon={faMoon} className="w-4 mr-0.5" /> Dark theme
+      </SourcifyMenuItem>
+      <SourcifyMenuItem
+        checked={theme === "system"}
         onClick={() => handleThemeChange("system")}
-        title="System preference"
       >
-        <FontAwesomeIcon icon={faDisplay} size="lg" />
-      </button>
-    </div>
+        <FontAwesomeIcon icon={faDisplay} className="w-4 mr-0.5" /> System
+        default theme
+      </SourcifyMenuItem>
+    </>
   );
 };
 
