@@ -83,7 +83,9 @@ export const SourcifyMenuItem: React.FC<
 export const SourcifyMenuTitle: React.FC<PropsWithChildren> = ({
   children,
 }) => (
-  <div className="border-b border-gray-300 px-2 py-1 text-xs">{children}</div>
+  <div className="border-b border-gray-300 px-2 py-1 text-xs select-none">
+    {children}
+  </div>
 );
 
 export default React.memo(SourcifyMenu);
