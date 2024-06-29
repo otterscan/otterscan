@@ -227,6 +227,17 @@ const ReadFunction: FC<ReadFunctionProps> = ({
       });
       setError(null);
     } catch (e: any) {
+      if (blockTag !== "latest") {
+        try {
+          provider.send("ots_hasCode", [address, blockTag]).then((hasCode) => {
+            if (!hasCode) {
+              setError(e.toString() + " (Contract not deployed at this time.)");
+            }
+          });
+        } catch (e) {
+          console.error("Failed to call ots_hasCode:", e);
+        }
+      }
       setResult(null);
       setError(e.toString());
     }
