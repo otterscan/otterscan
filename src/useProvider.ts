@@ -48,7 +48,7 @@ export const createAndProbeProvider = async (
 
   // Check if it is at least a regular ETH node
   const probeBlockNumber = provider.getBlockNumber();
-  const probeHeader1 = provider.send("erigon_getHeaderByNumber", [1]);
+  const probeHeader1 = provider.send("erigon_getHeaderByNumber", [0]);
   const probeOtsAPI = provider.send("ots_getApiLevel", []).then((level) => {
     if (level < MIN_API_LEVEL) {
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
