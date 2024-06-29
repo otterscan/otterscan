@@ -5,11 +5,14 @@ import {
   Interface,
   JsonRpcApiProvider,
   Result,
+  parseUnits,
   resolveAddress,
   type ParamType,
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
+import ShowHide from "../../../components/ShowHide";
 import { DevMethod } from "../../../sourcify/useSourcify";
+import { useChainInfo } from "../../../useChainInfo";
 import { RuntimeContext } from "../../../useRuntime";
 import ParamDeclaration from "../../components/ParamDeclaration";
 import OutputDecoder from "../../transaction/decoder/OutputDecoder";
@@ -178,13 +181,22 @@ const ReadFunction: FC<ReadFunctionProps> = ({
     { result: Result; data: string } | null | undefined
   >(null);
   let [error, setError] = useState<string | null>(null);
+  let [blockNumber, setBlockNumber] = useState<string>("latest");
+  let [sender, setSender] = useState<string>("");
+  let [value, setValue] = useState<string>("");
   const childRefs = useRef<ParamComponentRef[]>(
     new Array(func.inputs.length).fill(null),
   );
   const { provider } = useContext(RuntimeContext);
+  const { nativeCurrency } = useChainInfo();
 
   async function submitCall() {
     let int = new Interface([func]);
+    let blockTag = blockNumber || "latest";
+    if (/^\d+$/.test(blockNumber)) {
+      const num = BigInt(blockNumber);
+      blockTag = "0x" + num.toString(16);
+    }
     try {
       setResult(undefined);
       // The parser can be recompiled with `npm run build-parsers`
@@ -200,8 +212,14 @@ const ReadFunction: FC<ReadFunctionProps> = ({
         ),
       );
       let resultData = await provider.call({
+        from: sender || null,
         to: address,
         data: encodedData,
+        blockTag,
+        value:
+          value !== ""
+            ? parseUnits(value, nativeCurrency.decimals ?? 18)
+            : null,
       });
       setResult({
         result: int.decodeFunctionResult(func.name, resultData),
@@ -223,6 +241,37 @@ const ReadFunction: FC<ReadFunctionProps> = ({
   return (
     <li key={func.format()} className="pb-4" data-test="read-function">
       <span className="text-md font-medium">{func.name}</span>
+      <ShowHide title="Call options">
+        <form onSubmit={onFormSubmit}>
+          <div className="ml-6">
+            <div className="text-xs">Block Number</div>
+            <input
+              type="number"
+              min="0"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setBlockNumber(e.target.value)}
+              placeholder="latest"
+            />
+            <div className="text-xs">Sender</div>
+            <input
+              type="text"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setSender(e.target.value)}
+              placeholder="0x0000000000000000000000000000000000000000"
+            />
+            <div className="text-xs">
+              Value {nativeCurrency && `(${nativeCurrency.symbol})`}
+            </div>
+            <input
+              type="text"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="0"
+            />
+            <button type="submit" className="hidden"></button>
+          </div>
+        </form>
+      </ShowHide>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         <ul className="ml-2 list-inside">
           {func.inputs &&
