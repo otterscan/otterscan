@@ -93,6 +93,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
               <ContractABI
                 abi={match.metadata.output.abi}
                 unknownSelectors={match.unknownSelectors}
+                address={checksummedAddress}
               />
             )}
             {match.type !== MatchType.WHATSABI_GUESS && (

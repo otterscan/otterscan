@@ -1,5 +1,6 @@
 import { FunctionFragment } from "ethers";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import ContentFrame from "../../../components/ContentFrame";
 import LabeledSwitch from "../../../components/LabeledSwitch";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
@@ -14,7 +15,10 @@ type ContractsProps = {
   match: Match | null | undefined;
 };
 
-function isReadFunction(abiFn: { type: string; stateMutability: string }) {
+export function isReadFunction(abiFn: {
+  type: string;
+  stateMutability: string;
+}) {
   return (
     abiFn.type === "function" &&
     (abiFn.stateMutability === "pure" || abiFn.stateMutability === "view")
@@ -36,6 +40,21 @@ const ReadContract: React.FC<ContractsProps> = ({
     (fn) => fn.outputs && fn.outputs.length > 0 && !isReadFunction(fn),
   );
   const showDecodedOutputs = match?.type !== MatchType.WHATSABI_GUESS;
+
+  const location = useLocation();
+  useEffect(() => {
+    setTimeout(() => {
+      if (location.hash) {
+        // Scroll to fragment, e.g. "#0xabcdef01"
+        let foundElement = document.getElementById(location.hash.slice(1));
+        if (foundElement) {
+          foundElement.scrollIntoView({
+            behavior: "smooth",
+          });
+        }
+      }
+    }, 200);
+  }, [match]);
 
   return (
     <StandardSelectionBoundary>
