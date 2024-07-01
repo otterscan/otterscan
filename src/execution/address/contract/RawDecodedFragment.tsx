@@ -54,9 +54,11 @@ const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
             {sig}
           </span>
           {address && fragmentType === "function" && (
-            <NavLink to={`/address/${address}/readContract#${sig}`}>
-              read &raquo;
-            </NavLink>
+            <span className="whitespace-nowrap">
+              <NavLink to={`/address/${address}/readContract#${sig}`}>
+                read &raquo;
+              </NavLink>
+            </span>
           )}
         </>
       )}

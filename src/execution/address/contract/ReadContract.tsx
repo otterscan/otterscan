@@ -14,7 +14,10 @@ type ContractsProps = {
   match: Match | null | undefined;
 };
 
-function isReadFunction(abiFn: { type: string; stateMutability: string }) {
+export function isReadFunction(abiFn: {
+  type: string;
+  stateMutability: string;
+}) {
   return (
     abiFn.type === "function" &&
     (abiFn.stateMutability === "pure" || abiFn.stateMutability === "view")
