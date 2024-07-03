@@ -28,7 +28,7 @@ const Home: FC = () => {
 
   return (
     <>
-      <div className="flex justify-end py-2 px-3 lg:px-9">
+      <div className="flex justify-end py-2 px-3 lg:px-9 h-[2.875rem]">
         <SourcifyMenu />
       </div>
       <div className="flex grow flex-col items-center pb-5">
