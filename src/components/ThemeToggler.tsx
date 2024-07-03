@@ -71,7 +71,6 @@ const ThemeToggler: React.FC = () => {
         onClick={() => handleThemeChange("system")}
       >
         <FontAwesomeIcon icon={faDisplay} className="w-4 mr-0.5" /> System
-        default
       </SourcifyMenuItem>
     </>
   );
