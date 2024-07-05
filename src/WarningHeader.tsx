@@ -43,7 +43,7 @@ const WarningHeader: React.FC = () => {
 
   return (
     <div
-      className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white"
+      className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white dark:text-gray-900"
       data-test="warning-header-network-name"
     >
       You are on {chainMsg}

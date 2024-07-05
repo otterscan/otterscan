@@ -3,11 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import ThemeToggler from "./components/ThemeToggler";
 import { SourcifySource } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
 
 const SourcifyMenu: React.FC = () => {
-  const { sourcifySource, setSourcifySource } = useAppConfigContext();
+  const { sourcifySource, setSourcifySource } = useAppConfigContext() ?? {
+    sourcifySource: null,
+    setSourcifySource: (s: SourcifySource) => {},
+  };
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,21 +22,25 @@ const SourcifyMenu: React.FC = () => {
           <FontAwesomeIcon icon={faBars} size="1x" />
         </MenuButton>
         <MenuItems className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
-          <div className="border-b border-gray-300 px-2 py-1 text-xs">
-            Sourcify Datasource
-          </div>
-          <SourcifyMenuItem
-            checked={sourcifySource === SourcifySource.IPFS_IPNS}
-            onClick={() => setSourcifySource(SourcifySource.IPFS_IPNS)}
-          >
-            Resolve IPNS
-          </SourcifyMenuItem>
-          <SourcifyMenuItem
-            checked={sourcifySource === SourcifySource.CENTRAL_SERVER}
-            onClick={() => setSourcifySource(SourcifySource.CENTRAL_SERVER)}
-          >
-            Sourcify Servers
-          </SourcifyMenuItem>
+          {sourcifySource !== null && (
+            <>
+              <SourcifyMenuTitle>Sourcify Datasource</SourcifyMenuTitle>
+              <SourcifyMenuItem
+                checked={sourcifySource === SourcifySource.IPFS_IPNS}
+                onClick={() => setSourcifySource(SourcifySource.IPFS_IPNS)}
+              >
+                Resolve IPNS
+              </SourcifyMenuItem>
+              <SourcifyMenuItem
+                checked={sourcifySource === SourcifySource.CENTRAL_SERVER}
+                onClick={() => setSourcifySource(SourcifySource.CENTRAL_SERVER)}
+              >
+                Sourcify Servers
+              </SourcifyMenuItem>
+              <div className="my-1 border-b border-gray-300" />
+            </>
+          )}
+          <ThemeToggler />
           <div className="my-1 border-b border-gray-300" />
           <SourcifyMenuItem
             checked={location.pathname !== "/broadcastTx"}
@@ -50,14 +58,12 @@ const SourcifyMenu: React.FC = () => {
 
 type SourcifyMenuItemProps = {
   checked?: boolean;
-  onClick: () => void;
+  onClick: (event?: any) => void;
 };
 
-const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
-  checked = false,
-  onClick,
-  children,
-}) => (
+export const SourcifyMenuItem: React.FC<
+  PropsWithChildren<SourcifyMenuItemProps>
+> = ({ checked = false, onClick, children }) => (
   <MenuItem>
     {({ focus }) => (
       <button
@@ -72,6 +78,14 @@ const SourcifyMenuItem: React.FC<PropsWithChildren<SourcifyMenuItemProps>> = ({
       </button>
     )}
   </MenuItem>
+);
+
+export const SourcifyMenuTitle: React.FC<PropsWithChildren> = ({
+  children,
+}) => (
+  <div className="border-b border-gray-300 px-2 py-1 text-xs select-none">
+    {children}
+  </div>
 );
 
 export default React.memo(SourcifyMenu);

@@ -63,7 +63,10 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
       }`}
     >
       {creation && (
-        <span className="text-amber-300" title="Contract creation">
+        <span
+          className="text-amber-300 dark:text-amber-700"
+          title="Contract creation"
+        >
           <FontAwesomeIcon icon={faStar} size="1x" />
         </span>
       )}
@@ -83,7 +86,10 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
         </span>
       )}
       {miner && (
-        <span className="text-amber-400" title="Miner address">
+        <span
+          className="text-amber-400 dark:text-amber-600"
+          title="Miner address"
+        >
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
       )}
