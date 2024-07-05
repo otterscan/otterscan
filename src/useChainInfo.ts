@@ -16,7 +16,8 @@ export const populateChainInfo = async (
 
   // TODO: check the assertions
   const assetsURLPrefix = runtime.config!.assetsURLPrefix!;
-  const chainId = runtime.provider!._network!.chainId;
+  const network = await runtime.provider!.getNetwork();
+  const chainId = network.chainId;
 
   const url = chainInfoURL(assetsURLPrefix, chainId);
   try {
