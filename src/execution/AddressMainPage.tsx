@@ -34,7 +34,7 @@ import { AddressAwareComponentProps } from "./types";
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <>
@@ -56,7 +56,7 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
 };
 
 const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <Contracts
@@ -69,7 +69,7 @@ const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
 const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
   address,
 }) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <ReadContract checksummedAddress={address} match={proxyAttrs.proxyMatch} />
@@ -112,7 +112,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     match === null && hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
     provider,
-    config?.assetsURLPrefix,
+    config.assetsURLPrefix,
   );
 
   return (

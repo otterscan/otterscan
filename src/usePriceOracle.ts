@@ -245,7 +245,7 @@ export const useTokenUSDOracle = (
   const { config } = useContext(RuntimeContext);
   const fetcher = feedRegistryFetcher(
     provider,
-    config?.priceOracleInfo,
+    config.priceOracleInfo,
     {
       price: ethPrice,
       decimals: ethPriceDecimals,
@@ -303,7 +303,7 @@ export const useETHUSDOracle = (
 ): { price: bigint | undefined; decimals: bigint } => {
   const { config } = useContext(RuntimeContext);
   const priceOracleInfo =
-    config?.priceOracleInfo ??
+    config.priceOracleInfo ??
     (provider
       ? defaultPriceOracleInfo.get(provider._network.chainId)
       : undefined);
@@ -326,7 +326,7 @@ export const useFiatValue = (
   ethAmount: bigint,
   blockTag: BlockTag | undefined,
 ) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const { price: ethPrice, decimals: ethPriceDecimals } = useETHUSDOracle(
     provider,
     blockTag,
@@ -366,7 +366,7 @@ export const useETHUSDRawOracle = (
   blockTag: BlockTag | undefined,
 ): any | undefined => {
   const { config } = useContext(RuntimeContext);
-  const fetcher = ethUSDFetcher(provider, config?.priceOracleInfo);
+  const fetcher = ethUSDFetcher(provider, config.priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   if (error) {
     return undefined;

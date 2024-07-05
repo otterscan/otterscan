@@ -81,7 +81,7 @@ const PriceBox: React.FC = () => {
     }
 
     const priceDecimals =
-      config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ??
+      config.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ??
       ETH_FEED_DEFAULT_DECIMALS;
     const currentPrice = FixedNumber.fromValue(
       latestPriceData.answer,

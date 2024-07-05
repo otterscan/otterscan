@@ -128,7 +128,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
           )}
         </>
       )}
-      {config?.experimental && <AddressAttributes address={address} />}
+      {config.experimental && <AddressAttributes address={address} />}
     </div>
   );
 };

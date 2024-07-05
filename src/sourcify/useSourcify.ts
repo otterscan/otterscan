@@ -115,9 +115,6 @@ function resolveSourcifySource(
 
 function useSourcifySources(): SourcifySourceMap {
   const { config } = useContext(RuntimeContext);
-  if (!config) {
-    return {};
-  }
   return config.sourcifySources ?? defaultSourcifySources;
 }
 

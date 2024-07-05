@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
         } text-center`}
       >
         {provider ? (
-          <>Using Erigon node at {config?.erigonURL}</>
+          <>Using Erigon node at {config.erigonURL}</>
         ) : (
           <>Waiting for the provider...</>
         )}

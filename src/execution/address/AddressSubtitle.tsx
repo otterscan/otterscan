@@ -62,14 +62,14 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         <Copy value={address} rounded />
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
-        {config?.experimental && <AddressAttributes address={address} full />}
+        {config.experimental && <AddressAttributes address={address} full />}
         {resolvedName && resolvedNameTrusted && !editingAddressTag && (
           <div className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500 text-nowrap">
             <FontAwesomeIcon icon={faTag} size="1x" />
             <span className="pl-1 text-nowrap">{resolvedName}</span>
           </div>
         )}
-        {config?.WIP_customAddressLabels && (
+        {config.WIP_customAddressLabels && (
           <div className="flex flex-no-wrap space-x-1">
             {editingAddressTag && (
               <EditableAddressTag

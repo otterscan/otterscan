@@ -75,8 +75,8 @@ const Home: FC = () => {
             Search
           </button>
         </form>
-        {!(config?.branding?.hideAnnouncements ?? false) &&
-          config?.experimental && (
+        {!(config.branding?.hideAnnouncements ?? false) &&
+          config.experimental && (
             <NavLink
               className="text-md font-bold text-green-600 hover:text-green-800"
               to="contracts/all"

@@ -23,15 +23,15 @@ export const populateChainInfo = async (
   try {
     const res = await fetch(url);
     if (!res.ok) {
-      runtime.config!.chainInfo = defaultChainInfo;
+      runtime.config.chainInfo = defaultChainInfo;
       return Promise.resolve(runtime);
     }
 
     const info: ChainInfo = await res.json();
-    runtime.config!.chainInfo = info;
+    runtime.config.chainInfo = info;
     return Promise.resolve(runtime);
   } catch (err) {
-    runtime.config!.chainInfo = defaultChainInfo;
+    runtime.config.chainInfo = defaultChainInfo;
     return Promise.resolve(runtime);
   }
 };

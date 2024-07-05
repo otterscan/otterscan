@@ -120,7 +120,7 @@ export const use4Bytes = (
     } catch (e: any) {}
   }
 
-  const assetsURLPrefix = config?.assetsURLPrefix;
+  const assetsURLPrefix = config.assetsURLPrefix;
   const fourBytesKey = assetsURLPrefix !== undefined ? rawFourBytes : null;
 
   const fetcher = fourBytesFetcher(assetsURLPrefix!);
