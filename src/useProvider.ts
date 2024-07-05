@@ -13,7 +13,7 @@ export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 export const createAndProbeProvider = async (
   erigonURL?: string,
   experimentalFixedChainId?: number,
-): Promise<JsonRpcApiProvider | undefined> => {
+): Promise<JsonRpcApiProvider> => {
   if (erigonURL !== undefined) {
     if (erigonURL === "") {
       console.info(`Using default erigon URL: ${DEFAULT_ERIGON_URL}`);

@@ -9,14 +9,14 @@ export const populateChainInfo = async (
   const runtime = await rtPromise;
 
   // Hardcoded chainInfo; DON'T fetch it
-  const hardcodedChainInfo = runtime.config?.chainInfo !== undefined;
+  const hardcodedChainInfo = runtime.config.chainInfo !== undefined;
   if (hardcodedChainInfo) {
     return rtPromise;
   }
 
   // TODO: check the assertions
-  const assetsURLPrefix = runtime.config!.assetsURLPrefix!;
-  const network = await runtime.provider!.getNetwork();
+  const assetsURLPrefix = runtime.config.assetsURLPrefix!;
+  const network = await runtime.provider.getNetwork();
   const chainId = network.chainId;
 
   const url = chainInfoURL(assetsURLPrefix, chainId);
