@@ -17,7 +17,7 @@ const mockProvider: JsonRpcProvider = new JsonRpcProvider(
   },
 );
 
-export const runtimeDecorator: Decorator<any> = (Story) => (
+export const runtimeDecorator: Decorator<unknown> = (Story) => (
   <RuntimeContext.Provider
     value={{ config: mockConfig, provider: mockProvider }}
   >
