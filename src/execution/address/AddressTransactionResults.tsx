@@ -150,7 +150,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           <InfoRow title="Balance">
             <div className="grid grid-cols-3 flex divide-x-2 divide-dotted divide-gray-300 text-sm">
               <div
-                className={`${transactionCount !== undefined ? "col-span-1" : ""}`}
+                className={`${transactionCount !== undefined ? "col-span-1" : "col-span-3"}`}
               >
                 {balance !== null && balance !== undefined ? (
                   <NativeTokenAmountAndFiat
