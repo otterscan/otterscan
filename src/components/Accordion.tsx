@@ -19,6 +19,7 @@ const Accordion: React.FC<AccordionProps> = ({ children, title, neighbor }) => {
     <span>
       <button
         className="ml-2 mt-2 rounded border bg-skin-button-fill px-1 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill"
+        type="button"
         onClick={handleToggle}
         title={title}
       >
