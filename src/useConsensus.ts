@@ -20,7 +20,7 @@ function toNumberWithDefault(item: any, defaultVal: number): number {
 
 const useGenesisURL = () => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/genesis`;
@@ -59,7 +59,7 @@ export const useGenesisTime = (): number | undefined => {
 
 const useBeaconSpecURL = () => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/config/spec`;
@@ -96,7 +96,7 @@ export const useSlotToEpoch = <T extends number | undefined>(
 
 const useBeaconHeaderURL = (tag: string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/headers/${tag}`;
@@ -104,7 +104,7 @@ const useBeaconHeaderURL = (tag: string) => {
 
 const useBeaconBlockURL = (slot: number | string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v2/beacon/blocks/${slot}`;
@@ -112,7 +112,7 @@ const useBeaconBlockURL = (slot: number | string) => {
 
 const useBlockRootURL = (slotNumber: number) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
@@ -120,7 +120,7 @@ const useBlockRootURL = (slotNumber: number) => {
 
 const useValidatorURL = (validatorIndex: number | string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
@@ -128,7 +128,7 @@ const useValidatorURL = (validatorIndex: number | string) => {
 
 const useEpochProposersURL = (epochNumber: number) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`;
@@ -140,7 +140,7 @@ const useCommitteeURL = (
   committeeIndex: number,
 ) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`;

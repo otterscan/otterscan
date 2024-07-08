@@ -16,9 +16,7 @@ const TokenLogo: FC<TokenLogoProps> = ({ chainId, address, name }) => {
   const { config } = useContext(RuntimeContext);
 
   const srcList: string[] = [];
-  if (config) {
-    srcList.push(tokenLogoURL(config.assetsURLPrefix ?? "", chainId, address));
-  }
+  srcList.push(tokenLogoURL(config.assetsURLPrefix ?? "", chainId, address));
   const { src, isLoading } = useImage({ srcList, useSuspense: false });
 
   return (

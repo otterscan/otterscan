@@ -9,15 +9,23 @@ import { createAndProbeProvider } from "./useProvider";
  */
 export type OtterscanRuntime = {
   /**
-   * Config object; may be null if it is still fetching.
+   * Config object; it is guaranteed a config has already been loaded
+   * by the time the runtime object is constructed.
    */
-  config?: OtterscanConfig;
+  config: OtterscanConfig;
 
   /**
-   * ETH provider; may be undefined if not ready because of config fetching,
-   * probing occurring, etc.
+   * ETH provider; notice that it doesn't mean that there can't be network
+   * errors, remote node shutting down, etc., situations which can make
+   * this object unusable in the future and the caller should do proper
+   * error handling.
+   *
+   * The presence of this field merely means that at the time this object
+   * was instantiated, an ETH provider was built on top of the given
+   * configuration, and some basic testing/probing might have been made
+   * in order to fail fast obvious configuration errors.
    */
-  provider?: JsonRpcApiProvider;
+  provider: JsonRpcApiProvider;
 };
 
 /**
@@ -46,8 +54,8 @@ export const createRuntime = async (
   }
 
   const provider = await createAndProbeProvider(
-    effectiveConfig?.erigonURL,
-    effectiveConfig?.experimentalFixedChainId,
+    effectiveConfig.erigonURL,
+    effectiveConfig.experimentalFixedChainId,
   );
   return {
     config: effectiveConfig,

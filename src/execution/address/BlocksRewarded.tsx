@@ -46,7 +46,7 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
       <th className="w-28">Block</th>
       <th className="w-32">Age</th>
       <th className="w-36">Block fees</th>
-      {config?.beaconAPI && (
+      {config.beaconAPI && (
         <>
           <th className="w-28">Slot</th>
           <th className="w-28">Validator</th>
@@ -65,7 +65,7 @@ const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
       Item={(i) => <BlockRewardedItem {...i} />}
       header={searchHeader}
       typeName="block"
-      columns={config?.beaconAPI === undefined ? 3 : 5}
+      columns={config.beaconAPI === undefined ? 3 : 5}
     />
   );
 };

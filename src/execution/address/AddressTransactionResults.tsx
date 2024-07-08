@@ -188,7 +188,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
               </div>
             </InfoRow>
           )}
-          {config && config.experimental && <ProxyInfo address={address} />}
+          {config.experimental && <ProxyInfo address={address} />}
         </BlockNumberContext.Provider>
         <NavBar address={address} page={page} controller={controller} />
         <StandardScrollableTable isAuto={true}>

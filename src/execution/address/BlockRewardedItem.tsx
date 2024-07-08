@@ -45,7 +45,7 @@ const BlockRewardedItem: FC<BlockRewardedItemProps> = ({
         <td>
           <NativeTokenAmount value={totalFees} />
         </td>
-        {config?.beaconAPI !== undefined && (
+        {config.beaconAPI !== undefined && (
           <>
             <td>
               {isLoadingBlockData || isLoadingSlotData ? (

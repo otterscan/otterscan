@@ -1,9 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import { Result } from "ethers";
-import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
-import { SourcifySource } from "../../../sourcify/useSourcify";
-import { AppConfigContext } from "../../../useAppConfig";
-import { RuntimeContext } from "../../../useRuntime";
+import { runtimeDecorator } from "../../../storybook/util";
 import {
   AddressWithHelp,
   ArrayOfTupleWithHelp,
@@ -17,22 +14,7 @@ import DecodedParamsTable from "./DecodedParamsTable";
 
 const meta = {
   component: DecodedParamsTable,
-  decorators: [
-    (Story) => (
-      <RuntimeContext.Provider value={{}}>
-        <AppConfigContext.Provider
-          value={{
-            sourcifySource: SourcifySource.CENTRAL_SERVER,
-            setSourcifySource: () => {},
-          }}
-        >
-          <StandardSelectionBoundary>
-            <Story />
-          </StandardSelectionBoundary>
-        </AppConfigContext.Provider>
-      </RuntimeContext.Provider>
-    ),
-  ],
+  decorators: [runtimeDecorator],
 } satisfies Meta<typeof DecodedParamsTable>;
 
 export default meta;

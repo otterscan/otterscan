@@ -56,7 +56,7 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
 
   const l1Epoch = useL1Epoch(provider, block ? block.number : null);
   const l1ExplorerUrl: string | undefined =
-    config?.opChainSettings?.l1ExplorerURL;
+    config.opChainSettings?.l1ExplorerURL;
 
   return (
     <>

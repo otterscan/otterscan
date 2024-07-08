@@ -9,29 +9,29 @@ export const populateChainInfo = async (
   const runtime = await rtPromise;
 
   // Hardcoded chainInfo; DON'T fetch it
-  const hardcodedChainInfo = runtime.config?.chainInfo !== undefined;
+  const hardcodedChainInfo = runtime.config.chainInfo !== undefined;
   if (hardcodedChainInfo) {
     return rtPromise;
   }
 
   // TODO: check the assertions
-  const assetsURLPrefix = runtime.config!.assetsURLPrefix!;
-  const network = await runtime.provider!.getNetwork();
+  const assetsURLPrefix = runtime.config.assetsURLPrefix!;
+  const network = await runtime.provider.getNetwork();
   const chainId = network.chainId;
 
   const url = chainInfoURL(assetsURLPrefix, chainId);
   try {
     const res = await fetch(url);
     if (!res.ok) {
-      runtime.config!.chainInfo = defaultChainInfo;
+      runtime.config.chainInfo = defaultChainInfo;
       return Promise.resolve(runtime);
     }
 
     const info: ChainInfo = await res.json();
-    runtime.config!.chainInfo = info;
+    runtime.config.chainInfo = info;
     return Promise.resolve(runtime);
   } catch (err) {
-    runtime.config!.chainInfo = defaultChainInfo;
+    runtime.config.chainInfo = defaultChainInfo;
     return Promise.resolve(runtime);
   }
 };
