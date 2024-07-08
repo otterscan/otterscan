@@ -293,8 +293,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
           <div className="ml-6">
             <div className="text-xs">Block Number</div>
             <input
-              type="number"
-              min="0"
+              type="text"
               className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
               onChange={(e) => setBlockNumber(e.target.value)}
               placeholder="latest"
