@@ -1,4 +1,4 @@
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { ReactNode, useState } from "react";
 
@@ -18,15 +18,12 @@ const Accordion: React.FC<AccordionProps> = ({ children, title, neighbor }) => {
   return (
     <span>
       <button
-        className="ml-2 mt-2 rounded border bg-skin-button-fill px-1 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill"
+        className="ml-2 mt-2 rounded border bg-skin-button-fill px-1.5 py-0.5 text-sm text-skin-button hover:bg-skin-button-hover-fill"
         type="button"
         onClick={handleToggle}
         title={title}
       >
-        <FontAwesomeIcon
-          icon={isVisible ? faChevronUp : faChevronDown}
-          size="sm"
-        />
+        <FontAwesomeIcon icon={isVisible ? faMinus : faPlus} size="sm" />
       </button>
       {neighbor}
       <div
