@@ -252,37 +252,6 @@ const ReadFunction: FC<ReadFunctionProps> = ({
   return (
     <li key={func.format()} className="pb-4" data-test="read-function">
       <span className="text-md font-medium">{func.name}</span>
-      <Accordion title="Call options">
-        <form onSubmit={onFormSubmit}>
-          <div className="ml-6">
-            <div className="text-xs">Block Number</div>
-            <input
-              type="number"
-              min="0"
-              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
-              onChange={(e) => setBlockNumber(e.target.value)}
-              placeholder="latest"
-            />
-            <div className="text-xs">Sender</div>
-            <input
-              type="text"
-              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
-              onChange={(e) => setSender(e.target.value)}
-              placeholder="0x0000000000000000000000000000000000000000"
-            />
-            <div className="text-xs">
-              Value {nativeCurrency && `(${nativeCurrency.symbol})`}
-            </div>
-            <input
-              type="text"
-              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="0"
-            />
-            <button type="submit" className="hidden"></button>
-          </div>
-        </form>
-      </Accordion>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         <ul className="ml-2 list-inside">
           {func.inputs &&
@@ -308,11 +277,46 @@ const ReadFunction: FC<ReadFunctionProps> = ({
         >
           Query
         </button>{" "}
-        {result === undefined && (
-          <span className="self-center">
-            <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
-          </span>
-        )}
+        <Accordion
+          title="Call options"
+          neighbor={
+            result === undefined && (
+              <span className="ml-2 self-center">
+                <FontAwesomeIcon
+                  className="animate-spin"
+                  icon={faCircleNotch}
+                />
+              </span>
+            )
+          }
+        >
+          <div className="ml-6">
+            <div className="text-xs">Block Number</div>
+            <input
+              type="number"
+              min="0"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setBlockNumber(e.target.value)}
+              placeholder="latest"
+            />
+            <div className="text-xs">Sender</div>
+            <input
+              type="text"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setSender(e.target.value)}
+              placeholder="0x0000000000000000000000000000000000000000"
+            />
+            <div className="text-xs">
+              Value {nativeCurrency && `(${nativeCurrency.symbol})`}
+            </div>
+            <input
+              type="text"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="0"
+            />
+          </div>
+        </Accordion>
       </form>
       <div className="mt-2 pl-6">
         {result && (
