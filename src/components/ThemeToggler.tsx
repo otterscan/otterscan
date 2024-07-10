@@ -40,7 +40,6 @@ const ThemeToggler: React.FC = () => {
   }, [theme, updated]);
 
   const handleThemeChange = (newTheme: Theme) => {
-    console.log("Starting");
     if (newTheme === "system") {
       localStorage.removeItem("theme");
     } else {
@@ -48,7 +47,6 @@ const ThemeToggler: React.FC = () => {
     }
     setTheme(newTheme);
     updateTheme(newTheme);
-    console.log("Ending");
   };
 
   return (

@@ -16,7 +16,6 @@ const BroadcastTransactionPage: React.FC = () => {
   }>({ success: null, result: "" });
 
   async function submitTx() {
-    console.log(rawTx, provider);
     if (provider) {
       const trimmedRawTx = rawTx.trim();
       if (trimmedRawTx.length > 2) {
