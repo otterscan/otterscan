@@ -104,7 +104,7 @@
     "tspeg": "^3.3.1",
     "typescript": "^5.5.3",
     "vite": "^5.3.1",
-    "vite-imagetools": "^7.0.2",
+    "vite-imagetools": "^7.0.4",
     "vite-plugin-compression": "^0.5.1",
     "wrangler": "^3.63.1"
   },
