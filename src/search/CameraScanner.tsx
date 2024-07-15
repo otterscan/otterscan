@@ -37,7 +37,7 @@ const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
       <div className="flex min-h-screen items-center justify-center">
         <div className="fixed inset-0 bg-black opacity-30" />
         <DialogPanel>
-          <DialogTitle className="absolute top-0 w-full bg-white text-center text-lg">
+          <DialogTitle className="absolute left-0 top-0 w-full bg-white text-center text-lg">
             Point an ETH address QR code to camera
           </DialogTitle>
           <div className="absolute inset-0 m-auto h-screen max-h-screen w-full min-w-max max-w-3xl rounded bg-transparent">
