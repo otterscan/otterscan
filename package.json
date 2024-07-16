@@ -38,7 +38,7 @@
     "react-helmet-async": "^2.0.5",
     "react-image": "^4.1.0",
     "react-intersection-observer": "^9.10.3",
-    "react-router-dom": "^6.24.1",
+    "react-router-dom": "^6.25.0",
     "shiki": "^1.10.3",
     "swr": "^2.2.2",
     "use-keyboard-shortcut": "^1.1.6",
