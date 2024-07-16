@@ -106,7 +106,7 @@
     "vite": "^5.3.1",
     "vite-imagetools": "^7.0.4",
     "vite-plugin-compression": "^0.5.1",
-    "wrangler": "^3.63.1"
+    "wrangler": "^3.65.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.18.1"
