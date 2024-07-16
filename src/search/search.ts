@@ -234,7 +234,42 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
   const sepIndex = q.lastIndexOf(":");
   if (sepIndex !== -1) {
     maybeAddress = q.substring(0, sepIndex);
-    maybeIndex = q.substring(sepIndex + 1);
+    const afterAddress = q.substring(sepIndex + 1);
+    maybeIndex = !isNaN(parseInt(afterAddress))
+      ? parseInt(afterAddress).toString()
+      : "";
+  }
+
+  // Parse URLs for other block explorers
+  try {
+    const url = new URL(q);
+    const pathname = url.pathname.replace(/\/$/, "");
+
+    const addressMatch = pathname.match(/^\/(?:address|token)\/(.*)$/);
+    const txMatch = pathname.match(/^\/tx\/(.*)$/);
+    const blockMatch = pathname.match(/^\/block\/(\d+)$/);
+    const epochMatch = pathname.match(/^\/epoch\/(.*)$/);
+    const slotMatch = pathname.match(/^\/slot\/(.*)$/);
+    const validatorMatch = pathname.match(/^\/validator\/(.*)$/);
+    if (addressMatch) {
+      maybeAddress = addressMatch[1];
+      // The URL might use a different port number
+      maybeIndex = "";
+    } else if (txMatch) {
+      q = txMatch[1];
+    } else if (blockMatch) {
+      q = blockMatch[1];
+    } else if (epochMatch) {
+      q = "epoch:" + epochMatch[1];
+    } else if (slotMatch) {
+      q = "slot:" + slotMatch[1];
+    } else if (validatorMatch) {
+      q = "validator:" + validatorMatch[1];
+    }
+  } catch (error) {
+    if (!(error instanceof TypeError)) {
+      throw error;
+    }
   }
 
   // Plain address?
