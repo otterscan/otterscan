@@ -17,6 +17,7 @@ import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
 import ProbeErrorHandler from "./ProbeErrorHandler";
+import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
@@ -106,6 +107,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />} loader={loader}>
       <Route index element={<Home />} />
+      <Route path="/search" loader={searchLoader} />
       <Route path="/special/liveBlocks" element={<LiveBlocks />} />
       <Route path="*" element={<Main />}>
         <Route path="block/:blockNumberOrHash" element={<Block />} />

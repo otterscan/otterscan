@@ -3,7 +3,7 @@ import { QrReader } from "@otterscan/react-qr-reader";
 import { OnResultFunction } from "@otterscan/react-qr-reader/dist-types/types";
 import { BarcodeFormat } from "@zxing/library";
 import { isAddress } from "ethers";
-import React from "react";
+import React, { useTransition } from "react";
 import { useNavigate } from "react-router-dom";
 
 type CameraScannerProps = {
@@ -12,6 +12,7 @@ type CameraScannerProps = {
 
 const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
   const navigate = useNavigate();
+  const [_, startTransition] = useTransition();
 
   const evaluateScan: OnResultFunction = (result, error, codeReader) => {
     console.log("scan");
@@ -23,8 +24,10 @@ const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
         return;
       }
 
-      navigate(`/search?q=${text}`);
-      turnOffScan();
+      startTransition(() => {
+        navigate(`/search?q=${text}`);
+        turnOffScan();
+      });
     }
   };
 

@@ -226,6 +226,13 @@ export class SearchController {
 }
 
 const doSearch = async (q: string, navigate: NavigateFunction) => {
+  const redir = parseSearch(q);
+  if (redir !== undefined) {
+    navigate(redir);
+  }
+};
+
+export const parseSearch = (q: string): string | undefined => {
   // Cleanup
   q = q.trim();
 
@@ -274,25 +281,18 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
 
   // Plain address?
   if (isAddress(maybeAddress)) {
-    navigate(
-      `/address/${maybeAddress}${
-        maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-      }`,
-    );
-    return;
+    return `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`;
   }
 
   // Tx hash?
   if (isHexString(q, 32)) {
-    navigate(`/tx/${q}`);
-    return;
+    return `/tx/${q}`;
   }
 
   // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
-    navigate(`/block/${blockNumber}`);
-    return;
+    return `/block/${blockNumber}`;
   }
 
   // Epoch?
@@ -300,8 +300,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeEpoch = q.substring(6);
     const epoch = parseInt(mayBeEpoch);
     if (!isNaN(epoch)) {
-      navigate(`/epoch/${epoch}`);
-      return;
+      return `/epoch/${epoch}`;
     }
   }
 
@@ -310,8 +309,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeSlot = q.substring(5);
     const slot = parseInt(mayBeSlot);
     if (!isNaN(slot)) {
-      navigate(`/slot/${slot}`);
-      return;
+      return `/slot/${slot}`;
     }
   }
 
@@ -322,23 +320,17 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     // Validator by index
     if (mayBeValidator.match(/^\d+$/)) {
       const validatorIndex = parseInt(mayBeValidator);
-      navigate(`/validator/${validatorIndex}`);
-      return;
+      return `/validator/${validatorIndex}`;
     }
 
     // Validator by public key
     if (mayBeValidator.length === 98 && isHexString(mayBeValidator, 48)) {
-      navigate(`/validator/${mayBeValidator}`);
-      return;
+      return `/validator/${mayBeValidator}`;
     }
   }
 
   // Assume it is an ENS name
-  navigate(
-    `/address/${maybeAddress}${
-      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-    }`,
-  );
+  return `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`;
 };
 
 export const useGenericSearch = (): [
