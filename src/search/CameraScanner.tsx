@@ -1,10 +1,10 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { QrReader } from "@otterscan/react-qr-reader";
-import { OnResultFunction } from "@otterscan/react-qr-reader/dist-types/types";
 import { BarcodeFormat } from "@zxing/library";
 import { isAddress } from "ethers";
 import React, { useTransition } from "react";
 import { useNavigate } from "react-router-dom";
+import { QrReader } from "./qr-reader/QrReader";
+import { OnResultFunction } from "./qr-reader/useQrReader";
 
 type CameraScannerProps = {
   turnOffScan: () => void;
@@ -45,7 +45,7 @@ const CameraScanner: React.FC<CameraScannerProps> = ({ turnOffScan }) => {
           </DialogTitle>
           <div className="absolute inset-0 m-auto h-screen max-h-screen w-full min-w-max max-w-3xl rounded bg-transparent">
             <QrReader
-              className="m-auto"
+              className="m-auto h-full"
               constraints={{}}
               onResult={evaluateScan}
             />
