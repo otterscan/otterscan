@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  useTransition,
+} from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import AddressOrENSNameInvalidNonce from "../components/AddressOrENSNameInvalidNonce";
 import AddressOrENSNameNoTx from "../components/AddressOrENSNameNoTx";
@@ -18,6 +24,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   rawNonce,
 }) => {
   const { provider } = useContext(RuntimeContext);
+  const [_, startTransition] = useTransition();
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -81,6 +88,17 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     nonce !== undefined && nonce === null ? undefined : nonce,
   );
 
+  // Success; replace and render filler
+  useEffect(() => {
+    if (txHash === undefined || txHash === null) {
+      return;
+    }
+
+    startTransition(() => {
+      navigate(transactionURL(txHash), { replace: true });
+    });
+  }, [txHash, navigate, startTransition]);
+
   // Invalid ENS
   if (ensError) {
     return (
@@ -139,8 +157,6 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     );
   }
 
-  // Success; replace and render filler
-  navigate(transactionURL(txHash), { replace: true });
   return <StandardFrame />;
 };
 
