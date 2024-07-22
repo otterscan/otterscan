@@ -15,7 +15,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.1.2",
-    "@otterscan/react-qr-reader": "^5.2.0",
     "@shazow/whatsabi": "^0.12.0",
     "@storybook/test": "^8.1.11",
     "@testing-library/jest-dom": "^6.4.6",
@@ -43,7 +42,9 @@
     "swr": "^2.2.2",
     "tiny-invariant": "^1.3.3",
     "use-keyboard-shortcut": "^1.1.6",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^3.5.2",
+    "@zxing/browser": "^0.1.5",
+    "@zxing/library": "^0.21.2"
   },
   "scripts": {
     "start": "vite",
