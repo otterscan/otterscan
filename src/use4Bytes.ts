@@ -137,7 +137,7 @@ export const useMethodSelector = (
   const isSimpleTransfer = data === "0x";
   const methodName = isSimpleTransfer
     ? "transfer"
-    : fourBytesEntry?.name ?? rawFourBytes ?? "-";
+    : (fourBytesEntry?.name ?? rawFourBytes ?? "-");
   const methodTitle = isSimpleTransfer
     ? "ETH Transfer"
     : methodName === rawFourBytes

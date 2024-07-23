@@ -263,7 +263,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
         {result && (
           <OutputDecoder
             args={result.result}
-            paramTypes={showDecodedOutputs ? func.outputs ?? [] : null}
+            paramTypes={showDecodedOutputs ? (func.outputs ?? []) : null}
             data={result.data}
             devMethod={devMethod}
           />
