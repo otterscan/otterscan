@@ -71,7 +71,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     block?.baseFeePerGas !== undefined && block?.baseFeePerGas !== null;
 
   const fourBytes =
-    txData.to !== null ? extract4Bytes(txData.data) ?? "0x" : "0x";
+    txData.to !== null ? (extract4Bytes(txData.data) ?? "0x") : "0x";
   const fourBytesEntry = use4Bytes(fourBytes, txData.to ?? undefined);
   const fourBytesTxDesc = useTransactionDescription(
     fourBytesEntry,

@@ -33,7 +33,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const raw4Bytes = extract4Bytes(t.input);
   const fourBytes = use4Bytes(raw4Bytes, t.to);
   const sigText =
-    raw4Bytes === null ? "<fallback>" : fourBytes?.name ?? raw4Bytes;
+    raw4Bytes === null ? "<fallback>" : (fourBytes?.name ?? raw4Bytes);
   const hasParams = t.input.length > 10;
   const hasSig = t.input.length >= 10;
   const isFallback = t.input.length === 2;
