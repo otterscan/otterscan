@@ -53,10 +53,7 @@ export const createRuntime = async (
     };
   }
 
-  const provider = await createAndProbeProvider(
-    effectiveConfig.erigonURL,
-    effectiveConfig.experimentalFixedChainId,
-  );
+  const provider = await createAndProbeProvider(effectiveConfig.erigonURL);
   return {
     config: effectiveConfig,
     provider,

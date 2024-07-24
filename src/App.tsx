@@ -48,6 +48,10 @@ const BroadcastTransactionPage = lazy(
   () => import("./execution/BroadcastTransactionPage"),
 );
 
+const config = loadOtterscanConfig();
+
+const runtime = populateChainInfo(createRuntime(config));
+
 /**
  * Triggers both config loading and runtime probing/building in parallel.
  *
@@ -55,11 +59,9 @@ const BroadcastTransactionPage = lazy(
  * progress during probing.
  */
 const loader: LoaderFunction = async () => {
-  const config = loadOtterscanConfig();
-
   return defer({
     config,
-    rt: populateChainInfo(createRuntime(config)),
+    rt: runtime,
   });
 };
 
@@ -73,13 +75,16 @@ const Layout: FC = () => {
       {/* await for config load */}
       <Await resolve={data.config}>
         {(config: OtterscanConfig) => (
-          // Await for runtime building + probing; suspend while probing
+          // Await for runtime building + probing; suspend while probing;
+          // don't show probe splash if hardcoded chainId
           <Suspense
             fallback={
-              <ConnectionErrorPanel
-                connStatus={ConnectionStatus.CONNECTING}
-                nodeURL={config.erigonURL!}
-              />
+              config.experimentalFixedChainId === undefined && (
+                <ConnectionErrorPanel
+                  connStatus={ConnectionStatus.CONNECTING}
+                  nodeURL={config.erigonURL!}
+                />
+              )
             }
           >
             <Await resolve={data.rt} errorElement={<ProbeErrorHandler />}>

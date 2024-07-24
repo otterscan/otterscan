@@ -1,9 +1,4 @@
-import {
-  JsonRpcApiProvider,
-  JsonRpcProvider,
-  Network,
-  WebSocketProvider,
-} from "ethers";
+import { JsonRpcApiProvider, JsonRpcProvider, WebSocketProvider } from "ethers";
 import { ProbeError } from "./ProbeError";
 import { MIN_API_LEVEL } from "./params";
 import { ConnectionStatus } from "./types";
@@ -12,7 +7,6 @@ export const DEFAULT_ERIGON_URL = "http://127.0.0.1:8545";
 
 export const createAndProbeProvider = async (
   erigonURL?: string,
-  experimentalFixedChainId?: number,
 ): Promise<JsonRpcApiProvider> => {
   if (erigonURL !== undefined) {
     if (erigonURL === "") {
@@ -21,13 +15,6 @@ export const createAndProbeProvider = async (
     } else {
       console.log(`Using configured erigon URL: ${erigonURL}`);
     }
-  }
-
-  // Skip probing?
-  if (experimentalFixedChainId !== undefined) {
-    console.log("Skipping node probe");
-    const network = Network.from(experimentalFixedChainId);
-    return new JsonRpcProvider(erigonURL, network, { staticNetwork: network });
   }
 
   if (erigonURL === undefined) {
