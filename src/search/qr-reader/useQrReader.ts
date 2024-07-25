@@ -1,6 +1,6 @@
 import { BrowserQRCodeReader, IScannerControls } from "@zxing/browser";
 import { Result } from "@zxing/library";
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, RefObject, useEffect, useRef } from "react";
 import { isMediaDevicesSupported, isValidType } from "./utils";
 
 export type OnResultFunction = (
@@ -32,9 +32,9 @@ export type UseQrReaderHookProps = {
    */
   scanDelay?: number;
   /**
-   * Property that represents the ID of the video element
+   * Property that represents the video element
    */
-  videoId?: string;
+  videoRef: RefObject<HTMLVideoElement>;
 };
 
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
@@ -44,7 +44,7 @@ export const useQrReader: UseQrReaderHook = ({
   scanDelay: delayBetweenScanAttempts,
   constraints: video,
   onResult,
-  videoId,
+  videoRef,
 }) => {
   const controlsRef: MutableRefObject<IScannerControls | null> = useRef(null);
 
@@ -52,6 +52,8 @@ export const useQrReader: UseQrReaderHook = ({
     const codeReader = new BrowserQRCodeReader(undefined, {
       delayBetweenScanAttempts,
     });
+
+    let isUnmounted = false;
 
     if (
       !isMediaDevicesSupported() &&
@@ -63,23 +65,42 @@ export const useQrReader: UseQrReaderHook = ({
       onResult(null, new Error(message), codeReader);
     }
     if (isValidType(video, "constraints", "object")) {
-      codeReader
-        .decodeFromConstraints({ video }, videoId, (result, error) => {
-          if (isValidType(onResult, "onResult", "function")) {
-            onResult(result, error, codeReader);
-          }
-        })
-        .then((controls: IScannerControls) => (controlsRef.current = controls))
-        .catch((error: Error) => {
-          if (isValidType(onResult, "onResult", "function")) {
-            onResult(null, error, codeReader);
-          }
-          console.error("Failed: error =", error);
-        });
+      (async () => {
+        // Checks if the component already unmounted
+        await Promise.resolve();
+        if (isUnmounted || videoRef.current === null) {
+          return;
+        }
+
+        codeReader
+          .decodeFromConstraints(
+            { video },
+            videoRef.current,
+            (result, error) => {
+              if (isValidType(onResult, "onResult", "function")) {
+                onResult(result, error, codeReader);
+              }
+            },
+          )
+          .then((controls: IScannerControls) => {
+            if (isUnmounted) {
+              controls.stop();
+            } else {
+              controlsRef.current = controls;
+            }
+          })
+          .catch((error: Error) => {
+            if (isValidType(onResult, "onResult", "function")) {
+              onResult(null, error, codeReader);
+            }
+            console.error("Failed: error =", error);
+          });
+      })();
     }
 
     return () => {
+      isUnmounted = true;
       controlsRef.current?.stop();
     };
-  }, []);
+  }, [videoRef]);
 };

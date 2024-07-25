@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { OnResultFunction, useQrReader } from "./useQrReader";
 
 export type QrReaderProps = {
@@ -44,13 +45,14 @@ export const QrReader: React.FC<QrReaderProps> = ({
   scanDelay = 500,
   className,
   onResult = () => {},
-  videoId = "video",
 }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   useQrReader({
     constraints,
     scanDelay,
     onResult,
-    videoId,
+    videoRef,
   });
 
   return (
@@ -59,7 +61,7 @@ export const QrReader: React.FC<QrReaderProps> = ({
         {!!ViewFinder && <ViewFinder />}
         <video
           muted
-          id={videoId}
+          ref={videoRef}
           className={`top-0 left-0 w-full h-full block overflow-hidden absolute ${constraints?.facingMode === "user" ? "scale-x-[-1]" : ""}`}
         />
       </div>
