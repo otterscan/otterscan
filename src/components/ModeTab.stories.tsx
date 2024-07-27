@@ -1,4 +1,4 @@
-import { Tab } from "@headlessui/react";
+import { TabGroup } from "@headlessui/react";
 import { Meta, StoryObj } from "@storybook/react";
 import ModeTab from "./ModeTab";
 
@@ -6,9 +6,9 @@ const meta = {
   component: ModeTab,
   decorators: [
     (Story) => (
-      <Tab.Group>
+      <TabGroup>
         <Story />
-      </Tab.Group>
+      </TabGroup>
     ),
   ],
 } satisfies Meta<typeof ModeTab>;

@@ -42,7 +42,22 @@ By default it assumes your Erigon node is at `http://127.0.0.1:8545`. You can ov
 docker run --rm -p 5100:80 --name otterscan -d --env ERIGON_URL="<your-erigon-node-url>" otterscan/otterscan:<versiontag>
 ```
 
-This is the preferred way to run Otterscan. You can read about other ways [here](./other-ways-to-run-otterscan.md).
+You can override the entire Otterscan configuration with the `OTTERSCAN_CONFIG` env variable:
+
+```shell
+docker run --rm -p 5100:80 --name otterscan -d --env OTTERSCAN_CONFIG='{
+    "erigonURL": "http://127.0.0.1:8545",
+    "assetsURLPrefix": "http://127.0.0.1:5175",
+    "branding": {
+        "siteName": "My Otterscan",
+        "networkTitle": "Dev Network"
+    },
+}' otterscan/otterscan:latest
+```
+
+These settings overwrite the Otterscan config file on container startup. To disable this behavior, pass `--env DIABLE_CONFIG_OVERWRITE=1` to the Docker command.
+
+Running from Docker is the preferred way to run Otterscan. You can read about other ways [here](./other-ways-to-run-otterscan.md).
 
 ## (Optional) Enable integration with beacon chain
 

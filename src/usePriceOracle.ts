@@ -120,17 +120,25 @@ const feedRegistryFetcher =
         const feedRegistry = FEED_REGISTRY_MAINNET_PROTOTYPE.connect(
           provider,
         ) as Contract;
-        const priceData = await feedRegistry.latestRoundData(
-          tokenAddress,
-          USD,
-          {
+        const [priceData, decimals, header] = await Promise.all([
+          feedRegistry.latestRoundData(tokenAddress, USD, {
             blockTag,
-          },
-        );
+          }),
+          feedRegistry.decimals(tokenAddress, USD, {
+            blockTag,
+          }),
+          provider.getBlock(blockTag),
+        ]);
         const quote = BigInt(priceData.answer);
-        const decimals = await feedRegistry.decimals(tokenAddress, USD, {
-          blockTag,
-        });
+
+        // If oracle is older than 7 days, assume it's stale
+        if (
+          header !== null &&
+          priceData.updatedAt < header.timestamp - 3600 * 24 * 7
+        ) {
+          throw new Error("Stale oracle quote");
+        }
+
         return { price: quote, decimals, source: "Chainlink" };
       } catch (e) {}
 
@@ -245,7 +253,7 @@ export const useTokenUSDOracle = (
   const { config } = useContext(RuntimeContext);
   const fetcher = feedRegistryFetcher(
     provider,
-    config?.priceOracleInfo,
+    config.priceOracleInfo,
     {
       price: ethPrice,
       decimals: ethPriceDecimals,
@@ -303,7 +311,7 @@ export const useETHUSDOracle = (
 ): { price: bigint | undefined; decimals: bigint } => {
   const { config } = useContext(RuntimeContext);
   const priceOracleInfo =
-    config?.priceOracleInfo ??
+    config.priceOracleInfo ??
     (provider
       ? defaultPriceOracleInfo.get(provider._network.chainId)
       : undefined);
@@ -326,7 +334,7 @@ export const useFiatValue = (
   ethAmount: bigint,
   blockTag: BlockTag | undefined,
 ) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const { price: ethPrice, decimals: ethPriceDecimals } = useETHUSDOracle(
     provider,
     blockTag,
@@ -366,7 +374,7 @@ export const useETHUSDRawOracle = (
   blockTag: BlockTag | undefined,
 ): any | undefined => {
   const { config } = useContext(RuntimeContext);
-  const fetcher = ethUSDFetcher(provider, config?.priceOracleInfo);
+  const fetcher = ethUSDFetcher(provider, config.priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   if (error) {
     return undefined;

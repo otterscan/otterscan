@@ -27,7 +27,7 @@ const WithdrawalItem: FC<WithdrawalItemProps> = ({
   amount,
 }) => {
   const { config } = useContext(RuntimeContext);
-  const hasConsensusClient = config?.beaconAPI !== undefined;
+  const hasConsensusClient = config.beaconAPI !== undefined;
   return (
     <BlockNumberContext.Provider value={blockNumber}>
       <tr>

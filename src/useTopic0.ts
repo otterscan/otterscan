@@ -46,7 +46,7 @@ export const useTopic0 = (
   }
 
   const runtime = useContext(RuntimeContext);
-  const assetsURLPrefix = runtime.config?.assetsURLPrefix;
+  const assetsURLPrefix = runtime.config.assetsURLPrefix;
 
   const topic0 = rawTopic0.slice(2);
   const signatureURL = () =>

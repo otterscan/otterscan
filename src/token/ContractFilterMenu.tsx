@@ -1,6 +1,6 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu } from "@headlessui/react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FC } from "react";
 import { NavLink } from "react-router-dom";
 import { contractFilters } from "./filters";
@@ -11,25 +11,25 @@ type ContractFilterMenuProps = {
 
 const ContractFilterMenu: FC<ContractFilterMenuProps> = ({ title }) => (
   <Menu>
-    <Menu.Button>
+    <MenuButton>
       <div className="flex items-baseline space-x-2 hover:text-link-blue-hover">
         <span>{title}</span>
         <span className="self-center">
           <FontAwesomeIcon icon={faChevronDown} size="1x" />
         </span>
       </div>
-    </Menu.Button>
-    <Menu.Items
+    </MenuButton>
+    <MenuItems
       className="absolute space-y-1 rounded border bg-white p-1 drop-shadow"
       as="div"
     >
       {contractFilters.map((f) => (
-        <Menu.Item key={f.url}>
-          {({ active }) => (
+        <MenuItem key={f.url}>
+          {({ focus }) => (
             <NavLink to={f.url} end>
               {({ isActive }) => (
                 <div
-                  className={`${active && !isActive ? "bg-gray-200" : ""} ${
+                  className={`${focus && !isActive ? "bg-gray-200" : ""} ${
                     isActive ? "opacity-40" : ""
                   } text-md rounded px-2 py-1 font-normal`}
                 >
@@ -38,9 +38,9 @@ const ContractFilterMenu: FC<ContractFilterMenuProps> = ({ title }) => (
               )}
             </NavLink>
           )}
-        </Menu.Item>
+        </MenuItem>
       ))}
-    </Menu.Items>
+    </MenuItems>
   </Menu>
 );
 

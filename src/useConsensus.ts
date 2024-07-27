@@ -20,7 +20,7 @@ function toNumberWithDefault(item: any, defaultVal: number): number {
 
 const useGenesisURL = () => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/genesis`;
@@ -59,7 +59,7 @@ export const useGenesisTime = (): number | undefined => {
 
 const useBeaconSpecURL = () => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/config/spec`;
@@ -81,17 +81,22 @@ export const useBeaconSpec = (): Record<string, string> | undefined => {
   return data.data as Record<string, string>;
 };
 
-export const useSlotToEpoch = (slotNumber: number): number => {
+export const useSlotToEpoch = <T extends number | undefined>(
+  slotNumber: T,
+): T => {
   const slotsPerEpochStr = useBeaconSpec()?.SLOTS_PER_EPOCH;
   const slotsPerEpoch: number = slotsPerEpochStr
     ? Number(slotsPerEpochStr)
     : DEFAULT_SLOTS_PER_EPOCH;
-  return Math.floor(slotNumber / slotsPerEpoch);
+  if (slotNumber === undefined) {
+    return undefined as T;
+  }
+  return Math.floor(slotNumber / slotsPerEpoch) as T;
 };
 
 const useBeaconHeaderURL = (tag: string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/headers/${tag}`;
@@ -99,7 +104,7 @@ const useBeaconHeaderURL = (tag: string) => {
 
 const useBeaconBlockURL = (slot: number | string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v2/beacon/blocks/${slot}`;
@@ -107,7 +112,7 @@ const useBeaconBlockURL = (slot: number | string) => {
 
 const useBlockRootURL = (slotNumber: number) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/blocks/${slotNumber}/root`;
@@ -115,7 +120,7 @@ const useBlockRootURL = (slotNumber: number) => {
 
 const useValidatorURL = (validatorIndex: number | string) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/states/head/validators/${validatorIndex}`;
@@ -123,7 +128,7 @@ const useValidatorURL = (validatorIndex: number | string) => {
 
 const useEpochProposersURL = (epochNumber: number) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/validator/duties/proposer/${epochNumber}`;
@@ -135,7 +140,7 @@ const useCommitteeURL = (
   committeeIndex: number,
 ) => {
   const { config } = useContext(RuntimeContext);
-  if (config?.beaconAPI === undefined) {
+  if (config.beaconAPI === undefined) {
     return null;
   }
   return `${config.beaconAPI}/eth/v1/beacon/states/head/committees?epoch=${epochNumber}&slot=${slotNumber}&index=${committeeIndex}`;
@@ -145,6 +150,21 @@ export const useSlot = (slot: number | string) => {
   const url = useBeaconBlockURL(slot);
   const { data, error, isLoading, isValidating } = useSWR(
     url,
+    jsonFetcherWithErrorHandling,
+  );
+
+  return {
+    slot: data,
+    error,
+    isLoading,
+    isValidating,
+  };
+};
+
+export const useSlotHeader = (slot: number | string | null) => {
+  const url = useBeaconHeaderURL(slot === null ? "" : slot.toString());
+  const { data, error, isLoading, isValidating } = useSWRImmutable(
+    slot === null ? null : url,
     jsonFetcherWithErrorHandling,
   );
 
@@ -415,8 +435,5 @@ export const useHeadEpochNumber = (
   refreshInterval: number = HEAD_EPOCH_REFRESH_INTERVAL,
 ) => {
   const headSlot = useHeadSlotNumber(refreshInterval);
-  if (headSlot === undefined) {
-    return undefined;
-  }
   return useSlotToEpoch(headSlot);
 };

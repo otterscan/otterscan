@@ -120,7 +120,7 @@ export const use4Bytes = (
     } catch (e: any) {}
   }
 
-  const assetsURLPrefix = config?.assetsURLPrefix;
+  const assetsURLPrefix = config.assetsURLPrefix;
   const fourBytesKey = assetsURLPrefix !== undefined ? rawFourBytes : null;
 
   const fetcher = fourBytesFetcher(assetsURLPrefix!);
@@ -137,7 +137,7 @@ export const useMethodSelector = (
   const isSimpleTransfer = data === "0x";
   const methodName = isSimpleTransfer
     ? "transfer"
-    : fourBytesEntry?.name ?? rawFourBytes ?? "-";
+    : (fourBytesEntry?.name ?? rawFourBytes ?? "-");
   const methodTitle = isSimpleTransfer
     ? "ETH Transfer"
     : methodName === rawFourBytes

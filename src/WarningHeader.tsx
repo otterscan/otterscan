@@ -21,6 +21,16 @@ const WarningHeader: React.FC = () => {
     chainMsg = "OP Mainnet";
   } else if (chainId === 42n) {
     chainMsg = "Kovan Testnet";
+  } else if (chainId === 100n) {
+    chainMsg = "Gnosis Chain";
+  } else if (chainId === 137n) {
+    chainMsg = "Polygon Mainnet";
+  } else if (chainId === 10200n) {
+    chainMsg = "Chiado Testnet";
+  } else if (chainId === 80001n) {
+    chainMsg = "Mumbai Testnet";
+  } else if (chainId === 80002n) {
+    chainMsg = "Amoy Testnet";
   } else if (chainId === 11155111n) {
     chainMsg = "Sepolia Testnet";
   } else if (chainId === 11155420n) {
@@ -33,7 +43,7 @@ const WarningHeader: React.FC = () => {
 
   return (
     <div
-      className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white"
+      className="w-full bg-orange-400 px-2 py-1 text-center font-bold text-white dark:text-gray-900"
       data-test="warning-header-network-name"
     >
       You are on {chainMsg}

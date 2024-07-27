@@ -4,25 +4,24 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { PropsWithChildren } from "react";
+import { FC, PropsWithChildren, memo } from "react";
 import { ConnectionStatus } from "./types";
-import { OtterscanConfig } from "./useConfig";
 
 type ConnectionErrorPanelProps = {
   connStatus: ConnectionStatus;
-  config?: OtterscanConfig;
+  nodeURL: string;
 };
 
-const ConnectionErrorPanel: React.FC<ConnectionErrorPanelProps> = ({
+const ConnectionErrorPanel: FC<ConnectionErrorPanelProps> = ({
   connStatus,
-  config,
+  nodeURL,
 }) => {
   return (
     <div className="flex h-screen flex-col bg-gray-300 font-sans">
       <div className="min-w-lg m-auto h-60 max-w-lg text-lg text-gray-700">
         <Step type="wait" msg="Trying to connect to Erigon node..." />
         <div className="flex space-x-2">
-          <span className="ml-7 text-base">{config?.erigonURL}</span>
+          <span className="ml-7 text-base">{nodeURL}</span>
         </div>
         {connStatus === ConnectionStatus.NOT_ETH_NODE && (
           <Step type="error" msg="It does not seem to be an ETH node">
@@ -92,7 +91,7 @@ type StepProps = {
   msg: string;
 };
 
-const Step: React.FC<PropsWithChildren<StepProps>> = React.memo(
+const Step: FC<PropsWithChildren<StepProps>> = memo(
   ({ type, msg, children }) => (
     <>
       <div className="flex space-x-2">
@@ -118,4 +117,4 @@ const Step: React.FC<PropsWithChildren<StepProps>> = React.memo(
   ),
 );
 
-export default React.memo(ConnectionErrorPanel);
+export default memo(ConnectionErrorPanel);

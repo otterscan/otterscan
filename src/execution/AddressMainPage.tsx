@@ -1,7 +1,7 @@
 import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Tab } from "@headlessui/react";
+import { TabGroup, TabList, TabPanels } from "@headlessui/react";
 import React, { useCallback, useContext } from "react";
 import {
   Route,
@@ -16,6 +16,7 @@ import StandardFrame from "../components/StandardFrame";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
@@ -33,7 +34,7 @@ import { AddressAwareComponentProps } from "./types";
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <>
@@ -55,7 +56,7 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
 };
 
 const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <Contracts
@@ -68,7 +69,7 @@ const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
 const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
   address,
 }) => {
-  const { config, provider } = useContext(RuntimeContext);
+  const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
   return (
     <ReadContract checksummedAddress={address} match={proxyAttrs.proxyMatch} />
@@ -107,6 +108,12 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
   );
+  const whatsabiMatch = useWhatsabiMetadata(
+    match === null && hasCode ? checksummedAddress : undefined,
+    provider?._network.chainId,
+    provider,
+    config.assetsURLPrefix,
+  );
 
   return (
     <StandardFrame>
@@ -126,8 +133,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
               address={checksummedAddress}
               isENS={isENS}
             />
-            <Tab.Group>
-              <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
+            <TabGroup>
+              <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
                 {config?.experimental && (
                   <>
@@ -175,7 +182,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </span>
                   </NavTab>
                 )}
-                {hasCode && match && (
+                {hasCode && (match || whatsabiMatch) && (
                   <NavTab href={`/address/${addressOrName}/readContract`}>
                     <span className={`flex items-baseline space-x-2`}>
                       <span>Read Contract</span>
@@ -185,8 +192,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                 {config?.experimental && (
                   <ProxyTabs address={checksummedAddress} />
                 )}
-              </Tab.List>
-              <Tab.Panels>
+              </TabList>
+              <TabPanels>
                 <Routes>
                   <Route
                     index
@@ -237,7 +244,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     element={
                       <Contracts
                         checksummedAddress={checksummedAddress}
-                        match={match}
+                        match={match ?? whatsabiMatch}
                       />
                     }
                   />
@@ -246,7 +253,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     element={
                       <ReadContract
                         checksummedAddress={checksummedAddress}
-                        match={match}
+                        match={match ?? whatsabiMatch}
                       />
                     }
                   />
@@ -267,8 +274,8 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </>
                   )}
                 </Routes>
-              </Tab.Panels>
-            </Tab.Group>
+              </TabPanels>
+            </TabGroup>
           </>
         )
       )}

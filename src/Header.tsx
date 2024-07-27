@@ -32,10 +32,8 @@ const Header: FC = () => {
                 title="An otter scanning"
               />
               <span>
-                {config?.branding?.siteName || "Otterscan"}
-                {config?.experimental && (
-                  <span className="text-red-400">2</span>
-                )}
+                {config.branding?.siteName || "Otterscan"}
+                {config.experimental && <span className="text-red-400">2</span>}
               </span>
             </div>
           </Link>
@@ -45,7 +43,7 @@ const Header: FC = () => {
         </div>
         <div className="flex items-baseline gap-x-3">
           {(provider?._network.chainId === 1n ||
-            config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress) && (
+            config.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress) && (
             <div className="hidden lg:inline">
               <PriceBox />
             </div>

@@ -61,11 +61,11 @@ const TransactionDirection: React.FC<TransactionDirectionProps> = ({
       {flags === Flags.MINER ? (
         <FontAwesomeIcon icon={faCoins} size="1x" />
       ) : (
-        msg ?? (
+        (msg ?? (
           <span>
             <FontAwesomeIcon icon={faLongArrowAltRight} />
           </span>
-        )
+        ))
       )}
     </span>
   );

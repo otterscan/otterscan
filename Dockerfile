@@ -1,7 +1,7 @@
-FROM node:20.10.0-alpine3.17 AS builder
+FROM --platform=linux/amd64 node:20.10.0-alpine3.17 AS builder
 WORKDIR /otterscan-build
 COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
-RUN npm ci --fetch-timeout 600000 --verbose
+RUN npm ci
 COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "postcss.config.js", "tailwind.config.js", "vite.config.ts", "index.html", "/otterscan-build/"]
 COPY --link ["public", "/otterscan-build/public/"]
 COPY --link ["src", "/otterscan-build/src/"]
@@ -9,7 +9,7 @@ RUN npm run build
 
 # Add brotli module to official nginx image
 # Based on: https://github.com/nginxinc/docker-nginx/tree/master/modules
-FROM nginx:1.21.3-alpine as nginxbuilder
+FROM nginx:1.21.3-alpine AS nginxbuilder
 
 RUN set -ex \
     && apk update \

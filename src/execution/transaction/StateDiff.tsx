@@ -37,6 +37,7 @@ const buildStateDiffTree = (
     return <></>;
   }
   let result = [];
+  let keyIndex = 0;
 
   // Filter out state diffs with no changes
   groups = groups.filter(
@@ -47,16 +48,16 @@ const buildStateDiffTree = (
     const group = groups[i];
 
     const last = i == groups.length - 1;
-    function getBranch() {
+    function getBranch(key?: string | number): JSX.Element | null {
       // This is the L-shaped line that drops down to a child element
       if (depth > 0 && depth < 3) {
         return (
-          <>
+          <React.Fragment key={key !== undefined ? key.toString() : key}>
             <div className="absolute h-6 w-5 -translate-y-3 border-b border-l"></div>
             {!last && depth > 1 && (
               <div className="absolute left-0 h-full w-5 translate-y-3 border-l"></div>
             )}
-          </>
+          </React.Fragment>
         );
       }
       return null;
@@ -64,7 +65,7 @@ const buildStateDiffTree = (
 
     if (isStateDiffGroup(group)) {
       result.push(
-        <>
+        <React.Fragment key={keyIndex++}>
           {depth === 1 && getBranch()}
           <div className={depth > 0 ? "relative flex" : ""}>
             {depth !== 1 && getBranch()}
@@ -96,10 +97,10 @@ const buildStateDiffTree = (
               </div>
             </div>
           </div>
-        </>,
+        </React.Fragment>,
       );
     } else {
-      result.push(getBranch());
+      result.push(getBranch(keyIndex++));
       let values: [string | null, string | null] = [group.from, group.to];
       let diffElement: null | React.ReactElement = null;
       let formatter: (value: string) => React.ReactNode | null = (
@@ -149,32 +150,29 @@ const buildStateDiffTree = (
       }
       const expanded = false;
       result.push(
-        <>
-          <div className={`relative flex ${last ? "" : "border-l"}`}>
-            <div
-              className={`ml-5 py-1 ${showBorder ? "px-2 rounded border hover:border-gray-500" : ""} ${
-                expanded ? "w-full" : ""
-              }`}
-            >
+        <div
+          key={keyIndex++}
+          className={`relative flex ${last ? "" : "border-l"}`}
+        >
+          <div
+            className={`ml-5 py-1 ${showBorder ? "px-2 rounded border hover:border-gray-500" : ""} ${
+              expanded ? "w-full" : ""
+            }`}
+          >
+            <div>
+              <span className="font-code">{showType ? group.type : null}</span>
               <div>
-                <span className="font-code">
-                  {showType ? group.type : null}
-                </span>
-                <div>
-                  <div
-                    className={showType ? "ml-5 space-y-3 self-stretch" : ""}
-                  >
-                    <ElementDiff
-                      oldElem={values[0] !== null ? formatter(values[0]) : null}
-                      newElem={values[1] !== null ? formatter(values[1]) : null}
-                      diffElem={diffElement}
-                    />
-                  </div>
+                <div className={showType ? "ml-5 space-y-3 self-stretch" : ""}>
+                  <ElementDiff
+                    oldElem={values[0] !== null ? formatter(values[0]) : null}
+                    newElem={values[1] !== null ? formatter(values[1]) : null}
+                    diffElem={diffElement}
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </>,
+        </div>,
       );
     }
   }

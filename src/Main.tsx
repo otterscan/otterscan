@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
@@ -21,7 +21,9 @@ const Main: React.FC = () => {
     <AppConfigContext.Provider value={appConfig}>
       <Header />
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Outlet />
+        <Suspense fallback={<div className="w-screen h-screen"></div>}>
+          <Outlet />
+        </Suspense>
       </ErrorBoundary>
     </AppConfigContext.Provider>
   );

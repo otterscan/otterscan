@@ -180,11 +180,6 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // Already on this page
-    if (this.txs[this.pageEnd - 1].hash === hash) {
-      return this;
-    }
-
     if (this.txs[this.pageStart].hash === hash) {
       const overflowPage = this.txs.slice(0, this.pageStart);
       const baseBlock = this.txs[0].blockNumber;
@@ -209,11 +204,6 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // Already on this page
-    if (this.txs[this.pageStart].hash === hash) {
-      return this;
-    }
-
     if (this.txs[this.pageEnd - 1].hash === hash) {
       const overflowPage = this.txs.slice(this.pageEnd);
       const baseBlock = this.txs[this.txs.length - 1].blockNumber;
@@ -236,6 +226,13 @@ export class SearchController {
 }
 
 const doSearch = async (q: string, navigate: NavigateFunction) => {
+  const redir = parseSearch(q);
+  if (redir !== undefined) {
+    navigate(redir);
+  }
+};
+
+export const parseSearch = (q: string): string | undefined => {
   // Cleanup
   q = q.trim();
 
@@ -244,30 +241,58 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
   const sepIndex = q.lastIndexOf(":");
   if (sepIndex !== -1) {
     maybeAddress = q.substring(0, sepIndex);
-    maybeIndex = q.substring(sepIndex + 1);
+    const afterAddress = q.substring(sepIndex + 1);
+    maybeIndex = !isNaN(parseInt(afterAddress))
+      ? parseInt(afterAddress).toString()
+      : "";
+  }
+
+  // Parse URLs for other block explorers
+  try {
+    const url = new URL(q);
+    const pathname = url.pathname.replace(/\/$/, "");
+
+    const addressMatch = pathname.match(/^\/(?:address|token)\/(.*)$/);
+    const txMatch = pathname.match(/^\/tx\/(.*)$/);
+    const blockMatch = pathname.match(/^\/block\/(\d+)$/);
+    const epochMatch = pathname.match(/^\/epoch\/(.*)$/);
+    const slotMatch = pathname.match(/^\/slot\/(.*)$/);
+    const validatorMatch = pathname.match(/^\/validator\/(.*)$/);
+    if (addressMatch) {
+      maybeAddress = addressMatch[1];
+      // The URL might use a different port number
+      maybeIndex = "";
+    } else if (txMatch) {
+      q = txMatch[1];
+    } else if (blockMatch) {
+      q = blockMatch[1];
+    } else if (epochMatch) {
+      q = "epoch:" + epochMatch[1];
+    } else if (slotMatch) {
+      q = "slot:" + slotMatch[1];
+    } else if (validatorMatch) {
+      q = "validator:" + validatorMatch[1];
+    }
+  } catch (error) {
+    if (!(error instanceof TypeError)) {
+      throw error;
+    }
   }
 
   // Plain address?
   if (isAddress(maybeAddress)) {
-    navigate(
-      `/address/${maybeAddress}${
-        maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-      }`,
-    );
-    return;
+    return `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`;
   }
 
   // Tx hash?
   if (isHexString(q, 32)) {
-    navigate(`/tx/${q}`);
-    return;
+    return `/tx/${q}`;
   }
 
   // Block number?
   const blockNumber = parseInt(q);
   if (!isNaN(blockNumber)) {
-    navigate(`/block/${blockNumber}`);
-    return;
+    return `/block/${blockNumber}`;
   }
 
   // Epoch?
@@ -275,8 +300,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeEpoch = q.substring(6);
     const epoch = parseInt(mayBeEpoch);
     if (!isNaN(epoch)) {
-      navigate(`/epoch/${epoch}`);
-      return;
+      return `/epoch/${epoch}`;
     }
   }
 
@@ -285,8 +309,7 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     const mayBeSlot = q.substring(5);
     const slot = parseInt(mayBeSlot);
     if (!isNaN(slot)) {
-      navigate(`/slot/${slot}`);
-      return;
+      return `/slot/${slot}`;
     }
   }
 
@@ -297,23 +320,17 @@ const doSearch = async (q: string, navigate: NavigateFunction) => {
     // Validator by index
     if (mayBeValidator.match(/^\d+$/)) {
       const validatorIndex = parseInt(mayBeValidator);
-      navigate(`/validator/${validatorIndex}`);
-      return;
+      return `/validator/${validatorIndex}`;
     }
 
     // Validator by public key
     if (mayBeValidator.length === 98 && isHexString(mayBeValidator, 48)) {
-      navigate(`/validator/${mayBeValidator}`);
-      return;
+      return `/validator/${mayBeValidator}`;
     }
   }
 
   // Assume it is an ENS name
-  navigate(
-    `/address/${maybeAddress}${
-      maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""
-    }`,
-  );
+  return `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`;
 };
 
 export const useGenericSearch = (): [

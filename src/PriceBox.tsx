@@ -1,7 +1,7 @@
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FixedNumber } from "ethers";
-import React, { useContext, useMemo } from "react";
+import { FixedNumber, JsonRpcApiProvider } from "ethers";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { formatValue } from "./components/formatter";
 import { useChainInfo } from "./useChainInfo";
 import { useLatestBlockHeader } from "./useLatestBlock";
@@ -15,6 +15,33 @@ import { RuntimeContext } from "./useRuntime";
 // TODO: encapsulate this magic number
 const ETH_FEED_DEFAULT_DECIMALS = 8n;
 
+async function blockNearestToDate(
+  provider: JsonRpcApiProvider,
+  date: Date,
+  maxBlockNumber?: number,
+): Promise<number | null> {
+  let low = 0;
+  let high = maxBlockNumber ?? (await provider.getBlockNumber());
+
+  while (low < high) {
+    const mid = Math.floor((low + high) / 2);
+    const block = await provider.getBlock(mid);
+
+    if (!block || !block.timestamp) {
+      return null;
+    }
+
+    const blockDate = new Date(block.timestamp * 1000);
+    if (blockDate < date) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  // We'll use the earlier block number
+  return high;
+}
+
 const PriceBox: React.FC = () => {
   const { config, provider } = useContext(RuntimeContext);
   const {
@@ -27,22 +54,59 @@ const PriceBox: React.FC = () => {
     Date.now() / 1000 - latestBlock.timestamp > 3600;
 
   const latestPriceData = useETHUSDRawOracle(provider, "latest");
-  const [latestPrice, latestPriceTimestamp] = useMemo(() => {
+
+  const [prevDayBlock, setPrevDayBlock] = useState<number | null>(null);
+  useEffect(() => {
+    if (provider === undefined || latestBlock === undefined) {
+      return;
+    }
+    (async function () {
+      const yesterday = new Date(latestBlock.timestamp * 1000);
+      yesterday.setHours(yesterday.getHours() - 24);
+      const prevDayBlockNumber = await blockNearestToDate(
+        provider,
+        yesterday,
+        latestBlock?.number,
+      );
+      setPrevDayBlock(prevDayBlockNumber);
+    })();
+  }, [provider, latestBlock !== undefined]);
+  const prevDayPriceData = useETHUSDRawOracle(
+    provider,
+    prevDayBlock ?? undefined,
+  );
+  const [latestPrice, latestPriceTimestamp, oneDayPriceChange] = useMemo(() => {
     if (!latestPriceData) {
-      return [undefined, undefined];
+      return [undefined, undefined, undefined];
     }
 
     const priceDecimals =
-      config?.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ??
+      config.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleDecimals ??
       ETH_FEED_DEFAULT_DECIMALS;
-    const formattedPrice = formatFiatValue(
-      FixedNumber.fromValue(latestPriceData.answer, priceDecimals),
-      2,
+    const currentPrice = FixedNumber.fromValue(
+      latestPriceData.answer,
+      priceDecimals,
     );
+    const formattedPrice = formatFiatValue(currentPrice, 2);
+    let oneDayPriceChange = undefined;
+    if (prevDayPriceData) {
+      const prevDayPrice = FixedNumber.fromValue(
+        prevDayPriceData.answer,
+        priceDecimals,
+      );
+      oneDayPriceChange = (
+        ((currentPrice.toUnsafeFloat() - prevDayPrice.toUnsafeFloat()) /
+          prevDayPrice.toUnsafeFloat()) *
+        100
+      ).toFixed(2);
+      if (currentPrice.gte(prevDayPrice)) {
+        oneDayPriceChange = "+" + oneDayPriceChange;
+      }
+    }
 
     const timestamp = new Date(Number(latestPriceData.updatedAt) * 1000);
-    return [formattedPrice, timestamp];
-  }, [latestPriceData]);
+    return [formattedPrice, timestamp, oneDayPriceChange];
+  }, [latestPriceData, prevDayPriceData, prevDayBlock]);
 
   const latestGasData = useFastGasRawOracle(provider, "latest");
   const [latestGasPrice, latestGasPriceTimestamp] = useMemo(() => {
@@ -67,6 +131,14 @@ const PriceBox: React.FC = () => {
             title={`${symbol}/USD last updated at: ${latestPriceTimestamp?.toString()}`}
           >
             {symbol}: $<span className="font-balance">{latestPrice}</span>
+            {oneDayPriceChange ? (
+              <span
+                className={`ml-0.5 ${oneDayPriceChange.startsWith("+") ? "text-green-500" : "text-red-500"}`}
+              >
+                {" "}
+                ({oneDayPriceChange}%)
+              </span>
+            ) : null}
           </span>
           {latestGasData && (
             <>

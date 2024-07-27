@@ -1,5 +1,5 @@
-import { Tab } from "@headlessui/react";
-import { FC, lazy, Suspense, useContext } from "react";
+import { TabGroup, TabList } from "@headlessui/react";
+import { FC, Suspense, lazy, useContext } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
 import ContentFrame from "../components/ContentFrame";
 import NavTab from "../components/NavTab";
@@ -43,8 +43,8 @@ const Transaction: FC = () => {
           )}
           {txData && (
             <StandardSelectionBoundary>
-              <Tab.Group>
-                <Tab.List className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
+              <TabGroup>
+                <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
                   <NavTab href=".">Overview</NavTab>
                   {txData.confirmedData?.blockNumber !== undefined && (
                     <NavTab href="logs">
@@ -54,8 +54,8 @@ const Transaction: FC = () => {
                   )}
                   <NavTab href="trace">Trace</NavTab>
                   <NavTab href="statediff">State Diff</NavTab>
-                </Tab.List>
-              </Tab.Group>
+                </TabList>
+              </TabGroup>
               <Suspense fallback={null}>
                 <Routes>
                   <Route index element={<Details txData={txData} />} />
