@@ -5,11 +5,15 @@ import {
   Interface,
   JsonRpcApiProvider,
   Result,
+  parseUnits,
   resolveAddress,
   type ParamType,
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
+import Accordion from "../../../components/Accordion";
 import { DevMethod } from "../../../sourcify/useSourcify";
+import { useChainInfo } from "../../../useChainInfo";
+import { useLatestBlockNumber } from "../../../useLatestBlock";
 import { RuntimeContext } from "../../../useRuntime";
 import ParamDeclaration from "../../components/ParamDeclaration";
 import OutputDecoder from "../../transaction/decoder/OutputDecoder";
@@ -178,14 +182,25 @@ const ReadFunction: FC<ReadFunctionProps> = ({
     { result: Result; data: string } | null | undefined
   >(null);
   let [error, setError] = useState<string | null>(null);
+  let [blockNumber, setBlockNumber] = useState<string>("latest");
+  let [sender, setSender] = useState<string>("");
+  let [value, setValue] = useState<string>("");
   const childRefs = useRef<ParamComponentRef[]>(
     new Array(func.inputs.length).fill(null),
   );
   const { provider } = useContext(RuntimeContext);
+  const latestBlockNumber = useLatestBlockNumber(provider);
+  const { nativeCurrency } = useChainInfo();
 
   async function submitCall() {
     let int = new Interface([func]);
     if (provider) {
+      let blockTag = blockNumber || "latest";
+      if (/^\d+$/.test(blockNumber)) {
+        const num = BigInt(blockNumber);
+        blockTag = "0x" + num.toString(16);
+      }
+
       try {
         setResult(undefined);
         // The parser can be recompiled with `npm run build-parsers`
@@ -201,8 +216,14 @@ const ReadFunction: FC<ReadFunctionProps> = ({
           ),
         );
         let resultData = await provider.call({
+          from: sender || null,
           to: address,
           data: encodedData,
+          blockTag,
+          value:
+            value !== ""
+              ? parseUnits(value, nativeCurrency.decimals ?? 18)
+              : null,
         });
         setResult({
           result: int.decodeFunctionResult(func.name, resultData),
@@ -210,6 +231,21 @@ const ReadFunction: FC<ReadFunctionProps> = ({
         });
         setError(null);
       } catch (e: any) {
+        if (blockTag !== "latest") {
+          try {
+            provider
+              .send("ots_hasCode", [address, blockTag])
+              .then((hasCode) => {
+                if (!hasCode) {
+                  setError(
+                    e.toString() + " (Contract not deployed at this time.)",
+                  );
+                }
+              });
+          } catch (e) {
+            console.error("Failed to call ots_hasCode:", e);
+          }
+        }
         setResult(null);
         setError(e.toString());
       }
@@ -253,11 +289,57 @@ const ReadFunction: FC<ReadFunctionProps> = ({
         >
           Query
         </button>{" "}
-        {result === undefined && (
-          <span className="self-center">
-            <FontAwesomeIcon className="animate-spin" icon={faCircleNotch} />
-          </span>
-        )}
+        <Accordion
+          title="Call options"
+          neighbor={
+            result === undefined && (
+              <span className="ml-2 self-center">
+                <FontAwesomeIcon
+                  className="animate-spin"
+                  icon={faCircleNotch}
+                />
+              </span>
+            )
+          }
+        >
+          <div className="ml-4 mt-1">
+            <div className="text-xs">Block Number</div>
+            <input
+              type="text"
+              value={blockNumber}
+              className="mt-1 w-48 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setBlockNumber(e.target.value)}
+              placeholder="latest"
+            />
+            <button
+              type="button"
+              className="ml-2 mt-2 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
+              onClick={() => {
+                if (latestBlockNumber !== undefined) {
+                  setBlockNumber(latestBlockNumber.toString());
+                }
+              }}
+            >
+              Latest
+            </button>
+            <div className="text-xs">Sender</div>
+            <input
+              type="text"
+              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setSender(e.target.value)}
+              placeholder="0x0000000000000000000000000000000000000000"
+            />
+            <div className="text-xs">
+              Value {nativeCurrency && `(${nativeCurrency.symbol})`}
+            </div>
+            <input
+              type="text"
+              className="mt-1 w-72 rounded border px-2 py-1 text-sm text-gray-600"
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="0"
+            />
+          </div>
+        </Accordion>
       </form>
       <div className="mt-2 pl-6">
         {result && (
