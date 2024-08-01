@@ -65,6 +65,13 @@ const loader: LoaderFunction = async () => {
   });
 };
 
+const addressLoader: LoaderFunction = async ({ params, request }) => {
+  const rt = await runtime;
+  return defer({
+    hasCode: rt.provider.send("ots_hasCode", [params.addressOrName]),
+  });
+};
+
 const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
   const data: any = useLoaderData();
@@ -122,7 +129,11 @@ const router = createBrowserRouter(
           element={<BlockTransactionByIndex />}
         />
         <Route path="tx/:txhash/*" element={<Transaction />} />
-        <Route path="address/:addressOrName/*" element={<Address />} />
+        <Route
+          path="address/:addressOrName/*"
+          element={<Address />}
+          loader={addressLoader}
+        />
 
         {/* EXPERIMENTAL ROUTES */}
         <Route path="contracts/*" element={<AllContracts />} />

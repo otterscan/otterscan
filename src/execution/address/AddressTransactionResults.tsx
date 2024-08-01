@@ -19,7 +19,6 @@ import { BlockNumberContext } from "../../useBlockTagContext";
 import {
   useAddressBalance,
   useContractCreator,
-  useHasCode,
   useTransactionCount,
 } from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
@@ -48,8 +47,13 @@ const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
+export type AddressTransactionResultsProps = {
+  hasCode?: boolean;
+} & AddressAwareComponentProps;
+
+const AddressTransactionResults: FC<AddressTransactionResultsProps> = ({
   address,
+  hasCode,
 }) => {
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
@@ -64,7 +68,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const [controller, setController] = useState<SearchController>();
 
-  const hasCode = useHasCode(provider, address);
   const transactionCount = useTransactionCount(
     provider,
     hasCode === false ? address : undefined,
