@@ -16,7 +16,7 @@ import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
-import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
@@ -71,9 +71,12 @@ const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
   );
 };
 
-type AddressMainPageProps = {};
+export type AddressOutletContext = {
+  address: string;
+  match: Match | null | undefined;
+};
 
-const AddressMainPage: React.FC<AddressMainPageProps> = () => {
+const AddressMainPage: React.FC = () => {
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
