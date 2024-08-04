@@ -36,6 +36,20 @@ const AddressTransactionResults = lazy(
 const AddressContract = lazy(
   () => import("./execution/address/AddressContract"),
 );
+const AddressReadContract = lazy(
+  () => import("./execution/address/AddressReadContract"),
+);
+const AddressERC20Results = lazy(
+  () => import("./execution/address/AddressERC20Results"),
+);
+const AddressERC721Results = lazy(
+  () => import("./execution/address/AddressERC721Results"),
+);
+const AddressTokens = lazy(() => import("./execution/address/AddressTokens"));
+const AddressWithdrawals = lazy(
+  () => import("./execution/address/AddressWithdrawals"),
+);
+const BlocksRewarded = lazy(() => import("./execution/address/BlocksRewarded"));
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
@@ -145,7 +159,14 @@ const router = createBrowserRouter(
             path="txs/:direction"
             element={<AddressTransactionResults />}
           />
+          {/* Experimental address routes */}
+          <Route path="erc20" element={<AddressERC20Results />} />
+          <Route path="erc721" element={<AddressERC721Results />} />
+          <Route path="tokens" element={<AddressTokens />} />
+          <Route path="withdrawals" element={<AddressWithdrawals />} />
+          <Route path="blocksRewarded" element={<BlocksRewarded />} />
           <Route path="contract" element={<AddressContract />} />
+          <Route path="readContract" element={<AddressReadContract />} />
           <Route
             path="*"
             element={

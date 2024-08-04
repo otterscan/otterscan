@@ -1,4 +1,5 @@
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router-dom";
 import StandardTHead from "../../components/StandardTHead";
 import {
   useGenericTransactionCount,
@@ -9,7 +10,7 @@ import { PAGE_SIZE } from "../../params";
 import { findTokenTransfersInLogs } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
@@ -26,7 +27,8 @@ const tableHeader = (
   </StandardTHead>
 );
 
-const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
+const AddressERC20Results: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();

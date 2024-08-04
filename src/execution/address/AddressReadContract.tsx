@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { useOutletContext } from "react-router-dom";
 import { type AddressOutletContext } from "../AddressMainPage";
-import Contracts from "./Contracts";
+import ReadContract from "./contract/ReadContract";
 
-const AddressContract: FC = () => {
+const AddressReadContract: FC = () => {
   const { address, match } = useOutletContext() as AddressOutletContext;
-  return <Contracts checksummedAddress={address} match={match} />;
+  return <ReadContract checksummedAddress={address} match={match} />;
 };
 
-export default AddressContract;
+export default AddressReadContract;
