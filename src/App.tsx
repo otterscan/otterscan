@@ -50,6 +50,10 @@ const AddressWithdrawals = lazy(
   () => import("./execution/address/AddressWithdrawals"),
 );
 const BlocksRewarded = lazy(() => import("./execution/address/BlocksRewarded"));
+const ProxyContract = lazy(() => import("./execution/address/ProxyContract"));
+const ProxyReadContract = lazy(
+  () => import("./execution/address/ProxyReadContract"),
+);
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
@@ -167,6 +171,8 @@ const router = createBrowserRouter(
           <Route path="blocksRewarded" element={<BlocksRewarded />} />
           <Route path="contract" element={<AddressContract />} />
           <Route path="readContract" element={<AddressReadContract />} />
+          <Route path="proxyLogicContract" element={<ProxyContract />} />
+          <Route path="readContractAsProxy" element={<ProxyReadContract />} />
           <Route
             path="*"
             element={
