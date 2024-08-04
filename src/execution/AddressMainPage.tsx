@@ -23,8 +23,6 @@ import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
-import Contracts from "./address/Contracts";
-import ReadContract from "./address/contract/ReadContract";
 import { AddressAwareComponentProps } from "./types";
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
@@ -47,27 +45,6 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
         </NavTab>
       )}
     </>
-  );
-};
-
-const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
-  const { provider } = useContext(RuntimeContext);
-  const proxyAttrs = useProxyAttributes(provider, address);
-  return (
-    <Contracts
-      checksummedAddress={proxyAttrs.logicAddress!}
-      match={proxyAttrs.proxyMatch}
-    />
-  );
-};
-
-const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
-  const { provider } = useContext(RuntimeContext);
-  const proxyAttrs = useProxyAttributes(provider, address);
-  return (
-    <ReadContract checksummedAddress={address} match={proxyAttrs.proxyMatch} />
   );
 };
 
