@@ -30,6 +30,12 @@ const BlockTransactionByIndex = lazy(
   () => import("./execution/block/BlockTransactionByIndex"),
 );
 const Address = lazy(() => import("./execution/Address"));
+const AddressTransactionResults = lazy(
+  () => import("./execution/address/AddressTransactionResults"),
+);
+const AddressContract = lazy(
+  () => import("./execution/address/AddressContract"),
+);
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
@@ -130,10 +136,23 @@ const router = createBrowserRouter(
         />
         <Route path="tx/:txhash/*" element={<Transaction />} />
         <Route
-          path="address/:addressOrName/*"
+          path="address/:addressOrName/"
           element={<Address />}
           loader={addressLoader}
-        />
+        >
+          <Route index element={<AddressTransactionResults />} />
+          <Route
+            path="txs/:direction"
+            element={<AddressTransactionResults />}
+          />
+          <Route path="contract" element={<AddressContract />} />
+          <Route
+            path="*"
+            element={
+              null /* TODO: Replace with address-specific "tab not found" */
+            }
+          />
+        </Route>
 
         {/* EXPERIMENTAL ROUTES */}
         <Route path="contracts/*" element={<AllContracts />} />
