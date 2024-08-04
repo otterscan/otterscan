@@ -5,8 +5,7 @@ import { TabGroup, TabList, TabPanels } from "@headlessui/react";
 import React, { useCallback, useContext } from "react";
 import {
   Await,
-  Route,
-  Routes,
+  Outlet,
   useLoaderData,
   useNavigate,
   useParams,
@@ -23,13 +22,7 @@ import { ChecksummedAddress } from "../types";
 import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
-import AddressERC20Results from "./address/AddressERC20Results";
-import AddressERC721Results from "./address/AddressERC721Results";
 import AddressSubtitle from "./address/AddressSubtitle";
-import AddressTokens from "./address/AddressTokens";
-import AddressTransactionResults from "./address/AddressTransactionResults";
-import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksRewarded from "./address/BlocksRewarded";
 import Contracts from "./address/Contracts";
 import ReadContract from "./address/contract/ReadContract";
 import { AddressAwareComponentProps } from "./types";
@@ -208,92 +201,13 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                 )}
               </TabList>
               <TabPanels>
-                <Routes>
-                  <Route
-                    index
-                    element={
-                      <AddressTransactionResults
-                        address={checksummedAddress}
-                        hasCode={hasCode}
-                      />
-                    }
-                  />
-                  <Route
-                    path="txs/:direction"
-                    element={
-                      <AddressTransactionResults
-                        address={checksummedAddress}
-                        hasCode={hasCode}
-                      />
-                    }
-                  />
-                  {config?.experimental && (
-                    <>
-                      <Route
-                        path="erc20"
-                        element={
-                          <AddressERC20Results address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="erc721"
-                        element={
-                          <AddressERC721Results address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="tokens"
-                        element={<AddressTokens address={checksummedAddress} />}
-                      />
-                      <Route
-                        path="withdrawals"
-                        element={
-                          <AddressWithdrawals address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="blocksRewarded"
-                        element={
-                          <BlocksRewarded address={checksummedAddress} />
-                        }
-                      />
-                    </>
-                  )}
-                  <Route
-                    path="contract"
-                    element={
-                      <Contracts
-                        checksummedAddress={checksummedAddress}
-                        match={match ?? whatsabiMatch}
-                      />
-                    }
-                  />
-                  <Route
-                    path="readContract"
-                    element={
-                      <ReadContract
-                        checksummedAddress={checksummedAddress}
-                        match={match ?? whatsabiMatch}
-                      />
-                    }
-                  />
-                  {config?.experimental && (
-                    <>
-                      <Route
-                        path="proxyLogicContract"
-                        element={
-                          <ProxyContracts address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="readContractAsProxy"
-                        element={
-                          <ProxyReadContract address={checksummedAddress} />
-                        }
-                      />
-                    </>
-                  )}
-                </Routes>
+                <Outlet
+                  context={{
+                    address: checksummedAddress,
+                    hasCode: hasCode,
+                    match: match,
+                  }}
+                />
               </TabPanels>
             </TabGroup>
           </>

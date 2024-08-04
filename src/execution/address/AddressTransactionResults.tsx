@@ -1,5 +1,5 @@
 import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
@@ -48,14 +48,11 @@ const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-export type AddressTransactionResultsProps = {
-  hasCode?: boolean;
-} & AddressAwareComponentProps;
-
-const AddressTransactionResults: FC<AddressTransactionResultsProps> = ({
-  address,
-  hasCode,
-}) => {
+const AddressTransactionResults: FC = () => {
+  const { address, hasCode } = useOutletContext() as {
+    address: string;
+    hasCode?: boolean;
+  };
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
