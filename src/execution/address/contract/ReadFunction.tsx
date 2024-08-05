@@ -226,7 +226,12 @@ const ReadFunction: FC<ReadFunctionProps> = ({
   }
 
   return (
-    <li key={func.format()} className="pb-4" data-test="read-function">
+    <li
+      key={func.format()}
+      className="pb-4"
+      data-test="read-function"
+      id={func.selector}
+    >
       <span className="text-md font-medium">{func.name}</span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         <ul className="ml-2 list-inside">

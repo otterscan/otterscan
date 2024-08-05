@@ -12,9 +12,14 @@ import RawDecodedFragment from "./RawDecodedFragment";
 type DecodedFragmentProps = {
   intf: Interface;
   fragment: Fragment;
+  address?: string;
 };
 
-const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
+const DecodedFragment: FC<DecodedFragmentProps> = ({
+  intf,
+  fragment,
+  address,
+}) => {
   let fragmentType: "constructor" | "event" | "function" | "error" | undefined;
   let sig: string | undefined;
   let letter: string | undefined;
@@ -53,6 +58,7 @@ const DecodedFragment: FC<DecodedFragmentProps> = ({ intf, fragment }) => {
       letter={letter}
       letterBg={letterBg}
       hashBg={hashBg}
+      address={address}
     />
   );
 };
