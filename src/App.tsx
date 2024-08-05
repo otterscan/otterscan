@@ -92,7 +92,7 @@ const loader: LoaderFunction = async () => {
 const addressLoader: LoaderFunction = async ({ params, request }) => {
   const rt = await runtime;
   return defer({
-    hasCode: rt.provider.send("ots_hasCode", [params.addressOrName]),
+    hasCode: rt.provider.send("ots_hasCode", [params.addressOrName, "latest"]),
   });
 };
 
