@@ -50,7 +50,9 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
 
 export type AddressOutletContext = {
   address: string;
+  hasCode: boolean | undefined;
   match: Match | null | undefined;
+  whatsabiMatch: Match | null | undefined;
 };
 
 const AddressMainPage: React.FC = () => {
@@ -79,7 +81,7 @@ const AddressMainPage: React.FC = () => {
 
   const { config, provider } = useContext(RuntimeContext);
   const { hasCode: hasCodePromise } = useLoaderData() as {
-    hasCode: boolean | undefined;
+    hasCode: Promise<boolean | undefined>;
   };
 
   const hasCode = useHasCode(provider, checksummedAddress);
@@ -184,8 +186,9 @@ const AddressMainPage: React.FC = () => {
                 <Outlet
                   context={{
                     address: checksummedAddress,
-                    hasCode: hasCode,
-                    match: match,
+                    hasCode,
+                    match,
+                    whatsabiMatch,
                   }}
                 />
               </TabPanels>
