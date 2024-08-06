@@ -175,6 +175,7 @@ const router = createBrowserRouter(
           <Route
             path="txs/:direction"
             element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
           />
           {/* Experimental address routes */}
           <Route path="erc20" element={<AddressERC20Results />} />
