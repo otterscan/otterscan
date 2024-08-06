@@ -90,9 +90,18 @@ const loader: LoaderFunction = async () => {
 };
 
 const addressLoader: LoaderFunction = async ({ params, request }) => {
-  const rt = await runtime;
   return defer({
-    hasCode: rt.provider.send("ots_hasCode", [params.addressOrName, "latest"]),
+    hasCode: runtime.then((rt) =>
+      rt.provider.send("ots_hasCode", [params.addressOrName, "latest"]),
+    ),
+  });
+};
+
+const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
+  return defer({
+    balance: runtime.then((rt) =>
+      rt.provider.getBalance(params.addressOrName ?? ""),
+    ),
   });
 };
 
@@ -158,7 +167,11 @@ const router = createBrowserRouter(
           element={<Address />}
           loader={addressLoader}
         >
-          <Route index element={<AddressTransactionResults />} />
+          <Route
+            index
+            element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
+          />
           <Route
             path="txs/:direction"
             element={<AddressTransactionResults />}

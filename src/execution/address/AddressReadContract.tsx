@@ -4,8 +4,11 @@ import { type AddressOutletContext } from "../AddressMainPage";
 import ReadContract from "./contract/ReadContract";
 
 const AddressReadContract: FC = () => {
-  const { address, match } = useOutletContext() as AddressOutletContext;
-  return <ReadContract checksummedAddress={address} match={match} />;
+  const { address, match, whatsabiMatch } =
+    useOutletContext() as AddressOutletContext;
+  return (
+    <ReadContract checksummedAddress={address} match={match ?? whatsabiMatch} />
+  );
 };
 
 export default AddressReadContract;
