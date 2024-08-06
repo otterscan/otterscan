@@ -25,6 +25,7 @@ import {
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
+import { commify } from "../../utils/utils";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
@@ -167,7 +168,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
                 <div className="pl-4 col-span-2 grid grid-cols-2">
                   <div className="col-span-1">Transactions sent:</div>
                   <div className="col-span-1">
-                    {transactionCount.toString()}
+                    {commify(transactionCount.toString())}
                   </div>
                 </div>
               )}
