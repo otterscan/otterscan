@@ -21,7 +21,7 @@ const Logs: FC<LogsProps> = ({ logs }) => {
           });
         }
       }
-    }, 200);
+    }, 500);
   }, [logs]);
   return (
     <ContentFrame tabs>
