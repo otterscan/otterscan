@@ -30,6 +30,30 @@ const BlockTransactionByIndex = lazy(
   () => import("./execution/block/BlockTransactionByIndex"),
 );
 const Address = lazy(() => import("./execution/Address"));
+const AddressTransactionResults = lazy(
+  () => import("./execution/address/AddressTransactionResults"),
+);
+const AddressContract = lazy(
+  () => import("./execution/address/AddressContract"),
+);
+const AddressReadContract = lazy(
+  () => import("./execution/address/AddressReadContract"),
+);
+const AddressERC20Results = lazy(
+  () => import("./execution/address/AddressERC20Results"),
+);
+const AddressERC721Results = lazy(
+  () => import("./execution/address/AddressERC721Results"),
+);
+const AddressTokens = lazy(() => import("./execution/address/AddressTokens"));
+const AddressWithdrawals = lazy(
+  () => import("./execution/address/AddressWithdrawals"),
+);
+const BlocksRewarded = lazy(() => import("./execution/address/BlocksRewarded"));
+const ProxyContract = lazy(() => import("./execution/address/ProxyContract"));
+const ProxyReadContract = lazy(
+  () => import("./execution/address/ProxyReadContract"),
+);
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
@@ -62,6 +86,22 @@ const loader: LoaderFunction = async () => {
   return defer({
     config,
     rt: runtime,
+  });
+};
+
+const addressLoader: LoaderFunction = async ({ params, request }) => {
+  return defer({
+    hasCode: runtime.then((rt) =>
+      rt.provider.send("ots_hasCode", [params.addressOrName, "latest"]),
+    ),
+  });
+};
+
+const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
+  return defer({
+    balance: runtime.then((rt) =>
+      rt.provider.getBalance(params.addressOrName ?? ""),
+    ),
   });
 };
 
@@ -122,7 +162,38 @@ const router = createBrowserRouter(
           element={<BlockTransactionByIndex />}
         />
         <Route path="tx/:txhash/*" element={<Transaction />} />
-        <Route path="address/:addressOrName/*" element={<Address />} />
+        <Route
+          path="address/:addressOrName/"
+          element={<Address />}
+          loader={addressLoader}
+        >
+          <Route
+            index
+            element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
+          />
+          <Route
+            path="txs/:direction"
+            element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
+          />
+          {/* Experimental address routes */}
+          <Route path="erc20" element={<AddressERC20Results />} />
+          <Route path="erc721" element={<AddressERC721Results />} />
+          <Route path="tokens" element={<AddressTokens />} />
+          <Route path="withdrawals" element={<AddressWithdrawals />} />
+          <Route path="blocksRewarded" element={<BlocksRewarded />} />
+          <Route path="contract" element={<AddressContract />} />
+          <Route path="readContract" element={<AddressReadContract />} />
+          <Route path="proxyLogicContract" element={<ProxyContract />} />
+          <Route path="readContractAsProxy" element={<ProxyReadContract />} />
+          <Route
+            path="*"
+            element={
+              null /* TODO: Replace with address-specific "tab not found" */
+            }
+          />
+        </Route>
 
         {/* EXPERIMENTAL ROUTES */}
         <Route path="contracts/*" element={<AllContracts />} />
