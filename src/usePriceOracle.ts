@@ -101,19 +101,15 @@ const FEED_REGISTRY_MAINNET_PROTOTYPE = new Contract(
 
 const feedRegistryFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
     priceOracleInfo: PriceOracleInfo | undefined,
     ethPriceData: { price: bigint | undefined; decimals: bigint },
     tokenDecimals: bigint,
   ): Fetcher<FeedRegistryFetcherData, FeedRegistryFetcherKey> =>
   async ([tokenAddress, blockTag]) => {
-    if (provider === undefined) {
-      return { price: undefined, decimals: undefined, source: undefined };
-    }
-
     // FeedRegistry is supported only on mainnet, see:
     // https://docs.chain.link/docs/feed-registry/
-    if (provider!._network.chainId === 1n) {
+    if (provider._network.chainId === 1n) {
       try {
         // Let SWR handle error
         // TODO: using "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
@@ -146,7 +142,7 @@ const feedRegistryFetcher =
         priceOracleInfo = defaultPriceOracleInfo.get(1n);
       }
     } else if (priceOracleInfo === undefined) {
-      priceOracleInfo = defaultPriceOracleInfo.get(provider!._network.chainId);
+      priceOracleInfo = defaultPriceOracleInfo.get(provider._network.chainId);
     }
 
     if (
@@ -234,12 +230,12 @@ const feedRegistryFetcher =
   };
 
 export const useTokenUSDOracle = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | undefined,
   tokenAddress: ChecksummedAddress,
   tokenDecimals: bigint | undefined,
 ): FeedRegistryFetcherData => {
-  const netTokenEquivMap = tokenEquivMap.get(provider?._network.chainId);
+  const netTokenEquivMap = tokenEquivMap.get(provider._network.chainId);
   if (netTokenEquivMap !== undefined) {
     const tokenEquiv = netTokenEquivMap.get(tokenAddress);
     if (tokenEquiv !== undefined) {
@@ -284,14 +280,13 @@ const ETH_USD_FEED_PROTOTYPE = new Contract(ZeroAddress, AggregatorV3Interface);
 
 const ethUSDFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
     priceOracleInfo: PriceOracleInfo | undefined,
   ): Fetcher<any | undefined, ["ethusd", BlockTag | undefined]> =>
   async ([_, blockTag]) => {
     if (
-      provider === undefined ||
-      (provider?._network.chainId !== 1n &&
-        priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress === undefined)
+      provider._network.chainId !== 1n &&
+      priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress === undefined
     ) {
       return undefined;
     }
@@ -306,15 +301,13 @@ const ethUSDFetcher =
   };
 
 export const useETHUSDOracle = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | undefined,
 ): { price: bigint | undefined; decimals: bigint } => {
   const { config } = useContext(RuntimeContext);
   const priceOracleInfo =
     config.priceOracleInfo ??
-    (provider
-      ? defaultPriceOracleInfo.get(provider._network.chainId)
-      : undefined);
+    defaultPriceOracleInfo.get(provider._network.chainId);
   const fetcher = ethUSDFetcher(provider, priceOracleInfo);
   const { data, error } = useSWRImmutable(ethUSDFetcherKey(blockTag), fetcher);
   const decimals = BigInt(
@@ -370,7 +363,7 @@ export const formatFiatValue = (
 };
 
 export const useETHUSDRawOracle = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | undefined,
 ): any | undefined => {
   const { config } = useContext(RuntimeContext);
@@ -396,10 +389,10 @@ const FAST_GAS_FEED_PROTOTYPE = new Contract(
 
 const fastGasFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<any | undefined, ["gasgwei", BlockTag | undefined]> =>
   async ([_, blockTag]) => {
-    if (provider?._network.chainId !== 1n) {
+    if (provider._network.chainId !== 1n) {
       return undefined;
     }
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
@@ -411,7 +404,7 @@ const fastGasFetcher =
   };
 
 export const useFastGasRawOracle = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | undefined,
 ): any | undefined => {
   const fetcher = fastGasFetcher(provider);

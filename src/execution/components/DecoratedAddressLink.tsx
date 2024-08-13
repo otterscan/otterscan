@@ -47,7 +47,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
   plain,
 }) => {
   const { config, provider } = useContext(RuntimeContext);
-  const match = useSourcifyMetadata(address, provider?._network.chainId);
+  const match = useSourcifyMetadata(address, provider._network.chainId);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -146,14 +146,9 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
   const { provider } = useContext(RuntimeContext);
   const resolvedAddress = useResolvedAddress(provider, address);
   const linkable = address !== selectedAddress;
-  const match = useSourcifyMetadata(address, provider?._network.chainId);
+  const match = useSourcifyMetadata(address, provider._network.chainId);
 
-  if (
-    provider &&
-    !resolvedAddress &&
-    match &&
-    match.metadata.settings?.compilationTarget
-  ) {
+  if (!resolvedAddress && match && match.metadata.settings?.compilationTarget) {
     const compilationTarget = match.metadata.settings?.compilationTarget;
     if (Object.values(compilationTarget).length > 0) {
       return VerifiedContractRenderer(
@@ -166,7 +161,7 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
     }
   }
 
-  if (!provider || !resolvedAddress) {
+  if (!resolvedAddress) {
     return (
       <PlainAddress
         address={address}

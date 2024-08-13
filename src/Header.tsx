@@ -42,7 +42,7 @@ const Header: FC = () => {
           </div>
         </div>
         <div className="flex items-baseline gap-x-3">
-          {(provider?._network.chainId === 1n ||
+          {(provider._network.chainId === 1n ||
             config.priceOracleInfo?.nativeTokenPrice?.ethUSDOracleAddress) && (
             <div className="hidden lg:inline">
               <PriceBox />
@@ -59,7 +59,7 @@ const Header: FC = () => {
               type="text"
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
-                provider?._network.getPlugin(
+                provider._network.getPlugin(
                   "org.ethers.plugins.network.Ens",
                 ) !== null
                   ? " / ENS name"

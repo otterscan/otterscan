@@ -170,13 +170,13 @@ const blockTransactionsFetcher: Fetcher<
 };
 
 export const useBlockTransactions = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockNumber: number | undefined,
   pageNumber: number,
   pageSize: number,
 ): { data: BlockTransactionsPage | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
-    provider !== undefined && blockNumber !== undefined
+    blockNumber !== undefined
       ? [provider, blockNumber, pageNumber, pageSize]
       : null,
     blockTransactionsFetcher,
@@ -197,13 +197,11 @@ const blockDataFetcher: Fetcher<
 
 // TODO: some callers may use only block headers?
 export const useBlockData = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockNumberOrHash: string | undefined,
 ): { data: ExtendedBlock | null | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
-    provider !== undefined && blockNumberOrHash !== undefined
-      ? [provider, blockNumberOrHash]
-      : null,
+    blockNumberOrHash !== undefined ? [provider, blockNumberOrHash] : null,
     blockDataFetcher,
     { keepPreviousData: true },
   );
@@ -214,7 +212,7 @@ export const useBlockData = (
 };
 
 export const useBlockDataFromTransaction = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txData: TransactionData | null | undefined,
 ): ExtendedBlock | null | undefined => {
   const { data: block } = useBlockData(
@@ -227,16 +225,12 @@ export const useBlockDataFromTransaction = (
 };
 
 export const useTxData = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txhash: string,
 ): TransactionData | undefined | null => {
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
 
   useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
     const readTxData = async () => {
       try {
         const [_response, _receipt] = await Promise.all([
@@ -359,18 +353,16 @@ export const useTokenTransfers = (
 };
 
 export const useInternalOperations = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string | undefined,
 ): InternalOperation[] | undefined => {
   const { data, error } = useSWRImmutable(
-    provider !== undefined && txHash !== undefined
-      ? ["ots_getInternalOperations", txHash]
-      : null,
+    txHash !== undefined ? ["ots_getInternalOperations", txHash] : null,
     providerFetcher(provider),
   );
 
   const _transfers = useMemo(() => {
-    if (provider === undefined || error || data === undefined) {
+    if (error || data === undefined) {
       return undefined;
     }
 
@@ -384,12 +376,12 @@ export const useInternalOperations = (
       });
     }
     return _t;
-  }, [provider, data]);
+  }, [data]);
   return _transfers;
 };
 
 export const useSendsToMiner = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string | undefined,
   miner: string | undefined,
 ): [boolean, InternalOperation[]] | [undefined, undefined] => {
@@ -425,7 +417,7 @@ export type StateDiffGroup = {
 };
 
 export const useStateDiffTrace = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
 ): StateDiffGroup[] | undefined => {
   const [traceGroups, setTraceGroups] = useState<
@@ -433,11 +425,6 @@ export const useStateDiffTrace = (
   >();
 
   useEffect(() => {
-    if (!provider) {
-      setTraceGroups(undefined);
-      return;
-    }
-
     const stateDiffTrace = async () => {
       const results = await provider.send("trace_replayTransaction", [
         txHash,
@@ -550,17 +537,12 @@ export type TraceGroup = TraceEntry & {
 };
 
 export const useTraceTransaction = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
 ): TraceGroup[] | undefined => {
   const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
 
   useEffect(() => {
-    if (!provider) {
-      setTraceGroups(undefined);
-      return;
-    }
-
     const traceTx = async () => {
       const results = await provider.send("ots_traceTransaction", [txHash]);
 
@@ -628,7 +610,7 @@ export const useTraceTransaction = (
 const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
 
 export const useTransactionError = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
 ): [string | undefined, string | undefined, boolean | undefined] => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
@@ -640,10 +622,6 @@ export const useTransactionError = (
     setErrorMsg(undefined);
     setData(undefined);
     setCustomError(undefined);
-
-    if (provider === undefined) {
-      return;
-    }
 
     const readCodes = async () => {
       const result = (await provider.send("ots_getTransactionError", [
@@ -683,11 +661,11 @@ export const useTransactionError = (
 };
 
 export const useTransactionCount = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   sender: ChecksummedAddress | undefined,
 ): bigint | undefined => {
   const { data, error } = useSWR(
-    provider && sender ? { provider, sender } : null,
+    sender ? { provider, sender } : null,
     async ({ provider, sender }): Promise<bigint | undefined> =>
       provider.getTransactionCount(sender).then(BigInt),
   );
@@ -725,7 +703,7 @@ const getTransactionBySenderAndNonceFetcher =
   };
 
 export const useTransactionBySenderAndNonce = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   sender: ChecksummedAddress | undefined,
   nonce: bigint | undefined,
 ): string | null | undefined => {
@@ -734,14 +712,14 @@ export const useTransactionBySenderAndNonce = (
     any,
     TransactionBySenderAndNonceKey | null
   >(
-    provider && sender && nonce !== undefined
+    sender && nonce !== undefined
       ? {
           network: provider._network.chainId,
           sender,
           nonce,
         }
       : null,
-    getTransactionBySenderAndNonceFetcher(provider!),
+    getTransactionBySenderAndNonceFetcher(provider),
   );
 
   if (error) {
@@ -830,13 +808,8 @@ export const useAddressBalance = (
  * arguments.
  */
 export const providerFetcher =
-  (
-    provider: JsonRpcApiProvider | undefined,
-  ): Fetcher<any | undefined, [string, ...any]> =>
+  (provider: JsonRpcApiProvider): Fetcher<any | undefined, [string, ...any]> =>
   async (key) => {
-    if (provider === undefined) {
-      return undefined;
-    }
     for (const a of key) {
       if (a === undefined) {
         return undefined;
@@ -850,7 +823,7 @@ export const providerFetcher =
   };
 
 export const useHasCode = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ): boolean | undefined => {
@@ -866,7 +839,7 @@ export const useHasCode = (
 };
 
 export const useGetCode = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ): string | undefined => {
@@ -885,13 +858,9 @@ const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const tokenMetadataFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<TokenMeta | null, ["tokenmeta", ChecksummedAddress]> =>
   async ([_, address]) => {
-    if (provider === undefined) {
-      return null;
-    }
-
     // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const erc20Contract: Contract = ERC20_PROTOTYPE.connect(provider).attach(
       address,
@@ -925,14 +894,12 @@ const tokenMetadataFetcher =
   };
 
 export const useTokenMetadata = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): TokenMeta | null | undefined => {
   const fetcher = tokenMetadataFetcher(provider);
   const { data, error } = useSWRImmutable(
-    provider !== undefined && address !== undefined
-      ? ["tokenmeta", address]
-      : null,
+    address !== undefined ? ["tokenmeta", address] : null,
     fetcher,
   );
   if (error) {

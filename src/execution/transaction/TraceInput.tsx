@@ -45,7 +45,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
     t.value,
   );
 
-  const match = useSourcifyMetadata(t.to, provider?._network.chainId);
+  const match = useSourcifyMetadata(t.to, provider._network.chainId);
   const metadata = match?.metadata;
   const sourcifyTxDesc = useSourcifyTransactionDescription(metadata, {
     data: t.input,

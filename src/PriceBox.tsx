@@ -57,7 +57,7 @@ const PriceBox: React.FC = () => {
 
   const [prevDayBlock, setPrevDayBlock] = useState<number | null>(null);
   useEffect(() => {
-    if (provider === undefined || latestBlock === undefined) {
+    if (latestBlock === undefined) {
       return;
     }
     (async function () {

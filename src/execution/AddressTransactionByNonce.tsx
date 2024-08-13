@@ -52,7 +52,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
   // Calculate txCount ONLY when asked for latest nonce
   const [txCount, setTxCount] = useState<bigint | undefined>();
   useEffect(() => {
-    if (!provider || !checksummedAddress || rawNonce !== "latest") {
+    if (!checksummedAddress || rawNonce !== "latest") {
       setTxCount(undefined);
       return;
     }
@@ -106,7 +106,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
           supportsENS={
-            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            provider._network.getPlugin("org.ethers.plugins.network.Ens") !==
             null
           }
         />

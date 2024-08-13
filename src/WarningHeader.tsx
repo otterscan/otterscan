@@ -5,7 +5,7 @@ import { RuntimeContext } from "./useRuntime";
 const WarningHeader: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const { name } = useChainInfo();
-  const chainId = provider?._network.chainId;
+  const chainId = provider._network.chainId;
   if (chainId === 1n) {
     return <></>;
   }

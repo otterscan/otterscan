@@ -185,37 +185,32 @@ const ReadFunction: FC<ReadFunctionProps> = ({
 
   async function submitCall() {
     let int = new Interface([func]);
-    if (provider) {
-      try {
-        setResult(undefined);
-        // The parser can be recompiled with `npm run build-parsers`
-        const inputTree: ParamValue[] = childRefs.current.map((childRef) =>
-          childRef.computeParamValue(),
-        );
-        let encodedData = int.encodeFunctionData(
-          func.name,
-          await Promise.all(
-            inputTree.map((input: ParamValue, i: number) =>
-              parseStructuredArgument(input, func.inputs[i], i, provider),
-            ),
+    try {
+      setResult(undefined);
+      // The parser can be recompiled with `npm run build-parsers`
+      const inputTree: ParamValue[] = childRefs.current.map((childRef) =>
+        childRef.computeParamValue(),
+      );
+      let encodedData = int.encodeFunctionData(
+        func.name,
+        await Promise.all(
+          inputTree.map((input: ParamValue, i: number) =>
+            parseStructuredArgument(input, func.inputs[i], i, provider),
           ),
-        );
-        let resultData = await provider.call({
-          to: address,
-          data: encodedData,
-        });
-        setResult({
-          result: int.decodeFunctionResult(func.name, resultData),
-          data: resultData,
-        });
-        setError(null);
-      } catch (e: any) {
-        setResult(null);
-        setError(e.toString());
-      }
-    } else {
+        ),
+      );
+      let resultData = await provider.call({
+        to: address,
+        data: encodedData,
+      });
+      setResult({
+        result: int.decodeFunctionResult(func.name, resultData),
+        data: resultData,
+      });
+      setError(null);
+    } catch (e: any) {
       setResult(null);
-      setError("Provider not found");
+      setError(e.toString());
     }
   }
 

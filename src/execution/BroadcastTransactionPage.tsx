@@ -16,23 +16,21 @@ const BroadcastTransactionPage: React.FC = () => {
   }>({ success: null, result: "" });
 
   async function submitTx() {
-    if (provider) {
-      const trimmedRawTx = rawTx.trim();
-      if (trimmedRawTx.length > 2) {
-        try {
-          const txHash = await provider.send("eth_sendRawTransaction", [
-            trimmedRawTx,
-          ]);
-          setResultState({ success: true, result: txHash });
-        } catch (e: any) {
-          setResultState({ success: false, result: e.toString() });
-        }
-      } else {
-        setResultState({
-          success: false,
-          result: "Please enter a raw signed transaction.",
-        });
+    const trimmedRawTx = rawTx.trim();
+    if (trimmedRawTx.length > 2) {
+      try {
+        const txHash = await provider.send("eth_sendRawTransaction", [
+          trimmedRawTx,
+        ]);
+        setResultState({ success: true, result: txHash });
+      } catch (e: any) {
+        setResultState({ success: false, result: e.toString() });
       }
+    } else {
+      setResultState({
+        success: false,
+        result: "Please enter a raw signed transaction.",
+      });
     }
   }
 

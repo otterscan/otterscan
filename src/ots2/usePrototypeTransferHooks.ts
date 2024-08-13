@@ -63,7 +63,7 @@ type SearchResultsType<T extends TransactionSearchType> =
       : TransactionMatchWithData;
 
 export const useGenericTransactionCount = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   typeName: TransactionSearchType,
   address: ChecksummedAddress,
 ): number | undefined => {
@@ -109,7 +109,7 @@ function decodeResults<T extends TransactionSearchType>(
 }
 
 const resultFetcher = <T extends TransactionSearchType, U>(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   typeName: T,
 ): Fetcher<
   TransactionListResults<SearchResultsType<T>, U> | undefined,
@@ -119,7 +119,7 @@ const resultFetcher = <T extends TransactionSearchType, U>(
 
   return async (key) => {
     const res = await fetcher(key);
-    if (res === undefined || provider === undefined) {
+    if (res === undefined) {
       return undefined;
     }
 
@@ -142,7 +142,7 @@ export const useGenericTransactionList = <
   T extends TransactionSearchType,
   U = BlockSummary,
 >(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   typeName: T,
   address: ChecksummedAddress,
   pageNumber: number,
@@ -164,7 +164,7 @@ export const useGenericTransactionList = <
 };
 
 export const useERC1167Impl = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): ChecksummedAddress | undefined | null => {
   const fetcher = providerFetcher(provider);
@@ -179,7 +179,7 @@ export const useERC1167Impl = (
 };
 
 export const useERC20Holdings = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress,
 ): ChecksummedAddress[] | undefined => {
   const fetcher = providerFetcher(provider);
@@ -202,16 +202,12 @@ const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const erc20BalanceFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<
     bigint | null,
     ["erc20balance", ChecksummedAddress, ChecksummedAddress]
   > =>
   async ([_, address, tokenAddress]) => {
-    if (provider === undefined) {
-      return null;
-    }
-
     // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const contract = ERC20_PROTOTYPE.connect(provider).attach(
       tokenAddress,
@@ -220,7 +216,7 @@ const erc20BalanceFetcher =
   };
 
 export const useTokenBalance = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   tokenAddress: ChecksummedAddress | undefined,
 ): bigint | null | undefined => {
@@ -249,7 +245,7 @@ export type AddressAttributes = {
 };
 
 export const useAddressAttributes = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): AddressAttributes | undefined => {
   const fetcher = providerFetcher(provider);
@@ -275,7 +271,7 @@ export type ProxyAttributes = {
 };
 
 export const useProxyAttributes = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): ProxyAttributes => {
   const attr = useAddressAttributes(provider, address);
@@ -289,7 +285,7 @@ export const useProxyAttributes = (
   const proxyHasCode = useHasCode(provider, checksummedProxyAddress);
   const proxyMatch = useSourcifyMetadata(
     proxyHasCode ? checksummedProxyAddress : undefined,
-    provider?._network.chainId,
+    provider._network.chainId,
   );
 
   return {

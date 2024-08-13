@@ -87,7 +87,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
 
   const tokenTransfers = useTokenTransfers(txData);
 
-  const match = useSourcifyMetadata(txData?.to, provider?._network.chainId);
+  const match = useSourcifyMetadata(txData?.to, provider._network.chainId);
   const metadata = match?.metadata;
 
   const txDesc = useSourcifyTransactionDescription(metadata, txData);
@@ -117,7 +117,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
-  const isOptimistic = isOptimisticChain(provider?._network.chainId);
+  const isOptimistic = isOptimisticChain(provider._network.chainId);
 
   const { totalFees } = calculateFee(txData, block);
 
