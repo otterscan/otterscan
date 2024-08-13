@@ -19,11 +19,13 @@ const NavBlock: FC<NavBlockProps> = ({
   urlBuilder,
   showFirstLink = false,
 }) => (
-  <div className="flex space-x-1 self-center pl-2">
+  <div className="flex flex-no-wrap space-x-1 self-center pl-2">
     {showFirstLink && (
       <NavButton href={urlBuilder(0)} disabled={entityNum === 0}>
-        <FontAwesomeIcon icon={faChevronLeft} />
-        <FontAwesomeIcon icon={faChevronLeft} />
+        <div className="whitespace-nowrap">
+          <FontAwesomeIcon icon={faChevronLeft} />
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </div>
       </NavButton>
     )}
     <NavButton href={urlBuilder(entityNum - 1)} disabled={entityNum === 0}>
@@ -39,8 +41,10 @@ const NavBlock: FC<NavBlockProps> = ({
       href={urlBuilder(latestEntityNum!)}
       disabled={latestEntityNum === undefined || entityNum >= latestEntityNum}
     >
-      <FontAwesomeIcon icon={faChevronRight} />
-      <FontAwesomeIcon icon={faChevronRight} />
+      <div className="whitespace-nowrap">
+        <FontAwesomeIcon icon={faChevronRight} />
+        <FontAwesomeIcon icon={faChevronRight} />
+      </div>
     </NavButton>
   </div>
 );
