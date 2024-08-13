@@ -155,11 +155,11 @@ Our Discord server: https://discord.gg/5xM2q2eqDz
 
 Otterscan also has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server) (invite should be requested).
 
-### Twitter
+### X (Twitter)
 
-Official Twitter account: ([@otterscan](https://twitter.com/otterscan)).
+Official X (Twitter) account: ([@otterscan](https://x.com/otterscan).
 
-Follow the creator on Twitter for more updates ([@wmitsuda](https://twitter.com/wmitsuda)).
+Follow the creator on X (Twitter) for more updates ([@wmitsuda](https://x.com/wmitsuda).
 
 ### Donation address
 
