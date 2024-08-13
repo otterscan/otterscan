@@ -15,7 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@headlessui/react": "^2.1.2",
-    "@shazow/whatsabi": "^0.12.0",
+    "@shazow/whatsabi": "^0.14.1",
     "@storybook/test": "^8.2.7",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^15.0.5",
