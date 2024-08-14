@@ -932,8 +932,8 @@ export const useL1Epoch = (
 ): bigint | null | undefined => {
   const fetcher = l1EpochFetcher(provider);
   const key = isOptimisticChain(provider._network.chainId)
-      ? ["l1epoch", blockTag]
-      : null;
+    ? ["l1epoch", blockTag]
+    : null;
   const { data, error } = useSWRImmutable(key, fetcher);
   return error ? undefined : data;
 };
