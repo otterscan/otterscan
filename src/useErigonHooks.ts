@@ -740,7 +740,7 @@ type ContractCreator = {
 };
 
 export const useContractCreator = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): ContractCreator | null | undefined => {
   const { data, error } = useSWR<
@@ -748,7 +748,7 @@ export const useContractCreator = (
     any,
     ContractCreatorKey | null
   >(
-    provider && address
+    address
       ? {
           type: "cc",
           network: provider._network.chainId,
@@ -782,13 +782,13 @@ const getContractCreatorFetcher =
   };
 
 export const useAddressBalance = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): bigint | null | undefined => {
   const [balance, setBalance] = useState<bigint | undefined>();
 
   useEffect(() => {
-    if (!provider || !address) {
+    if (!address) {
       return undefined;
     }
 
@@ -912,13 +912,9 @@ const l1BlockContractAddress = "0x4200000000000000000000000000000000000015";
 const L1BLOCK_PROTOTYPE = new Contract(l1BlockContractAddress, L1Block);
 const l1EpochFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<bigint | null, ["l1epoch", BlockTag]> =>
   async ([_, blockTag]) => {
-    if (provider === undefined) {
-      return null;
-    }
-
     // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const l1BlockContract: Contract = L1BLOCK_PROTOTYPE.connect(
       provider,
@@ -931,12 +927,11 @@ const l1EpochFetcher =
   };
 
 export const useL1Epoch = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | null,
 ): bigint | null | undefined => {
   const fetcher = l1EpochFetcher(provider);
-  const key =
-    provider !== undefined && isOptimisticChain(provider._network.chainId)
+  const key = isOptimisticChain(provider._network.chainId)
       ? ["l1epoch", blockTag]
       : null;
   const { data, error } = useSWRImmutable(key, fetcher);

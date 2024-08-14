@@ -72,7 +72,7 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
   );
 
   useEffect(() => {
-    if (!provider || !address) {
+    if (!address) {
       return;
     }
 
