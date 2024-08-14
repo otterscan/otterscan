@@ -6,7 +6,7 @@ import Blocks from "./Blocks";
 const LiveBlocks: React.FC = () => {
   const { provider } = useContext(RuntimeContext);
   const block = useLatestBlockHeader(provider);
-  if (!provider || !block) {
+  if (!block) {
     return <div className="grow"></div>;
   }
 

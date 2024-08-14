@@ -20,7 +20,7 @@ const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
   usePageTitle(`Token Balances | ${address}`);
 
   const [enabled, setEnabled] = useState<boolean>(true);
-  const tokenSet = useTokenSet(provider?._network.chainId);
+  const tokenSet = useTokenSet(provider._network.chainId);
   const filteredList = useMemo(() => {
     if (erc20List === undefined) {
       return undefined;

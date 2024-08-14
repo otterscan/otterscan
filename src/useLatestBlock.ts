@@ -7,14 +7,10 @@ import { formatter } from "./utils/formatter";
  * that'll update and trigger a component render as a side effect
  * every time it is notified of a new block by the web3 provider.
  */
-export const useLatestBlockHeader = (provider?: JsonRpcApiProvider) => {
+export const useLatestBlockHeader = (provider: JsonRpcApiProvider) => {
   const [latestBlock, setLatestBlock] = useState<Block>();
 
   useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
     const getAndSetBlockHeader = async (blockNumber: number) => {
       const _raw = await provider.send("erigon_getHeaderByNumber", [
         blockNumber,
@@ -48,14 +44,10 @@ export const useLatestBlockHeader = (provider?: JsonRpcApiProvider) => {
  *
  * This hook is cheaper than useLatestBlockHeader.
  */
-export const useLatestBlockNumber = (provider?: JsonRpcApiProvider) => {
+export const useLatestBlockNumber = (provider: JsonRpcApiProvider) => {
   const [latestBlock, setLatestBlock] = useState<number>();
 
   useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
     // Immediately read and set the latest block number
     const readLatestBlock = async () => {
       const blockNum = await provider.getBlockNumber();

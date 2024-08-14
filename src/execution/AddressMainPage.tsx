@@ -106,11 +106,11 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   const hasCode = useHasCode(provider, checksummedAddress);
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
-    provider?._network.chainId,
+    provider._network.chainId,
   );
   const whatsabiMatch = useWhatsabiMetadata(
     match === null && hasCode ? checksummedAddress : undefined,
-    provider?._network.chainId,
+    provider._network.chainId,
     provider,
     config.assetsURLPrefix,
   );
@@ -121,7 +121,7 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
         <AddressOrENSNameNotFound
           addressOrENSName={addressOrName}
           supportsENS={
-            provider?._network.getPlugin("org.ethers.plugins.network.Ens") !==
+            provider._network.getPlugin("org.ethers.plugins.network.Ens") !==
             null
           }
         />

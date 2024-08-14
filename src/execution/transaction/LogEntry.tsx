@@ -18,7 +18,7 @@ type LogEntryProps = {
 
 const LogEntry: FC<LogEntryProps> = ({ log }) => {
   const { provider } = useContext(RuntimeContext);
-  const match = useSourcifyMetadata(log.address, provider?._network.chainId);
+  const match = useSourcifyMetadata(log.address, provider._network.chainId);
 
   const logDesc = useMemo(() => {
     if (!match) {

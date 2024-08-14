@@ -59,10 +59,6 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
 
   const addBlock = useCallback(
     async (blockNumber: number) => {
-      if (!provider) {
-        return;
-      }
-
       const extBlock = await readBlock(provider, blockNumber.toString());
       setBlocks((_blocks) => {
         for (let i = 0; i < _blocks.length; i++) {

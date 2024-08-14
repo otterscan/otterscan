@@ -49,7 +49,7 @@ const Home: FC = () => {
               size={50}
               data-test="home-search-input"
               placeholder={`Search by address / txn hash / block number${
-                provider?._network.getPlugin(
+                provider._network.getPlugin(
                   "org.ethers.plugins.network.Ens",
                 ) !== null
                   ? " / ENS name"

@@ -1,10 +1,9 @@
 import { FunctionFragment } from "ethers";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import ContentFrame from "../../../components/ContentFrame";
 import LabeledSwitch from "../../../components/LabeledSwitch";
 import StandardSelectionBoundary from "../../../selection/StandardSelectionBoundary";
 import { Match, MatchType } from "../../../sourcify/useSourcify";
-import { RuntimeContext } from "../../../useRuntime";
 import { usePageTitle } from "../../../useTitle";
 import WhatsabiWarning from "../WhatsabiWarning";
 import ReadFunction from "./ReadFunction";
@@ -25,7 +24,6 @@ const ReadContract: React.FC<ContractsProps> = ({
   checksummedAddress,
   match,
 }) => {
-  const { provider } = useContext(RuntimeContext);
   const [showNonViewReturns, setShowNonViewReturns] = useState<boolean>(false);
   usePageTitle(`Read Contract | ${checksummedAddress}`);
 
