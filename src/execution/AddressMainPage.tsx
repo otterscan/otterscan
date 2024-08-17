@@ -2,7 +2,13 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanels } from "@headlessui/react";
-import React, { useCallback, useContext } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useDeferredValue,
+  useEffect,
+  useState,
+} from "react";
 import {
   Await,
   Outlet,
@@ -19,7 +25,6 @@ import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
-import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
@@ -80,11 +85,19 @@ const AddressMainPage: React.FC = () => {
   );
 
   const { config, provider } = useContext(RuntimeContext);
-  const { hasCode: hasCodePromise } = useLoaderData() as {
-    hasCode: Promise<boolean | undefined>;
-  };
+  const { hasCode: hasCodePromise } = useDeferredValue(
+    useLoaderData() as {
+      hasCode: Promise<boolean | undefined>;
+    },
+  );
 
-  const hasCode = useHasCode(provider, checksummedAddress);
+  const [hasCode, setHasCode] = useState<boolean | undefined>(undefined);
+  useEffect(() => {
+    hasCodePromise.then((result) => {
+      setHasCode(result);
+    });
+  }, [hasCodePromise]);
+
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
     provider?._network.chainId,
