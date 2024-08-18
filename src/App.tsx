@@ -1,3 +1,4 @@
+import { getAddress, isAddress } from "ethers";
 import { FC, lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
@@ -11,6 +12,7 @@ import {
   RouterProvider,
   useLoaderData,
 } from "react-router-dom";
+import { preload } from "swr";
 import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
@@ -21,6 +23,7 @@ import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
+import { providerFetcher } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -105,6 +108,18 @@ const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
   });
 };
 
+const addressContractLoader: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (params.addressOrName && isAddress(params.addressOrName)) {
+      preload(
+        ["eth_getCode", getAddress(params.addressOrName), "latest"],
+        providerFetcher(rt.provider),
+      );
+    }
+  });
+  return {};
+};
+
 const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
   const data: any = useLoaderData();
@@ -183,7 +198,11 @@ const router = createBrowserRouter(
           <Route path="tokens" element={<AddressTokens />} />
           <Route path="withdrawals" element={<AddressWithdrawals />} />
           <Route path="blocksRewarded" element={<BlocksRewarded />} />
-          <Route path="contract" element={<AddressContract />} />
+          <Route
+            path="contract"
+            element={<AddressContract />}
+            loader={addressContractLoader}
+          />
           <Route path="readContract" element={<AddressReadContract />} />
           <Route path="proxyLogicContract" element={<ProxyContract />} />
           <Route path="readContractAsProxy" element={<ProxyReadContract />} />
