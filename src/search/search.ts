@@ -123,8 +123,11 @@ export class SearchController {
   static async firstPage(
     provider: JsonRpcApiProvider,
     address: string,
+    fetchedTxs?: string[],
   ): Promise<SearchController> {
-    const newTxs = await SearchController.readBackPage(provider, address, 0);
+    const newTxs = fetchedTxs
+      ? rawToProcessed(provider, fetchedTxs)
+      : await SearchController.readBackPage(provider, address, 0);
     return new SearchController(
       address,
       newTxs.txs,

@@ -18,6 +18,7 @@ import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
+import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
 import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
@@ -101,10 +102,21 @@ const addressLoader: LoaderFunction = async ({ params, request }) => {
 };
 
 const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
+  let fetchedTxs = undefined;
+  if (params.direction === undefined && isAddress(params.addressOrName)) {
+    fetchedTxs = runtime.then((rt) =>
+      rt.provider.send("ots_searchTransactionsBefore", [
+        params.addressOrName,
+        0,
+        PAGE_SIZE,
+      ]),
+    );
+  }
   return defer({
     balance: runtime.then((rt) =>
       rt.provider.getBalance(params.addressOrName ?? ""),
     ),
+    fetchedTxs,
   });
 };
 
