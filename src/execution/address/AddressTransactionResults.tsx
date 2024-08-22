@@ -230,8 +230,8 @@ const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
         <>Waiting for search results...</>
       ) : (
         <>
-          <span data-test="page-count">{page.length}</span> transactions on this
-          page
+          <span data-test="page-count">{page.length}</span> transaction
+          {page.length !== 1 && "s"} on this page
         </>
       )}
     </div>
