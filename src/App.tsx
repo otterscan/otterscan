@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { getAddress, isAddress } from "ethers";
 import { FC, lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -24,7 +25,7 @@ import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
-import { providerFetcher } from "./useErigonHooks";
+import { hasCodeQueryFn, providerFetcher } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -80,6 +81,8 @@ const config = loadOtterscanConfig();
 
 const runtime = populateChainInfo(createRuntime(config));
 
+const queryClient = new QueryClient();
+
 /**
  * Triggers both config loading and runtime probing/building in parallel.
  *
@@ -94,11 +97,16 @@ const loader: LoaderFunction = async () => {
 };
 
 const addressLoader: LoaderFunction = async ({ params, request }) => {
-  return defer({
-    hasCode: runtime.then((rt) =>
-      rt.provider.send("ots_hasCode", [params.addressOrName, "latest"]),
-    ),
+  runtime.then((rt) => {
+    if (isAddress(params.addressOrName)) {
+      queryClient.prefetchQuery({
+        queryKey: ["ots_hasCode", params.addressOrName, "latest"],
+        queryFn: () =>
+          hasCodeQueryFn(rt.provider, params.addressOrName, "latest"),
+      });
+    }
   });
+  return null;
 };
 
 const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
@@ -157,15 +165,19 @@ const Layout: FC = () => {
             <Await resolve={data.rt} errorElement={<ProbeErrorHandler />}>
               {(runtime) => (
                 // App is healthy from here
-                <RuntimeContext.Provider value={runtime}>
-                  <ChainInfoContext.Provider value={runtime.config!.chainInfo}>
-                    <div className="flex h-screen flex-col">
-                      <WarningHeader />
-                      <Outlet />
-                      <Footer />
-                    </div>
-                  </ChainInfoContext.Provider>
-                </RuntimeContext.Provider>
+                <QueryClientProvider client={queryClient}>
+                  <RuntimeContext.Provider value={runtime}>
+                    <ChainInfoContext.Provider
+                      value={runtime.config!.chainInfo}
+                    >
+                      <div className="flex h-screen flex-col">
+                        <WarningHeader />
+                        <Outlet />
+                        <Footer />
+                      </div>
+                    </ChainInfoContext.Provider>
+                  </RuntimeContext.Provider>
+                </QueryClientProvider>
               )}
             </Await>
           </Suspense>

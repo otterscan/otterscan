@@ -840,6 +840,17 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
+export const hasCodeQueryFn = async (
+  provider: JsonRpcApiProvider | undefined,
+  address: ChecksummedAddress | undefined,
+  blockTag: BlockTag = "latest",
+): Promise<boolean | undefined> => {
+  if (provider === undefined) {
+    return undefined;
+  }
+  return provider.send("ots_hasCode", [address, "latest"]);
+};
+
 export const useGetCode = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
