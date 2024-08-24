@@ -854,21 +854,19 @@ export const hasCodeQuery = (
   },
 });
 
-export const useGetCode = (
-  provider: JsonRpcApiProvider,
+export const getCodeQuery = (
+  provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-): string | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["eth_getCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as string | undefined;
-};
+) => ({
+  queryKey: ["eth_getCode", address, blockTag],
+  queryFn: () => {
+    if (provider === undefined) {
+      throw new Error("Provider is undefined");
+    }
+    return provider.send("eth_getCode", [address, blockTag]);
+  },
+});
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 

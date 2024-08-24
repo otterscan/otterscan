@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { getAddress, isAddress } from "ethers";
+import { isAddress } from "ethers";
 import { FC, lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
@@ -13,7 +13,6 @@ import {
   RouterProvider,
   useLoaderData,
 } from "react-router-dom";
-import { preload } from "swr";
 import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
@@ -25,7 +24,7 @@ import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
-import { hasCodeQuery, providerFetcher } from "./useErigonHooks";
+import { getCodeQuery, hasCodeQuery } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -128,10 +127,8 @@ const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
 const addressContractLoader: LoaderFunction = async ({ params }) => {
   runtime.then((rt) => {
     if (params.addressOrName && isAddress(params.addressOrName)) {
-      preload(
-        ["eth_getCode", getAddress(params.addressOrName), "latest"],
-        providerFetcher(rt.provider),
-      );
+      const query = getCodeQuery(rt.provider, params.addressOrName, "latest");
+      queryClient.prefetchQuery(query);
     }
   });
   return {};
