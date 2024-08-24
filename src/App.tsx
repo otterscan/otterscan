@@ -25,7 +25,7 @@ import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
-import { hasCodeQueryFn, providerFetcher } from "./useErigonHooks";
+import { hasCodeQuery, providerFetcher } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -99,11 +99,8 @@ const loader: LoaderFunction = async () => {
 const addressLoader: LoaderFunction = async ({ params, request }) => {
   runtime.then((rt) => {
     if (isAddress(params.addressOrName)) {
-      queryClient.prefetchQuery({
-        queryKey: ["ots_hasCode", params.addressOrName, "latest"],
-        queryFn: () =>
-          hasCodeQueryFn(rt.provider, params.addressOrName, "latest"),
-      });
+      const query = hasCodeQuery(rt.provider, params.addressOrName, "latest");
+      queryClient.prefetchQuery(query);
     }
   });
   return null;

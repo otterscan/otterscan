@@ -840,16 +840,19 @@ export const useHasCode = (
   return data as boolean | undefined;
 };
 
-export const hasCodeQueryFn = async (
+export const hasCodeQuery = (
   provider: JsonRpcApiProvider | undefined,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-): Promise<boolean | undefined> => {
-  if (provider === undefined) {
-    return undefined;
-  }
-  return provider.send("ots_hasCode", [address, "latest"]);
-};
+) => ({
+  queryKey: ["ots_hasCode", address, blockTag],
+  queryFn: () => {
+    if (provider === undefined) {
+      throw new Error("Provider is undefined");
+    }
+    return provider.send("ots_hasCode", [address, blockTag]);
+  },
+});
 
 export const useGetCode = (
   provider: JsonRpcApiProvider,
