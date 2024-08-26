@@ -55,7 +55,7 @@ docker run --rm -p 5100:80 --name otterscan -d --env OTTERSCAN_CONFIG='{
 }' otterscan/otterscan:latest
 ```
 
-These settings overwrite the Otterscan config file on container startup. To disable this behavior, pass `--env DIABLE_CONFIG_OVERWRITE=1` to the Docker command.
+These settings overwrite the Otterscan config file on container startup. To disable this behavior, pass `--env DISABLE_CONFIG_OVERWRITE=1` to the Docker command.
 
 Running from Docker is the preferred way to run Otterscan. You can read about other ways [here](./other-ways-to-run-otterscan.md).
 
