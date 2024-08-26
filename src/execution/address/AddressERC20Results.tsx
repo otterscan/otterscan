@@ -1,9 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
 import StandardTHead from "../../components/StandardTHead";
 import {
-  useGenericTransactionCount,
-  useGenericTransactionList,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
@@ -32,14 +33,18 @@ const AddressERC20Results: FC = () => {
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "ERC20Transfer", address);
-  const results = useGenericTransactionList(
-    provider,
-    "ERC20Transfer",
-    address,
-    pageNumber,
-    PAGE_SIZE,
-    total,
+  const { data: total } = useQuery(
+    genericTransactionCountQuery(provider, "ERC20Transfer", address),
+  );
+  const { data: results } = useQuery(
+    genericTransactionListQuery(
+      provider,
+      "ERC20Transfer",
+      address,
+      pageNumber,
+      PAGE_SIZE,
+      total,
+    ),
   );
   const items = useMemo(
     () =>

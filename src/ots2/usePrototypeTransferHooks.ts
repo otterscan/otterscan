@@ -62,18 +62,18 @@ type SearchResultsType<T extends TransactionSearchType> =
       ? BlocksRewardedMatch
       : TransactionMatchWithData;
 
-export const useGenericTransactionCount = (
+export const genericTransactionCountQuery = (
   provider: JsonRpcApiProvider,
   typeName: TransactionSearchType,
   address: ChecksummedAddress,
-): number | undefined => {
+) => {
   const rpcMethod = `ots2_get${typeName}Count`;
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
-  if (error) {
-    return undefined;
-  }
-  return data as number | undefined;
+  return {
+    queryKey: [rpcMethod, address],
+    queryFn: () => {
+      return provider.send(rpcMethod, [address]);
+    },
+  };
 };
 
 function decodeResults<T extends TransactionSearchType>(
@@ -161,6 +161,54 @@ export const useGenericTransactionList = <
   }
 
   return data;
+};
+
+export const genericTransactionListQuery = <
+  T extends TransactionSearchType,
+  U = BlockSummary,
+>(
+  provider: JsonRpcApiProvider | undefined,
+  typeName: T,
+  address: ChecksummedAddress,
+  pageNumber: number,
+  pageSize: number,
+  total: number | undefined,
+): {
+  queryKey: [
+    string,
+    ChecksummedAddress,
+    number | undefined,
+    number | undefined,
+  ];
+  queryFn: () => Promise<TransactionListResults<SearchResultsType<T>, U>>;
+} => {
+  const page = pageToReverseIdx(pageNumber, pageSize, total);
+  const rpcMethod = `ots2_get${typeName}List`;
+  return {
+    queryKey: [rpcMethod, address, page?.idx, page?.count],
+    queryFn: () => {
+      if (provider === undefined || page === undefined) {
+        throw new Error("Provider or page is undefined");
+      }
+      return provider
+        .send(rpcMethod, [address, page.idx, page.count])
+        .then((res) => {
+          const converted = (res.results as any[]).map(
+            (m): SearchResultsType<T> =>
+              decodeResults<T>(m, provider, typeName),
+          );
+          const blockMap = new Map<number, U>();
+          for (const [k, v] of Object.entries(res.blocksSummary as any)) {
+            blockMap.set(parseInt(k), v as any);
+          }
+
+          return {
+            blocksSummary: blockMap,
+            results: converted.reverse(),
+          };
+        });
+    },
+  };
 };
 
 export const useERC1167Impl = (

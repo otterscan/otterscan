@@ -18,6 +18,11 @@ import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
+import {
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
+  type TransactionSearchType,
+} from "./ots2/usePrototypeTransferHooks";
 import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
 import { loader as searchLoader } from "./Search";
@@ -107,7 +112,11 @@ const addressLoader: LoaderFunction = async ({ params, request }) => {
 
 const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
   let fetchedTxs = undefined;
-  if (params.direction === undefined && isAddress(params.addressOrName)) {
+  if (
+    params.direction === undefined &&
+    params.addressOrName !== undefined &&
+    isAddress(params.addressOrName)
+  ) {
     fetchedTxs = runtime.then((rt) =>
       rt.provider.send("ots_searchTransactionsBefore", [
         params.addressOrName,
@@ -133,6 +142,43 @@ const addressContractLoader: LoaderFunction = async ({ params }) => {
   });
   return {};
 };
+
+const addressOts2Page: (typeName: TransactionSearchType) => LoaderFunction =
+  (typeName: TransactionSearchType) =>
+  async ({ params }) => {
+    runtime.then((rt) => {
+      if (params.addressOrName && isAddress(params.addressOrName)) {
+        const countQuery = genericTransactionCountQuery(
+          rt.provider,
+          typeName,
+          params.addressOrName,
+        );
+        queryClient
+          .fetchQuery(countQuery)
+          .then((total) => {
+            if (total !== undefined && params.addressOrName !== undefined) {
+              let pageNumber = 1;
+              if (params.p) {
+                try {
+                  pageNumber = parseInt(params.p);
+                } catch (e: any) {}
+              }
+              const query = genericTransactionListQuery(
+                rt.provider,
+                typeName,
+                params.addressOrName,
+                pageNumber,
+                PAGE_SIZE,
+                total,
+              );
+              queryClient.prefetchQuery(query);
+            }
+          })
+          .catch((e) => {});
+      }
+    });
+    return {};
+  };
 
 const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
@@ -211,11 +257,27 @@ const router = createBrowserRouter(
             loader={addressTxResultsLoader}
           />
           {/* Experimental address routes */}
-          <Route path="erc20" element={<AddressERC20Results />} />
-          <Route path="erc721" element={<AddressERC721Results />} />
+          <Route
+            path="erc20"
+            element={<AddressERC20Results />}
+            loader={addressOts2Page("ERC20Transfer")}
+          />
+          <Route
+            path="erc721"
+            element={<AddressERC721Results />}
+            loader={addressOts2Page("ERC721Transfer")}
+          />
           <Route path="tokens" element={<AddressTokens />} />
-          <Route path="withdrawals" element={<AddressWithdrawals />} />
-          <Route path="blocksRewarded" element={<BlocksRewarded />} />
+          <Route
+            path="withdrawals"
+            element={<AddressWithdrawals />}
+            loader={addressOts2Page("Withdrawals")}
+          />
+          <Route
+            path="blocksRewarded"
+            element={<BlocksRewarded />}
+            loader={addressOts2Page("BlocksRewarded")}
+          />
           <Route
             path="contract"
             element={<AddressContract />}
