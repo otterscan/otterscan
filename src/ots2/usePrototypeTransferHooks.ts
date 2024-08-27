@@ -137,36 +137,11 @@ const resultFetcher = <T extends TransactionSearchType, U>(
   };
 };
 
-export const useGenericTransactionList = <
-  T extends TransactionSearchType,
-  U = BlockSummary,
->(
-  provider: JsonRpcApiProvider,
-  typeName: T,
-  address: ChecksummedAddress,
-  pageNumber: number,
-  pageSize: number,
-  total: number | undefined,
-): TransactionListResults<SearchResultsType<T>, U> | undefined => {
-  const page = pageToReverseIdx(pageNumber, pageSize, total);
-  const rpcMethod = `ots2_get${typeName}List`;
-  const fetcher = resultFetcher<T, U>(provider, typeName);
-  const { data, error } = useSWRImmutable(
-    page === undefined ? null : [rpcMethod, address, page.idx, page.count],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-
-  return data;
-};
-
 export const genericTransactionListQuery = <
   T extends TransactionSearchType,
   U = BlockSummary,
 >(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   typeName: T,
   address: ChecksummedAddress,
   pageNumber: number,
