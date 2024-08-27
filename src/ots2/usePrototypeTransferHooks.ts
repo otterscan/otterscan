@@ -6,7 +6,6 @@ import {
   ZeroAddress,
   getAddress,
 } from "ethers";
-import { useMemo } from "react";
 import useSWR, { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "../abi/erc20.json";
@@ -226,24 +225,17 @@ export const useERC1167Impl = (
   return data;
 };
 
-export const useERC20Holdings = (
+export const erc20HoldingsQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress,
-): ChecksummedAddress[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(["ots2_getERC20Holdings", address], fetcher);
-  const converted = useMemo(() => {
-    if (error) {
-      return undefined;
-    }
-
-    if (data === undefined || data === null) {
-      return undefined;
-    }
-    return (data as any[]).map((m) => getAddress(m.address));
-  }, [data, error]);
-
-  return converted;
+) => {
+  return {
+    queryKey: ["ots2_getERC20Holdings", address],
+    queryFn: async () => {
+      const data = await provider.send("ots2_getERC20Holdings", [address]);
+      return (data as any[]).map((m) => getAddress(m.address));
+    },
+  };
 };
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);

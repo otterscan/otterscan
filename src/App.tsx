@@ -19,6 +19,7 @@ import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
 import {
+  erc20HoldingsQuery,
   genericTransactionCountQuery,
   genericTransactionListQuery,
   type TransactionSearchType,
@@ -100,7 +101,7 @@ const loader: LoaderFunction = async () => {
   });
 };
 
-const addressLoader: LoaderFunction = async ({ params, request }) => {
+const addressLoader: LoaderFunction = async ({ params }) => {
   runtime.then((rt) => {
     if (isAddress(params.addressOrName)) {
       const query = hasCodeQuery(rt.provider, params.addressOrName, "latest");
@@ -143,7 +144,7 @@ const addressContractLoader: LoaderFunction = async ({ params }) => {
   return {};
 };
 
-const addressOts2Page: (typeName: TransactionSearchType) => LoaderFunction =
+const addressOts2List: (typeName: TransactionSearchType) => LoaderFunction =
   (typeName: TransactionSearchType) =>
   async ({ params }) => {
     runtime.then((rt) => {
@@ -179,6 +180,16 @@ const addressOts2Page: (typeName: TransactionSearchType) => LoaderFunction =
     });
     return {};
   };
+
+const addressTokenHoldings: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (isAddress(params.addressOrName)) {
+      const query = erc20HoldingsQuery(rt.provider, params.addressOrName);
+      queryClient.prefetchQuery(query);
+    }
+  });
+  return null;
+};
 
 const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
@@ -260,23 +271,27 @@ const router = createBrowserRouter(
           <Route
             path="erc20"
             element={<AddressERC20Results />}
-            loader={addressOts2Page("ERC20Transfer")}
+            loader={addressOts2List("ERC20Transfer")}
           />
           <Route
             path="erc721"
             element={<AddressERC721Results />}
-            loader={addressOts2Page("ERC721Transfer")}
+            loader={addressOts2List("ERC721Transfer")}
           />
-          <Route path="tokens" element={<AddressTokens />} />
+          <Route
+            path="tokens"
+            element={<AddressTokens />}
+            loader={addressTokenHoldings}
+          />
           <Route
             path="withdrawals"
             element={<AddressWithdrawals />}
-            loader={addressOts2Page("Withdrawals")}
+            loader={addressOts2List("Withdrawals")}
           />
           <Route
             path="blocksRewarded"
             element={<BlocksRewarded />}
-            loader={addressOts2Page("BlocksRewarded")}
+            loader={addressOts2List("BlocksRewarded")}
           />
           <Route
             path="contract"

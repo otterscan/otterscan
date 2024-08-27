@@ -1,4 +1,5 @@
 import { Switch } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
 import { getAddress } from "ethers";
 import { FC, useContext, useMemo, useState } from "react";
 import { useOutletContext } from "react-router-dom";
@@ -7,7 +8,7 @@ import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import StandardTHead from "../../components/StandardTHead";
 import { useTokenSet } from "../../kleros/useTokenList";
-import { useERC20Holdings } from "../../ots2/usePrototypeTransferHooks";
+import { erc20HoldingsQuery } from "../../ots2/usePrototypeTransferHooks";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { RuntimeContext } from "../../useRuntime";
@@ -18,7 +19,7 @@ import TokenBalance from "./TokenBalance";
 const AddressTokens: FC = () => {
   const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
-  const erc20List = useERC20Holdings(provider, address);
+  const { data: erc20List } = useQuery(erc20HoldingsQuery(provider, address));
   usePageTitle(`Token Balances | ${address}`);
 
   const [enabled, setEnabled] = useState<boolean>(true);
