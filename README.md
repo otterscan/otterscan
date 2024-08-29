@@ -4,9 +4,13 @@ An open-source, fast, local, laptop-friendly Ethereum block explorer.
 
 https://user-images.githubusercontent.com/28685/124196700-4fe71200-daa3-11eb-912c-b66494fe4b23.mov
 
+## Documentation
+
+> 💡 For install instructions and a lot more, please take a look at our official documentation: [The Otterscan Book](https://docs.otterscan.io/)!
+
 ## What?
 
-This is an Ethereum block explorer designed to be run locally with an archive node companion, more specifically, with [Erigon](https://github.com/ledgerwatch/erigon).
+This is an Ethereum block explorer designed to be run locally with an archive node companion, more specifically, with [Erigon](https://github.com/erigontech/erigon).
 
 This approach brings many advantages, as follows.
 
@@ -24,21 +28,15 @@ This software was designed to be a companion of Erigon, a blazingly fast archive
 
 ### Really, it is even faster
 
-The standard web3 jsonrpc methods are quite verbose and generic requiring many calls to gather many pieces of information at client side.
+The standard web3 JSON-RPC methods are quite verbose and generic requiring many calls to gather many pieces of information at client side.
 
-We've implemented some custom methods at rpcdaemon level, less information is needed to be json-marshalled and transmitted over network.
-
-## Alpha warning
-
-This software is in alpha stage, and for sure lots of features, error handling, edge cases are missing.
-
-Be sure to check it often or send patches 😀
+We've implemented some custom methods at client level, less information is needed to be JSON-marshalled and transmitted over network.
 
 ## Why?
 
 Current offerings are either closed source or lack many features the most famous Ethereum block explorer has, or simply have high requirements like having an archive node + additional indexers.
 
-Otterscan requires only mainline Erigon executing node, patched Erigon RPC daemon and running Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
+Otterscan requires only mainline Erigon executing node and Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
 
 ## Why the name?
 
@@ -47,69 +45,6 @@ Otterscan requires only mainline Erigon executing node, patched Erigon RPC daemo
 - It is heavily based on Erigon, whose mascot is an otter (Erigon, the otter), think about an otter scanning your transactions inside blocks.
 - It is an homage to the most famous and used ethereum block explorer.
 - The author loves wordplays and bad puns.
-
-## It looks familiar...
-
-The UI was intentionally made very similar to the most popular Ethereum block explorer so users do not struggle trying to find where the information is.
-
-However, you will see that we made many UI improvements.
-
-## Supported networks
-
-Otterscan runs on any network that has a client implementing the [Otterscan API](#otterscan-json-rpc-api-extensions).
-
-### Erigon
-
-The reference implementation is maintained by us and comes out-of-box in any Erigon installation.
-
-So, it runs on any network supported by Erigon, which at the moment of writing are:
-
-- Ethereum mainnet + all testnets
-- Gnosis chain
-- Polygon
-
-### Optimism
-
-[Test-in-Prod](https://www.testinprod.io/) made and maintain OP-Erigon, which is a fork of Erigon that can sync any Optimism Superchain (Optimism, BASE, Zora, etc.).
-
-### Anvil
-
-Anvil [implements the Otterscan API](https://book.getfoundry.sh/reference/anvil/#otterscan-methods), so you can point your Otterscan installation to an Anvil RPC endpoint and have an explorer for your local devnet.
-
-## Public instances
-
-Otterscan is meant to be run on your own environment ([see install instructions below](#install-instructions)).
-
-However, we host some testnet instances as a showcase of our features:
-
-- Sepolia testnet: https://sepolia.otterscan.io/
-- Holesky testnet: https://holesky.otterscan.io/
-
-Test-in-Prod, the makers of OP-Erigon, also host instances for Optimism:
-
-- OP-Sepolia testnet: https://otterscan.sepolia.testinprod.io/
-- OP-Mainnet: https://otterscan.mainnet.testinprod.io/
-
-## Commercial offerings
-
-Some node providers offer Otterscan API for their customers. Please check with them their business conditions as we are not affiliated to them:
-
-- Llamanodes: https://llamanodes.com/
-- Quicknode: https://www.quicknode.com/
-
-## Install instructions
-
-[Here](./docs/install.md).
-
-> **NEW**: if you want to opt-in into testing Otterscan v2 ALPHA features, [follow these instructions](./docs/ots2.md).
-
-## Contract verification
-
-We make use of [Sourcify](https://sourcify.dev/) for displaying contract verification info. More info [here](docs/sourcify.md).
-
-## Otterscan JSON-RPC API extensions
-
-We implemented new JSON-RPC APIs to expose information not available in a standard ETH node. They can be useful for non-Otterscan users and their specification is available [here](./docs/custom-jsonrpc.md).
 
 ## Kudos (in no particular order)
 
@@ -131,16 +66,6 @@ To [Sourcify](https://sourcify.dev/), a public decentralized source code and met
 
 To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library we used to interact with the ETH node. It is high level enough to hide most jsonrpc particularities, but flexible enough to allow easy interaction with custom jsonrpc methods.
 
-## Future
-
-Erigon keeps evolving at a fast pace, with weekly releases, sometimes with (necessary) breaking changes.
-
-This project intends to keep following their progress and maintaining compatibility as the availability of the author permits.
-
-Erigon itself is alpha, so I consider this software is also in alpha state, however it is pretty usable.
-
-Also there is room for many improvements that are not possible in the current centralized, closed source block explorer offerings and the author of this software would like to have.
-
 ## Licensing
 
 This software itself is MIT licensed and redistributes MIT-compatible dependencies.
@@ -153,13 +78,13 @@ The Otterscan API is implemented inside Erigon and follow its own license (LPGL-
 
 Our Discord server: https://discord.gg/5xM2q2eqDz
 
-Otterscan also has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/ledgerwatch/erigon#erigon-discord-server) (invite should be requested).
+Otterscan also has a community channel under the "ecosystem" section of [Erigon's Discord](https://github.com/erigontech/erigon#erigon-discord-server) (invite should be requested).
 
-### Twitter
+### X/Twitter
 
-Official Twitter account: ([@otterscan](https://twitter.com/otterscan)).
+Official X/Twitter account: ([@otterscan](https://x.com/otterscan)).
 
-Follow the creator on Twitter for more updates ([@wmitsuda](https://twitter.com/wmitsuda)).
+Follow the creator on X/Twitter for more updates ([@wmitsuda](https://x.com/wmitsuda)).
 
 ### Donation address
 
