@@ -10,17 +10,17 @@ https://user-images.githubusercontent.com/28685/124196700-4fe71200-daa3-11eb-912
 
 ## What?
 
-This is an Ethereum block explorer designed to be run locally with an archive node companion, more specifically, with [Erigon](https://github.com/erigontech/erigon).
+This is an Ethereum block explorer designed to be run locally with an archive node companion, [Erigon](https://github.com/erigontech/erigon).
 
 This approach brings many advantages, as follows.
 
 ### Privacy
 
-You are querying your own node, so you are not sending your IP address or queries to an external third-party node.
+You are querying your own node, so you are not sending your IP address or queries to an external, third-party node.
 
 ### Fast
 
-Since you are querying your local archive node, everything is fast, no network roundtrips are necessary.
+Since you are querying your local archive node, everything is fast. No network roundtrips are necessary.
 
 ### Actually, very fast
 
@@ -30,43 +30,43 @@ This software was designed to be a companion of Erigon, a blazingly fast archive
 
 The standard web3 JSON-RPC methods are quite verbose and generic requiring many calls to gather many pieces of information at client side.
 
-We've implemented some custom methods at client level, less information is needed to be JSON-marshalled and transmitted over network.
+We've implemented some custom methods at the client level, so less information needs to be JSON-marshalled and transmitted over the network.
 
 ## Why?
 
 Current offerings are either closed source or lack many features the most famous Ethereum block explorer has, or simply have high requirements like having an archive node + additional indexers.
 
-Otterscan requires only mainline Erigon executing node and Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
+Otterscan requires only a mainline Erigon execution node and Otterscan itself (a simple React app), which makes it a laptop-friendly block explorer.
 
 ## Why the name?
 
 3 reasons:
 
 - It is heavily based on Erigon, whose mascot is an otter (Erigon, the otter), think about an otter scanning your transactions inside blocks.
-- It is an homage to the most famous and used ethereum block explorer.
+- It is an homage to the most popular Ethereum block explorer.
 - The author loves wordplays and bad puns.
 
 ## Kudos (in no particular order)
 
-We make use of many open-source software and integrate many public datasources, mainly:
+We make use of open-source software and integrate many public data sources, mainly:
 
 To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
-To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node in a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the modifications Otterscan requires possible.
+To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node on a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the Otterscan modifications possible.
 
-To the [Test-in-Prod](https://www.testinprod.io/) team that made OP-Erigon possible. Their effort made it possible to run Otterscan against any Optimism Superchain.
+To the [Test in Prod](https://www.testinprod.io/) team that made OP-Erigon. Their effort made it possible to run Otterscan against any Optimism Superchain.
 
-To the [mdbx](https://github.com/erthink/libmdbx) team which is the blazingly fast database that empowers Erigon.
+To the [mdbx](https://github.com/erthink/libmdbx) team which created the blazingly fast database that empowers Erigon.
 
 To [Trust Wallet](https://github.com/trustwallet/assets) who sponsors and makes available their icons under a permissive license.
 
-To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate the method selectors to human-friendly strings.
+To the owners of the [4bytes repository](https://github.com/ethereum-lists/4bytes) that we import and use to translate method selectors to human-friendly strings.
 
-To [Sourcify](https://sourcify.dev/), a public decentralized source code and metadata verification service.
+To [Sourcify](https://sourcify.dev/), a public, decentralized source code and metadata verification service.
 
-To [Ethers](https://github.com/ethers-io/ethers.js/) which is the client library we used to interact with the ETH node. It is high level enough to hide most jsonrpc particularities, but flexible enough to allow easy interaction with custom jsonrpc methods.
+To [Ethers](https://github.com/ethers-io/ethers.js/), which is the client library we used to interact with the Erigon node. It is high-level enough to hide most JSON-RPC particularities but flexible enough to allow for easy interaction with custom methods.
 
-## Licensing
+## License
 
 This software itself is MIT licensed and redistributes MIT-compatible dependencies.
 
