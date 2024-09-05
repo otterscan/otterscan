@@ -215,39 +215,21 @@ export const erc20HoldingsQuery = (
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
-const erc20BalanceFetcher =
-  (
-    provider: JsonRpcApiProvider,
-  ): Fetcher<
-    bigint | null,
-    ["erc20balance", ChecksummedAddress, ChecksummedAddress]
-  > =>
-  async ([_, address, tokenAddress]) => {
-    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const contract = ERC20_PROTOTYPE.connect(provider).attach(
-      tokenAddress,
-    ) as Contract;
-    return contract.balanceOf(address);
-  };
-
-export const useTokenBalance = (
+export const erc20BalanceQuery = (
   provider: JsonRpcApiProvider,
-  address: ChecksummedAddress | undefined,
-  tokenAddress: ChecksummedAddress | undefined,
-): bigint | null | undefined => {
-  const fetcher = erc20BalanceFetcher(provider);
-  const { data, error } = useSWR(
-    ["erc20balance", address, tokenAddress],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-
-  if (data === undefined || data === null) {
-    return undefined;
-  }
-  return data;
+  address: ChecksummedAddress,
+  tokenAddress: ChecksummedAddress,
+) => {
+  return {
+    queryKey: ["erc20balance", address, tokenAddress],
+    queryFn: async () => {
+      // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+      const contract = ERC20_PROTOTYPE.connect(provider).attach(
+        tokenAddress,
+      ) as Contract;
+      return contract.balanceOf(address);
+    },
+  };
 };
 
 export type AddressAttributes = {
