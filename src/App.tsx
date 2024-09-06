@@ -19,6 +19,7 @@ import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
 import {
+  addressAttributesQuery,
   erc20HoldingsQuery,
   genericTransactionCountQuery,
   genericTransactionListQuery,
@@ -138,6 +139,16 @@ const addressContractLoader: LoaderFunction = async ({ params }) => {
   runtime.then((rt) => {
     if (params.addressOrName && isAddress(params.addressOrName)) {
       const query = getCodeQuery(rt.provider, params.addressOrName, "latest");
+      queryClient.prefetchQuery(query);
+    }
+  });
+  return {};
+};
+
+const proxyContractLoader: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (params.addressOrName && isAddress(params.addressOrName)) {
+      const query = addressAttributesQuery(rt.provider, params.addressOrName);
       queryClient.prefetchQuery(query);
     }
   });
@@ -299,7 +310,11 @@ const router = createBrowserRouter(
             loader={addressContractLoader}
           />
           <Route path="readContract" element={<AddressReadContract />} />
-          <Route path="proxyLogicContract" element={<ProxyContract />} />
+          <Route
+            path="proxyLogicContract"
+            element={<ProxyContract />}
+            loader={proxyContractLoader}
+          />
           <Route path="readContractAsProxy" element={<ProxyReadContract />} />
           <Route
             path="*"

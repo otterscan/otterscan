@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   Contract,
   JsonRpcApiProvider,
@@ -6,7 +7,7 @@ import {
   ZeroAddress,
   getAddress,
 } from "ethers";
-import useSWR, { Fetcher } from "swr";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "../abi/erc20.json";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
@@ -241,22 +242,27 @@ export type AddressAttributes = {
   erc1167Logic?: boolean;
 };
 
+export const addressAttributesQuery = (
+  provider: JsonRpcApiProvider | undefined,
+  address: ChecksummedAddress | undefined,
+) => {
+  return {
+    queryKey: ["ots2_getAddressAttributes", address],
+    queryFn: async () => {
+      if (provider === undefined || address === undefined) {
+        throw new Error("Provider or address is undefined");
+      }
+      const result = provider.send("ots2_getAddressAttributes", [address]);
+      return result === null ? undefined : result;
+    },
+  };
+};
+
 export const useAddressAttributes = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): AddressAttributes | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(
-    ["ots2_getAddressAttributes", address],
-    fetcher,
-  );
-  if (address === undefined || error) {
-    return undefined;
-  }
-
-  if (data === undefined || data === null) {
-    return undefined;
-  }
+  const { data } = useQuery(addressAttributesQuery(provider, address));
   return data;
 };
 
