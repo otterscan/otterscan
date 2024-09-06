@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   AbiCoder,
   BlockParams,
@@ -829,15 +830,8 @@ export const useHasCode = (
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ): boolean | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["ots_hasCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as boolean | undefined;
+  const { data: hasCode } = useQuery(hasCodeQuery(provider, address, blockTag));
+  return hasCode;
 };
 
 export const hasCodeQuery = (
