@@ -1,4 +1,4 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { isAddress } from "ethers";
 import { FC, lazy, Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -27,6 +27,7 @@ import {
 } from "./ots2/usePrototypeTransferHooks";
 import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
+import { queryClient } from "./queryClient";
 import { loader as searchLoader } from "./Search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
@@ -86,8 +87,6 @@ const BroadcastTransactionPage = lazy(
 const config = loadOtterscanConfig();
 
 const runtime = populateChainInfo(createRuntime(config));
-
-const queryClient = new QueryClient();
 
 /**
  * Triggers both config loading and runtime probing/building in parallel.
