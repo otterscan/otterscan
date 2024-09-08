@@ -146,8 +146,12 @@ const addressContractLoader: LoaderFunction = async ({ params }) => {
 };
 
 const proxyContractLoader: LoaderFunction = async ({ params }) => {
-  runtime.then((rt) => {
-    if (params.addressOrName && isAddress(params.addressOrName)) {
+  Promise.all([runtime, config]).then(([rt, cfg]) => {
+    if (
+      cfg.experimental &&
+      params.addressOrName &&
+      isAddress(params.addressOrName)
+    ) {
       const query = addressAttributesQuery(rt.provider, params.addressOrName);
       queryClient.prefetchQuery(query);
     }
