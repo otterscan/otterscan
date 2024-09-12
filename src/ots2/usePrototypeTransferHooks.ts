@@ -243,14 +243,14 @@ export type AddressAttributes = {
 };
 
 export const addressAttributesQuery = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ) => {
   return {
     queryKey: ["ots2_getAddressAttributes", address],
     queryFn: async () => {
-      if (provider === undefined || address === undefined) {
-        throw new Error("Provider or address is undefined");
+      if (address === undefined) {
+        throw new Error("Address is undefined");
       }
       const result = provider.send("ots2_getAddressAttributes", [address]);
       return result === null ? undefined : result;

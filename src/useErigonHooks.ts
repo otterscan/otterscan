@@ -835,29 +835,23 @@ export const useHasCode = (
 };
 
 export const hasCodeQuery = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ) => ({
   queryKey: ["ots_hasCode", address, blockTag],
   queryFn: () => {
-    if (provider === undefined) {
-      throw new Error("Provider is undefined");
-    }
     return provider.send("ots_hasCode", [address, blockTag]);
   },
 });
 
 export const getCodeQuery = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ) => ({
   queryKey: ["eth_getCode", address, blockTag],
   queryFn: () => {
-    if (provider === undefined) {
-      throw new Error("Provider is undefined");
-    }
     return provider.send("eth_getCode", [address, blockTag]);
   },
 });

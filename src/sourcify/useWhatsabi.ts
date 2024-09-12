@@ -11,13 +11,13 @@ import { Match, MatchType } from "./useSourcify";
 export const useWhatsabiMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   assetsURLPrefix: string | undefined,
 ): Match | null | undefined => {
   const fetcher = whatsabiFetcher(provider, assetsURLPrefix);
   const key = ["whatsabi", address, chainId];
   const { data, error } = useSWRImmutable<Match | null | undefined>(
-    address !== undefined && provider !== undefined ? key : null,
+    address !== undefined ? key : null,
     fetcher,
   );
   if (error) {
@@ -27,11 +27,11 @@ export const useWhatsabiMetadata = (
 };
 
 function whatsabiFetcher(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   assetsURLPrefix: string | undefined,
 ): Fetcher<Match | null | undefined, ["whatsabi", ChecksummedAddress, bigint]> {
   return async ([_, address, chainId]) => {
-    if (provider && assetsURLPrefix !== undefined) {
+    if (assetsURLPrefix !== undefined) {
       const code = await queryClient.fetchQuery(
         getCodeQuery(provider, address, "latest"),
       );
