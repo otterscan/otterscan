@@ -318,7 +318,11 @@ const router = createBrowserRouter(
             element={<ProxyContract />}
             loader={proxyContractLoader}
           />
-          <Route path="readContractAsProxy" element={<ProxyReadContract />} />
+          <Route
+            path="readContractAsProxy"
+            element={<ProxyReadContract />}
+            loader={proxyContractLoader}
+          />
           <Route
             path="*"
             element={
