@@ -99,7 +99,7 @@
     "prettier-plugin-tailwindcss": "^0.6.5",
     "source-map-explorer": "^2.5.3",
     "storybook": "^8.2.7",
-    "tailwindcss": "^3.4.7",
+    "tailwindcss": "^3.4.11",
     "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
     "tspeg": "^3.3.1",
