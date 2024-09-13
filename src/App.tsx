@@ -112,25 +112,17 @@ const addressLoader: LoaderFunction = async ({ params }) => {
 };
 
 const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
-  let fetchedTxs = undefined;
   if (
     params.direction === undefined &&
     params.addressOrName !== undefined &&
     isAddress(params.addressOrName)
   ) {
-    fetchedTxs = runtime.then((rt) =>
-      rt.provider.send("ots_searchTransactionsBefore", [
-        params.addressOrName,
-        0,
-        PAGE_SIZE,
-      ]),
-    );
+    // TODO: Prefetch address transactions
   }
   return defer({
     balance: runtime.then((rt) =>
       rt.provider.getBalance(params.addressOrName ?? ""),
     ),
-    fetchedTxs,
   });
 };
 

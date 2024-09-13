@@ -56,9 +56,8 @@ const AddressTransactionResults: FC = () => {
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
-  const { balance: balancePromise, fetchedTxs } = useLoaderData() as {
+  const { balance: balancePromise } = useLoaderData() as {
     balance: Promise<bigint | undefined>;
-    fetchedTxs: Promise<string[]> | undefined;
   };
 
   const { addressOrName, direction } = useParams();
@@ -82,11 +81,7 @@ const AddressTransactionResults: FC = () => {
     }
 
     const readFirstPage = async () => {
-      const _controller = await SearchController.firstPage(
-        provider,
-        address,
-        fetchedTxs ? await fetchedTxs : undefined,
-      );
+      const _controller = await SearchController.firstPage(provider, address);
       setController(_controller);
     };
     const readMiddlePage = async (next: boolean) => {

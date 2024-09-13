@@ -124,14 +124,10 @@ export class SearchController {
   static async firstPage(
     provider: JsonRpcApiProvider,
     address: string,
-    fetchedTxs?: string[],
   ): Promise<SearchController> {
-    // TODO: Remove fetchedTxs argument
-    const newTxs: TransactionChunk = fetchedTxs
-      ? rawToProcessed(provider, fetchedTxs)
-      : await queryClient.fetchQuery(
-          searchTransactionsQuery(provider, address, 0, "before"),
-        );
+    const newTxs: TransactionChunk = await queryClient.fetchQuery(
+      searchTransactionsQuery(provider, address, 0, "before"),
+    );
     return new SearchController(
       address,
       newTxs.txs,
