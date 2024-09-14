@@ -163,7 +163,7 @@ const addressContractLoader: LoaderFunction = async ({ params }) => {
       queryClient.prefetchQuery(query);
     }
   });
-  return {};
+  return null;
 };
 
 const proxyContractLoader: LoaderFunction = async ({ params }) => {
@@ -177,7 +177,7 @@ const proxyContractLoader: LoaderFunction = async ({ params }) => {
       queryClient.prefetchQuery(query);
     }
   });
-  return {};
+  return null;
 };
 
 const addressOts2List: (typeName: TransactionSearchType) => LoaderFunction =
@@ -214,7 +214,7 @@ const addressOts2List: (typeName: TransactionSearchType) => LoaderFunction =
           .catch((e) => {});
       }
     });
-    return {};
+    return null;
   };
 
 const addressTokenHoldings: LoaderFunction = async ({ params }) => {
@@ -234,10 +234,10 @@ const Layout: FC = () => {
   return (
     // Catch all error boundary
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {/* await for config load */}
+      {/* wait for config load */}
       <Await resolve={data.config}>
         {(config: OtterscanConfig) => (
-          // Await for runtime building + probing; suspend while probing;
+          // Wait for runtime building + probing; suspend while probing;
           // don't show probe splash if hardcoded chainId
           <Suspense
             fallback={
