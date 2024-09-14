@@ -71,6 +71,16 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
   };
 };
 
+export const getTransactionQuery = (
+  provider: JsonRpcApiProvider,
+  transactionHash: string,
+) => ({
+  queryKey: ["eth_getTransactionByHash", transactionHash],
+  queryFn: () => {
+    return provider.getTransaction(transactionHash);
+  },
+});
+
 export const searchTransactionsQuery = (
   provider: JsonRpcApiProvider,
   address: string,
@@ -143,7 +153,9 @@ export class SearchController {
     hash: string,
     next: boolean,
   ): Promise<SearchController> {
-    const tx = await provider.getTransaction(hash);
+    const tx = await queryClient.fetchQuery(
+      getTransactionQuery(provider, hash),
+    );
     // TODO: Can we actually infer that this transaction is not null?
     const newTxs = await queryClient.fetchQuery(
       searchTransactionsQuery(

@@ -29,6 +29,7 @@ import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
 import { queryClient } from "./queryClient";
 import { loader as searchLoader } from "./Search";
+import { getTransactionQuery, searchTransactionsQuery } from "./search/search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
@@ -111,13 +112,42 @@ const addressLoader: LoaderFunction = async ({ params }) => {
   return null;
 };
 
-const addressTxResultsLoader: LoaderFunction = async ({ params }) => {
-  if (
-    params.direction === undefined &&
-    params.addressOrName !== undefined &&
-    isAddress(params.addressOrName)
-  ) {
-    // TODO: Prefetch address transactions
+const addressTxResultsLoader: LoaderFunction = async ({ params, request }) => {
+  if (params.addressOrName !== undefined && isAddress(params.addressOrName)) {
+    const address = params.addressOrName;
+    runtime.then((rt) => {
+      if (
+        params.direction === undefined ||
+        params.direction === "first" ||
+        params.direction === "last"
+      ) {
+        const searchQuery = searchTransactionsQuery(
+          rt.provider,
+          address,
+          0,
+          params.direction === "last" ? "after" : "before",
+        );
+        queryClient.prefetchQuery(searchQuery);
+      } else if (params.direction === "next" || params.direction === "prev") {
+        const url = new URL(request.url);
+        const txHash = url.searchParams.get("h");
+        if (txHash) {
+          queryClient
+            .fetchQuery(getTransactionQuery(rt.provider, txHash))
+            .then((tx) => {
+              if (tx !== null) {
+                const searchQuery = searchTransactionsQuery(
+                  rt.provider,
+                  address,
+                  tx.blockNumber!,
+                  params.direction === "prev" ? "after" : "before",
+                );
+                queryClient.prefetchQuery(searchQuery);
+              }
+            });
+        }
+      }
+    });
   }
   return defer({
     balance: runtime.then((rt) =>
