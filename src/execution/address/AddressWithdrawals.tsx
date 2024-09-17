@@ -1,4 +1,5 @@
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router-dom";
 import StandardTHead from "../../components/StandardTHead";
 import {
   useGenericTransactionCount,
@@ -8,7 +9,7 @@ import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 import WithdrawalItem, { WithdrawalItemProps } from "./WithdrawalItem";
 
@@ -23,9 +24,8 @@ const withdrawalSearchHeader = (
   </StandardTHead>
 );
 
-const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
+const AddressWithdrawalsResults: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();

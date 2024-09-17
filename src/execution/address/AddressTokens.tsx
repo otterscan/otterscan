@@ -1,6 +1,7 @@
 import { Switch } from "@headlessui/react";
 import { getAddress } from "ethers";
 import { FC, useContext, useMemo, useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
 import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
@@ -11,10 +12,11 @@ import SearchResultNavBar from "../../search/SearchResultNavBar";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import TokenBalance from "./TokenBalance";
 
-const AddressTokens: FC<AddressAwareComponentProps> = ({ address }) => {
+const AddressTokens: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
   const erc20List = useERC20Holdings(provider, address);
   usePageTitle(`Token Balances | ${address}`);

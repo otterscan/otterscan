@@ -1,4 +1,5 @@
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router-dom";
 import {
   useGenericTransactionCount,
   useGenericTransactionList,
@@ -7,11 +8,12 @@ import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
-const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
+const AddressERC721Results: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();

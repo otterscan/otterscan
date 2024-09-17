@@ -2,10 +2,17 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanels } from "@headlessui/react";
-import React, { useCallback, useContext } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useDeferredValue,
+  useEffect,
+  useState,
+} from "react";
 import {
-  Route,
-  Routes,
+  Await,
+  Outlet,
+  useLoaderData,
   useNavigate,
   useParams,
   useSearchParams,
@@ -15,21 +22,12 @@ import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
-import { useSourcifyMetadata } from "../sourcify/useSourcify";
+import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
-import { useHasCode } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
-import AddressERC20Results from "./address/AddressERC20Results";
-import AddressERC721Results from "./address/AddressERC721Results";
 import AddressSubtitle from "./address/AddressSubtitle";
-import AddressTokens from "./address/AddressTokens";
-import AddressTransactionResults from "./address/AddressTransactionResults";
-import AddressWithdrawals from "./address/AddressWithdrawals";
-import BlocksRewarded from "./address/BlocksRewarded";
-import Contracts from "./address/Contracts";
-import ReadContract from "./address/contract/ReadContract";
 import { AddressAwareComponentProps } from "./types";
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
@@ -55,30 +53,14 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-const ProxyContracts: React.FC<AddressAwareComponentProps> = ({ address }) => {
-  const { provider } = useContext(RuntimeContext);
-  const proxyAttrs = useProxyAttributes(provider, address);
-  return (
-    <Contracts
-      checksummedAddress={proxyAttrs.logicAddress!}
-      match={proxyAttrs.proxyMatch}
-    />
-  );
+export type AddressOutletContext = {
+  address: string;
+  hasCode: boolean | undefined;
+  match: Match | null | undefined;
+  whatsabiMatch: Match | null | undefined;
 };
 
-const ProxyReadContract: React.FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
-  const { provider } = useContext(RuntimeContext);
-  const proxyAttrs = useProxyAttributes(provider, address);
-  return (
-    <ReadContract checksummedAddress={address} match={proxyAttrs.proxyMatch} />
-  );
-};
-
-type AddressMainPageProps = {};
-
-const AddressMainPage: React.FC<AddressMainPageProps> = () => {
+const AddressMainPage: React.FC = () => {
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
     throw new Error("addressOrName couldn't be undefined here");
@@ -103,7 +85,19 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
   );
 
   const { config, provider } = useContext(RuntimeContext);
-  const hasCode = useHasCode(provider, checksummedAddress);
+  const { hasCode: hasCodePromise } = useDeferredValue(
+    useLoaderData() as {
+      hasCode: Promise<boolean | undefined>;
+    },
+  );
+
+  const [hasCode, setHasCode] = useState<boolean | undefined>(undefined);
+  useEffect(() => {
+    hasCodePromise.then((result) => {
+      setHasCode(result);
+    });
+  }, [hasCodePromise]);
+
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
     provider._network.chainId,
@@ -155,125 +149,61 @@ const AddressMainPage: React.FC<AddressMainPageProps> = () => {
                     </NavTab>
                   </>
                 )}
-                {hasCode && (
-                  <NavTab href={`/address/${addressOrName}/contract`}>
-                    <span
-                      className={`flex items-baseline space-x-2 ${
-                        match === undefined ? "italic opacity-50" : ""
-                      }`}
-                    >
-                      <span>Contract</span>
-                      {match === undefined ? (
-                        <span className="self-center">
-                          <FontAwesomeIcon
-                            className="animate-spin"
-                            icon={faCircleNotch}
-                          />
-                        </span>
-                      ) : match === null ? (
-                        <span className="self-center text-red-500">
-                          <FontAwesomeIcon icon={faQuestionCircle} />
-                        </span>
-                      ) : (
-                        <span className="self-center">
-                          <SourcifyLogo />
-                        </span>
-                      )}
-                    </span>
-                  </NavTab>
-                )}
-                {hasCode && (match || whatsabiMatch) && (
-                  <NavTab href={`/address/${addressOrName}/readContract`}>
-                    <span className={`flex items-baseline space-x-2`}>
-                      <span>Read Contract</span>
-                    </span>
-                  </NavTab>
-                )}
+                <Await resolve={hasCodePromise} errorElement={<></>}>
+                  {(hasCode) =>
+                    hasCode && (
+                      <>
+                        <NavTab href={`/address/${addressOrName}/contract`}>
+                          <span
+                            className={`flex items-baseline space-x-2 ${
+                              match === undefined ? "italic opacity-50" : ""
+                            }`}
+                          >
+                            <span>Contract</span>
+                            {match === undefined ? (
+                              <span className="self-center">
+                                <FontAwesomeIcon
+                                  className="animate-spin"
+                                  icon={faCircleNotch}
+                                />
+                              </span>
+                            ) : match === null ? (
+                              <span className="self-center text-red-500">
+                                <FontAwesomeIcon icon={faQuestionCircle} />
+                              </span>
+                            ) : (
+                              <span className="self-center">
+                                <SourcifyLogo />
+                              </span>
+                            )}
+                          </span>
+                        </NavTab>
+                        {(match || whatsabiMatch) && (
+                          <NavTab
+                            href={`/address/${addressOrName}/readContract`}
+                          >
+                            <span className={`flex items-baseline space-x-2`}>
+                              <span>Read Contract</span>
+                            </span>
+                          </NavTab>
+                        )}
+                      </>
+                    )
+                  }
+                </Await>
                 {config?.experimental && (
                   <ProxyTabs address={checksummedAddress} />
                 )}
               </TabList>
               <TabPanels>
-                <Routes>
-                  <Route
-                    index
-                    element={
-                      <AddressTransactionResults address={checksummedAddress} />
-                    }
-                  />
-                  <Route
-                    path="txs/:direction"
-                    element={
-                      <AddressTransactionResults address={checksummedAddress} />
-                    }
-                  />
-                  {config?.experimental && (
-                    <>
-                      <Route
-                        path="erc20"
-                        element={
-                          <AddressERC20Results address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="erc721"
-                        element={
-                          <AddressERC721Results address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="tokens"
-                        element={<AddressTokens address={checksummedAddress} />}
-                      />
-                      <Route
-                        path="withdrawals"
-                        element={
-                          <AddressWithdrawals address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="blocksRewarded"
-                        element={
-                          <BlocksRewarded address={checksummedAddress} />
-                        }
-                      />
-                    </>
-                  )}
-                  <Route
-                    path="contract"
-                    element={
-                      <Contracts
-                        checksummedAddress={checksummedAddress}
-                        match={match ?? whatsabiMatch}
-                      />
-                    }
-                  />
-                  <Route
-                    path="readContract"
-                    element={
-                      <ReadContract
-                        checksummedAddress={checksummedAddress}
-                        match={match ?? whatsabiMatch}
-                      />
-                    }
-                  />
-                  {config?.experimental && (
-                    <>
-                      <Route
-                        path="proxyLogicContract"
-                        element={
-                          <ProxyContracts address={checksummedAddress} />
-                        }
-                      />
-                      <Route
-                        path="readContractAsProxy"
-                        element={
-                          <ProxyReadContract address={checksummedAddress} />
-                        }
-                      />
-                    </>
-                  )}
-                </Routes>
+                <Outlet
+                  context={{
+                    address: checksummedAddress,
+                    hasCode,
+                    match,
+                    whatsabiMatch,
+                  }}
+                />
               </TabPanels>
             </TabGroup>
           </>

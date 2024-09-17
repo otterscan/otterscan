@@ -1,5 +1,11 @@
-import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { FC, Suspense, useContext, useEffect, useMemo, useState } from "react";
+import {
+  Await,
+  useLoaderData,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
@@ -16,16 +22,12 @@ import { useFeeToggler } from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import {
-  useAddressBalance,
-  useContractCreator,
-  useHasCode,
-  useTransactionCount,
-} from "../../useErigonHooks";
+import { useContractCreator, useTransactionCount } from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
+import { type AddressOutletContext } from "../AddressMainPage";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
@@ -49,11 +51,15 @@ const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
+const AddressTransactionResults: FC = () => {
+  const { address, hasCode } = useOutletContext() as AddressOutletContext;
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+
+  const { balance: balancePromise, fetchedTxs } = useLoaderData() as {
+    balance: Promise<bigint | undefined>;
+    fetchedTxs: Promise<string[]> | undefined;
+  };
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -65,7 +71,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const [controller, setController] = useState<SearchController>();
 
-  const hasCode = useHasCode(provider, address);
   const transactionCount = useTransactionCount(
     provider,
     hasCode === false ? address : undefined,
@@ -77,7 +82,11 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
     }
 
     const readFirstPage = async () => {
-      const _controller = await SearchController.firstPage(provider, address);
+      const _controller = await SearchController.firstPage(
+        provider,
+        address,
+        fetchedTxs ? await fetchedTxs : undefined,
+      );
       setController(_controller);
     };
     const readMiddlePage = async (next: boolean) => {
@@ -128,7 +137,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const page = useMemo(() => controller?.getPage(), [controller]);
 
-  const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
   const resolvedAddress = useResolvedAddress(provider, address);
   const resolvedName = resolvedAddress
@@ -153,16 +161,22 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
               <div
                 className={`${transactionCount !== undefined ? "col-span-1" : "col-span-3"}`}
               >
-                {balance !== null && balance !== undefined ? (
-                  <NativeTokenAmountAndFiat
-                    value={balance}
-                    {...balancePreset}
-                  />
-                ) : (
-                  <div className="w-80">
-                    <PendingItem />
-                  </div>
-                )}
+                <Suspense
+                  fallback={
+                    <div className="w-80">
+                      <PendingItem />
+                    </div>
+                  }
+                >
+                  <Await resolve={balancePromise} errorElement={<></>}>
+                    {(balance) => (
+                      <NativeTokenAmountAndFiat
+                        value={balance}
+                        {...balancePreset}
+                      />
+                    )}
+                  </Await>
+                </Suspense>
               </div>
               {transactionCount !== undefined && (
                 <div className="pl-4 col-span-2 grid grid-cols-2">
