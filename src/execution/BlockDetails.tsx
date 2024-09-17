@@ -167,7 +167,9 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
             {commify(block.difficulty.toString())}
           </InfoRow>
           <InfoRow title="Total Difficulty">
-            {commify(block.totalDifficulty.toString())}
+            {block.totalDifficulty !== undefined
+              ? commify(block.totalDifficulty.toString())
+              : "N/A"}
           </InfoRow>
           <InfoRow title="Hash">
             <HexValue value={block.hash ?? "<unknown>"} />
