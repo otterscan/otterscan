@@ -26,7 +26,7 @@
     "@types/react-dom": "^18.3.0",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.2",
-    "chart.js": "^4.4.3",
+    "chart.js": "^4.4.4",
     "ethers": "^6.13.2",
     "prettier-plugin-organize-imports": "^4.0.0",
     "react": "^18.2.0",
