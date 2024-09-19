@@ -93,6 +93,7 @@ export enum OperationType {
   SELF_DESTRUCT = 1,
   CREATE = 2,
   CREATE2 = 3,
+  EOFCREATE = 4,
 }
 
 export type InternalOperation = {
