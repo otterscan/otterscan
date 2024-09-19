@@ -41,7 +41,7 @@ export interface ExtendedBlock extends BlockParams {
   size: number;
   sha3Uncles: string;
   stateRoot: string;
-  totalDifficulty: bigint;
+  totalDifficulty?: bigint;
   transactionCount: number;
   // Optimism-specific
   gasUsedDepositTx?: bigint;
@@ -78,7 +78,9 @@ export const readBlock = async (
     size: formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,
     stateRoot: _rawBlock.block.stateRoot,
-    totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
+    totalDifficulty:
+      _rawBlock.block.totalDifficulty &&
+      formatter.bigInt(_rawBlock.block.totalDifficulty),
     transactionCount: formatter.number(_rawBlock.block.transactionCount),
     // Optimism-specific; gas used by the deposit transaction
     gasUsedDepositTx: formatter.bigInt(_rawBlock.gasUsedDepositTx ?? 0n),
