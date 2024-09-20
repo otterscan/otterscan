@@ -2,17 +2,10 @@ import { faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanels } from "@headlessui/react";
-import React, {
-  useCallback,
-  useContext,
-  useDeferredValue,
-  useEffect,
-  useState,
-} from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useCallback, useContext } from "react";
 import {
-  Await,
   Outlet,
-  useLoaderData,
   useNavigate,
   useParams,
   useSearchParams,
@@ -25,6 +18,7 @@ import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
+import { hasCodeQuery } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
@@ -85,18 +79,9 @@ const AddressMainPage: React.FC = () => {
   );
 
   const { config, provider } = useContext(RuntimeContext);
-  const { hasCode: hasCodePromise } = useDeferredValue(
-    useLoaderData() as {
-      hasCode: Promise<boolean | undefined>;
-    },
+  const { data: hasCode } = useQuery(
+    hasCodeQuery(provider, checksummedAddress, "latest"),
   );
-
-  const [hasCode, setHasCode] = useState<boolean | undefined>(undefined);
-  useEffect(() => {
-    hasCodePromise.then((result) => {
-      setHasCode(result);
-    });
-  }, [hasCodePromise]);
 
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
@@ -149,48 +134,42 @@ const AddressMainPage: React.FC = () => {
                     </NavTab>
                   </>
                 )}
-                <Await resolve={hasCodePromise} errorElement={<></>}>
-                  {(hasCode) =>
-                    hasCode && (
-                      <>
-                        <NavTab href={`/address/${addressOrName}/contract`}>
-                          <span
-                            className={`flex items-baseline space-x-2 ${
-                              match === undefined ? "italic opacity-50" : ""
-                            }`}
-                          >
-                            <span>Contract</span>
-                            {match === undefined ? (
-                              <span className="self-center">
-                                <FontAwesomeIcon
-                                  className="animate-spin"
-                                  icon={faCircleNotch}
-                                />
-                              </span>
-                            ) : match === null ? (
-                              <span className="self-center text-red-500">
-                                <FontAwesomeIcon icon={faQuestionCircle} />
-                              </span>
-                            ) : (
-                              <span className="self-center">
-                                <SourcifyLogo />
-                              </span>
-                            )}
+                {hasCode && (
+                  <>
+                    <NavTab href={`/address/${addressOrName}/contract`}>
+                      <span
+                        className={`flex items-baseline space-x-2 ${
+                          match === undefined ? "italic opacity-50" : ""
+                        }`}
+                      >
+                        <span>Contract</span>
+                        {match === undefined ? (
+                          <span className="self-center">
+                            <FontAwesomeIcon
+                              className="animate-spin"
+                              icon={faCircleNotch}
+                            />
                           </span>
-                        </NavTab>
-                        {(match || whatsabiMatch) && (
-                          <NavTab
-                            href={`/address/${addressOrName}/readContract`}
-                          >
-                            <span className={`flex items-baseline space-x-2`}>
-                              <span>Read Contract</span>
-                            </span>
-                          </NavTab>
+                        ) : match === null ? (
+                          <span className="self-center text-red-500">
+                            <FontAwesomeIcon icon={faQuestionCircle} />
+                          </span>
+                        ) : (
+                          <span className="self-center">
+                            <SourcifyLogo />
+                          </span>
                         )}
-                      </>
-                    )
-                  }
-                </Await>
+                      </span>
+                    </NavTab>
+                    {(match || whatsabiMatch) && (
+                      <NavTab href={`/address/${addressOrName}/readContract`}>
+                        <span className={`flex items-baseline space-x-2`}>
+                          <span>Read Contract</span>
+                        </span>
+                      </NavTab>
+                    )}
+                  </>
+                )}
                 {config?.experimental && (
                   <ProxyTabs address={checksummedAddress} />
                 )}

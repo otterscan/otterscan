@@ -2,20 +2,22 @@ import { whatsabi } from "@shazow/whatsabi";
 import { Interface, JsonRpcApiProvider } from "ethers";
 import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
+import { queryClient } from "../queryClient";
 import { ChecksummedAddress } from "../types";
 import { fourBytesURL } from "../url";
+import { getCodeQuery } from "../useErigonHooks";
 import { Match, MatchType } from "./useSourcify";
 
 export const useWhatsabiMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   assetsURLPrefix: string | undefined,
 ): Match | null | undefined => {
   const fetcher = whatsabiFetcher(provider, assetsURLPrefix);
   const key = ["whatsabi", address, chainId];
   const { data, error } = useSWRImmutable<Match | null | undefined>(
-    key,
+    address !== undefined ? key : null,
     fetcher,
   );
   if (error) {
@@ -25,12 +27,14 @@ export const useWhatsabiMetadata = (
 };
 
 function whatsabiFetcher(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   assetsURLPrefix: string | undefined,
 ): Fetcher<Match | null | undefined, ["whatsabi", ChecksummedAddress, bigint]> {
   return async ([_, address, chainId]) => {
-    if (provider && assetsURLPrefix !== undefined) {
-      const code = await provider.getCode(address);
+    if (assetsURLPrefix !== undefined) {
+      const code = await queryClient.fetchQuery(
+        getCodeQuery(provider, address, "latest"),
+      );
       const selectors = whatsabi.selectorsFromBytecode(code);
       const decodedFunctions: (string | null)[] = await Promise.all(
         selectors.map(async (selector) => {

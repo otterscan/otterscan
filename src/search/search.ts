@@ -19,6 +19,7 @@ import {
   isOptimisticChain,
 } from "../execution/op-tx-calculation";
 import { PAGE_SIZE } from "../params";
+import { queryClient } from "../queryClient";
 import { ProcessedTransaction, TransactionChunk } from "../types";
 import { formatter } from "../utils/formatter";
 
@@ -70,6 +71,42 @@ export const rawToProcessed = (provider: JsonRpcApiProvider, _rawRes: any) => {
   };
 };
 
+export const getTransactionQuery = (
+  provider: JsonRpcApiProvider,
+  transactionHash: string,
+) => ({
+  queryKey: ["eth_getTransactionByHash", transactionHash],
+  queryFn: () => {
+    return provider.getTransaction(transactionHash);
+  },
+});
+
+export const searchTransactionsQuery = (
+  provider: JsonRpcApiProvider,
+  address: string,
+  baseBlock: number,
+  direction: "before" | "after",
+): {
+  queryKey: [string, string, number];
+  queryFn: () => Promise<TransactionChunk>;
+} => {
+  const method =
+    direction === "before"
+      ? "ots_searchTransactionsBefore"
+      : "ots_searchTransactionsAfter";
+  return {
+    queryKey: [method, address, baseBlock],
+    queryFn: async () => {
+      const _rawRes = await provider.send(method, [
+        address,
+        baseBlock,
+        PAGE_SIZE,
+      ]);
+      return rawToProcessed(provider, _rawRes);
+    },
+  };
+};
+
 export class SearchController {
   private txs: ProcessedTransaction[];
 
@@ -94,40 +131,13 @@ export class SearchController {
     }
   }
 
-  private static async readBackPage(
-    provider: JsonRpcApiProvider,
-    address: string,
-    baseBlock: number,
-  ): Promise<TransactionChunk> {
-    const _rawRes = await provider.send("ots_searchTransactionsBefore", [
-      address,
-      baseBlock,
-      PAGE_SIZE,
-    ]);
-    return rawToProcessed(provider, _rawRes);
-  }
-
-  private static async readForwardPage(
-    provider: JsonRpcApiProvider,
-    address: string,
-    baseBlock: number,
-  ): Promise<TransactionChunk> {
-    const _rawRes = await provider.send("ots_searchTransactionsAfter", [
-      address,
-      baseBlock,
-      PAGE_SIZE,
-    ]);
-    return rawToProcessed(provider, _rawRes);
-  }
-
   static async firstPage(
     provider: JsonRpcApiProvider,
     address: string,
-    fetchedTxs?: string[],
   ): Promise<SearchController> {
-    const newTxs = fetchedTxs
-      ? rawToProcessed(provider, fetchedTxs)
-      : await SearchController.readBackPage(provider, address, 0);
+    const newTxs: TransactionChunk = await queryClient.fetchQuery(
+      searchTransactionsQuery(provider, address, 0, "before"),
+    );
     return new SearchController(
       address,
       newTxs.txs,
@@ -143,15 +153,18 @@ export class SearchController {
     hash: string,
     next: boolean,
   ): Promise<SearchController> {
-    const tx = await provider.getTransaction(hash);
+    const tx = await queryClient.fetchQuery(
+      getTransactionQuery(provider, hash),
+    );
     // TODO: Can we actually infer that this transaction is not null?
-    const newTxs = next
-      ? await SearchController.readBackPage(provider, address, tx!.blockNumber!)
-      : await SearchController.readForwardPage(
-          provider,
-          address,
-          tx!.blockNumber!,
-        );
+    const newTxs = await queryClient.fetchQuery(
+      searchTransactionsQuery(
+        provider,
+        address,
+        tx!.blockNumber!,
+        next ? "before" : "after",
+      ),
+    );
     return new SearchController(
       address,
       newTxs.txs,
@@ -165,7 +178,9 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     address: string,
   ): Promise<SearchController> {
-    const newTxs = await SearchController.readForwardPage(provider, address, 0);
+    const newTxs = await queryClient.fetchQuery(
+      searchTransactionsQuery(provider, address, 0, "after"),
+    );
     return new SearchController(
       address,
       newTxs.txs,
@@ -186,10 +201,8 @@ export class SearchController {
     if (this.txs[this.pageStart].hash === hash) {
       const overflowPage = this.txs.slice(0, this.pageStart);
       const baseBlock = this.txs[0].blockNumber;
-      const prevPage = await SearchController.readForwardPage(
-        provider,
-        this.address,
-        baseBlock,
+      const prevPage = await queryClient.fetchQuery(
+        searchTransactionsQuery(provider, this.address, baseBlock, "after"),
       );
       return new SearchController(
         this.address,
@@ -210,10 +223,8 @@ export class SearchController {
     if (this.txs[this.pageEnd - 1].hash === hash) {
       const overflowPage = this.txs.slice(this.pageEnd);
       const baseBlock = this.txs[this.txs.length - 1].blockNumber;
-      const nextPage = await SearchController.readBackPage(
-        provider,
-        this.address,
-        baseBlock,
+      const nextPage = await queryClient.fetchQuery(
+        searchTransactionsQuery(provider, this.address, baseBlock, "before"),
       );
       return new SearchController(
         this.address,

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   Contract,
   JsonRpcApiProvider,
@@ -6,8 +7,7 @@ import {
   ZeroAddress,
   getAddress,
 } from "ethers";
-import { useMemo } from "react";
-import useSWR, { Fetcher } from "swr";
+import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import erc20 from "../abi/erc20.json";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
@@ -62,18 +62,18 @@ type SearchResultsType<T extends TransactionSearchType> =
       ? BlocksRewardedMatch
       : TransactionMatchWithData;
 
-export const useGenericTransactionCount = (
+export const genericTransactionCountQuery = (
   provider: JsonRpcApiProvider,
   typeName: TransactionSearchType,
   address: ChecksummedAddress,
-): number | undefined => {
+) => {
   const rpcMethod = `ots2_get${typeName}Count`;
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable([rpcMethod, address], fetcher);
-  if (error) {
-    return undefined;
-  }
-  return data as number | undefined;
+  return {
+    queryKey: [rpcMethod, address],
+    queryFn: () => {
+      return provider.send(rpcMethod, [address]);
+    },
+  };
 };
 
 function decodeResults<T extends TransactionSearchType>(
@@ -138,7 +138,7 @@ const resultFetcher = <T extends TransactionSearchType, U>(
   };
 };
 
-export const useGenericTransactionList = <
+export const genericTransactionListQuery = <
   T extends TransactionSearchType,
   U = BlockSummary,
 >(
@@ -148,19 +148,42 @@ export const useGenericTransactionList = <
   pageNumber: number,
   pageSize: number,
   total: number | undefined,
-): TransactionListResults<SearchResultsType<T>, U> | undefined => {
+): {
+  queryKey: [
+    string,
+    ChecksummedAddress,
+    number | undefined,
+    number | undefined,
+  ];
+  queryFn: () => Promise<TransactionListResults<SearchResultsType<T>, U>>;
+} => {
   const page = pageToReverseIdx(pageNumber, pageSize, total);
   const rpcMethod = `ots2_get${typeName}List`;
-  const fetcher = resultFetcher<T, U>(provider, typeName);
-  const { data, error } = useSWRImmutable(
-    page === undefined ? null : [rpcMethod, address, page.idx, page.count],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
+  return {
+    queryKey: [rpcMethod, address, page?.idx, page?.count],
+    queryFn: () => {
+      if (provider === undefined || page === undefined) {
+        throw new Error("Provider or page is undefined");
+      }
+      return provider
+        .send(rpcMethod, [address, page.idx, page.count])
+        .then((res) => {
+          const converted = (res.results as any[]).map(
+            (m): SearchResultsType<T> =>
+              decodeResults<T>(m, provider, typeName),
+          );
+          const blockMap = new Map<number, U>();
+          for (const [k, v] of Object.entries(res.blocksSummary as any)) {
+            blockMap.set(parseInt(k), v as any);
+          }
 
-  return data;
+          return {
+            blocksSummary: blockMap,
+            results: converted.reverse(),
+          };
+        });
+    },
+  };
 };
 
 export const useERC1167Impl = (
@@ -178,61 +201,36 @@ export const useERC1167Impl = (
   return data;
 };
 
-export const useERC20Holdings = (
+export const erc20HoldingsQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress,
-): ChecksummedAddress[] | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(["ots2_getERC20Holdings", address], fetcher);
-  const converted = useMemo(() => {
-    if (error) {
-      return undefined;
-    }
-
-    if (data === undefined || data === null) {
-      return undefined;
-    }
-    return (data as any[]).map((m) => getAddress(m.address));
-  }, [data, error]);
-
-  return converted;
+) => {
+  return {
+    queryKey: ["ots2_getERC20Holdings", address],
+    queryFn: async () => {
+      const data = await provider.send("ots2_getERC20Holdings", [address]);
+      return (data as any[]).map((m) => getAddress(m.address));
+    },
+  };
 };
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
-const erc20BalanceFetcher =
-  (
-    provider: JsonRpcApiProvider,
-  ): Fetcher<
-    bigint | null,
-    ["erc20balance", ChecksummedAddress, ChecksummedAddress]
-  > =>
-  async ([_, address, tokenAddress]) => {
-    // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
-    const contract = ERC20_PROTOTYPE.connect(provider).attach(
-      tokenAddress,
-    ) as Contract;
-    return contract.balanceOf(address);
-  };
-
-export const useTokenBalance = (
+export const erc20BalanceQuery = (
   provider: JsonRpcApiProvider,
-  address: ChecksummedAddress | undefined,
-  tokenAddress: ChecksummedAddress | undefined,
-): bigint | null | undefined => {
-  const fetcher = erc20BalanceFetcher(provider);
-  const { data, error } = useSWR(
-    ["erc20balance", address, tokenAddress],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-
-  if (data === undefined || data === null) {
-    return undefined;
-  }
-  return data;
+  address: ChecksummedAddress,
+  tokenAddress: ChecksummedAddress,
+) => {
+  return {
+    queryKey: ["erc20balance", address, tokenAddress],
+    queryFn: async () => {
+      // TODO: Remove "as Contract" workaround for https://github.com/ethers-io/ethers.js/issues/4183
+      const contract = ERC20_PROTOTYPE.connect(provider).attach(
+        tokenAddress,
+      ) as Contract;
+      return contract.balanceOf(address);
+    },
+  };
 };
 
 export type AddressAttributes = {
@@ -244,22 +242,27 @@ export type AddressAttributes = {
   erc1167Logic?: boolean;
 };
 
+export const addressAttributesQuery = (
+  provider: JsonRpcApiProvider,
+  address: ChecksummedAddress | undefined,
+) => {
+  return {
+    queryKey: ["ots2_getAddressAttributes", address],
+    queryFn: async () => {
+      if (address === undefined) {
+        throw new Error("Address is undefined");
+      }
+      const result = provider.send("ots2_getAddressAttributes", [address]);
+      return result === null ? undefined : result;
+    },
+  };
+};
+
 export const useAddressAttributes = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): AddressAttributes | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWR(
-    ["ots2_getAddressAttributes", address],
-    fetcher,
-  );
-  if (address === undefined || error) {
-    return undefined;
-  }
-
-  if (data === undefined || data === null) {
-    return undefined;
-  }
+  const { data } = useQuery(addressAttributesQuery(provider, address));
   return data;
 };
 

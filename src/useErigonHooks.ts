@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   AbiCoder,
   BlockParams,
@@ -783,26 +784,13 @@ const getContractCreatorFetcher =
     return result;
   };
 
-export const useAddressBalance = (
+export const getBalanceQuery = (
   provider: JsonRpcApiProvider,
-  address: ChecksummedAddress | undefined,
-): bigint | null | undefined => {
-  const [balance, setBalance] = useState<bigint | undefined>();
-
-  useEffect(() => {
-    if (!address) {
-      return undefined;
-    }
-
-    const readBalance = async () => {
-      const _balance = await provider.getBalance(address);
-      setBalance(_balance);
-    };
-    readBalance();
-  }, [provider, address]);
-
-  return balance;
-};
+  address: ChecksummedAddress,
+) => ({
+  queryKey: ["eth_getBalance", address],
+  queryFn: () => provider.getBalance(address),
+});
 
 /**
  * This is a generic fetch for SWR, where the key is an array, whose
@@ -829,32 +817,31 @@ export const useHasCode = (
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ): boolean | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["ots_hasCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as boolean | undefined;
+  const { data: hasCode } = useQuery(hasCodeQuery(provider, address, blockTag));
+  return hasCode;
 };
 
-export const useGetCode = (
+export const hasCodeQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-): string | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["eth_getCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as string | undefined;
-};
+) => ({
+  queryKey: ["ots_hasCode", address, blockTag],
+  queryFn: () => {
+    return provider.send("ots_hasCode", [address, blockTag]);
+  },
+});
+
+export const getCodeQuery = (
+  provider: JsonRpcApiProvider,
+  address: ChecksummedAddress | undefined,
+  blockTag: BlockTag = "latest",
+) => ({
+  queryKey: ["eth_getCode", address, blockTag],
+  queryFn: () => {
+    return provider.send("eth_getCode", [address, blockTag]);
+  },
+});
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
