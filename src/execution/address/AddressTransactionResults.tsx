@@ -1,11 +1,6 @@
-import { FC, Suspense, useContext, useEffect, useMemo, useState } from "react";
-import {
-  Await,
-  useLoaderData,
-  useOutletContext,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { FC, useContext, useEffect, useMemo, useState } from "react";
+import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
@@ -22,7 +17,11 @@ import { useFeeToggler } from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
-import { useContractCreator, useTransactionCount } from "../../useErigonHooks";
+import {
+  getBalanceQuery,
+  useContractCreator,
+  useTransactionCount,
+} from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
@@ -55,10 +54,6 @@ const AddressTransactionResults: FC = () => {
   const { address, hasCode } = useOutletContext() as AddressOutletContext;
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
-
-  const { balance: balancePromise } = useLoaderData() as {
-    balance: Promise<bigint | undefined>;
-  };
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -147,6 +142,8 @@ const AddressTransactionResults: FC = () => {
       : `Address ${addressOrName}`,
   );
 
+  const { data: balance } = useQuery(getBalanceQuery(provider, address));
+
   return (
     <ContentFrame tabs>
       <StandardSelectionBoundary>
@@ -156,22 +153,16 @@ const AddressTransactionResults: FC = () => {
               <div
                 className={`${transactionCount !== undefined ? "col-span-1" : "col-span-3"}`}
               >
-                <Suspense
-                  fallback={
-                    <div className="w-80">
-                      <PendingItem />
-                    </div>
-                  }
-                >
-                  <Await resolve={balancePromise} errorElement={<></>}>
-                    {(balance) => (
-                      <NativeTokenAmountAndFiat
-                        value={balance}
-                        {...balancePreset}
-                      />
-                    )}
-                  </Await>
-                </Suspense>
+                {balance === undefined ? (
+                  <div className="w-80">
+                    <PendingItem />
+                  </div>
+                ) : (
+                  <NativeTokenAmountAndFiat
+                    value={balance}
+                    {...balancePreset}
+                  />
+                )}
               </div>
               {transactionCount !== undefined && (
                 <div className="pl-4 col-span-2 grid grid-cols-2">

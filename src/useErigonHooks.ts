@@ -784,26 +784,13 @@ const getContractCreatorFetcher =
     return result;
   };
 
-export const useAddressBalance = (
+export const getBalanceQuery = (
   provider: JsonRpcApiProvider,
-  address: ChecksummedAddress | undefined,
-): bigint | null | undefined => {
-  const [balance, setBalance] = useState<bigint | undefined>();
-
-  useEffect(() => {
-    if (!address) {
-      return undefined;
-    }
-
-    const readBalance = async () => {
-      const _balance = await provider.getBalance(address);
-      setBalance(_balance);
-    };
-    readBalance();
-  }, [provider, address]);
-
-  return balance;
-};
+  address: ChecksummedAddress,
+) => ({
+  queryKey: ["eth_getBalance", address],
+  queryFn: () => provider.getBalance(address),
+});
 
 /**
  * This is a generic fetch for SWR, where the key is an array, whose

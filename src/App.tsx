@@ -33,7 +33,7 @@ import { getTransactionQuery, searchTransactionsQuery } from "./search/search";
 import { ConnectionStatus } from "./types";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
-import { getCodeQuery, hasCodeQuery } from "./useErigonHooks";
+import { getBalanceQuery, getCodeQuery, hasCodeQuery } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -147,13 +147,12 @@ const addressTxResultsLoader: LoaderFunction = async ({ params, request }) => {
             });
         }
       }
+
+      const balanceQuery = getBalanceQuery(rt.provider, address);
+      queryClient.prefetchQuery(balanceQuery);
     });
   }
-  return defer({
-    balance: runtime.then((rt) =>
-      rt.provider.getBalance(params.addressOrName ?? ""),
-    ),
-  });
+  return null;
 };
 
 const addressContractLoader: LoaderFunction = async ({ params }) => {
