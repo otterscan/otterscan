@@ -93,6 +93,18 @@ export enum SourcifySource {
 
 export type SourcifySourceMap = { [key: string]: string };
 
+const SourcifyBackendFormats = ["RepositoryV1", "RepositoryV2"] as const;
+type SourcifyBackendFormat = (typeof SourcifyBackendFormats)[number];
+
+function isSourcifyBackendFormat(
+  format: string | undefined,
+): format is SourcifyBackendFormat {
+  if (format === undefined) {
+    return false;
+  }
+  return SourcifyBackendFormats.includes(format as SourcifyBackendFormat);
+}
+
 const sourcifyIPNS = "repo.sourcify.dev";
 const defaultIpfsGatewayPrefix = `https://ipfs.io/ipns/${sourcifyIPNS}`;
 const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
@@ -113,9 +125,18 @@ function resolveSourcifySource(
   }
 }
 
-function useSourcifySources(): SourcifySourceMap {
+function useSourcifySources(): {
+  sources: SourcifySourceMap;
+  backendFormat: SourcifyBackendFormat;
+} {
   const { config } = useContext(RuntimeContext);
-  return config.sourcifySources ?? defaultSourcifySources;
+  const sources = config.sourcify?.sources ?? defaultSourcifySources;
+  let backendFormat: SourcifyBackendFormat = "RepositoryV1";
+  const configFormat = config.sourcify?.backendFormat;
+  if (isSourcifyBackendFormat(configFormat)) {
+    backendFormat = configFormat;
+  }
+  return { sources, backendFormat };
 }
 
 /**
@@ -216,7 +237,7 @@ export const useSourcifyMetadata = (
   chainId: bigint | undefined,
 ): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
-  const sourcifySources = useSourcifySources();
+  const { sources: sourcifySources } = useSourcifySources();
   const metadataURL = () =>
     address === undefined || chainId === undefined
       ? null
@@ -244,18 +265,28 @@ export const useContract = (
   checksummedAddress: string,
   networkId: bigint,
   filename: string,
+  fileHash: string,
   sourcifySource: SourcifySource,
   type: MatchType,
 ) => {
-  const sourcifySources = useSourcifySources();
-  const normalizedFilename = filename.replaceAll(/[:]/g, "_");
+  const { sources, backendFormat } = useSourcifySources();
+  let fetchFilename: string;
+  switch (backendFormat) {
+    case "RepositoryV1": {
+      fetchFilename = filename.replaceAll(/[:]/g, "_");
+    }
+    case "RepositoryV2": {
+      // TODO: Revisit whether all such sources should be assumed to be Solidity files
+      fetchFilename = fileHash + ".sol";
+    }
+  }
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,
-    normalizedFilename,
+    fetchFilename,
     sourcifySource,
     type,
-    sourcifySources,
+    sources,
   );
 
   const { data, error } = useSWRImmutable(url, contractFetcher);
