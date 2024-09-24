@@ -87,7 +87,7 @@
     "@storybook/addon-essentials": "^8.3.1",
     "@storybook/addon-interactions": "^8.3.1",
     "@storybook/addon-links": "^8.3.1",
-    "@storybook/blocks": "^8.3.1",
+    "@storybook/blocks": "^8.3.3",
     "@storybook/react": "^8.3.1",
     "@storybook/react-vite": "^8.3.1",
     "@storybook/test": "^8.3.1",
