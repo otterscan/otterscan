@@ -29,7 +29,7 @@
     "@zxing/library": "^0.21.3",
     "chart.js": "^4.4.4",
     "ethers": "^6.13.2",
-    "prettier-plugin-organize-imports": "^4.0.0",
+    "prettier-plugin-organize-imports": "^4.1.0",
     "react": "^18.2.0",
     "react-blockies": "^1.4.1",
     "react-chartjs-2": "^5.2.0",
