@@ -151,6 +151,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         checksummedAddress={checksummedAddress}
                         networkId={provider!._network.chainId}
                         filename={selected}
+                        fileHash={match.metadata.sources[selected].keccak256}
                         type={match.type}
                       />
                     )}
