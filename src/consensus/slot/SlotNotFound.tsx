@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { useHeadSlotNumber } from "../../useConsensus";
+import { useHeadSlotNumber, useSlotHeader } from "../../useConsensus";
 import { commify } from "../../utils/utils";
 import SlotLink from "../components/SlotLink";
 
@@ -10,32 +10,47 @@ interface SlotNotFoundProps {
 
 const SlotNotFound: FC<SlotNotFoundProps> = ({ slot, error }) => {
   const headSlotNumber = useHeadSlotNumber();
+  const { slot: nextSlotHeader } = useSlotHeader(
+    typeof slot === "number" ? slot + 1 : null,
+  );
+  const { slot: nextSlotParentHeader } = useSlotHeader(
+    nextSlotHeader?.data?.header?.message?.parent_root ?? null,
+  );
 
   return (
     <div className="space-y-2 py-4 text-sm">
       {!error || (error instanceof Response && error.status === 404) ? (
-        <>
-          <p>
-            Slot {typeof slot === "number" ? commify(slot) : slot} data not
-            found.
-          </p>
-          {headSlotNumber !== undefined &&
-          typeof slot === "number" &&
-          slot > headSlotNumber ? (
-            <p className="flex space-x-2">
-              <span>Head slot is:</span>
-              <SlotLink slot={headSlotNumber} />
+        nextSlotParentHeader &&
+        typeof slot === "number" &&
+        nextSlotParentHeader?.data?.header?.message?.slot !== undefined &&
+        Number(nextSlotParentHeader?.data?.header?.message?.slot) < slot ? (
+          <>
+            Slot {typeof slot === "number" ? commify(slot) : slot} was missed.
+          </>
+        ) : (
+          <>
+            <p>
+              Slot {typeof slot === "number" ? commify(slot) : slot} data not
+              found.
             </p>
-          ) : (
-            <>
-              <p>Possible causes:</p>
-              <ul className="list-inside list-disc">
-                <li>Missed slot</li>
-                <li>CL does not have the slot data</li>
-              </ul>
-            </>
-          )}
-        </>
+            {headSlotNumber !== undefined &&
+            typeof slot === "number" &&
+            slot > headSlotNumber ? (
+              <p className="flex space-x-2">
+                <span>Head slot is:</span>
+                <SlotLink slot={headSlotNumber} />
+              </p>
+            ) : (
+              <>
+                <p>Possible causes:</p>
+                <ul className="list-inside list-disc">
+                  <li>Missed slot</li>
+                  <li>CL does not have the slot data</li>
+                </ul>
+              </>
+            )}
+          </>
+        )
       ) : error instanceof Response &&
         error.status >= 500 &&
         error.status < 600 ? (
