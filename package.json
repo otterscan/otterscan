@@ -91,7 +91,7 @@
     "@storybook/react": "^8.3.3",
     "@storybook/react-vite": "^8.3.3",
     "@storybook/test": "^8.3.3",
-    "@vitejs/plugin-react-swc": "^3.7.0",
+    "@vitejs/plugin-react-swc": "^3.7.1",
     "autoprefixer": "^10.4.20",
     "cypress": "^13.14.2",
     "jest": "^29.7.0",
