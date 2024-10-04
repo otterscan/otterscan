@@ -1,7 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import { TransactionData } from "../../types";
-import { useTraceTransaction } from "../../useErigonHooks";
+import { getTraceTransactionQuery } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
 import TraceItem from "./TraceItem";
@@ -12,7 +13,9 @@ type TraceProps = {
 
 const Trace: React.FC<TraceProps> = ({ txData }) => {
   const { provider } = useContext(RuntimeContext);
-  const traces = useTraceTransaction(provider, txData.transactionHash);
+  const { data: traces } = useQuery(
+    getTraceTransactionQuery(provider, txData.transactionHash),
+  );
 
   return (
     <ContentFrame tabs>
