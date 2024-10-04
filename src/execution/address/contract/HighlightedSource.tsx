@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
+  DecorationItem,
+  DecorationOptions,
   HighlighterCore,
   createHighlighterCore,
   type LanguageInput,
@@ -9,11 +11,6 @@ import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 import langJson from "shiki/langs/json.mjs";
 import langSolidity from "shiki/langs/solidity.mjs";
 import themeGithubLight from "shiki/themes/github-light.mjs";
-
-type HighlightedSourceProps = {
-  source?: string | null;
-  langName: string;
-};
 
 let highlighterSingleton: HighlighterCore | undefined = undefined;
 
@@ -56,9 +53,34 @@ async function loadLanguage(highlighter: HighlighterCore, langName: string) {
   }
 }
 
+// Bounds decoration offsets to the range Shiki expects
+const boundDecorationOffsets = (
+  decoration: DecorationItem,
+  sourceLength: number,
+): DecorationItem => {
+  if (
+    typeof decoration.start === "number" &&
+    typeof decoration.end === "number"
+  ) {
+    return {
+      ...decoration,
+      start: Math.max(0, Math.min(decoration.start, sourceLength)),
+      end: Math.max(0, Math.min(decoration.end, sourceLength)),
+    };
+  }
+  return decoration;
+};
+
+type HighlightedSourceProps = {
+  source?: string | null;
+  langName: string;
+  decorations?: DecorationOptions["decorations"];
+};
+
 const HighlightedSource: React.FC<HighlightedSourceProps> = ({
   source,
   langName,
+  decorations,
 }) => {
   const [code, setCode] = useState<string>("");
   const highlighter = useHighlighter();
@@ -66,10 +88,16 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
     async function loadAndHighlight() {
       if (source !== undefined && source !== null && highlighter) {
         await loadLanguage(highlighter, langName);
+        const boundedDecorations = decorations
+          ? decorations.map((decoration) =>
+              boundDecorationOffsets(decoration, source.length),
+            )
+          : undefined;
         setCode(
           highlighter.codeToHtml(source, {
             lang: langName,
             theme: "github-light",
+            ...(boundedDecorations && { decorations: boundedDecorations }),
           }),
         );
       } else {
@@ -77,7 +105,7 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
       }
     }
     loadAndHighlight();
-  }, [source, highlighter, langName]);
+  }, [source, highlighter, langName, decorations]);
 
   return (
     <div

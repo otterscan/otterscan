@@ -1,3 +1,4 @@
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { ErrorDescription, Interface } from "ethers";
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
@@ -217,101 +218,130 @@ export type Match = {
   unknownSelectors?: string[];
 };
 
+async function fetchSourcifyMetadata(
+  sourcifySources: SourcifySourceMap,
+  sourcifySourceName: SourcifySourceName,
+  address: ChecksummedAddress | undefined,
+  chainId: bigint | undefined,
+): Promise<Match | null> {
+  if (address === undefined || chainId === undefined) {
+    return null;
+  }
+  // Try full match
+  try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySourceName,
+      MatchType.FULL_MATCH,
+      sourcifySources,
+    );
+    const res = await fetch(url);
+    if (res.ok) {
+      if (
+        sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2"
+      ) {
+        const response = await res.json();
+        return {
+          type:
+            response.runtimeMatch === "exact_match"
+              ? MatchType.FULL_MATCH
+              : MatchType.PARTIAL_MATCH,
+          ...response,
+        };
+      }
+      return {
+        type: MatchType.FULL_MATCH,
+        metadata: await res.json(),
+      };
+    }
+  } catch (err) {
+    console.info(
+      `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
+    );
+  }
+
+  // Bail early for API type (only one fetch required)
+  if (sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2") {
+    return null;
+  }
+
+  // Fallback to try partial match
+  try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySourceName,
+      MatchType.PARTIAL_MATCH,
+      sourcifySources,
+    );
+    const res = await fetch(url);
+    if (res.ok) {
+      return {
+        type: MatchType.PARTIAL_MATCH,
+        metadata: await res.json(),
+      };
+    }
+  } catch (err) {
+    console.warn(
+      `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`,
+    );
+  }
+  return null;
+}
+
 function sourcifyFetcher(
   sourcifySources: SourcifySourceMap,
 ): Fetcher<
   Match | null | undefined,
   ["sourcify", ChecksummedAddress, bigint, SourcifySourceName]
 > {
-  return async ([_, address, chainId, sourcifySourceName]) => {
-    // Try full match
-    try {
-      const url = sourcifyMetadata(
-        address,
-        chainId,
-        sourcifySourceName,
-        MatchType.FULL_MATCH,
-        sourcifySources,
-      );
-      const res = await fetch(url);
-      if (res.ok) {
-        if (
-          sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2"
-        ) {
-          const response = await res.json();
-          return {
-            type:
-              response.runtimeMatch === "exact_match"
-                ? MatchType.FULL_MATCH
-                : MatchType.PARTIAL_MATCH,
-            ...response,
-          };
-        }
-        return {
-          type: MatchType.FULL_MATCH,
-          metadata: await res.json(),
-        };
-      }
-    } catch (err) {
-      console.info(
-        `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
-      );
-    }
-
-    // Bail early for API type (only one fetch required)
-    if (sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2") {
-      return null;
-    }
-
-    // Fallback to try partial match
-    try {
-      const url = sourcifyMetadata(
-        address,
-        chainId,
-        sourcifySourceName,
-        MatchType.PARTIAL_MATCH,
-        sourcifySources,
-      );
-      const res = await fetch(url);
-      if (res.ok) {
-        return {
-          type: MatchType.PARTIAL_MATCH,
-          metadata: await res.json(),
-        };
-      }
-    } catch (err) {
-      console.warn(
-        `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`,
-      );
-    }
-    return null;
-  };
+  return async ([_, address, chainId, sourcifySource]) =>
+    fetchSourcifyMetadata(sourcifySources, sourcifySource, address, chainId);
 }
 
 export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
 ): Match | null | undefined => {
-  const { sourcifySource: appSourcifySourceName } = useAppConfigContext();
+  const { sourcifySource: sourcifySourceName } = useAppConfigContext();
   const sourcifySources = useSourcifySources();
-  const { name: sourcifySourceName, sourcifySource } = resolveSourcifySource(
-    appSourcifySourceName,
-    sourcifySources,
-  );
-  const metadataURL = () =>
-    address === undefined || chainId === undefined
-      ? null
-      : ["sourcify", address, chainId, sourcifySourceName];
-  const fetcher = sourcifyFetcher(sourcifySources);
-  const { data, error } = useSWRImmutable<Match | null | undefined>(
-    metadataURL,
-    fetcher,
-  );
-  if (error) {
-    return null;
-  }
-  return data;
+  return useQuery(
+    getSourcifyMetadataQuery(
+      sourcifySources,
+      sourcifySourceName,
+      address,
+      chainId,
+    ),
+  ).data;
 };
+
+export const getSourcifyMetadataQuery = (
+  sourcifySources: SourcifySourceMap,
+  sourcifySourceName: SourcifySourceName | null,
+  address: ChecksummedAddress | undefined,
+  chainId: bigint | undefined,
+): UseQueryOptions<Match | null> => ({
+  queryKey: [
+    "sourcify",
+    address,
+    (chainId ?? "").toString(),
+    sourcifySourceName,
+  ],
+  queryFn: () => {
+    if (sourcifySourceName === null) {
+      throw new Error("Sourcify source name is null");
+    }
+    return fetchSourcifyMetadata(
+      sourcifySources,
+      sourcifySourceName,
+      address,
+      chainId,
+    );
+  },
+  staleTime: Infinity,
+  gcTime: 10 * 60 * 1000,
+});
 
 const contractFetcher: Fetcher<string | null, string> = async (url) => {
   const res = await fetch(url);

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import {
   AbiCoder,
   BlockParams,
@@ -22,6 +22,7 @@ import erc20 from "./abi/erc20.json";
 import L1Block from "./abi/optimism/L1Block.json";
 import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
 import { panicCodeMessages } from "./execution/panic-codes";
+import { type VM } from "./execution/transaction/trace/traceInterpreter";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -404,6 +405,50 @@ export const useSendsToMiner = (
   return [send, ops];
 };
 
+export const getVmTraceQuery = (
+  provider: JsonRpcApiProvider,
+  txHash: string | null,
+): UseQueryOptions<any> => ({
+  queryKey: ["vm-trace", txHash],
+  queryFn: async () => {
+    if (txHash !== null) {
+      const results = await provider.send("trace_replayTransaction", [
+        txHash,
+        ["vmTrace"],
+      ]);
+      return results.vmTrace as VM;
+    } else {
+      throw new Error("Transaction hash is null");
+    }
+  },
+  enabled: txHash !== null,
+  gcTime: 5 * 60 * 1000,
+  // Assume no re-orgs
+  staleTime: Infinity,
+});
+
+export const useVmTrace = (
+  provider: JsonRpcApiProvider,
+  txHash: string | null,
+): VM | undefined => {
+  const [trace, setTrace] = useState<VM | undefined>(undefined);
+
+  useEffect(() => {
+    const doTrace = async () => {
+      if (txHash !== null) {
+        const results = await provider.send("trace_replayTransaction", [
+          txHash,
+          ["vmTrace"],
+        ]);
+        setTrace(results.vmTrace as VM);
+      }
+    };
+    doTrace();
+  }, [provider, txHash]);
+
+  return trace;
+};
+
 export type StateDiffElement = {
   type: string;
   from: string | null;
@@ -548,75 +593,71 @@ export type TraceGroup = TraceEntry & {
   children: TraceGroup[] | null;
 };
 
-export const useTraceTransaction = (
+export const getTraceTransactionQuery = (
   provider: JsonRpcApiProvider,
   txHash: string,
-): TraceGroup[] | undefined => {
-  const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
+): UseQueryOptions<TraceGroup[]> => ({
+  queryKey: ["ots_traceTransaction", txHash],
+  queryFn: async () => {
+    const results = await provider.send("ots_traceTransaction", [txHash]);
 
-  useEffect(() => {
-    const traceTx = async () => {
-      const results = await provider.send("ots_traceTransaction", [txHash]);
+    // Implement better formatter
+    for (let i = 0; i < results.length; i++) {
+      results[i].from = formatter.address(results[i].from);
+      results[i].to = formatter.address(results[i].to);
+      results[i].value =
+        results[i].value === null ? null : formatter.bigInt(results[i].value);
+    }
 
-      // Implement better formatter
-      for (let i = 0; i < results.length; i++) {
-        results[i].from = formatter.address(results[i].from);
-        results[i].to = formatter.address(results[i].to);
-        results[i].value =
-          results[i].value === null ? null : formatter.bigInt(results[i].value);
+    // Build trace tree
+    const buildTraceTree = (
+      flatList: TraceEntry[],
+      depth: number = 0,
+    ): TraceGroup[] => {
+      const entries: TraceGroup[] = [];
+
+      let children: TraceEntry[] | null = null;
+      for (let i = 0; i < flatList.length; i++) {
+        if (flatList[i].depth === depth) {
+          if (children !== null) {
+            const childrenTree = buildTraceTree(children, depth + 1);
+            const prev = entries.pop();
+            if (prev) {
+              prev.children = childrenTree;
+              entries.push(prev);
+            }
+          }
+
+          entries.push({
+            ...flatList[i],
+            children: null,
+          });
+          children = null;
+        } else {
+          if (children === null) {
+            children = [];
+          }
+          children.push(flatList[i]);
+        }
+      }
+      if (children !== null) {
+        const childrenTree = buildTraceTree(children, depth + 1);
+        const prev = entries.pop();
+        if (prev) {
+          prev.children = childrenTree;
+          entries.push(prev);
+        }
       }
 
-      // Build trace tree
-      const buildTraceTree = (
-        flatList: TraceEntry[],
-        depth: number = 0,
-      ): TraceGroup[] => {
-        const entries: TraceGroup[] = [];
-
-        let children: TraceEntry[] | null = null;
-        for (let i = 0; i < flatList.length; i++) {
-          if (flatList[i].depth === depth) {
-            if (children !== null) {
-              const childrenTree = buildTraceTree(children, depth + 1);
-              const prev = entries.pop();
-              if (prev) {
-                prev.children = childrenTree;
-                entries.push(prev);
-              }
-            }
-
-            entries.push({
-              ...flatList[i],
-              children: null,
-            });
-            children = null;
-          } else {
-            if (children === null) {
-              children = [];
-            }
-            children.push(flatList[i]);
-          }
-        }
-        if (children !== null) {
-          const childrenTree = buildTraceTree(children, depth + 1);
-          const prev = entries.pop();
-          if (prev) {
-            prev.children = childrenTree;
-            entries.push(prev);
-          }
-        }
-
-        return entries;
-      };
-
-      const traceTree = buildTraceTree(results);
-      setTraceGroups(traceTree);
+      return entries;
     };
-    traceTx();
-  }, [provider, txHash]);
 
-  return traceGroups;
-};
+    const traceTree = buildTraceTree(results);
+    return traceTree;
+  },
+  // Assume no re-orgs at this point
+  staleTime: Infinity,
+});
 
 export type TxErrorType = "string" | "panic" | "custom";
 
@@ -817,7 +858,7 @@ const getContractCreatorFetcher =
 export const getBalanceQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress,
-) => ({
+): UseQueryOptions<bigint> => ({
   queryKey: ["eth_getBalance", address],
   queryFn: () => provider.getBalance(address),
 });
@@ -855,7 +896,7 @@ export const hasCodeQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-) => ({
+): UseQueryOptions<boolean> => ({
   queryKey: ["ots_hasCode", address, blockTag],
   queryFn: () => {
     return provider.send("ots_hasCode", [address, blockTag]);
@@ -866,7 +907,7 @@ export const getCodeQuery = (
   provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-) => ({
+): UseQueryOptions<string> => ({
   queryKey: ["eth_getCode", address, blockTag],
   queryFn: () => {
     return provider.send("eth_getCode", [address, blockTag]);

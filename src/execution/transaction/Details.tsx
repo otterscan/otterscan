@@ -4,6 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
 import { formatUnits } from "ethers";
 import { FC, memo, useContext, useState } from "react";
 import BlockConfirmations from "../../components/BlockConfirmations";
@@ -44,6 +45,7 @@ import {
 } from "../../use4Bytes";
 import { useChainInfo } from "../../useChainInfo";
 import {
+  getTraceTransactionQuery,
   useBlockDataFromTransaction,
   useSendsToMiner,
   useTokenTransfers,
@@ -59,6 +61,7 @@ import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
+import RevertTrace from "./trace/RevertTrace";
 
 type DetailsProps = {
   txData: TransactionData;
@@ -116,11 +119,16 @@ const Details: FC<DetailsProps> = ({ txData }) => {
   const devError = errorDescription
     ? devDoc?.errors?.[errorDescription.signature]?.[0]
     : undefined;
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
   const isOptimistic = isOptimisticChain(provider._network.chainId);
 
   const { totalFees } = calculateFee(txData, block);
+
+  const { data: otsTrace } = useQuery(
+    getTraceTransactionQuery(provider, txData.transactionHash),
+  );
 
   return (
     <ContentFrame tabs>
@@ -220,6 +228,12 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                 </TabPanels>
               </TabGroup>
             )}
+            <div className="flex">
+              <div className="rounded-lg bg-red-50 p-2">
+                Revert trace:
+                <RevertTrace txHash={txData.transactionHash} />
+              </div>
+            </div>
           </>
         )}
       </InfoRow>
