@@ -80,7 +80,5 @@ function whatsabiFetcher(
       metadata: metadata,
       unknownSelectors,
     };
-
-    return null;
   };
 }
