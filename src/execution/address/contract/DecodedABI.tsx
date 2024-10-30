@@ -15,8 +15,9 @@ const DecodedABI: FC<ABIAwareComponentProps> = ({ abi, unknownSelectors }) => {
         <div className="ml-2 mt-3 text-sm">Unknown functions:</div>
       )}
       {unknownSelectors &&
-        unknownSelectors.map((selector) => (
+        unknownSelectors.map((selector, i) => (
           <RawDecodedFragment
+            key={i}
             fragmentType="function"
             sig={selector}
             letter="F"
