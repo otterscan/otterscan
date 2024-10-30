@@ -7,7 +7,7 @@ import { DevMethod } from "../../../sourcify/useSourcify";
 import DecodedParamsTable from "./DecodedParamsTable";
 
 type OutputDecoderProps = {
-  args: Result | undefined;
+  args: Result | null | undefined;
   paramTypes: readonly ParamType[] | null | undefined;
   data: string;
   devMethod?: DevMethod;
@@ -30,7 +30,7 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
           <>No data</>
         ) : paramTypes === undefined || args === undefined ? (
           <>Waiting for data...</>
-        ) : paramTypes === null ? (
+        ) : paramTypes === null || args === null ? (
           <>Can't decode data</>
         ) : (
           <div className="space-y-2">
