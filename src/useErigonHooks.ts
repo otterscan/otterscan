@@ -21,6 +21,7 @@ import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
 import L1Block from "./abi/optimism/L1Block.json";
 import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
+import { panicCodeMessages } from "./execution/panic-codes";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -609,22 +610,26 @@ export const useTraceTransaction = (
   return traceGroups;
 };
 
+export type TxErrorType = "string" | "panic" | "custom";
+
 // Error(string)
 const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
+// Panic(uint256)
+const PANIC_CODE_SELECTOR = "0x4e487b71";
 
 export const useTransactionError = (
   provider: JsonRpcApiProvider,
   txHash: string,
-): [string | undefined, string | undefined, boolean | undefined] => {
+): [string | undefined, string | undefined, TxErrorType | undefined] => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
   const [data, setData] = useState<string | undefined>();
-  const [isCustomError, setCustomError] = useState<boolean | undefined>();
+  const [errorType, setErrorType] = useState<TxErrorType | undefined>();
 
   useEffect(() => {
     // Reset
     setErrorMsg(undefined);
     setData(undefined);
-    setCustomError(undefined);
+    setErrorType(undefined);
 
     const readCodes = async () => {
       const result = (await provider.send("ots_getTransactionError", [
@@ -635,7 +640,7 @@ export const useTransactionError = (
       if (result === "0x" || typeof result !== "string") {
         setErrorMsg(undefined);
         setData("0x");
-        setCustomError(false);
+        setErrorType("string");
         return;
       }
 
@@ -649,18 +654,32 @@ export const useTransactionError = (
         );
         setErrorMsg(msg[0]);
         setData(result);
-        setCustomError(false);
+        setErrorType("string");
+        return;
+      } else if (selector === PANIC_CODE_SELECTOR) {
+        const panicCode = AbiCoder.defaultAbiCoder().decode(
+          ["uint256"],
+          "0x" + result.substr(10),
+        );
+        const panicCodeStr = panicCode.toString();
+        let msg = panicCodeStr;
+        if (panicCodeStr in panicCodeMessages) {
+          msg += ` (${panicCodeMessages[msg]})`;
+        }
+        setErrorMsg(msg);
+        setData(result);
+        setErrorType("panic");
         return;
       }
 
       setErrorMsg(undefined);
       setData(result);
-      setCustomError(true);
+      setErrorType("custom");
     };
     readCodes();
   }, [provider, txHash]);
 
-  return [errorMsg, data, isCustomError];
+  return [errorMsg, data, errorType];
 };
 
 export const useTransactionCount = (

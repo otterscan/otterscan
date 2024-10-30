@@ -101,13 +101,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
 
-  const [errorMsg, outputData, isCustomError] = useTransactionError(
+  const [errorMsg, outputData, errorType] = useTransactionError(
     provider,
     txData.transactionHash,
   );
   const errorDescription = useError(
     metadata,
-    isCustomError ? outputData : undefined,
+    errorType === "custom" ? outputData : undefined,
   );
   const userError = errorDescription
     ? userDoc?.errors?.[errorDescription.signature]?.[0]
@@ -154,14 +154,14 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                 />
                 <span>
                   Fail
-                  {errorMsg && (
+                  {errorType === "string" && errorMsg && (
                     <>
                       {" "}
                       with revert message: '
                       <span className="font-bold underline">{errorMsg}</span>'
                     </>
                   )}
-                  {isCustomError && (
+                  {errorType === "custom" && (
                     <>
                       {" "}
                       with custom error
@@ -176,9 +176,10 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                       )}
                     </>
                   )}
+                  {errorType === "panic" && ` with panic code ${errorMsg}`}
                 </span>
               </div>
-              {isCustomError && (
+              {errorType === "custom" && (
                 <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
               )}
             </div>
