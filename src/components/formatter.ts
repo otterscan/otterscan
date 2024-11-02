@@ -10,12 +10,12 @@ export const formatValue = (value: BigNumberish, decimals: number): string => {
 
 /**
  * Trims a BigInt to either a minimum number of significant figures or decimal
- * places.
+ * places, whichever gives more decimal places.
  *
  * @param {BigInt} num - The number to trim
- * @param {number} decimals - Decimal places num has
- * @param {number} minSigFigs - Minimum significant figures
- * @param {number} minDecimals - Minimum decimal places
+ * @param {number} decimals - Decimal places num is supposed to have
+ * @param {number} minSigFigs - Minimum significant figures to keep
+ * @param {number} minDecimals - Minimum decimal places to keep
  * @returns {BigInt} The trimmed number
  */
 export function trimToPrecision(
