@@ -411,32 +411,34 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               />
             </div>
           </InfoRow>
-          {txData.confirmedData && txData.confirmedData.l1GasUsed && (
-            <InfoRow title="L1 Gas Used by Txn">
-              <span>{commify(txData.confirmedData.l1GasUsed)}</span>
-            </InfoRow>
-          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1GasUsed !== undefined && (
+              <InfoRow title="L1 Gas Used by Txn">
+                <span>{commify(txData.confirmedData.l1GasUsed)}</span>
+              </InfoRow>
+            )}
           {txData.confirmedData &&
             txData.confirmedData.l1FeeScalar !== undefined && (
               <InfoRow title="L1 Fee Scalar">
                 <span>{txData.confirmedData.l1FeeScalar}</span>
               </InfoRow>
             )}
-          {txData.confirmedData && txData.confirmedData.l1GasPrice && (
-            <InfoRow title="L1 Gas Price">
-              <div className="flex items-baseline space-x-1">
-                <span>
-                  <FormattedBalance value={txData.confirmedData.l1GasPrice} />{" "}
-                  {symbol} (
-                  <FormattedBalance
-                    value={txData.confirmedData.l1GasPrice}
-                    decimals={9}
-                  />{" "}
-                  Gwei)
-                </span>
-              </div>
-            </InfoRow>
-          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1GasPrice !== undefined && (
+              <InfoRow title="L1 Gas Price">
+                <div className="flex items-baseline space-x-1">
+                  <span>
+                    <FormattedBalance value={txData.confirmedData.l1GasPrice} />{" "}
+                    {symbol} (
+                    <FormattedBalance
+                      value={txData.confirmedData.l1GasPrice}
+                      decimals={9}
+                    />{" "}
+                    Gwei)
+                  </span>
+                </div>
+              </InfoRow>
+            )}
         </>
       )}
       {block && hasEIP1559 && (

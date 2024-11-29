@@ -5,7 +5,7 @@ import React, {
   useState,
   useTransition,
 } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router";
 import AddressOrENSNameInvalidNonce from "../components/AddressOrENSNameInvalidNonce";
 import AddressOrENSNameNoTx from "../components/AddressOrENSNameNoTx";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";

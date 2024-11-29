@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import { type AddressOutletContext } from "../AddressMainPage";
 import ReadContract from "./contract/ReadContract";
 

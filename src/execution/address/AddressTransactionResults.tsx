@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useOutletContext, useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";

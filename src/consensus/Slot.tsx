@@ -1,6 +1,6 @@
 import { TabGroup, TabList } from "@headlessui/react";
 import { FC, Suspense } from "react";
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";

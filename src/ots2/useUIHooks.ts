@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router";
 import { PAGE_SIZE } from "../params";
 import { RuntimeContext } from "../useRuntime";
 import {

@@ -6,13 +6,12 @@ import {
   Await,
   createBrowserRouter,
   createRoutesFromElements,
-  defer,
   LoaderFunction,
   Outlet,
   Route,
   RouterProvider,
   useLoaderData,
-} from "react-router-dom";
+} from "react-router";
 import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
@@ -96,10 +95,10 @@ const runtime = populateChainInfo(createRuntime(config));
  * progress during probing.
  */
 const loader: LoaderFunction = async () => {
-  return defer({
+  return {
     config,
     rt: runtime,
-  });
+  };
 };
 
 const addressLoader: LoaderFunction = async ({ params }) => {

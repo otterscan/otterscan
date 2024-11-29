@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import ContentFrame from "../../components/ContentFrame";
 import { useSlot } from "../../useConsensus";
 import { usePageTitle } from "../../useTitle";

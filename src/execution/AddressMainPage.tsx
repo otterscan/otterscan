@@ -4,12 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanels } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useContext } from "react";
-import {
-  Outlet,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Outlet, useNavigate, useParams, useSearchParams } from "react-router";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";

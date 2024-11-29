@@ -1,6 +1,6 @@
 import { getAddress, toUtf8String } from "ethers";
 import { FC, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import BlockLink from "../../components/BlockLink";
 import ContentFrame from "../../components/ContentFrame";
 import HexValue from "../../components/HexValue";

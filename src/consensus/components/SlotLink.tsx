@@ -2,7 +2,7 @@ import { faSquare as faSquareRegular } from "@fortawesome/free-regular-svg-icons
 import { faSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { slotURL } from "../../url";
 import { commify } from "../../utils/utils";
 

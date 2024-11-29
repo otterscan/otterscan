@@ -1,7 +1,7 @@
 import { faUser, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { validatorURL } from "../../url";
 import { commify } from "../../utils/utils";
 

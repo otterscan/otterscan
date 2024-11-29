@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, redirect } from "react-router-dom";
+import { LoaderFunctionArgs, redirect } from "react-router";
 import invariant from "tiny-invariant";
 import { parseSearch } from "./search/search";
 

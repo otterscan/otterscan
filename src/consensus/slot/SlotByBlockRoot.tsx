@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import StandardFrame from "../../components/StandardFrame";
 import { useSlot } from "../../useConsensus";
 import SlotNotFound from "./SlotNotFound";

@@ -1,7 +1,7 @@
 import { faCircleCheck } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo, PropsWithChildren } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { slotAttestationsURL } from "../../url";
 import { SlotAwareComponentProps } from "../types";
 

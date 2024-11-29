@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useAsyncError } from "react-router-dom";
+import { useAsyncError } from "react-router";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import { ProbeError } from "./ProbeError";
 
