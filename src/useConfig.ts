@@ -181,6 +181,16 @@ export type OtterscanConfig = {
   };
 
   /**
+   * Revert traces: runs trace_* calls to reveal exact revert locations in
+   * verified sources. Requires the source mapping to be available in the
+   * Sourcify source's outputs.)
+   */
+  revertTraces?: {
+    // The feature is hidden if this is set to false.
+    enabled?: boolean;
+  };
+
+  /**
    * Optional custom price oracle information for estimating the current price
    * of the native token and all other tokens.
    */

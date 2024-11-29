@@ -68,7 +68,7 @@ type DetailsProps = {
 };
 
 const Details: FC<DetailsProps> = ({ txData }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
 
   const hasEIP1559 =
@@ -228,12 +228,14 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                 </TabPanels>
               </TabGroup>
             )}
-            <div className="flex">
-              <div className="rounded-lg bg-red-50 p-2">
-                Revert trace:
-                <RevertTrace txHash={txData.transactionHash} />
+            {config?.revertTraces?.enabled !== false && (
+              <div className="flex">
+                <div className="rounded-lg bg-red-50 p-2">
+                  Revert trace:
+                  <RevertTrace txHash={txData.transactionHash} />
+                </div>
               </div>
-            </div>
+            )}
           </>
         )}
       </InfoRow>
