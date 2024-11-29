@@ -363,7 +363,9 @@ const router = createBrowserRouter(
         {/* EXPERIMENTAL ROUTES */}
 
         <Route path="epoch/:epochNumber/*" element={<Epoch />} />
-        <Route path="slot/:slotNumber/*" element={<Slot />} />
+        <Route path="slot/:slotNumber">
+          <Route path="*" element={<Slot />} />
+        </Route>
         <Route
           path="slotByBlockRoot/:blockRoot/*"
           element={<SlotByBlockRoot />}
