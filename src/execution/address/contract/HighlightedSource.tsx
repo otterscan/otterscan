@@ -107,6 +107,14 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
     loadAndHighlight();
   }, [source, highlighter, langName, decorations]);
 
+  useEffect(() => {
+    // Scroll to a highlighted source region if one exists
+    const highlightedNode = document.querySelector(".bg-source-line-highlight");
+    if (highlightedNode) {
+      highlightedNode.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
+  }, [code]);
+
   return (
     <div
       className="h-full w-full border font-code text-sm p-3 [&_code]:[counter-reset:step] [&_code]:[counter-increment:step_0] [&_span.line]:before:content-[counter(step)] [&_span.line]:before:[counter-increment:step] [&_span.line]:before:w-4 [&_span.line]:before:mr-6 [&_span.line]:before:inline-block [&_span.line]:before:text-right [&_span.line]:before:text-source-line-numbers"
