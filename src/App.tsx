@@ -285,7 +285,9 @@ const router = createBrowserRouter(
           path="block/:blockNumberOrHash/tx/:txIndex"
           element={<BlockTransactionByIndex />}
         />
-        <Route path="tx/:txhash/*" element={<Transaction />} />
+        <Route path="tx/:txhash">
+          <Route path="*" element={<Transaction />} />
+        </Route>
         <Route
           path="address/:addressOrName/"
           element={<Address />}
