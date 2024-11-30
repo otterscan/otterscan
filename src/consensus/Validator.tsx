@@ -32,7 +32,7 @@ const Validator: FC = () => {
           <StandardSelectionBoundary>
             <TabGroup>
               <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
-                <NavTab href=".">Overview</NavTab>
+                <NavTab href="..">Overview</NavTab>
               </TabList>
             </TabGroup>
             <Suspense fallback={null}>

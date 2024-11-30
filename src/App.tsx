@@ -362,16 +362,18 @@ const router = createBrowserRouter(
         <Route path="contracts/erc1167/*" element={<AllERC1167 />} />
         {/* EXPERIMENTAL ROUTES */}
 
-        <Route path="epoch/:epochNumber/*" element={<Epoch />} />
+        <Route path="epoch/:epochNumber" element={<Epoch />} />
         <Route path="slot/:slotNumber">
           <Route path="*" element={<Slot />} />
         </Route>
         <Route
-          path="slotByBlockRoot/:blockRoot/*"
+          path="slotByBlockRoot/:blockRoot"
           element={<SlotByBlockRoot />}
         />
-        <Route path="validator/:validatorIndex/*" element={<Validator />} />
-        <Route path="faucets/*" element={<Faucets />} />
+        <Route path="validator/:validatorIndex">
+          <Route path="*" element={<Validator />} />
+        </Route>
+        <Route path="faucets" element={<Faucets />} />
         <Route path="broadcastTx" element={<BroadcastTransactionPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
