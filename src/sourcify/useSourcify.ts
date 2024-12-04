@@ -329,15 +329,11 @@ export const getSourcifyMetadataQuery = (
     sourcifySourceName,
   ],
   queryFn: () => {
-    if (sourcifySourceName === null) {
-      throw new Error("Sourcify source name is null");
-    }
-    return fetchSourcifyMetadata(
-      sourcifySources,
+    const { name, sourcifySource } = resolveSourcifySource(
       sourcifySourceName,
-      address,
-      chainId,
+      sourcifySources,
     );
+    return fetchSourcifyMetadata(sourcifySources, name, address, chainId);
   },
   staleTime: Infinity,
   gcTime: 10 * 60 * 1000,

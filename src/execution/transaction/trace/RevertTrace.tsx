@@ -155,36 +155,41 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
     })();
   }, [txHash, revertChain.length]);
 
-  return (
-    revertLocations &&
-    revertLocations.some((location) => location.targetStart !== undefined) &&
-    revertLocations.map(
-      (
-        { targetStart, targetEnd, targetSource, contractName, address },
-        index,
-      ) => (
-        <div className="flex" key={index}>
-          <LinkToSourceRegion
-            targetAddr={address}
-            targetStart={targetStart}
-            targetEnd={targetEnd}
-            targetSource={targetSource}
-          >
-            {contractName ? (
-              <div
-                className={`flex space-x-1 ${targetStart !== undefined && targetEnd !== undefined ? "text-green-600 hover:text-green-800" : "text-verified-contract hover:text-verified-contract-hover"}`}
-              >
-                <SourcifyLogo />
-                <span>{contractName}</span>
-              </div>
-            ) : (
-              address
-            )}
-          </LinkToSourceRegion>
-          {index < revertLocations.length - 1 ? <>/</> : null}
-        </div>
-      ),
+  return revertLocations !== null ? (
+    revertLocations.length > 0 ? (
+      // revertLocations.some((location) => location.targetStart !== undefined) ?
+      revertLocations.map(
+        (
+          { targetStart, targetEnd, targetSource, contractName, address },
+          index,
+        ) => (
+          <div className="flex" key={index}>
+            <LinkToSourceRegion
+              targetAddr={address}
+              targetStart={targetStart}
+              targetEnd={targetEnd}
+              targetSource={targetSource}
+            >
+              {contractName ? (
+                <div
+                  className={`flex space-x-1 ${targetStart !== undefined && targetEnd !== undefined ? "text-green-600 hover:text-green-800" : "text-verified-contract hover:text-verified-contract-hover"}`}
+                >
+                  <SourcifyLogo />
+                  <span>{contractName}</span>
+                </div>
+              ) : (
+                address
+              )}
+            </LinkToSourceRegion>
+            {index < revertLocations.length - 1 ? <>/</> : null}
+          </div>
+        ),
+      )
+    ) : (
+      <p>No revert locations found.</p>
     )
+  ) : (
+    <p>Loading...</p>
   );
 };
 
