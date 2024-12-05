@@ -155,10 +155,24 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
     })();
   }, [txHash, revertChain.length]);
 
-  return revertLocations !== null ? (
-    revertLocations.length > 0 ? (
-      // revertLocations.some((location) => location.targetStart !== undefined) ?
-      revertLocations.map(
+  let revertLocationsFinal:
+    | {
+        address: string;
+        targetStart?: number;
+        targetEnd?: number;
+        targetSource?: string;
+        contractName?: string;
+      }[]
+    | null =
+    revertLocations !== null &&
+    revertLocations.length === 0 &&
+    revertChain.length > 0
+      ? revertChain.map((traceGroup) => ({ address: traceGroup.to }))
+      : revertLocations;
+
+  return traceRes && revertLocationsFinal !== null ? (
+    revertLocationsFinal.length > 0 ? (
+      revertLocationsFinal.map(
         (
           { targetStart, targetEnd, targetSource, contractName, address },
           index,
@@ -181,7 +195,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
                 address
               )}
             </LinkToSourceRegion>
-            {index < revertLocations.length - 1 ? <>/</> : null}
+            {index < revertLocationsFinal.length - 1 ? <>/</> : null}
           </div>
         ),
       )
