@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { toBeArray } from "ethers";
 import React, { useContext, useEffect, useState } from "react";
 import { queryClient } from "../../../queryClient";
 import {
@@ -17,6 +16,7 @@ import {
   getVmTraceQuery,
 } from "../../../useErigonHooks";
 import { RuntimeContext } from "../../../useRuntime";
+import { hexToArray } from "../../../utils/utils";
 import LinkToSourceRegion from "./LinkToSourceRegion";
 import {
   findLastUniqueLocation,
@@ -117,7 +117,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
 
             const lastUniqueIndex = findLastUniqueLocation(
               targetOffsets,
-              toBeArray(
+              hexToArray(
                 targetCode.startsWith("0x") ? targetCode : "0x" + targetCode,
               ),
             );
