@@ -276,15 +276,11 @@ const contractFetcher: Fetcher<string | null, string> = async (url) => {
   return null;
 };
 
-export const useContract = (
-  checksummedAddress: string,
-  networkId: bigint,
+function getFetchFilename(
+  backendFormat: SourcifyBackendFormat,
   filename: string,
   fileHash: string,
-  sourcifySource: SourcifySource,
-  type: MatchType,
-) => {
-  const { sources, backendFormat } = useSourcifySources();
+): string {
   let fetchFilename: string;
   switch (backendFormat) {
     case "RepositoryV1": {
@@ -297,6 +293,47 @@ export const useContract = (
       break;
     }
   }
+  return fetchFilename;
+}
+
+export const getContractQuery = (
+  sourcifySources: SourcifySourceMap,
+  sourcifySource: SourcifySource,
+  backendFormat: SourcifyBackendFormat,
+  address: ChecksummedAddress,
+  chainId: bigint,
+  filename: string,
+  fileHash: string,
+  type: MatchType,
+): UseQueryOptions<string | null> => {
+  const fetchFilename = getFetchFilename(backendFormat, filename, fileHash);
+  const url = sourcifySourceFile(
+    address,
+    chainId,
+    fetchFilename,
+    sourcifySource,
+    type,
+    sourcifySources,
+  );
+
+  return {
+    queryKey: [url],
+    queryFn: () => contractFetcher(url),
+    staleTime: Infinity,
+    gcTime: 10 * 60 * 1000,
+  };
+};
+
+export const useContract = (
+  checksummedAddress: string,
+  networkId: bigint,
+  filename: string,
+  fileHash: string,
+  sourcifySource: SourcifySource,
+  type: MatchType,
+) => {
+  const { sources, backendFormat } = useSourcifySources();
+  const fetchFilename = getFetchFilename(backendFormat, filename, fileHash);
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,
