@@ -186,3 +186,18 @@ export function findLastUniqueLocation(
 
   return lastOffsetIndex;
 }
+
+/**
+ * Calculates the line number for a given character offset within a string.
+ *
+ * @param text - The input string.
+ * @param offset - The character offset (0-indexed).
+ * @returns The line number (1-indexed) where the offset is located. Returns
+ * null if the offset is out of range.
+ */
+export function getLineNumber(text: string, offset: number): number | null {
+  if (offset < 0 || offset > text.length) {
+    return null;
+  }
+  return text.substring(0, offset).split("\n").length;
+}

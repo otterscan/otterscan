@@ -347,6 +347,66 @@ const contractFetcher: Fetcher<string | null, string> = async (url) => {
   return null;
 };
 
+function getFetchFilename(
+  backendFormat: SourcifyBackendFormat,
+  filename: string,
+  fileHash: string,
+): string {
+  let fetchFilename: string;
+  switch (backendFormat) {
+    case "RepositoryV1":
+    // Fallthrough
+    case "SourcifyAPIV2": {
+      fetchFilename = filename.replaceAll(/[:]/g, "_");
+      break;
+    }
+    case "RepositoryV2": {
+      fetchFilename = fileHash;
+      break;
+    }
+    default: {
+      console.warn(
+        `Unknown or unspecified Sourcify backend format (${backendFormat}) for Sourcify source "${name}". Falling back to RepositoryV1.`,
+      );
+      fetchFilename = filename.replaceAll(/[:]/g, "_");
+    }
+  }
+  return fetchFilename;
+}
+
+export const getContractQuery = (
+  sourcifySources: SourcifySourceMap,
+  sourcifySource: SourcifySourceName | null,
+  address: ChecksummedAddress,
+  chainId: bigint,
+  filename: string,
+  fileHash: string,
+  type: MatchType,
+): UseQueryOptions<string | null> => {
+  const { name, sourcifySource: resolvedSourcifySource } =
+    resolveSourcifySource(sourcifySource, sourcifySources);
+  const fetchFilename = getFetchFilename(
+    resolvedSourcifySource.backendFormat,
+    filename,
+    fileHash,
+  );
+  const url = sourcifySourceFile(
+    address,
+    chainId,
+    fetchFilename,
+    name,
+    type,
+    sourcifySources,
+  );
+
+  return {
+    queryKey: [url],
+    queryFn: () => contractFetcher(url),
+    staleTime: Infinity,
+    gcTime: 10 * 60 * 1000,
+  };
+};
+
 export const useContract = (
   checksummedAddress: string,
   networkId: bigint,
@@ -360,25 +420,11 @@ export const useContract = (
     sourcifySourceName,
     sources,
   );
-  let fetchFilename: string;
-  switch (sourcifySource.backendFormat) {
-    case "RepositoryV1":
-    // Fallthrough
-    case "SourcifyAPIV2": {
-      fetchFilename = filename.replaceAll(/[:]/g, "_");
-      break;
-    }
-    case "RepositoryV2": {
-      fetchFilename = fileHash;
-      break;
-    }
-    default: {
-      console.warn(
-        `Unknown or unspecified Sourcify backend format (${sourcifySource.backendFormat}) for Sourcify source "${name}". Falling back to RepositoryV1.`,
-      );
-      fetchFilename = filename.replaceAll(/[:]/g, "_");
-    }
-  }
+  const fetchFilename = getFetchFilename(
+    sourcifySource.backendFormat,
+    filename,
+    fileHash,
+  );
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,

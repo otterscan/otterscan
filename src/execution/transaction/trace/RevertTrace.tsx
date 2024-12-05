@@ -5,7 +5,6 @@ import {
   bytecodeToInstructionIndex,
   getSourceRange,
 } from "../../../sourcify/sourceMapping";
-import SourcifyLogo from "../../../sourcify/SourcifyLogo";
 import {
   getSourcifyMetadataQuery,
   useSourcifySources,
@@ -29,6 +28,15 @@ interface RevertTraceProps {
   txHash: string;
 }
 
+interface RevertLocation {
+  address: string;
+  targetStart?: number;
+  targetEnd?: number;
+  targetSource?: string;
+  targetSourceHash?: string;
+  contractName?: string;
+}
+
 const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
   const { provider } = useContext(RuntimeContext);
   const { sourcifySource } = useAppConfigContext();
@@ -44,14 +52,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
   const revertChain = findRevertChain(traceRes ?? null);
 
   const [revertLocations, setRevertLocations] = useState<
-    | {
-        address: string;
-        targetStart?: number;
-        targetEnd?: number;
-        targetSource?: string;
-        contractName?: string;
-      }[]
-    | null
+    RevertLocation[] | null
   >(
     revertChain
       ? revertChain.map((traceGroup) => ({ address: traceGroup.to }))
@@ -69,6 +70,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
           let targetStart: number | undefined = undefined;
           let targetEnd: number | undefined = undefined;
           let targetSource: string | undefined = undefined;
+          let targetSourceHash: string | undefined = undefined;
           let contractName: string | undefined = undefined;
 
           const targetMatch = await queryClient.fetchQuery(
@@ -138,6 +140,13 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
                     (targetMatch.metadata as any).output.sources[key].id ===
                     sourceIndex,
                 );
+                if (
+                  targetSource !== undefined &&
+                  targetSource in targetMatch.metadata.sources
+                ) {
+                  targetSourceHash =
+                    targetMatch.metadata.sources[targetSource].keccak256;
+                }
                 break;
               }
             }
@@ -146,6 +155,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
             targetStart,
             targetEnd,
             targetSource,
+            targetSourceHash,
             contractName,
             address: targetAddr,
           };
@@ -155,15 +165,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
     })();
   }, [txHash, revertChain.length]);
 
-  let revertLocationsFinal:
-    | {
-        address: string;
-        targetStart?: number;
-        targetEnd?: number;
-        targetSource?: string;
-        contractName?: string;
-      }[]
-    | null =
+  let revertLocationsFinal: RevertLocation[] | null =
     revertLocations !== null &&
     revertLocations.length === 0 &&
     revertChain.length > 0
@@ -174,7 +176,14 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
     revertLocationsFinal.length > 0 ? (
       revertLocationsFinal.map(
         (
-          { targetStart, targetEnd, targetSource, contractName, address },
+          {
+            targetStart,
+            targetEnd,
+            targetSource,
+            targetSourceHash,
+            contractName,
+            address,
+          },
           index,
         ) => (
           <div className="flex" key={index}>
@@ -183,19 +192,9 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
               targetStart={targetStart}
               targetEnd={targetEnd}
               targetSource={targetSource}
-            >
-              {contractName ? (
-                <div
-                  className={`flex space-x-1 ${targetStart !== undefined && targetEnd !== undefined ? "text-green-600 hover:text-green-800" : "text-verified-contract hover:text-verified-contract-hover"}`}
-                >
-                  <SourcifyLogo />
-                  <span>{contractName}</span>
-                </div>
-              ) : (
-                address
-              )}
-            </LinkToSourceRegion>
-            {index < revertLocationsFinal.length - 1 ? <>/</> : null}
+              targetSourceHash={targetSourceHash}
+              contractName={contractName}
+            ></LinkToSourceRegion>
           </div>
         ),
       )
