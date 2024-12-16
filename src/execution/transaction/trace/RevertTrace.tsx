@@ -186,16 +186,31 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
           },
           index,
         ) => (
-          <div className="flex" key={index}>
-            <LinkToSourceRegion
-              targetAddr={address}
-              targetStart={targetStart}
-              targetEnd={targetEnd}
-              targetSource={targetSource}
-              targetSourceHash={targetSourceHash}
-              contractName={contractName}
-            ></LinkToSourceRegion>
-          </div>
+          <>
+            <div className="flex" key={index}>
+              <LinkToSourceRegion
+                targetAddr={address}
+                targetStart={targetStart}
+                targetEnd={targetEnd}
+                targetSource={targetSource}
+                targetSourceHash={targetSourceHash}
+                contractName={contractName}
+              ></LinkToSourceRegion>
+            </div>
+            {index < revertLocationsFinal.length - 1 && (
+              <div className="w-full flex justify-center">
+                {/* Chevron */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="-4 -1.5 8 2.5"
+                  fill="#88b"
+                  className="w-[20px] h-2"
+                >
+                  <path d="M0 -1L4 1V0.5L0 -1.5L-4 0.5V1Z"></path>
+                </svg>
+              </div>
+            )}
+          </>
         ),
       )
     ) : (
