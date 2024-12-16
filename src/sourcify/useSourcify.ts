@@ -1,3 +1,4 @@
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { ErrorDescription, Interface } from "ethers";
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
@@ -125,7 +126,7 @@ function resolveSourcifySource(
   }
 }
 
-function useSourcifySources(): {
+export function useSourcifySources(): {
   sources: SourcifySourceMap;
   backendFormat: SourcifyBackendFormat;
 } {
@@ -178,58 +179,69 @@ export type Match = {
   unknownSelectors?: string[];
 };
 
+async function fetchSourcifyMetadata(
+  sourcifySources: SourcifySourceMap,
+  sourcifySource: SourcifySource,
+  address: ChecksummedAddress | undefined,
+  chainId: bigint | undefined,
+): Promise<Match | null> {
+  if (address === undefined || chainId === undefined) {
+    return null;
+  }
+  // Try full match
+  try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySource,
+      MatchType.FULL_MATCH,
+      sourcifySources,
+    );
+    const res = await fetch(url);
+    if (res.ok) {
+      return {
+        type: MatchType.FULL_MATCH,
+        metadata: await res.json(),
+      };
+    }
+  } catch (err) {
+    console.info(
+      `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
+    );
+  }
+
+  // Fallback to try partial match
+  try {
+    const url = sourcifyMetadata(
+      address,
+      chainId,
+      sourcifySource,
+      MatchType.PARTIAL_MATCH,
+      sourcifySources,
+    );
+    const res = await fetch(url);
+    if (res.ok) {
+      return {
+        type: MatchType.PARTIAL_MATCH,
+        metadata: await res.json(),
+      };
+    }
+  } catch (err) {
+    console.warn(
+      `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`,
+    );
+  }
+  return null;
+}
+
 function sourcifyFetcher(
   sourcifySources: SourcifySourceMap,
 ): Fetcher<
   Match | null | undefined,
   ["sourcify", ChecksummedAddress, bigint, SourcifySource]
 > {
-  return async ([_, address, chainId, sourcifySource]) => {
-    // Try full match
-    try {
-      const url = sourcifyMetadata(
-        address,
-        chainId,
-        sourcifySource,
-        MatchType.FULL_MATCH,
-        sourcifySources,
-      );
-      const res = await fetch(url);
-      if (res.ok) {
-        return {
-          type: MatchType.FULL_MATCH,
-          metadata: await res.json(),
-        };
-      }
-    } catch (err) {
-      console.info(
-        `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
-      );
-    }
-
-    // Fallback to try partial match
-    try {
-      const url = sourcifyMetadata(
-        address,
-        chainId,
-        sourcifySource,
-        MatchType.PARTIAL_MATCH,
-        sourcifySources,
-      );
-      const res = await fetch(url);
-      if (res.ok) {
-        return {
-          type: MatchType.PARTIAL_MATCH,
-          metadata: await res.json(),
-        };
-      }
-    } catch (err) {
-      console.warn(
-        `error while getting Sourcify partial_match metadata: chainId=${chainId} address=${address} err=${err}`,
-      );
-    }
-    return null;
-  };
+  return async ([_, address, chainId, sourcifySource]) =>
+    fetchSourcifyMetadata(sourcifySources, sourcifySource, address, chainId);
 }
 
 export const useSourcifyMetadata = (
@@ -238,20 +250,23 @@ export const useSourcifyMetadata = (
 ): Match | null | undefined => {
   const { sourcifySource } = useAppConfigContext();
   const { sources: sourcifySources } = useSourcifySources();
-  const metadataURL = () =>
-    address === undefined || chainId === undefined
-      ? null
-      : ["sourcify", address, chainId, sourcifySource];
-  const fetcher = sourcifyFetcher(sourcifySources);
-  const { data, error } = useSWRImmutable<Match | null | undefined>(
-    metadataURL,
-    fetcher,
-  );
-  if (error) {
-    return null;
-  }
-  return data;
+  return useQuery(
+    getSourcifyMetadataQuery(sourcifySources, sourcifySource, address, chainId),
+  ).data;
 };
+
+export const getSourcifyMetadataQuery = (
+  sourcifySources: SourcifySourceMap,
+  sourcifySource: SourcifySource,
+  address: ChecksummedAddress | undefined,
+  chainId: bigint | undefined,
+): UseQueryOptions<Match | null> => ({
+  queryKey: ["sourcify", address, (chainId ?? "").toString(), sourcifySource],
+  queryFn: () =>
+    fetchSourcifyMetadata(sourcifySources, sourcifySource, address, chainId),
+  staleTime: Infinity,
+  gcTime: 10 * 60 * 1000,
+});
 
 const contractFetcher: Fetcher<string | null, string> = async (url) => {
   const res = await fetch(url);
@@ -259,6 +274,54 @@ const contractFetcher: Fetcher<string | null, string> = async (url) => {
     return await res.text();
   }
   return null;
+};
+
+function getFetchFilename(
+  backendFormat: SourcifyBackendFormat,
+  filename: string,
+  fileHash: string,
+): string {
+  let fetchFilename: string;
+  switch (backendFormat) {
+    case "RepositoryV1": {
+      fetchFilename = filename.replaceAll(/[:]/g, "_");
+      break;
+    }
+    case "RepositoryV2": {
+      // TODO: Revisit whether all such sources should be assumed to be Solidity files
+      fetchFilename = fileHash + ".sol";
+      break;
+    }
+  }
+  return fetchFilename;
+}
+
+export const getContractQuery = (
+  sourcifySources: SourcifySourceMap,
+  sourcifySource: SourcifySource,
+  backendFormat: SourcifyBackendFormat,
+  address: ChecksummedAddress,
+  chainId: bigint,
+  filename: string,
+  fileHash: string,
+  type: MatchType,
+): UseQueryOptions<string | null> => {
+  const fetchFilename = getFetchFilename(backendFormat, filename, fileHash);
+  const url = sourcifySourceFile(
+    address,
+    chainId,
+    fetchFilename,
+    sourcifySource,
+    type,
+    sourcifySources,
+  );
+
+  return {
+    queryKey: [url],
+    queryFn: () => contractFetcher(url),
+    staleTime: Infinity,
+    gcTime: 10 * 60 * 1000,
+  };
 };
 
 export const useContract = (
@@ -270,16 +333,7 @@ export const useContract = (
   type: MatchType,
 ) => {
   const { sources, backendFormat } = useSourcifySources();
-  let fetchFilename: string;
-  switch (backendFormat) {
-    case "RepositoryV1": {
-      fetchFilename = filename.replaceAll(/[:]/g, "_");
-    }
-    case "RepositoryV2": {
-      // TODO: Revisit whether all such sources should be assumed to be Solidity files
-      fetchFilename = fileHash + ".sol";
-    }
-  }
+  const fetchFilename = getFetchFilename(backendFormat, filename, fileHash);
   const url = sourcifySourceFile(
     checksummedAddress,
     networkId,

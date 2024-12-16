@@ -20,6 +20,7 @@ export default {
         "verified-contract": "#2b50aa",
         "verified-contract-hover": "#26007b",
         "source-line-numbers": "#738a9486",
+        "source-line-highlight": "#99ff00",
       },
       fontFamily: {
         sans: ["Roboto"],
