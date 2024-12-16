@@ -18,7 +18,7 @@ const RevertTraceToggle: React.FC<RevertTraceToggleProps> = ({ txData }) => {
   return visible ? (
     <div className="flex">
       <div className="rounded-lg bg-red-50 p-2">
-        Revert trace:
+        <div className="mb-1">Revert trace:</div>
         <RevertTrace txHash={txData.transactionHash} />
       </div>
     </div>
