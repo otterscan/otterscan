@@ -274,10 +274,12 @@ export const useContract = (
   switch (backendFormat) {
     case "RepositoryV1": {
       fetchFilename = filename.replaceAll(/[:]/g, "_");
+      break;
     }
     case "RepositoryV2": {
       // TODO: Revisit whether all such sources should be assumed to be Solidity files
       fetchFilename = fileHash + ".sol";
+      break;
     }
   }
   const url = sourcifySourceFile(
