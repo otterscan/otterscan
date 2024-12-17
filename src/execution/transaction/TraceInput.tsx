@@ -1,6 +1,6 @@
 import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AbiCoder } from "ethers";
+import { AbiCoder, Result } from "ethers";
 import React, { useContext, useState } from "react";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -152,10 +152,18 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
             <OutputDecoder
               args={
                 txDesc
-                  ? AbiCoder.defaultAbiCoder().decode(
-                      txDesc.fragment.outputs,
-                      t.output,
-                    )
+                  ? (() => {
+                      let decoded: Result | null;
+                      try {
+                        decoded = AbiCoder.defaultAbiCoder().decode(
+                          txDesc.fragment.outputs,
+                          t.output,
+                        );
+                      } catch (e) {
+                        decoded = null;
+                      }
+                      return decoded;
+                    })()
                   : undefined
               }
               paramTypes={txDesc?.fragment?.outputs}
