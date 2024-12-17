@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 jobs:
   check-secrets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       e2e-erigon-url: ${{ steps.e2e-erigon-url.outputs.defined }}
       e2e-cypress-record-key: ${{ steps.e2e-cypress-record-key.outputs.defined }}
@@ -29,7 +29,7 @@ jobs:
 
   e2e-test-mainnet:
     name: Run E2E tests on mainnet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ needs.check-secrets.outputs.e2e-erigon-url == 'true' }}
     needs: [check-secrets]
     steps:
@@ -61,7 +61,7 @@ jobs:
 
   e2e-test-devnet:
     name: Run E2E tests on a devnet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [check-secrets]
     steps:
       - name: Checkout
@@ -69,7 +69,7 @@ jobs:
       - name: Set up xvfb
         run: |
           sudo apt update
-          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+          sudo apt install -y libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
 
       - name: Download Erigon
         run: git clone --branch release/2.54 --single-branch https://github.com/ledgerwatch/erigon.git
@@ -113,7 +113,7 @@ jobs:
 
   e2e-test-anvil:
     name: Run E2E tests on an Anvil devnet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [check-secrets]
     steps:
       - name: Checkout
@@ -121,7 +121,7 @@ jobs:
       - name: Set up xvfb
         run: |
           sudo apt update
-          sudo apt install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+          sudo apt install -y libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
       - name: Download Anvil
         run: |
           wget -O ./foundry.tar.gz https://github.com/foundry-rs/foundry/releases/download/nightly/foundry_nightly_linux_amd64.tar.gz
