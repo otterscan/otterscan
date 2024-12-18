@@ -2,7 +2,7 @@ import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FixedNumber, JsonRpcApiProvider } from "ethers";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { formatValue } from "./components/formatter";
+import { formatValue, trimToPrecision } from "./components/formatter";
 import { useChainInfo } from "./useChainInfo";
 import { useLatestBlockHeader } from "./useLatestBlock";
 import {
@@ -114,7 +114,10 @@ const PriceBox: React.FC = () => {
       return [undefined, undefined];
     }
 
-    const formattedGas = formatValue(latestGasData.answer, 9);
+    const formattedGas = formatValue(
+      trimToPrecision(latestGasData.answer, 9, 3, 3),
+      9,
+    );
     const timestamp = new Date(Number(latestGasData.updatedAt) * 1000);
     return [formattedGas, timestamp];
   }, [latestGasData]);
