@@ -278,6 +278,7 @@ export const useContract = (
     }
     case "RepositoryV2": {
       fetchFilename = fileHash;
+      break;
     }
   }
   const url = sourcifySourceFile(
