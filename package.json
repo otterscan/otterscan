@@ -17,7 +17,7 @@
     "@headlessui/react": "^2.2.0",
     "@shazow/whatsabi": "^0.12.0",
     "@tanstack/react-query": "^5.62.8",
-    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.13",
