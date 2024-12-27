@@ -277,8 +277,7 @@ export const useContract = (
       break;
     }
     case "RepositoryV2": {
-      // TODO: Revisit whether all such sources should be assumed to be Solidity files
-      fetchFilename = fileHash + ".sol";
+      fetchFilename = fileHash;
       break;
     }
   }
