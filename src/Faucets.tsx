@@ -11,6 +11,9 @@ import StandardFrame from "./components/StandardFrame";
 import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
 
+// URL displayed to the user as the source of the faucet information
+const faucetSourceUrl = "https://github.com/ethereum-lists/chains";
+
 const Faucets: React.FC = () => {
   const { faucets } = useChainInfo();
   const loc = useLocation();
@@ -45,9 +48,11 @@ const Faucets: React.FC = () => {
                 size="1x"
               />
               <span>
-                The following external links come from
-                https://github.com/ethereum-lists/chains and are *NOT* endorsed
-                by us. Use at your own risk.
+                The following external links come from{" "}
+                <ExternalLink href={faucetSourceUrl}>
+                  <span className="underline">{faucetSourceUrl}</span>
+                </ExternalLink>{" "}
+                and are *NOT* endorsed by us. Use at your own risk.
               </span>
             </div>
           )}
