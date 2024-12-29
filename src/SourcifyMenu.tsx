@@ -2,7 +2,7 @@ import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import React, { PropsWithChildren } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router";
 import ThemeToggler from "./components/ThemeToggler";
 import { SourcifySource } from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";

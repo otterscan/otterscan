@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import {
   UniswapV1PairMeta,
   UniswapV1TokenMeta,

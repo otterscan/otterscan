@@ -1,5 +1,5 @@
 import { FC, useContext } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { type AddressOutletContext } from "../AddressMainPage";

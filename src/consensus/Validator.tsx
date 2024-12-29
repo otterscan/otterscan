@@ -1,7 +1,7 @@
 import { TabGroup, TabList } from "@headlessui/react";
 import { isHexString } from "ethers";
 import { FC, Suspense } from "react";
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
@@ -32,7 +32,7 @@ const Validator: FC = () => {
           <StandardSelectionBoundary>
             <TabGroup>
               <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
-                <NavTab href=".">Overview</NavTab>
+                <NavTab href="..">Overview</NavTab>
               </TabList>
             </TabGroup>
             <Suspense fallback={null}>

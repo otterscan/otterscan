@@ -1,5 +1,5 @@
 import React, { lazy, useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import BlockLink from "../../components/BlockLink";
 import BlockNotFound from "../../components/BlockNotFound";
 import ContentFrame from "../../components/ContentFrame";

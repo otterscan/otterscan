@@ -1,5 +1,5 @@
 import { FC, MouseEventHandler, PropsWithChildren } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 type NavButtonProps = {
   href: string;

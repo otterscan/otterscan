@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import StandardTHead from "../../components/StandardTHead";
 import {
   genericTransactionCountQuery,

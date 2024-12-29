@@ -1,7 +1,7 @@
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, lazy, memo, useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import Logo from "./Logo";
 import SourcifyMenu from "./SourcifyMenu";
 import Timestamp from "./components/Timestamp";

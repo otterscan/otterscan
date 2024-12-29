@@ -6,13 +6,12 @@ import {
   Await,
   createBrowserRouter,
   createRoutesFromElements,
-  defer,
   LoaderFunction,
   Outlet,
   Route,
   RouterProvider,
   useLoaderData,
-} from "react-router-dom";
+} from "react-router";
 import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
@@ -96,10 +95,10 @@ const runtime = populateChainInfo(createRuntime(config));
  * progress during probing.
  */
 const loader: LoaderFunction = async () => {
-  return defer({
+  return {
     config,
     rt: runtime,
-  });
+  };
 };
 
 const addressLoader: LoaderFunction = async ({ params }) => {
@@ -286,7 +285,9 @@ const router = createBrowserRouter(
           path="block/:blockNumberOrHash/tx/:txIndex"
           element={<BlockTransactionByIndex />}
         />
-        <Route path="tx/:txhash/*" element={<Transaction />} />
+        <Route path="tx/:txhash">
+          <Route path="*" element={<Transaction />} />
+        </Route>
         <Route
           path="address/:addressOrName/"
           element={<Address />}
@@ -361,14 +362,18 @@ const router = createBrowserRouter(
         <Route path="contracts/erc1167/*" element={<AllERC1167 />} />
         {/* EXPERIMENTAL ROUTES */}
 
-        <Route path="epoch/:epochNumber/*" element={<Epoch />} />
-        <Route path="slot/:slotNumber/*" element={<Slot />} />
+        <Route path="epoch/:epochNumber" element={<Epoch />} />
+        <Route path="slot/:slotNumber">
+          <Route path="*" element={<Slot />} />
+        </Route>
         <Route
-          path="slotByBlockRoot/:blockRoot/*"
+          path="slotByBlockRoot/:blockRoot"
           element={<SlotByBlockRoot />}
         />
-        <Route path="validator/:validatorIndex/*" element={<Validator />} />
-        <Route path="faucets/*" element={<Faucets />} />
+        <Route path="validator/:validatorIndex">
+          <Route path="*" element={<Validator />} />
+        </Route>
+        <Route path="faucets" element={<Faucets />} />
         <Route path="broadcastTx" element={<BroadcastTransactionPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

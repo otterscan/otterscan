@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
 
 type PlainStringProps = {

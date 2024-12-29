@@ -1,6 +1,6 @@
 import { Log } from "ethers";
 import { FC, memo, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import ContentFrame from "../../components/ContentFrame";
 import LogEntry from "./LogEntry";
 

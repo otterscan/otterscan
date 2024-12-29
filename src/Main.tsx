@@ -1,6 +1,6 @@
 import React, { Suspense, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import Header from "./Header";
 import ErrorFallback from "./components/ErrorFallback";
 import { SourcifySource } from "./sourcify/useSourcify";

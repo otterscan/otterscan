@@ -2,7 +2,7 @@ import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { BarcodeFormat } from "@zxing/library";
 import { isAddress } from "ethers";
 import React, { useTransition } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { QrReader } from "./qr-reader/QrReader";
 import { OnResultFunction } from "./qr-reader/useQrReader";
 
