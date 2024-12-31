@@ -29,6 +29,7 @@ import RelativePosition from "../../components/RelativePosition";
 import StandardTextarea from "../../components/StandardTextarea";
 import Timestamp from "../../components/Timestamp";
 import TransactionType from "../../components/TransactionType";
+import SolidityLogo from "../../sourcify/SolidityLogo";
 import {
   useError,
   useSourcifyMetadata,
@@ -176,7 +177,17 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                       )}
                     </>
                   )}
-                  {errorType === "panic" && ` with panic code ${errorMsg}`}
+                  {errorType === "panic" && (
+                    <>
+                      {" "}
+                      with{" "}
+                      <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
+                        <SolidityLogo />
+                        Solidity panic code
+                      </ExternalLink>{" "}
+                      {errorMsg}
+                    </>
+                  )}
                 </span>
               </div>
               {errorType === "custom" && (
