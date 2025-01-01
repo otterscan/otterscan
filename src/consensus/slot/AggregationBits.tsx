@@ -8,10 +8,12 @@ type AggregationBitsProps = {
 const AggregationBits: FC<AggregationBitsProps> = ({ hex }) => {
   const bm = Array.from(getBytes(hex));
   return (
-    <div className="grid w-fit grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 font-hash">
-      {bm.map((b, i) => (
-        <Bitmap key={i} b={b} />
-      ))}
+    <div className="overflow-x-auto md:overflow-visible">
+      <div className="grid w-max md:w-fit grid-cols-6 md:grid-cols-8 gap-2 font-hash">
+        {bm.map((b, i) => (
+          <Bitmap key={i} b={b} />
+        ))}
+      </div>
     </div>
   );
 };
