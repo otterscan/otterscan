@@ -24,18 +24,20 @@ const SlotLink: FC<SlotLinkProps> = ({
 
   return (
     <NavLink
-      className={`flex items-baseline ${
+      className={`flex-inline items-baseline break-all ${
         missed
           ? "text-red-500 line-through hover:text-red-800"
           : "text-link-blue hover:text-link-blue-hover"
-      } ${isNum ? "font-blocknum space-x-2" : "font-hash space-x-1"}`}
+      } ${isNum ? "font-blocknum space-x-2 whitespace-nowrap" : "font-hash space-x-1"}`}
       to={slotURL(slot)}
     >
-      <FontAwesomeIcon
-        className={`self-center ${slashings ? "text-red-600" : ""}`}
-        icon={missed || scheduled ? faSquareRegular : faSquare}
-        size="1x"
-      />
+      <span>
+        <FontAwesomeIcon
+          className={`self-center ${slashings ? "text-red-600" : ""}`}
+          icon={missed || scheduled ? faSquareRegular : faSquare}
+          size="1x"
+        />
+      </span>
       <span>{text}</span>
     </NavLink>
   );
