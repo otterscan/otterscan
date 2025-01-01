@@ -176,7 +176,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                   )}
                   {errorType === "panic" && (
                     <>
-                      <SolidityLogo /> Panic: {errorMsg}{" "}
+                      <SolidityLogo /> Panic {errorMsg}{" "}
                       <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
                         (docs)
                       </ExternalLink>

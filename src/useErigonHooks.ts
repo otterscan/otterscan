@@ -667,7 +667,7 @@ export const useTransactionError = (
         );
         let msg = intToHex(panicCode[0]);
         if (panicCode[0].toString() in panicCodeMessages) {
-          msg = `${panicCodeMessages[panicCode[0].toString()]} (${msg})`;
+          msg = `${msg}: ${panicCodeMessages[panicCode[0].toString()]}`;
         }
         setErrorMsg(msg);
         setData(result);
