@@ -617,6 +617,10 @@ const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
 // Panic(uint256)
 const PANIC_CODE_SELECTOR = "0x4e487b71";
 
+function intToHex(num: bigint): string {
+  return "0x" + num.toString(16).padStart(2, "0");
+}
+
 export const useTransactionError = (
   provider: JsonRpcApiProvider,
   txHash: string,
@@ -661,10 +665,9 @@ export const useTransactionError = (
           ["uint256"],
           "0x" + result.substr(10),
         );
-        const panicCodeStr = panicCode.toString();
-        let msg = panicCodeStr;
-        if (panicCodeStr in panicCodeMessages) {
-          msg += ` (${panicCodeMessages[msg]})`;
+        let msg = intToHex(panicCode[0]);
+        if (panicCode[0].toString() in panicCodeMessages) {
+          msg = `${panicCodeMessages[panicCode[0].toString()]} (${msg})`;
         }
         setErrorMsg(msg);
         setData(result);

@@ -154,18 +154,15 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                   size="1x"
                 />
                 <span>
-                  Fail
                   {errorType === "string" && errorMsg && (
                     <>
-                      {" "}
-                      with revert message: '
+                      Fail with revert message: '
                       <span className="font-bold underline">{errorMsg}</span>'
                     </>
                   )}
                   {errorType === "custom" && (
                     <>
-                      {" "}
-                      with custom error
+                      Fail with custom error
                       {errorDescription && (
                         <>
                           {" '"}
@@ -179,13 +176,10 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                   )}
                   {errorType === "panic" && (
                     <>
-                      {" "}
-                      with{" "}
+                      <SolidityLogo /> Panic: {errorMsg}{" "}
                       <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
-                        <SolidityLogo />
-                        Solidity panic code
-                      </ExternalLink>{" "}
-                      {errorMsg}
+                        (docs)
+                      </ExternalLink>
                     </>
                   )}
                 </span>
