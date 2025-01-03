@@ -1,7 +1,7 @@
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, JSX, memo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 
 type RawDecodedFragmentProps = {
   fragmentType?: "constructor" | "event" | "function" | "error";
