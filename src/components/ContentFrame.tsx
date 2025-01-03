@@ -12,7 +12,7 @@ const ContentFrame: FC<PropsWithChildren<ContentFrameProps>> = ({
 }) => {
   return tabs ? (
     <div
-      className={`sm:divide-y rounded-b-lg border bg-white px-3 ${
+      className={`divide-y rounded-b-lg border bg-white px-3 ${
         isLoading && "opacity-50 transition-opacity"
       }`}
     >
