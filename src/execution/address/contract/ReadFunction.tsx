@@ -292,8 +292,8 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             )
           }
         >
-          <div className="ml-4 mt-1">
-            <div className="text-xs">Block Number</div>
+          <div className="mt-1">
+            <div className="text-sm mt-2 text-green-700">Block Number</div>
             <input
               type="text"
               value={blockNumber}
@@ -312,14 +312,14 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             >
               Latest
             </button>
-            <div className="text-xs">Sender</div>
+            <div className="text-sm mt-2 text-green-700">Sender</div>
             <input
               type="text"
               className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
               onChange={(e) => setSender(e.target.value)}
               placeholder="0x0000000000000000000000000000000000000000"
             />
-            <div className="text-xs">
+            <div className="text-sm mt-2 text-green-700">
               Value {nativeCurrency && `(${nativeCurrency.symbol})`}
             </div>
             <input
