@@ -29,6 +29,7 @@ import RelativePosition from "../../components/RelativePosition";
 import StandardTextarea from "../../components/StandardTextarea";
 import Timestamp from "../../components/Timestamp";
 import TransactionType from "../../components/TransactionType";
+import SolidityLogo from "../../sourcify/SolidityLogo";
 import {
   useError,
   useSourcifyMetadata,
@@ -101,13 +102,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
 
-  const [errorMsg, outputData, isCustomError] = useTransactionError(
+  const [errorMsg, outputData, errorType] = useTransactionError(
     provider,
     txData.transactionHash,
   );
   const errorDescription = useError(
     metadata,
-    isCustomError ? outputData : undefined,
+    errorType === "custom" ? outputData : undefined,
   );
   const userError = errorDescription
     ? userDoc?.errors?.[errorDescription.signature]?.[0]
@@ -153,18 +154,15 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                   size="1x"
                 />
                 <span>
-                  Fail
-                  {errorMsg && (
+                  {errorType === "string" && errorMsg && (
                     <>
-                      {" "}
-                      with revert message: '
+                      Fail with revert message: '
                       <span className="font-bold underline">{errorMsg}</span>'
                     </>
                   )}
-                  {isCustomError && (
+                  {errorType === "custom" && (
                     <>
-                      {" "}
-                      with custom error
+                      Fail with custom error
                       {errorDescription && (
                         <>
                           {" '"}
@@ -176,9 +174,17 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                       )}
                     </>
                   )}
+                  {errorType === "panic" && (
+                    <>
+                      <SolidityLogo /> Panic {errorMsg}{" "}
+                      <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
+                        (docs)
+                      </ExternalLink>
+                    </>
+                  )}
                 </span>
               </div>
-              {isCustomError && (
+              {errorType === "custom" && (
                 <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
               )}
             </div>
