@@ -292,7 +292,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             )
           }
         >
-          <div className="mt-1">
+          <div className="ml-2 mt-1">
             <div className="text-sm mt-2 text-green-700">Block Number</div>
             <input
               type="text"
