@@ -128,7 +128,9 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           <span className="font-hash" data-test="tx-hash">
             {txData.transactionHash}
           </span>
-          <Copy value={txData.transactionHash} />
+          <div>
+            <Copy value={txData.transactionHash} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title="Status">
