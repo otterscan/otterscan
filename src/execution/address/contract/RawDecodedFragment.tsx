@@ -36,7 +36,16 @@ const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
       )}
       {fragmentStr !== undefined && (
         <span className="whitespace-nowrap font-code text-sm">
-          {fragmentStr}
+          {address && fragmentType === "function" && sig ? (
+            <NavLink
+              to={`/address/${address}/readContract#${sig}`}
+              className="hover:underline text-blue-900"
+            >
+              {fragmentStr}
+            </NavLink>
+          ) : (
+            fragmentStr
+          )}
         </span>
       )}
       {sig && (
@@ -53,13 +62,6 @@ const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
           >
             {sig}
           </span>
-          {address && fragmentType === "function" && (
-            <span className="whitespace-nowrap">
-              <NavLink to={`/address/${address}/readContract#${sig}`}>
-                read &raquo;
-              </NavLink>
-            </span>
-          )}
         </>
       )}
     </div>
