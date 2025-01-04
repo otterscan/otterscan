@@ -18,39 +18,51 @@ describe("Read Contract tests", () => {
           .contains("getVariableLengthStringArray")
           .parent()
           .as("func");
-        cy.get("@func").find("input").type("one");
+        cy.get("@func").find("input.w-full").type("one");
         cy.get("@func").find("button").contains("Add Element").click();
-        cy.get("@func").find("input").eq(1).type("two");
+        cy.get("@func").find("input.w-full").eq(1).type("two");
         cy.get("@func").find("button").contains("Add Element").click();
-        cy.get("@func").find("input").eq(2).type("three");
+        cy.get("@func").find("input.w-full").eq(2).type("three");
 
-        cy.get("@func").find("input").eq(0).should("have.value", "one");
-        cy.get("@func").find("input").eq(1).should("have.value", "two");
-        cy.get("@func").find("input").eq(2).should("have.value", "three");
+        cy.get("@func").find("input.w-full").eq(0).should("have.value", "one");
+        cy.get("@func").find("input.w-full").eq(1).should("have.value", "two");
+        cy.get("@func")
+          .find("input.w-full")
+          .eq(2)
+          .should("have.value", "three");
 
         // Remove the 2nd element
         cy.get("@func")
           .find("[data-test='remove-array-element']")
           .eq(1)
           .click();
-        cy.get("@func").find("input").eq(0).should("have.value", "one");
-        cy.get("@func").find("input").eq(1).should("have.value", "three");
+        cy.get("@func").find("input.w-full").eq(0).should("have.value", "one");
+        cy.get("@func")
+          .find("input.w-full")
+          .eq(1)
+          .should("have.value", "three");
 
         // Add another array element
         cy.get("@func").find("button").contains("Add Element").click();
-        cy.get("@func").find("input").eq(2).type("new");
+        cy.get("@func").find("input.w-full").eq(2).type("new");
 
-        cy.get("@func").find("input").eq(0).should("have.value", "one");
-        cy.get("@func").find("input").eq(1).should("have.value", "three");
-        cy.get("@func").find("input").eq(2).should("have.value", "new");
+        cy.get("@func").find("input.w-full").eq(0).should("have.value", "one");
+        cy.get("@func")
+          .find("input.w-full")
+          .eq(1)
+          .should("have.value", "three");
+        cy.get("@func").find("input.w-full").eq(2).should("have.value", "new");
 
         // Remove the 1st element
         cy.get("@func")
           .find("[data-test='remove-array-element']")
           .eq(0)
           .click();
-        cy.get("@func").find("input").eq(0).should("have.value", "three");
-        cy.get("@func").find("input").eq(1).should("have.value", "new");
+        cy.get("@func")
+          .find("input.w-full")
+          .eq(0)
+          .should("have.value", "three");
+        cy.get("@func").find("input.w-full").eq(1).should("have.value", "new");
 
         // Query
         cy.get("@func").find("button").contains("Query").click();
