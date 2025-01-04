@@ -125,11 +125,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
   return (
     <ContentFrame tabs>
       <InfoRow title="Transaction Hash">
-        <div className="flex items-baseline space-x-2">
+        <div className="flex items-baseline space-x-2 break-all">
           <span className="font-hash" data-test="tx-hash">
             {txData.transactionHash}
           </span>
-          <Copy value={txData.transactionHash} />
+          <div>
+            <Copy value={txData.transactionHash} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title="Status">
