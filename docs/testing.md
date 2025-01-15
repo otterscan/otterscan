@@ -27,9 +27,11 @@ The Otterscan instance should then be pointed to an Erigon devnet running on `ht
 
 (Note: The private key for the funded account can be found with `echo -n "erigon devnet key" | sha256sum`.)
 
+Use an Otterscan config identical to the one at `cypress/support/devnet-config.json`.
+
 Run the devnet and common end-to-end tests:
 ```sh
-npm run cy:run-devnet
+CYPRESS_DEVNET_SOURCIFY_SOURCE=http://127.0.0.1:7077 npm run cy:run-devnet
 ```
 
 ## Running GitHub Actions workflows locally

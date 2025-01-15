@@ -10,6 +10,7 @@ import {
   type ParamType,
 } from "ethers";
 import { FC, FormEvent, memo, useContext, useRef, useState } from "react";
+import { NavLink } from "react-router";
 import Accordion from "../../../components/Accordion";
 import { DevMethod } from "../../../sourcify/useSourcify";
 import { useChainInfo } from "../../../useChainInfo";
@@ -258,7 +259,15 @@ const ReadFunction: FC<ReadFunctionProps> = ({
       data-test="read-function"
       id={func.selector}
     >
-      <span className="text-md font-medium">{func.name}</span>
+      <span className="text-md font-medium">
+        <NavLink
+          to={`/address/${address}/readContract#${func.selector}`}
+          className="hover:underline"
+          id={func.selector}
+        >
+          {func.name}
+        </NavLink>
+      </span>
       <form onSubmit={onFormSubmit} className="mt-2 pl-4">
         <ul className="ml-2 list-inside">
           {func.inputs &&

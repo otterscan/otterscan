@@ -17,6 +17,7 @@ describe("Read Contract tests", () => {
         cy.get('[data-test="read-function"]')
           .contains("getVariableLengthStringArray")
           .parent()
+          .parent()
           .as("func");
         cy.get("@func").find("input.w-full").type("one");
         cy.get("@func").find("button").contains("Add Element").click();
