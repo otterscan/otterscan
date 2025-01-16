@@ -6,6 +6,7 @@ describe("Read Contract tests", () => {
     cy.get('[data-test="read-function"]')
       .contains("getAddressForCounterfactualWallet")
       .parent()
+      .parent()
       .as("func");
     cy.get("@func")
       .find("input")
