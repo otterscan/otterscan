@@ -1,6 +1,7 @@
 import { faGasPump } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FixedNumber, JsonRpcApiProvider } from "ethers";
+import { motion } from "motion/react";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { formatValue, trimToPrecision } from "./components/formatter";
 import { useChainInfo } from "./useChainInfo";
@@ -135,12 +136,15 @@ const PriceBox: React.FC = () => {
           >
             {symbol}: $<span className="font-balance">{latestPrice}</span>
             {oneDayPriceChange ? (
-              <span
-                className={`ml-0.5 ${oneDayPriceChange.startsWith("+") ? "text-green-500" : "text-red-500"}`}
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: "auto" }}
+                transition={{ duration: 0.4, ease: "circOut" }}
+                className={`inline-block overflow-clip ml-0.5 ${oneDayPriceChange.startsWith("+") ? "text-green-500" : "text-red-500"}`}
               >
                 {" "}
                 ({oneDayPriceChange}%)
-              </span>
+              </motion.div>
             ) : null}
           </span>
           {latestGasData && (
