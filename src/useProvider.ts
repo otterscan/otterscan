@@ -41,12 +41,20 @@ export const createAndProbeProvider = async (
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
     }
   });
+  // Wait for the `eth_chainId` call ethers internally makes so provider._network
+  // is available to components
+  const getNetwork = provider.getNetwork();
 
   try {
-    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
+    await Promise.all([
+      probeBlockNumber,
+      probeHeader1,
+      probeOtsAPI,
+      getNetwork,
+    ]);
     return provider;
   } catch (err) {
-    // If any was rejected, then check them sequencially in order to
+    // If any was rejected, then check them sequentially in order to
     // narrow the error cause, but we need to await them individually
     // because we don't know if all of them have been finished
 
