@@ -5,6 +5,8 @@ import "@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2";
 import "@fontsource/space-grotesk/index.css";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { Decorator } from "@storybook/react";
+// organize-imports-ignore
+import React from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
