@@ -5,7 +5,6 @@ import "@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2";
 import "@fontsource/space-grotesk/index.css";
 import { INITIAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { Decorator } from "@storybook/react";
-import React from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -32,7 +31,9 @@ export const parameters = {
 
 export const decorators: Decorator[] = [
   (Story) => {
-    const router = createBrowserRouter(createRoutesFromElements(<Route path="*" element={<Story />}/>));
+    const router = createBrowserRouter(
+      createRoutesFromElements(<Route path="*" element={<Story />} />),
+    );
     return <RouterProvider router={router} />;
   },
 ];
