@@ -3,13 +3,12 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router";
 import Header from "./Header";
 import ErrorFallback from "./components/ErrorFallback";
-import { SourcifySource } from "./sourcify/useSourcify";
+import { SourcifySourceName } from "./sourcify/useSourcify";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
 
 const Main: React.FC = () => {
-  const [sourcifySource, setSourcifySource] = useState<SourcifySource>(
-    SourcifySource.CENTRAL_SERVER,
-  );
+  const [sourcifySource, setSourcifySource] =
+    useState<SourcifySourceName | null>(null);
   const appConfig = useMemo((): AppConfig => {
     return {
       sourcifySource,

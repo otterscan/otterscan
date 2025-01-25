@@ -1,7 +1,7 @@
 import { Decorator } from "@storybook/react/*";
 import { JsonRpcProvider } from "ethers";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
-import { SourcifySource } from "../sourcify/useSourcify";
+import { defaultSourcifySourceName } from "../sourcify/useSourcify";
 import { AppConfigContext } from "../useAppConfig";
 import { OtterscanConfig } from "../useConfig";
 import { RuntimeContext } from "../useRuntime";
@@ -23,7 +23,7 @@ export const runtimeDecorator: Decorator<unknown> = (Story) => (
   >
     <AppConfigContext.Provider
       value={{
-        sourcifySource: SourcifySource.CENTRAL_SERVER,
+        sourcifySource: defaultSourcifySourceName,
         setSourcifySource: () => {},
       }}
     >

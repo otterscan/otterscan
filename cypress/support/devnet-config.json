@@ -4,8 +4,10 @@
   "assetsURLPrefix": "http://localhost:5175",
   "sourcify": {
     "sources": {
-      "central_server": "http://localhost:7077",
-      "ipfs": "http://localhost:7077"
+      "Local Testing Sourcify Server": {
+        "url": "http://localhost:7077",
+        "backendFormat": "RepositoryV1"
+      }
     }
   }
 }
