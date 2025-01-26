@@ -1,12 +1,3 @@
-function withOpacity(variableName) {
-  return ({ opacityValue }) => {
-    if (opacityValue !== undefined) {
-      return `rgba(var(${variableName}), ${opacityValue})`;
-    }
-    return `rgb(var(${variableName}))`;
-  };
-}
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html"],
@@ -33,24 +24,25 @@ export default {
       },
       borderColor: {
         skin: {
-          from: withOpacity("--color-from-border"),
+          from: "rgb(var(--color-from-border) / <alpha-value>)",
         },
       },
       textColor: {
         skin: {
-          button: withOpacity("--color-button-text"),
+          button: "rgb(var(--color-button-text) / <alpha-value>)",
 
-          from: withOpacity("--color-from-text"),
+          from: "rgb(var(--color-from-text) / <alpha-value>)",
         },
       },
       backgroundColor: {
         skin: {
-          "button-fill": withOpacity("--color-button-fill"),
-          "button-hover-fill": withOpacity("--color-button-hover-fill"),
+          "button-fill": "rgb(var(--color-button-fill) / <alpha-value>)",
+          "button-hover-fill":
+            "rgb(var(--color-button-hover-fill) / <alpha-value>)",
 
-          from: withOpacity("--color-from-fill"),
-          to: withOpacity("--color-to-fill"),
-          "table-hover": withOpacity("--color-table-row-hover"),
+          from: "rgb(var(--color-from-fill) / <alpha-value>)",
+          to: "rgb(var(--color-to-fill) / <alpha-value>)",
+          "table-hover": "rgb(var(--color-table-row-hover) / <alpha-value>)",
         },
       },
     },
