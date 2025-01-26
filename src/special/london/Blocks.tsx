@@ -122,7 +122,7 @@ const Blocks: React.FC<BlocksProps> = ({ latestBlock }) => {
           <div className="flex items-baseline justify-center space-x-2 px-3 pb-2 text-xl text-gray-800">
             Latest Blocks
           </div>
-          <div className="absolute right-0 top-0 rounded border px-2 py-1 text-sm text-link-blue shadow-md hover:bg-gray-50 hover:text-link-blue-hover">
+          <div className="absolute right-0 top-0 rounded-sm border px-2 py-1 text-sm text-link-blue shadow-md hover:bg-gray-50 hover:text-link-blue-hover">
             <button onClick={() => setToggleChart(!toggleChart)}>
               {toggleChart ? "Gas usage" : "Burnt fees"}
             </button>

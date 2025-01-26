@@ -50,7 +50,7 @@ const BroadcastTransactionPage: React.FC = () => {
           ></StandardTextarea>
           <div>
             <button
-              className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center"
+              className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded-sm border inline-flex items-center"
               onClick={submitTx}
             >
               Send Transaction
@@ -59,7 +59,7 @@ const BroadcastTransactionPage: React.FC = () => {
           {resultState.success === false && (
             <div>
               <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-2.5 rounded relative break-words"
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-2.5 rounded-sm relative break-words"
                 role="alert"
               >
                 <strong className="font-bold">Error!</strong> Failed to
@@ -70,7 +70,7 @@ const BroadcastTransactionPage: React.FC = () => {
           )}
           {resultState.success && (
             <div
-              className="bg-green-100 border border-green-300 text-green-700 px-4 py-2.5 rounded relative"
+              className="bg-green-100 border border-green-300 text-green-700 px-4 py-2.5 rounded-sm relative"
               role="alert"
             >
               <strong className="font-bold">Success!</strong> Transaction hash:{" "}

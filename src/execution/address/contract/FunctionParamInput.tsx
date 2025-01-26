@@ -96,7 +96,7 @@ const FunctionParamInput = forwardRef<
   return typeof paramValue === "string" ? (
     <input
       type="text"
-      className="mt-1 w-full rounded border px-2 py-1 text-sm text-gray-600"
+      className="mt-1 w-full rounded-sm border px-2 py-1 text-sm text-gray-600"
       placeholder={param.format("full")}
       onChange={(e) =>
         dispatch({ type: "UPDATE_VALUE", newValue: e.target.value })
@@ -136,7 +136,7 @@ const FunctionParamInput = forwardRef<
               <ParamDeclaration input={param.arrayChildren!} index={index} />{" "}
               {param.arrayLength === -1 && (
                 <button
-                  className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-3"
+                  className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded-sm border inline-flex items-center ml-3"
                   type="button"
                   data-test="remove-array-element"
                   onClick={(event) => {
@@ -163,7 +163,7 @@ const FunctionParamInput = forwardRef<
       {param.arrayLength === -1 && (
         <div className="text-sm font-medium text-gray-600">
           <button
-            className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded border inline-flex items-center ml-4"
+            className="bg-skin-button-fill text-skin-button hover:bg-skin-button-hover-fill py-1 px-2 rounded-sm border inline-flex items-center ml-4"
             type="button"
             onClick={(event) => {
               event.preventDefault();

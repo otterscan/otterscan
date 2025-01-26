@@ -1,6 +1,63 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-link-blue: #3498db;
+  --color-link-blue-light: #95c9ec;
+  --color-link-blue-hover: #0468ab;
+  --color-verified-contract: #2b50aa;
+  --color-verified-contract-hover: #26007b;
+  --color-source-line-numbers: #738a9486;
+
+  --font-sans: Roboto;
+  --font-title: Space Grotesk;
+  --font-address: Roboto Mono;
+  --font-hash: Roboto Mono;
+  --font-data: Roboto Mono;
+  --font-balance: Fira Code;
+  --font-blocknum: Roboto;
+  --font-code: Fira Code;
+
+  --border-color-skin-from: rgb(var(--color-from-border));
+
+  --text-color-skin-button: rgb(var(--color-button-text));
+  --text-color-skin-from: rgb(var(--color-from-text));
+
+  --background-color-skin-button-fill: rgb(var(--color-button-fill));
+  --background-color-skin-button-hover-fill: rgb(
+    var(--color-button-hover-fill)
+  );
+  --background-color-skin-from: rgb(var(--color-from-fill));
+  --background-color-skin-to: rgb(var(--color-to-fill));
+  --background-color-skin-table-hover: rgb(var(--color-table-row-hover));
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@utility dark-mode {
+  @apply dark:invert dark:-hue-rotate-180 dark:brightness-90;
+}
+
+@utility dark-no-invert {
+  @apply dark:invert dark:hue-rotate-180 dark:saturate-[1.25];
+}
 
 @layer base {
   :root {
@@ -30,14 +87,6 @@
 }
 
 @layer components {
-  .dark-mode {
-    @apply dark:invert dark:-hue-rotate-180 dark:brightness-90;
-  }
-
-  .dark-no-invert {
-    @apply dark:invert dark:hue-rotate-180 dark:saturate-[1.25];
-  }
-
   img {
     @apply dark-no-invert;
   }

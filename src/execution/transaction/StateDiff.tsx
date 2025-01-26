@@ -75,13 +75,13 @@ const buildStateDiffTree = (
                 depth === 0
                   ? ""
                   : depth < 3
-                    ? "ml-5 rounded border px-2 pt-1 pb-2 hover:border-gray-500"
+                    ? "ml-5 rounded-sm border px-2 pt-1 pb-2 hover:border-gray-500"
                     : "ml-5 py-0.5"
               }
             >
               {depth === 0 ? (
                 <div className="relative flex">
-                  <div className="rounded border px-1 py-0.5 hover:border-gray-500">
+                  <div className="rounded-sm border px-1 py-0.5 hover:border-gray-500">
                     <TransactionAddress
                       address={getAddress(group.title)}
                       showCodeIndicator={true}
@@ -156,7 +156,7 @@ const buildStateDiffTree = (
           className={`relative flex ${last ? "" : "border-l"}`}
         >
           <div
-            className={`ml-5 py-1 ${showBorder ? "px-2 rounded border hover:border-gray-500" : ""} ${
+            className={`ml-5 py-1 ${showBorder ? "px-2 rounded-sm border hover:border-gray-500" : ""} ${
               expanded ? "w-full" : ""
             }`}
           >
@@ -205,8 +205,8 @@ const StateDiff: React.FC<StateDiffProps> = ({ txData }) => {
             for more details.
           </p>
         ) : (
-          <div className="h-7 w-96 rounded border px-1 py-1 hover:border-gray-500">
-            <div className="h-full w-full animate-pulse rounded bg-gray-200"></div>
+          <div className="h-7 w-96 rounded-sm border px-1 py-1 hover:border-gray-500">
+            <div className="h-full w-full animate-pulse rounded-sm bg-gray-200"></div>
           </div>
         )}
       </div>
