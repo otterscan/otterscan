@@ -436,7 +436,7 @@ export const useStateDiffTrace = (
           txHash,
           ["stateDiff"],
         ]);
-      } catch (e) {
+      } catch (e: any) {
         if (e?.code === "UNSUPPORTED_OPERATION") {
           setTraceGroups(null);
         }
