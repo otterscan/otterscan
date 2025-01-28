@@ -13,7 +13,7 @@ env:
 jobs:
   push_to_registry:
     name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
       packages: write
