@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import DisplayInteger from "../../components/DisplayInteger";
 import ElementDiff from "../../components/ElementDiff";
+import ExternalLink from "../../components/ExternalLink";
 import { neutralPreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
@@ -192,6 +193,17 @@ const StateDiff: React.FC<StateDiffProps> = ({ txData }) => {
               {buildStateDiffTree(traces)}
             </div>
           </>
+        ) : traces === null ? (
+          <p>
+            The configured backend Ethereum node does not support the{" "}
+            <span className="font-code">trace_replayTransaction</span> method.
+            Ensure the <span className="font-code">trace</span> namespace is
+            enabled on the node to view the state diff. See{" "}
+            <ExternalLink href="https://docs.otterscan.io/install/erigon">
+              the docs
+            </ExternalLink>{" "}
+            for more details.
+          </p>
         ) : (
           <div className="h-7 w-96 rounded border px-1 py-1 hover:border-gray-500">
             <div className="h-full w-full animate-pulse rounded bg-gray-200"></div>

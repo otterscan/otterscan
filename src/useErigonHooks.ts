@@ -423,17 +423,25 @@ export type StateDiffGroup = {
 export const useStateDiffTrace = (
   provider: JsonRpcApiProvider,
   txHash: string,
-): StateDiffGroup[] | undefined => {
+): StateDiffGroup[] | undefined | null => {
   const [traceGroups, setTraceGroups] = useState<
-    StateDiffGroup[] | undefined
+    StateDiffGroup[] | undefined | null
   >();
 
   useEffect(() => {
     const stateDiffTrace = async () => {
-      const results = await provider.send("trace_replayTransaction", [
-        txHash,
-        ["stateDiff"],
-      ]);
+      let results;
+      try {
+        results = await provider.send("trace_replayTransaction", [
+          txHash,
+          ["stateDiff"],
+        ]);
+      } catch (e: any) {
+        if (e?.code === "UNSUPPORTED_OPERATION") {
+          setTraceGroups(null);
+        }
+        return;
+      }
       const entries: StateDiffGroup[] = [];
       let address: string;
       let highLevelChange: any;
