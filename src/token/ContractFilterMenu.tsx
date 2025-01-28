@@ -20,7 +20,7 @@ const ContractFilterMenu: FC<ContractFilterMenuProps> = ({ title }) => (
       </div>
     </MenuButton>
     <MenuItems
-      className="absolute space-y-1 rounded border bg-white p-1 drop-shadow"
+      className="absolute space-y-1 rounded-sm border bg-white p-1 drop-shadow-sm"
       as="div"
     >
       {contractFilters.map((f) => (

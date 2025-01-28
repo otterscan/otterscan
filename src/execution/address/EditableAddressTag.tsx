@@ -75,7 +75,7 @@ const EditableAddressTag: FC<EditableAddressTagProps> = ({
         />
       </div>
       <button
-        className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 ${"transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow"}`}
+        className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 ${"transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow-sm"}`}
         title="Submit address label"
         type="submit"
       >

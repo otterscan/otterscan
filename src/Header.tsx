@@ -55,7 +55,7 @@ const Header: FC = () => {
             spellCheck={false}
           >
             <input
-              className="w-full rounded-l border-b border-l border-t px-2 py-1 text-sm focus:outline-none"
+              className="w-full rounded-l border-b border-l border-t px-2 py-1 text-sm focus:outline-hidden"
               type="text"
               size={60}
               placeholder={`Type "/" to search by address / txn hash / block number${
@@ -69,7 +69,7 @@ const Header: FC = () => {
               ref={searchRef}
             />
             <button
-              className="border bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+              className="border bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-hidden"
               type="button"
               onClick={() => setScanning(true)}
               title="Scan an ETH address using your camera"
@@ -77,7 +77,7 @@ const Header: FC = () => {
               <FontAwesomeIcon icon={faQrcode} />
             </button>
             <button
-              className="rounded-r border-b border-r border-t bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+              className="rounded-r border-b border-r border-t bg-skin-button-fill px-2 py-1 text-sm text-skin-button hover:bg-skin-button-hover-fill focus:outline-hidden"
               type="submit"
             >
               Search

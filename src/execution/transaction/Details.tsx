@@ -393,7 +393,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               )
             </span>
             {sendsEthToMiner && (
-              <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-500">
+              <span className="rounded-sm bg-amber-100 px-2 py-1 text-xs text-amber-500">
                 Flashbots
               </span>
             )}

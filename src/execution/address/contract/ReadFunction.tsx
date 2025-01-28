@@ -288,7 +288,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             ))}
         </ul>
         <button
-          className="ml-2 mt-2 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
+          className="ml-2 mt-2 rounded-sm border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
           type="submit"
         >
           Query
@@ -311,13 +311,13 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             <input
               type="text"
               value={blockNumber}
-              className="mt-1 w-48 rounded border px-2 py-1 text-sm text-gray-600"
+              className="mt-1 w-48 rounded-sm border px-2 py-1 text-sm text-gray-600"
               onChange={(e) => setBlockNumber(e.target.value)}
               placeholder="latest"
             />
             <button
               type="button"
-              className="ml-2 mt-2 rounded border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
+              className="ml-2 mt-2 rounded-sm border bg-skin-button-fill px-3 py-1 text-left text-sm text-skin-button hover:bg-skin-button-hover-fill"
               onClick={() => {
                 if (latestBlockNumber !== undefined) {
                   setBlockNumber(latestBlockNumber.toString());
@@ -329,7 +329,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             <div className="text-sm mt-2 text-green-700">Sender</div>
             <input
               type="text"
-              className="mt-1 w-96 rounded border px-2 py-1 text-sm text-gray-600"
+              className="mt-1 w-96 rounded-sm border px-2 py-1 text-sm text-gray-600"
               onChange={(e) => setSender(e.target.value)}
               placeholder="0x0000000000000000000000000000000000000000"
             />
@@ -338,7 +338,7 @@ const ReadFunction: FC<ReadFunctionProps> = ({
             </div>
             <input
               type="text"
-              className="mt-1 w-72 rounded border px-2 py-1 text-sm text-gray-600"
+              className="mt-1 w-72 rounded-sm border px-2 py-1 text-sm text-gray-600"
               onChange={(e) => setValue(e.target.value)}
               placeholder="0"
             />
