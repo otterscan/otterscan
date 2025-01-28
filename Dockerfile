@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 node:20.10.0-alpine3.17 AS builder
 WORKDIR /otterscan-build
 COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm ci
-COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "tailwind.config.js", "vite.config.ts", "index.html", "/otterscan-build/"]
+COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "vite.config.ts", "index.html", "/otterscan-build/"]
 COPY --link ["public", "/otterscan-build/public/"]
 COPY --link ["src", "/otterscan-build/src/"]
 RUN npm run build
