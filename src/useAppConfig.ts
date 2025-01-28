@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { SourcifySource } from "./sourcify/useSourcify";
+import { SourcifySourceName } from "./sourcify/useSourcify";
 
 export type AppConfig = {
-  sourcifySource: SourcifySource;
-  setSourcifySource: (newSourcifySource: SourcifySource) => void;
+  sourcifySource: SourcifySourceName | null;
+  setSourcifySource: (newSourcifySource: SourcifySourceName) => void;
 };
 
 export const AppConfigContext = React.createContext<AppConfig>(undefined!);

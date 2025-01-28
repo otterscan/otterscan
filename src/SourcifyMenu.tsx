@@ -1,17 +1,26 @@
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useContext } from "react";
 import { useLocation, useNavigate } from "react-router";
+import ExternalLink from "./components/ExternalLink";
 import ThemeToggler from "./components/ThemeToggler";
-import { SourcifySource } from "./sourcify/useSourcify";
+import {
+  resolveSourcifySource,
+  SourcifySource,
+  useSourcifySources,
+} from "./sourcify/useSourcify";
 import { useAppConfigContext } from "./useAppConfig";
+import { RuntimeContext } from "./useRuntime";
 
 const SourcifyMenu: React.FC = () => {
-  const { sourcifySource, setSourcifySource } = useAppConfigContext() ?? {
-    sourcifySource: null,
-    setSourcifySource: (s: SourcifySource) => {},
-  };
+  const { config } = useContext(RuntimeContext);
+  const sourcifySources = useSourcifySources();
+  const { sourcifySource: selectedSourcifySource, setSourcifySource } =
+    useAppConfigContext() ?? {
+      sourcifySource: null,
+      setSourcifySource: (s: SourcifySource) => {},
+    };
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,21 +31,36 @@ const SourcifyMenu: React.FC = () => {
           <FontAwesomeIcon icon={faBars} size="1x" />
         </MenuButton>
         <MenuItems className="absolute right-0 mt-1 flex min-w-max flex-col rounded-b border bg-white p-1 text-sm">
-          {sourcifySource !== null && (
+          {sourcifySources && (
             <>
               <SourcifyMenuTitle>Sourcify Datasource</SourcifyMenuTitle>
-              <SourcifyMenuItem
-                checked={sourcifySource === SourcifySource.IPFS_IPNS}
-                onClick={() => setSourcifySource(SourcifySource.IPFS_IPNS)}
-              >
-                Resolve IPNS
-              </SourcifyMenuItem>
-              <SourcifyMenuItem
-                checked={sourcifySource === SourcifySource.CENTRAL_SERVER}
-                onClick={() => setSourcifySource(SourcifySource.CENTRAL_SERVER)}
-              >
-                Sourcify Servers
-              </SourcifyMenuItem>
+              {Object.entries(sourcifySources).map(
+                ([sourcifySourceName, sourcifySource], index) => (
+                  <React.Fragment key={sourcifySourceName}>
+                    <SourcifyMenuItem
+                      checked={
+                        selectedSourcifySource === sourcifySourceName ||
+                        (selectedSourcifySource === null &&
+                          resolveSourcifySource(
+                            selectedSourcifySource,
+                            sourcifySources,
+                          ).name === sourcifySourceName)
+                      }
+                      onClick={() => setSourcifySource(sourcifySourceName)}
+                    >
+                      {sourcifySourceName}
+                    </SourcifyMenuItem>
+                  </React.Fragment>
+                ),
+              )}
+              {config.sourcify?.sources === undefined &&
+                !config.branding?.hideAnnouncements && (
+                  <div className="px-2 py-1 text-left text-sm">
+                    <ExternalLink href="https://docs.otterscan.io/config/options/sourcify">
+                      Add local sources
+                    </ExternalLink>
+                  </div>
+                )}
               <div className="my-1 border-b border-gray-300" />
             </>
           )}
