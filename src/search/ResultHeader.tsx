@@ -16,8 +16,8 @@ const ResultHeader: FC<ResultHeaderProps> = ({
     <th>Method</th>
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
-    <th className="4xl:w-md">From</th>
-    <th className="4xl:w-md">To</th>
+    <th className="4xl:w-md 5xl:w-xl">From</th>
+    <th className="4xl:w-md 5xl:w-xl">To</th>
     <th className="min-w-52">Value</th>
     <th>
       <button
