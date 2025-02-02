@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, memo } from "react";
 import StandardTHead from "../components/StandardTHead";
 import { FeeDisplay } from "./useFeeToggler";
 
@@ -7,17 +7,17 @@ export type ResultHeaderProps = {
   feeDisplayToggler: () => void;
 };
 
-const ResultHeader: React.FC<ResultHeaderProps> = ({
+const ResultHeader: FC<ResultHeaderProps> = ({
   feeDisplay,
   feeDisplayToggler,
 }) => (
   <StandardTHead>
-    <th>Txn Hash</th>
+    <th className="4xl:w-152">Txn Hash</th>
     <th>Method</th>
     <th className="w-28">Block</th>
     <th className="w-36">Age</th>
-    <th>From</th>
-    <th>To</th>
+    <th className="min-w-52 xl:min-w-64 4xl:w-md 5xl:w-xl">From</th>
+    <th className="min-w-52 xl:min-w-64 4xl:w-md 5xl:w-xl">To</th>
     <th className="min-w-52">Value</th>
     <th>
       <button
@@ -32,4 +32,4 @@ const ResultHeader: React.FC<ResultHeaderProps> = ({
   </StandardTHead>
 );
 
-export default React.memo(ResultHeader);
+export default memo(ResultHeader);
