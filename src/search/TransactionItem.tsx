@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import BlockLink from "../components/BlockLink";
+import { feePreset } from "../components/FiatValue";
 import MethodName from "../components/MethodName";
 import NativeTokenAmount from "../components/NativeTokenAmount";
+import NativeTokenAmountAndFiat from "../components/NativeTokenAmountAndFiat";
 import TimestampAge from "../components/TimestampAge";
 import TransactionDirection, {
   Direction,
@@ -115,7 +117,18 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
           </span>
         </td>
         <td className="min-w-48 max-w-48">
-          <NativeTokenAmount value={tx.value} />
+          <div className="@container">
+            <div className="@2xs:hidden inline-block">
+              <NativeTokenAmount value={tx.value} />
+            </div>
+            <div className="@2xs:inline-block hidden">
+              <NativeTokenAmountAndFiat
+                value={tx.value}
+                blockTag={tx.blockNumber}
+                {...feePreset}
+              />
+            </div>
+          </div>
         </td>
         <td className="min-w-16 max-w-28">
           <span className="truncate font-balance text-xs text-gray-500">
