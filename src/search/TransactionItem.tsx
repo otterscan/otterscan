@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import BlockLink from "../components/BlockLink";
+import { feePreset } from "../components/FiatValue";
 import MethodName from "../components/MethodName";
 import NativeTokenAmount from "../components/NativeTokenAmount";
 import NativeTokenAmountAndFiat from "../components/NativeTokenAmountAndFiat";
@@ -17,7 +18,6 @@ import { useSendsToMiner } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import TransactionItemFiatFee from "./TransactionItemFiatFee";
 import { FeeDisplay } from "./useFeeToggler";
-import { feePreset } from "../components/FiatValue";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
