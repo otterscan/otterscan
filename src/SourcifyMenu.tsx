@@ -26,7 +26,7 @@ const SourcifyMenu: React.FC = () => {
 
   return (
     <Menu>
-      <div className="relative self-stretch h-full">
+      <div className="relative self-stretch h-full z-1">
         <MenuButton className="flex h-full w-full items-center justify-center space-x-2 rounded-sm border px-2 py-1 text-sm">
           <FontAwesomeIcon icon={faBars} size="1x" />
         </MenuButton>
