@@ -177,11 +177,13 @@ const AddressTransactionResults: FC = () => {
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex flex-col md:flex-row divide-x-2 divide-dotted divide-gray-300">
-                <TransactionAddressWithCopy
-                  address={creator.creator}
-                  showCodeIndicator
-                />
-                <div className="md:ml-3 flex items-baseline pl-3 truncate">
+                <div className="pr-3">
+                  <TransactionAddressWithCopy
+                    address={creator.creator}
+                    showCodeIndicator
+                  />
+                </div>
+                <div className="md:ml-3 flex items-baseline truncate">
                   <div className="truncate">
                     <TransactionLink txHash={creator.hash} />
                   </div>
