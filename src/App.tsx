@@ -1,6 +1,6 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { isAddress } from "ethers";
-import { FC, lazy, Suspense } from "react";
+import { FC, lazy, Suspense, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   Await,
@@ -29,7 +29,9 @@ import ProbeErrorHandler from "./ProbeErrorHandler";
 import { queryClient } from "./queryClient";
 import { loader as searchLoader } from "./Search";
 import { getTransactionQuery, searchTransactionsQuery } from "./search/search";
+import { SourcifySourceName } from "./sourcify/useSourcify";
 import { ConnectionStatus } from "./types";
+import { AppConfig, AppConfigContext } from "./useAppConfig";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
 import { getBalanceQuery, getCodeQuery, hasCodeQuery } from "./useErigonHooks";
@@ -229,6 +231,15 @@ const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
   const data: any = useLoaderData();
 
+  const [sourcifySource, setSourcifySource] =
+    useState<SourcifySourceName | null>(null);
+  const appConfig = useMemo((): AppConfig => {
+    return {
+      sourcifySource,
+      setSourcifySource,
+    };
+  }, [sourcifySource, setSourcifySource]);
+
   return (
     // Catch all error boundary
     <ErrorBoundary FallbackComponent={ErrorFallback}>
@@ -255,11 +266,13 @@ const Layout: FC = () => {
                     <ChainInfoContext.Provider
                       value={runtime.config!.chainInfo}
                     >
-                      <div className="flex h-screen flex-col">
-                        <WarningHeader />
-                        <Outlet />
-                        <Footer />
-                      </div>
+                      <AppConfigContext.Provider value={appConfig}>
+                        <div className="flex h-screen flex-col">
+                          <WarningHeader />
+                          <Outlet />
+                          <Footer />
+                        </div>
+                      </AppConfigContext.Provider>
                     </ChainInfoContext.Provider>
                   </RuntimeContext.Provider>
                 </QueryClientProvider>
