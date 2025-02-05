@@ -227,14 +227,14 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         <>
           <InfoRow title="Block / Position">
             <div className="flex flex-wrap gap-y-2 items-baseline divide-x-2 divide-dotted divide-gray-300">
-              <div className="flex items-baseline space-x-1">
+              <div className="flex items-baseline space-x-1 pr-3">
                 <BlockLink blockTag={txData.confirmedData.blockNumber} />
                 <BlockConfirmations
                   confirmations={txData.confirmedData.confirmations}
                 />
               </div>
               {block && (
-                <div className="ml-3 flex items-baseline space-x-2 pl-3">
+                <div className="flex items-baseline space-x-2 pl-3">
                   <RelativePosition
                     pos={txData.confirmedData.transactionIndex}
                     total={block.transactionCount - 1}
@@ -266,8 +266,10 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       )}
       <InfoRow title="From / Nonce">
         <div className="flex flex-wrap gap-y-2 divide-x-2 divide-dotted divide-gray-300">
-          <TransactionAddressWithCopy address={txData.from} />
-          <div className="ml-3 flex items-baseline pl-3">
+          <div className="pr-3">
+            <TransactionAddressWithCopy address={txData.from} />
+          </div>
+          <div className="ml-3 flex items-baseline">
             <Nonce value={txData.nonce} />
             <NavNonce sender={txData.from} nonce={txData.nonce} />
           </div>
