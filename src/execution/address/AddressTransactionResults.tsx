@@ -151,7 +151,7 @@ const AddressTransactionResults: FC = () => {
           <InfoRow title="Balance">
             <div className="grid grid-cols-3 flex md:divide-x-2 divide-dotted divide-gray-300 text-sm">
               <div
-                className={`${transactionCount !== undefined ? "col-span-3 md:col-span-1" : "col-span-1"}`}
+                className={`${transactionCount !== undefined ? "col-span-3 md:col-span-1" : "col-span-3"}`}
               >
                 {balance === undefined ? (
                   <div className="w-80">
@@ -165,7 +165,7 @@ const AddressTransactionResults: FC = () => {
                 )}
               </div>
               {transactionCount !== undefined && (
-                <div className="hidden md:visible mt-2 md:mt-0 md:pl-4 md:col-span-2 md:grid md:grid-cols-2">
+                <div className="hidden md:visible pl-4 col-span-2 md:grid grid-cols-2">
                   <div className="col-span-1">Transactions sent:</div>
                   <div className="col-span-1">
                     {commify(transactionCount.toString())}
