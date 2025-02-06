@@ -12,6 +12,7 @@ type ContractFromRepoProps = {
   checksummedAddress: string;
   networkId: bigint;
   filename: string;
+  fileHash: string;
   type: MatchType;
 };
 
@@ -19,6 +20,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   checksummedAddress,
   networkId,
   filename,
+  fileHash,
   type,
 }) => {
   const { sourcifySource } = useAppConfigContext();
@@ -26,6 +28,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
     checksummedAddress,
     networkId,
     filename,
+    fileHash,
     sourcifySource,
     type,
   );

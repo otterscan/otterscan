@@ -2,8 +2,12 @@
   "erigonURL": "http://localhost:8545",
   "beaconAPI": "http://localhost:5052",
   "assetsURLPrefix": "http://localhost:5175",
-  "sourcifySources": {
-    "central_server": "http://localhost:7077",
-    "ipfs": "http://localhost:7077"
+  "sourcify": {
+    "sources": {
+      "Local Testing Sourcify Server": {
+        "url": "http://localhost:7077",
+        "backendFormat": "RepositoryV1"
+      }
+    }
   }
 }

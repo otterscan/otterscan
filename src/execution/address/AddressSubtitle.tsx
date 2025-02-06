@@ -48,7 +48,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
     <StandardSubtitle>
       <div className="flex items-baseline space-x-2">
         <Blockies
-          className="self-center rounded"
+          className="self-center rounded-sm"
           seed={address.toLowerCase()}
           scale={3}
         />
@@ -81,7 +81,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
               />
             )}
             <button
-              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-none transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow`}
+              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-gray-500 focus:outline-hidden transition-shadows h-7 w-7 rounded-full bg-gray-200 text-xs transition-colors hover:bg-gray-500 hover:text-gray-200 hover:shadow-sm`}
               title={
                 editingAddressTag ? "Cancel changes" : "Edit address label"
               }
@@ -94,7 +94,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
             </button>
             {/* For debugging only; we'll want to create an address label management page. */}
             <button
-              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-red-500 focus:outline-none transition-shadows h-7 w-7 rounded-full bg-red-200 text-xs transition-colors hover:bg-red-500 hover:text-gray-200 hover:shadow`}
+              className={`flex-no-wrap flex items-center justify-center space-x-1 self-center text-red-500 focus:outline-hidden transition-shadows h-7 w-7 rounded-full bg-red-200 text-xs transition-colors hover:bg-red-500 hover:text-gray-200 hover:shadow-sm`}
               title={"Delete all labels"}
               onClick={clearAllLabels}
             >

@@ -43,7 +43,7 @@ export type ContractSearchType =
   | "ERC1167";
 
 export const useGenericContractSearch = <T extends ContractMatch>(
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   t: ContractSearchType,
   pageNumber: number,
   pageSize: number,
@@ -80,7 +80,7 @@ export const useGenericContractSearch = <T extends ContractMatch>(
 };
 
 export const useGenericContractsCount = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   t: ContractSearchType,
 ): number | undefined => {
   const rpcMethod = `ots2_get${t}Count`;

@@ -1,7 +1,7 @@
 import { faList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { epochURL } from "../../url";
 import { commify } from "../../utils/utils";
 import { EpochAwareComponentProps } from "../types";

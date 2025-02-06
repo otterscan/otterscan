@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   AbiCoder,
   BlockParams,
@@ -20,6 +21,7 @@ import useSWRImmutable from "swr/immutable";
 import erc20 from "./abi/erc20.json";
 import L1Block from "./abi/optimism/L1Block.json";
 import { getOpFeeData, isOptimisticChain } from "./execution/op-tx-calculation";
+import { panicCodeMessages } from "./execution/panic-codes";
 import {
   ChecksummedAddress,
   InternalOperation,
@@ -41,7 +43,7 @@ export interface ExtendedBlock extends BlockParams {
   size: number;
   sha3Uncles: string;
   stateRoot: string;
-  totalDifficulty: bigint;
+  totalDifficulty?: bigint;
   transactionCount: number;
   // Optimism-specific
   gasUsedDepositTx?: bigint;
@@ -78,7 +80,9 @@ export const readBlock = async (
     size: formatter.number(_rawBlock.block.size),
     sha3Uncles: _rawBlock.block.sha3Uncles,
     stateRoot: _rawBlock.block.stateRoot,
-    totalDifficulty: formatter.bigInt(_rawBlock.block.totalDifficulty),
+    totalDifficulty:
+      _rawBlock.block.totalDifficulty &&
+      formatter.bigInt(_rawBlock.block.totalDifficulty),
     transactionCount: formatter.number(_rawBlock.block.transactionCount),
     // Optimism-specific; gas used by the deposit transaction
     gasUsedDepositTx: formatter.bigInt(_rawBlock.gasUsedDepositTx ?? 0n),
@@ -170,13 +174,13 @@ const blockTransactionsFetcher: Fetcher<
 };
 
 export const useBlockTransactions = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockNumber: number | undefined,
   pageNumber: number,
   pageSize: number,
 ): { data: BlockTransactionsPage | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
-    provider !== undefined && blockNumber !== undefined
+    blockNumber !== undefined
       ? [provider, blockNumber, pageNumber, pageSize]
       : null,
     blockTransactionsFetcher,
@@ -197,13 +201,11 @@ const blockDataFetcher: Fetcher<
 
 // TODO: some callers may use only block headers?
 export const useBlockData = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockNumberOrHash: string | undefined,
 ): { data: ExtendedBlock | null | undefined; isLoading: boolean } => {
   const { data, error, isLoading } = useSWRImmutable(
-    provider !== undefined && blockNumberOrHash !== undefined
-      ? [provider, blockNumberOrHash]
-      : null,
+    blockNumberOrHash !== undefined ? [provider, blockNumberOrHash] : null,
     blockDataFetcher,
     { keepPreviousData: true },
   );
@@ -214,7 +216,7 @@ export const useBlockData = (
 };
 
 export const useBlockDataFromTransaction = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txData: TransactionData | null | undefined,
 ): ExtendedBlock | null | undefined => {
   const { data: block } = useBlockData(
@@ -227,16 +229,12 @@ export const useBlockDataFromTransaction = (
 };
 
 export const useTxData = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txhash: string,
 ): TransactionData | undefined | null => {
   const [txData, setTxData] = useState<TransactionData | undefined | null>();
 
   useEffect(() => {
-    if (!provider) {
-      return;
-    }
-
     const readTxData = async () => {
       try {
         const [_response, _receipt] = await Promise.all([
@@ -359,18 +357,16 @@ export const useTokenTransfers = (
 };
 
 export const useInternalOperations = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string | undefined,
 ): InternalOperation[] | undefined => {
   const { data, error } = useSWRImmutable(
-    provider !== undefined && txHash !== undefined
-      ? ["ots_getInternalOperations", txHash]
-      : null,
+    txHash !== undefined ? ["ots_getInternalOperations", txHash] : null,
     providerFetcher(provider),
   );
 
   const _transfers = useMemo(() => {
-    if (provider === undefined || error || data === undefined) {
+    if (error || data === undefined) {
       return undefined;
     }
 
@@ -384,12 +380,12 @@ export const useInternalOperations = (
       });
     }
     return _t;
-  }, [provider, data]);
+  }, [data]);
   return _transfers;
 };
 
 export const useSendsToMiner = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string | undefined,
   miner: string | undefined,
 ): [boolean, InternalOperation[]] | [undefined, undefined] => {
@@ -425,24 +421,27 @@ export type StateDiffGroup = {
 };
 
 export const useStateDiffTrace = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
-): StateDiffGroup[] | undefined => {
+): StateDiffGroup[] | undefined | null => {
   const [traceGroups, setTraceGroups] = useState<
-    StateDiffGroup[] | undefined
+    StateDiffGroup[] | undefined | null
   >();
 
   useEffect(() => {
-    if (!provider) {
-      setTraceGroups(undefined);
-      return;
-    }
-
     const stateDiffTrace = async () => {
-      const results = await provider.send("trace_replayTransaction", [
-        txHash,
-        ["stateDiff"],
-      ]);
+      let results;
+      try {
+        results = await provider.send("trace_replayTransaction", [
+          txHash,
+          ["stateDiff"],
+        ]);
+      } catch (e: any) {
+        if (e?.code === "UNSUPPORTED_OPERATION") {
+          setTraceGroups(null);
+        }
+        return;
+      }
       const entries: StateDiffGroup[] = [];
       let address: string;
       let highLevelChange: any;
@@ -550,17 +549,12 @@ export type TraceGroup = TraceEntry & {
 };
 
 export const useTraceTransaction = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
 ): TraceGroup[] | undefined => {
   const [traceGroups, setTraceGroups] = useState<TraceGroup[] | undefined>();
 
   useEffect(() => {
-    if (!provider) {
-      setTraceGroups(undefined);
-      return;
-    }
-
     const traceTx = async () => {
       const results = await provider.send("ots_traceTransaction", [txHash]);
 
@@ -624,26 +618,30 @@ export const useTraceTransaction = (
   return traceGroups;
 };
 
+export type TxErrorType = "string" | "panic" | "custom";
+
 // Error(string)
 const ERROR_MESSAGE_SELECTOR = "0x08c379a0";
+// Panic(uint256)
+const PANIC_CODE_SELECTOR = "0x4e487b71";
+
+function intToHex(num: bigint): string {
+  return "0x" + num.toString(16).padStart(2, "0");
+}
 
 export const useTransactionError = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   txHash: string,
-): [string | undefined, string | undefined, boolean | undefined] => {
+): [string | undefined, string | undefined, TxErrorType | undefined] => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
   const [data, setData] = useState<string | undefined>();
-  const [isCustomError, setCustomError] = useState<boolean | undefined>();
+  const [errorType, setErrorType] = useState<TxErrorType | undefined>();
 
   useEffect(() => {
     // Reset
     setErrorMsg(undefined);
     setData(undefined);
-    setCustomError(undefined);
-
-    if (provider === undefined) {
-      return;
-    }
+    setErrorType(undefined);
 
     const readCodes = async () => {
       const result = (await provider.send("ots_getTransactionError", [
@@ -654,7 +652,7 @@ export const useTransactionError = (
       if (result === "0x" || typeof result !== "string") {
         setErrorMsg(undefined);
         setData("0x");
-        setCustomError(false);
+        setErrorType("string");
         return;
       }
 
@@ -668,26 +666,39 @@ export const useTransactionError = (
         );
         setErrorMsg(msg[0]);
         setData(result);
-        setCustomError(false);
+        setErrorType("string");
+        return;
+      } else if (selector === PANIC_CODE_SELECTOR) {
+        const panicCode = AbiCoder.defaultAbiCoder().decode(
+          ["uint256"],
+          "0x" + result.substr(10),
+        );
+        let msg = intToHex(panicCode[0]);
+        if (panicCode[0].toString() in panicCodeMessages) {
+          msg = `${msg}: ${panicCodeMessages[panicCode[0].toString()]}`;
+        }
+        setErrorMsg(msg);
+        setData(result);
+        setErrorType("panic");
         return;
       }
 
       setErrorMsg(undefined);
       setData(result);
-      setCustomError(true);
+      setErrorType("custom");
     };
     readCodes();
   }, [provider, txHash]);
 
-  return [errorMsg, data, isCustomError];
+  return [errorMsg, data, errorType];
 };
 
 export const useTransactionCount = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   sender: ChecksummedAddress | undefined,
 ): bigint | undefined => {
   const { data, error } = useSWR(
-    provider && sender ? { provider, sender } : null,
+    sender ? { provider, sender } : null,
     async ({ provider, sender }): Promise<bigint | undefined> =>
       provider.getTransactionCount(sender).then(BigInt),
   );
@@ -725,7 +736,7 @@ const getTransactionBySenderAndNonceFetcher =
   };
 
 export const useTransactionBySenderAndNonce = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   sender: ChecksummedAddress | undefined,
   nonce: bigint | undefined,
 ): string | null | undefined => {
@@ -734,14 +745,14 @@ export const useTransactionBySenderAndNonce = (
     any,
     TransactionBySenderAndNonceKey | null
   >(
-    provider && sender && nonce !== undefined
+    sender && nonce !== undefined
       ? {
           network: provider._network.chainId,
           sender,
           nonce,
         }
       : null,
-    getTransactionBySenderAndNonceFetcher(provider!),
+    getTransactionBySenderAndNonceFetcher(provider),
   );
 
   if (error) {
@@ -762,7 +773,7 @@ type ContractCreator = {
 };
 
 export const useContractCreator = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): ContractCreator | null | undefined => {
   const { data, error } = useSWR<
@@ -770,7 +781,7 @@ export const useContractCreator = (
     any,
     ContractCreatorKey | null
   >(
-    provider && address
+    address
       ? {
           type: "cc",
           network: provider._network.chainId,
@@ -803,26 +814,13 @@ const getContractCreatorFetcher =
     return result;
   };
 
-export const useAddressBalance = (
-  provider: JsonRpcApiProvider | undefined,
-  address: ChecksummedAddress | undefined,
-): bigint | null | undefined => {
-  const [balance, setBalance] = useState<bigint | undefined>();
-
-  useEffect(() => {
-    if (!provider || !address) {
-      return undefined;
-    }
-
-    const readBalance = async () => {
-      const _balance = await provider.getBalance(address);
-      setBalance(_balance);
-    };
-    readBalance();
-  }, [provider, address]);
-
-  return balance;
-};
+export const getBalanceQuery = (
+  provider: JsonRpcApiProvider,
+  address: ChecksummedAddress,
+) => ({
+  queryKey: ["eth_getBalance", address],
+  queryFn: () => provider.getBalance(address),
+});
 
 /**
  * This is a generic fetch for SWR, where the key is an array, whose
@@ -830,13 +828,8 @@ export const useAddressBalance = (
  * arguments.
  */
 export const providerFetcher =
-  (
-    provider: JsonRpcApiProvider | undefined,
-  ): Fetcher<any | undefined, [string, ...any]> =>
+  (provider: JsonRpcApiProvider): Fetcher<any | undefined, [string, ...any]> =>
   async (key) => {
-    if (provider === undefined) {
-      return undefined;
-    }
     for (const a of key) {
       if (a === undefined) {
         return undefined;
@@ -850,48 +843,43 @@ export const providerFetcher =
   };
 
 export const useHasCode = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
 ): boolean | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["ots_hasCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as boolean | undefined;
+  const { data: hasCode } = useQuery(hasCodeQuery(provider, address, blockTag));
+  return hasCode;
 };
 
-export const useGetCode = (
-  provider: JsonRpcApiProvider | undefined,
+export const hasCodeQuery = (
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
   blockTag: BlockTag = "latest",
-): string | undefined => {
-  const fetcher = providerFetcher(provider);
-  const { data, error } = useSWRImmutable(
-    ["eth_getCode", address, blockTag],
-    fetcher,
-  );
-  if (error) {
-    return undefined;
-  }
-  return data as string | undefined;
-};
+) => ({
+  queryKey: ["ots_hasCode", address, blockTag],
+  queryFn: () => {
+    return provider.send("ots_hasCode", [address, blockTag]);
+  },
+});
+
+export const getCodeQuery = (
+  provider: JsonRpcApiProvider,
+  address: ChecksummedAddress | undefined,
+  blockTag: BlockTag = "latest",
+) => ({
+  queryKey: ["eth_getCode", address, blockTag],
+  queryFn: () => {
+    return provider.send("eth_getCode", [address, blockTag]);
+  },
+});
 
 const ERC20_PROTOTYPE = new Contract(ZeroAddress, erc20);
 
 const tokenMetadataFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<TokenMeta | null, ["tokenmeta", ChecksummedAddress]> =>
   async ([_, address]) => {
-    if (provider === undefined) {
-      return null;
-    }
-
     // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const erc20Contract: Contract = ERC20_PROTOTYPE.connect(provider).attach(
       address,
@@ -925,14 +913,12 @@ const tokenMetadataFetcher =
   };
 
 export const useTokenMetadata = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress | undefined,
 ): TokenMeta | null | undefined => {
   const fetcher = tokenMetadataFetcher(provider);
   const { data, error } = useSWRImmutable(
-    provider !== undefined && address !== undefined
-      ? ["tokenmeta", address]
-      : null,
+    address !== undefined ? ["tokenmeta", address] : null,
     fetcher,
   );
   if (error) {
@@ -945,13 +931,9 @@ const l1BlockContractAddress = "0x4200000000000000000000000000000000000015";
 const L1BLOCK_PROTOTYPE = new Contract(l1BlockContractAddress, L1Block);
 const l1EpochFetcher =
   (
-    provider: JsonRpcApiProvider | undefined,
+    provider: JsonRpcApiProvider,
   ): Fetcher<bigint | null, ["l1epoch", BlockTag]> =>
   async ([_, blockTag]) => {
-    if (provider === undefined) {
-      return null;
-    }
-
     // TODO: workaround for https://github.com/ethers-io/ethers.js/issues/4183
     const l1BlockContract: Contract = L1BLOCK_PROTOTYPE.connect(
       provider,
@@ -964,14 +946,13 @@ const l1EpochFetcher =
   };
 
 export const useL1Epoch = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   blockTag: BlockTag | null,
 ): bigint | null | undefined => {
   const fetcher = l1EpochFetcher(provider);
-  const key =
-    provider !== undefined && isOptimisticChain(provider._network.chainId)
-      ? ["l1epoch", blockTag]
-      : null;
+  const key = isOptimisticChain(provider._network.chainId)
+    ? ["l1epoch", blockTag]
+    : null;
   const { data, error } = useSWRImmutable(key, fetcher);
   return error ? undefined : data;
 };

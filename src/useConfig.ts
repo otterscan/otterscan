@@ -159,11 +159,26 @@ export type OtterscanConfig = {
     hideAnnouncements?: boolean;
   };
 
-  /**
-   * Optional custom Sourcify sources object with the keys "ipfs" and
-   * "central_server" whose values are their respective root URLs.
-   */
-  sourcifySources?: { [key: string]: string };
+  sourcify?: {
+    /**
+     * Optional custom Sourcify sources object whose keys are the source name
+     */
+    sources?: {
+      [key: string]: {
+        url: string;
+        /**
+         * See https://github.com/ethereum/sourcify/tree/staging/services/server#choosing-the-storage-backend
+         *
+         * "RepositoryV1" for the original backend format whose source filenames
+         * are derived from the contract metadata.
+         * "RepositoryV2" to use the Sourcify backend format which uses keccak256
+         * hashes for source file names since source file names can be arbitrary
+         * strings.
+         */
+        backendFormat: string;
+      };
+    };
+  };
 
   /**
    * Optional custom price oracle information for estimating the current price

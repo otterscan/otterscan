@@ -4,12 +4,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import ContentFrame from "./components/ContentFrame";
 import ExternalLink from "./components/ExternalLink";
 import StandardFrame from "./components/StandardFrame";
 import StandardSubtitle from "./components/StandardSubtitle";
 import { useChainInfo } from "./useChainInfo";
+
+// URL displayed to the user as the source of the faucet information
+const faucetSourceUrl = "https://github.com/ethereum-lists/chains";
 
 const Faucets: React.FC = () => {
   const { faucets } = useChainInfo();
@@ -38,22 +41,24 @@ const Faucets: React.FC = () => {
       <ContentFrame>
         <div className="space-y-3 py-4">
           {urls.length > 0 && (
-            <div className="flex items-baseline space-x-2 rounded bg-amber-200 px-2 py-1 font-bold text-red-800 underline">
+            <div className="flex items-baseline space-x-2 rounded-sm bg-amber-200 px-2 py-1 font-bold text-red-800 underline">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}
                 size="1x"
               />
               <span>
-                The following external links come from
-                https://github.com/ethereum-lists/chains and are *NOT* endorsed
-                by us. Use at your own risk.
+                The following external links come from{" "}
+                <ExternalLink href={faucetSourceUrl}>
+                  <span className="underline">{faucetSourceUrl}</span>
+                </ExternalLink>{" "}
+                and are *NOT* endorsed by us. Use at your own risk.
               </span>
             </div>
           )}
           {/* Display the shuffling notice only if there are 1+ faucets */}
           {urls.length > 1 && (
-            <div className="flex items-baseline space-x-2 rounded bg-amber-200 px-2 py-1 text-amber-700">
+            <div className="flex items-baseline space-x-2 rounded-sm bg-amber-200 px-2 py-1 text-amber-700">
               <FontAwesomeIcon
                 className="self-center"
                 icon={faTriangleExclamation}

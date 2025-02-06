@@ -1,28 +1,35 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router";
 import {
-  useGenericTransactionCount,
-  useGenericTransactionList,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
-const AddressERC721Results: FC<AddressAwareComponentProps> = ({ address }) => {
+const AddressERC721Results: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "ERC721Transfer", address);
-  const results = useGenericTransactionList(
-    provider,
-    "ERC721Transfer",
-    address,
-    pageNumber,
-    PAGE_SIZE,
-    total,
+  const { data: total } = useQuery(
+    genericTransactionCountQuery(provider, "ERC721Transfer", address),
+  );
+  const { data: results } = useQuery(
+    genericTransactionListQuery(
+      provider,
+      "ERC721Transfer",
+      address,
+      pageNumber,
+      PAGE_SIZE,
+      total,
+    ),
   );
   const items = useMemo(
     () =>

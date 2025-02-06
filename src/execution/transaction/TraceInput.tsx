@@ -1,6 +1,6 @@
 import { faBomb } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { AbiCoder } from "ethers";
+import { AbiCoder, Result } from "ethers";
 import React, { useContext, useState } from "react";
 import ExpanderSwitch from "../../components/ExpanderSwitch";
 import FormattedBalance from "../../components/FormattedBalance";
@@ -45,7 +45,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
     t.value,
   );
 
-  const match = useSourcifyMetadata(t.to, provider?._network.chainId);
+  const match = useSourcifyMetadata(t.to, provider._network.chainId);
   const metadata = match?.metadata;
   const sourcifyTxDesc = useSourcifyTransactionDescription(metadata, {
     data: t.input,
@@ -110,7 +110,7 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
                 <FunctionSignature callType={t.type} sig={sigText} />
               </>
             )}
-            {t.value && t.value !== 0n && (
+            {t.value !== null && t.value !== undefined && t.value !== 0n && (
               <span className="whitespace-nowrap text-red-700">
                 {"{"}value: <FormattedBalance value={t.value} symbol={symbol} />
                 {"}"}
@@ -152,10 +152,18 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
             <OutputDecoder
               args={
                 txDesc
-                  ? AbiCoder.defaultAbiCoder().decode(
-                      txDesc.fragment.outputs,
-                      t.output,
-                    )
+                  ? (() => {
+                      let decoded: Result | null;
+                      try {
+                        decoded = AbiCoder.defaultAbiCoder().decode(
+                          txDesc.fragment.outputs,
+                          t.output,
+                        );
+                      } catch (e) {
+                        decoded = null;
+                      }
+                      return decoded;
+                    })()
                   : undefined
               }
               paramTypes={txDesc?.fragment?.outputs}

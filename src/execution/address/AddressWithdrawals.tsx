@@ -1,14 +1,16 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router";
 import StandardTHead from "../../components/StandardTHead";
 import {
-  useGenericTransactionCount,
-  useGenericTransactionList,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 import WithdrawalItem, { WithdrawalItemProps } from "./WithdrawalItem";
 
@@ -23,20 +25,23 @@ const withdrawalSearchHeader = (
   </StandardTHead>
 );
 
-const AddressWithdrawalsResults: FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
+const AddressWithdrawalsResults: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "Withdrawals", address);
-  const results = useGenericTransactionList(
-    provider,
-    "Withdrawals",
-    address,
-    pageNumber,
-    PAGE_SIZE,
-    total,
+  const { data: total } = useQuery(
+    genericTransactionCountQuery(provider, "Withdrawals", address),
+  );
+  const { data: results } = useQuery(
+    genericTransactionListQuery(
+      provider,
+      "Withdrawals",
+      address,
+      pageNumber,
+      PAGE_SIZE,
+      total,
+    ),
   );
 
   const items = useMemo(

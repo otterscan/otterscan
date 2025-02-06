@@ -14,7 +14,7 @@ const ModeTab: FC<PropsWithChildren<ModeTabProps>> = ({
       `rounded-lg border bg-gray-100 px-2 py-1 ${
         disabled
           ? "cursor-default border-gray-100 text-gray-300"
-          : "text-gray-500 hover:bg-gray-200 hover:text-gray-600 hover:shadow"
+          : "text-gray-500 hover:bg-gray-200 hover:text-gray-600 hover:shadow-sm"
       } text-xs ${selected ? "border-blue-300" : ""}`
     }
     disabled={disabled}

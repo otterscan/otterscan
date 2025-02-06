@@ -2,7 +2,7 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { FC } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { contractFilters } from "./filters";
 
 type ContractFilterMenuProps = {
@@ -20,7 +20,7 @@ const ContractFilterMenu: FC<ContractFilterMenuProps> = ({ title }) => (
       </div>
     </MenuButton>
     <MenuItems
-      className="absolute space-y-1 rounded border bg-white p-1 drop-shadow"
+      className="absolute space-y-1 rounded-sm border bg-white p-1 drop-shadow-sm"
       as="div"
     >
       {contractFilters.map((f) => (

@@ -1,15 +1,17 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router";
 import StandardTHead from "../../components/StandardTHead";
 import {
-  useGenericTransactionCount,
-  useGenericTransactionList,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { findTokenTransfersInLogs } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import ERC20Item, { ERC20ItemProps } from "./ERC20Item";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
@@ -26,18 +28,23 @@ const tableHeader = (
   </StandardTHead>
 );
 
-const AddressERC20Results: FC<AddressAwareComponentProps> = ({ address }) => {
+const AddressERC20Results: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "ERC20Transfer", address);
-  const results = useGenericTransactionList(
-    provider,
-    "ERC20Transfer",
-    address,
-    pageNumber,
-    PAGE_SIZE,
-    total,
+  const { data: total } = useQuery(
+    genericTransactionCountQuery(provider, "ERC20Transfer", address),
+  );
+  const { data: results } = useQuery(
+    genericTransactionListQuery(
+      provider,
+      "ERC20Transfer",
+      address,
+      pageNumber,
+      PAGE_SIZE,
+      total,
+    ),
   );
   const items = useMemo(
     () =>

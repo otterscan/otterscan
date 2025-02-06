@@ -1,6 +1,6 @@
 import { TabGroup, TabList } from "@headlessui/react";
 import { FC, Suspense, lazy, useContext } from "react";
-import { Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router";
 import ContentFrame from "../components/ContentFrame";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
@@ -45,15 +45,15 @@ const Transaction: FC = () => {
             <StandardSelectionBoundary>
               <TabGroup>
                 <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
-                  <NavTab href=".">Overview</NavTab>
+                  <NavTab href="..">Overview</NavTab>
                   {txData.confirmedData?.blockNumber !== undefined && (
-                    <NavTab href="logs">
+                    <NavTab href="../logs">
                       Logs
                       {` (${txData.confirmedData?.logs?.length ?? 0})`}
                     </NavTab>
                   )}
-                  <NavTab href="trace">Trace</NavTab>
-                  <NavTab href="statediff">State Diff</NavTab>
+                  <NavTab href="../trace">Trace</NavTab>
+                  <NavTab href="../statediff">State Diff</NavTab>
                 </TabList>
               </TabGroup>
               <Suspense fallback={null}>

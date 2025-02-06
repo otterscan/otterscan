@@ -1,5 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useOutletContext, useParams, useSearchParams } from "react-router";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
@@ -17,14 +18,15 @@ import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import {
-  useAddressBalance,
+  getBalanceQuery,
   useContractCreator,
-  useHasCode,
   useTransactionCount,
 } from "../../useErigonHooks";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
+import { commify } from "../../utils/utils";
+import { type AddressOutletContext } from "../AddressMainPage";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
@@ -48,9 +50,8 @@ const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   );
 };
 
-const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
-  address,
-}) => {
+const AddressTransactionResults: FC = () => {
+  const { address, hasCode } = useOutletContext() as AddressOutletContext;
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useFeeToggler();
 
@@ -64,14 +65,13 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const [controller, setController] = useState<SearchController>();
 
-  const hasCode = useHasCode(provider, address);
   const transactionCount = useTransactionCount(
     provider,
     hasCode === false ? address : undefined,
   );
 
   useEffect(() => {
-    if (!provider || !address) {
+    if (!address) {
       return;
     }
 
@@ -127,7 +127,6 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
 
   const page = useMemo(() => controller?.getPage(), [controller]);
 
-  const balance = useAddressBalance(provider, address);
   const creator = useContractCreator(provider, address);
   const resolvedAddress = useResolvedAddress(provider, address);
   const resolvedName = resolvedAddress
@@ -143,6 +142,8 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
       : `Address ${addressOrName}`,
   );
 
+  const { data: balance } = useQuery(getBalanceQuery(provider, address));
+
   return (
     <ContentFrame tabs>
       <StandardSelectionBoundary>
@@ -152,22 +153,22 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
               <div
                 className={`${transactionCount !== undefined ? "col-span-1" : "col-span-3"}`}
               >
-                {balance !== null && balance !== undefined ? (
+                {balance === undefined ? (
+                  <div className="w-80">
+                    <PendingItem />
+                  </div>
+                ) : (
                   <NativeTokenAmountAndFiat
                     value={balance}
                     {...balancePreset}
                   />
-                ) : (
-                  <div className="w-80">
-                    <PendingItem />
-                  </div>
                 )}
               </div>
               {transactionCount !== undefined && (
                 <div className="pl-4 col-span-2 grid grid-cols-2">
                   <div className="col-span-1">Transactions sent:</div>
                   <div className="col-span-1">
-                    {transactionCount.toString()}
+                    {commify(transactionCount.toString())}
                   </div>
                 </div>
               )}
@@ -176,11 +177,13 @@ const AddressTransactionResults: FC<AddressAwareComponentProps> = ({
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex flex-col md:flex-row divide-x-2 divide-dotted divide-gray-300">
-                <TransactionAddressWithCopy
-                  address={creator.creator}
-                  showCodeIndicator
-                />
-                <div className="md:ml-3 flex items-baseline pl-3 truncate">
+                <div className="pr-3">
+                  <TransactionAddressWithCopy
+                    address={creator.creator}
+                    showCodeIndicator
+                  />
+                </div>
+                <div className="md:ml-3 flex items-baseline truncate">
                   <div className="truncate">
                     <TransactionLink txHash={creator.hash} />
                   </div>
@@ -229,8 +232,8 @@ const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
         <>Waiting for search results...</>
       ) : (
         <>
-          <span data-test="page-count">{page.length}</span> transactions on this
-          page
+          <span data-test="page-count">{page.length}</span> transaction
+          {page.length !== 1 && "s"} on this page
         </>
       )}
     </div>

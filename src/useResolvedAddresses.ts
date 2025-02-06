@@ -40,9 +40,6 @@ export const useAddressOrENS = (
       return;
     }
 
-    if (!provider) {
-      return;
-    }
     if (
       (
         provider._network.getPlugin(
@@ -74,16 +71,13 @@ export const useAddressOrENS = (
 };
 
 export const useResolvedAddress = (
-  provider: JsonRpcApiProvider | undefined,
+  provider: JsonRpcApiProvider,
   address: ChecksummedAddress,
 ): SelectedResolvedName<any> | undefined => {
   const fetcher: Fetcher<
     SelectedResolvedName<any> | undefined,
     string
   > = async (key) => {
-    if (!provider) {
-      return undefined;
-    }
     const resolver = getResolver(provider._network.chainId);
     return resolver.resolveAddress(provider, key);
   };

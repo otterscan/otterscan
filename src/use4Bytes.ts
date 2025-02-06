@@ -99,10 +99,7 @@ export const use4Bytes = (
   }
 
   const { config, provider } = useContext(RuntimeContext);
-  const sourcifyMatch = useSourcifyMetadata(
-    address,
-    provider?._network.chainId,
-  );
+  const sourcifyMatch = useSourcifyMetadata(address, provider._network.chainId);
   let sourcifyFourBytes: FourBytesEntry | null = null;
   if (sourcifyMatch && rawFourBytes) {
     try {

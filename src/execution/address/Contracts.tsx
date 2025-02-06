@@ -1,6 +1,7 @@
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
 import React, { lazy, useContext, useEffect, useState } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
@@ -8,7 +9,7 @@ import InfoRow from "../../components/InfoRow";
 import StandardTextarea from "../../components/StandardTextarea";
 import { Match, MatchType } from "../../sourcify/useSourcify";
 import { openInRemixURL } from "../../url";
-import { useGetCode } from "../../useErigonHooks";
+import { getCodeQuery } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
@@ -28,7 +29,9 @@ type ContractsProps = {
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const { provider } = useContext(RuntimeContext);
   usePageTitle(`Contract | ${checksummedAddress}`);
-  const code = useGetCode(provider, checksummedAddress);
+  const { data: code } = useQuery(
+    getCodeQuery(provider, checksummedAddress, "latest"),
+  );
 
   const [selected, setSelected] = useState<string>();
   useEffect(() => {
@@ -93,6 +96,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
               <ContractABI
                 abi={match.metadata.output.abi}
                 unknownSelectors={match.unknownSelectors}
+                address={checksummedAddress}
               />
             )}
             {match.type !== MatchType.WHATSABI_GUESS && (
@@ -148,6 +152,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         checksummedAddress={checksummedAddress}
                         networkId={provider!._network.chainId}
                         filename={selected}
+                        fileHash={match.metadata.sources[selected].keccak256}
                         type={match.type}
                       />
                     )}

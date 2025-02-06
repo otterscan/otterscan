@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import ContentFrame from "../../components/ContentFrame";
 import DisplayInteger from "../../components/DisplayInteger";
 import ElementDiff from "../../components/ElementDiff";
+import ExternalLink from "../../components/ExternalLink";
 import { neutralPreset } from "../../components/FiatValue";
 import HexValue from "../../components/HexValue";
 import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat";
@@ -74,13 +75,13 @@ const buildStateDiffTree = (
                 depth === 0
                   ? ""
                   : depth < 3
-                    ? "ml-5 rounded border px-2 pt-1 pb-2 hover:border-gray-500"
+                    ? "ml-5 rounded-sm border px-2 pt-1 pb-2 hover:border-gray-500"
                     : "ml-5 py-0.5"
               }
             >
               {depth === 0 ? (
                 <div className="relative flex">
-                  <div className="rounded border px-1 py-0.5 hover:border-gray-500">
+                  <div className="rounded-sm border px-1 py-0.5 hover:border-gray-500">
                     <TransactionAddress
                       address={getAddress(group.title)}
                       showCodeIndicator={true}
@@ -155,7 +156,7 @@ const buildStateDiffTree = (
           className={`relative flex ${last ? "" : "border-l"}`}
         >
           <div
-            className={`ml-5 py-1 ${showBorder ? "px-2 rounded border hover:border-gray-500" : ""} ${
+            className={`ml-5 py-1 ${showBorder ? "px-2 rounded-sm border hover:border-gray-500" : ""} ${
               expanded ? "w-full" : ""
             }`}
           >
@@ -192,9 +193,20 @@ const StateDiff: React.FC<StateDiffProps> = ({ txData }) => {
               {buildStateDiffTree(traces)}
             </div>
           </>
+        ) : traces === null ? (
+          <p>
+            The configured backend Ethereum node does not support the{" "}
+            <span className="font-code">trace_replayTransaction</span> method.
+            Ensure the <span className="font-code">trace</span> namespace is
+            enabled on the node to view the state diff. See{" "}
+            <ExternalLink href="https://docs.otterscan.io/install/erigon">
+              the docs
+            </ExternalLink>{" "}
+            for more details.
+          </p>
         ) : (
-          <div className="h-7 w-96 rounded border px-1 py-1 hover:border-gray-500">
-            <div className="h-full w-full animate-pulse rounded bg-gray-200"></div>
+          <div className="h-7 w-96 rounded-sm border px-1 py-1 hover:border-gray-500">
+            <div className="h-full w-full animate-pulse rounded-sm bg-gray-200"></div>
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@ import { faBurn } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Utf8ErrorFuncs, formatUnits, toUtf8String } from "ethers";
 import { FC, useContext, useMemo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import BlockLink from "../components/BlockLink";
 import BlockNotFound from "../components/BlockNotFound";
 import ContentFrame from "../components/ContentFrame";
@@ -167,7 +167,9 @@ const BlockDetails: FC<BlockDetailsProps> = ({ blockNumberOrHash }) => {
             {commify(block.difficulty.toString())}
           </InfoRow>
           <InfoRow title="Total Difficulty">
-            {commify(block.totalDifficulty.toString())}
+            {block.totalDifficulty !== undefined
+              ? commify(block.totalDifficulty.toString())
+              : "N/A"}
           </InfoRow>
           <InfoRow title="Hash">
             <HexValue value={block.hash ?? "<unknown>"} />

@@ -1,6 +1,7 @@
 import { faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, JSX, memo } from "react";
+import { NavLink } from "react-router";
 
 type RawDecodedFragmentProps = {
   fragmentType?: "constructor" | "event" | "function" | "error";
@@ -9,6 +10,7 @@ type RawDecodedFragmentProps = {
   letter?: string;
   letterBg?: string;
   hashBg?: string;
+  address?: string;
 };
 
 const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
@@ -18,6 +20,7 @@ const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
   letter,
   letterBg,
   hashBg,
+  address,
 }) => {
   return (
     <div className="flex items-baseline space-x-2 px-2 py-1 hover:bg-gray-100">
@@ -33,22 +36,33 @@ const RawDecodedFragment: FC<RawDecodedFragmentProps> = ({
       )}
       {fragmentStr !== undefined && (
         <span className="whitespace-nowrap font-code text-sm">
-          {fragmentStr}
+          {address && fragmentType === "function" && sig ? (
+            <NavLink
+              to={`/address/${address}/readContract#${sig}`}
+              className="hover:underline text-blue-900"
+            >
+              {fragmentStr}
+            </NavLink>
+          ) : (
+            fragmentStr
+          )}
         </span>
       )}
       {sig && (
-        <span
-          className={`rounded-xl border px-2 pt-1 font-code text-xs text-gray-600 ${hashBg}`}
-          title={
-            fragmentType === "function"
-              ? "Method Selector"
-              : fragmentType === "event"
-                ? "Topic Hash"
-                : ""
-          }
-        >
-          {sig}
-        </span>
+        <>
+          <span
+            className={`rounded-xl border px-2 pt-1 font-code text-xs text-gray-600 ${hashBg}`}
+            title={
+              fragmentType === "function"
+                ? "Method Selector"
+                : fragmentType === "event"
+                  ? "Topic Hash"
+                  : ""
+            }
+          >
+            {sig}
+          </span>
+        </>
       )}
     </div>
   );

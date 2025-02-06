@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, memo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { transactionURL } from "../url";
 
 type TransactionLinkProps = {

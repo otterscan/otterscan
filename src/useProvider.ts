@@ -35,18 +35,26 @@ export const createAndProbeProvider = async (
 
   // Check if it is at least a regular ETH node
   const probeBlockNumber = provider.getBlockNumber();
-  const probeHeader1 = provider.send("erigon_getHeaderByNumber", [1]);
+  const probeHeader1 = provider.send("erigon_getHeaderByNumber", ["latest"]);
   const probeOtsAPI = provider.send("ots_getApiLevel", []).then((level) => {
     if (level < MIN_API_LEVEL) {
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
     }
   });
+  // Wait for the `eth_chainId` call ethers internally makes so provider._network
+  // is available to components
+  const getNetwork = provider.getNetwork();
 
   try {
-    await Promise.all([probeBlockNumber, probeHeader1, probeOtsAPI]);
+    await Promise.all([
+      probeBlockNumber,
+      probeHeader1,
+      probeOtsAPI,
+      getNetwork,
+    ]);
     return provider;
   } catch (err) {
-    // If any was rejected, then check them sequencially in order to
+    // If any was rejected, then check them sequentially in order to
     // narrow the error cause, but we need to await them individually
     // because we don't know if all of them have been finished
 

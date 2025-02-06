@@ -2,7 +2,7 @@ import { faCube } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BlockTag } from "ethers";
 import { FC, memo } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import { blockURL } from "../url";
 import { commify } from "../utils/utils";
 
@@ -20,7 +20,7 @@ const BlockLink: FC<BlockLinkProps> = ({ blockTag }) => {
   return (
     <NavLink
       className={`flex-inline items-baseline space-x-1 break-all text-link-blue hover:text-link-blue-hover ${
-        isNum ? "font-blocknum" : "font-hash"
+        isNum ? "font-blocknum whitespace-nowrap" : "font-hash"
       }`}
       to={blockURL(blockTag)}
     >

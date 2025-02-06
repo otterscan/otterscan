@@ -1,5 +1,5 @@
 import { FC, memo, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { TickerContextProvider } from "../components/AutoRefreshAge";
 import ContentFrame from "../components/ContentFrame";
 import InfoRow from "../components/InfoRow";

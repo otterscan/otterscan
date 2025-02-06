@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
-import { useParams } from "react-router";
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router";
 import StandardFrame from "../components/StandardFrame";
 import { PAGE_SIZE } from "../params";
 import { useBlockTransactions } from "../useErigonHooks";

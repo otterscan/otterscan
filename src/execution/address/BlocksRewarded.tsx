@@ -1,27 +1,38 @@
+import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useMemo } from "react";
+import { useOutletContext } from "react-router";
 import StandardTHead from "../../components/StandardTHead";
 import { BlockRewardedSummary } from "../../ots2/usePrototypeHooks";
 import {
-  useGenericTransactionCount,
-  useGenericTransactionList,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
 } from "../../ots2/usePrototypeTransferHooks";
 import { usePageNumber } from "../../ots2/useUIHooks";
 import { PAGE_SIZE } from "../../params";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
-import { AddressAwareComponentProps } from "../types";
+import { type AddressOutletContext } from "../AddressMainPage";
 import BlockRewardedItem, { BlockRewardedItemProps } from "./BlockRewardedItem";
 import GenericTransactionSearchResult from "./GenericTransactionSearchResult";
 
-const BlocksRewarded: FC<AddressAwareComponentProps> = ({ address }) => {
+const BlocksRewarded: FC = () => {
+  const { address } = useOutletContext() as AddressOutletContext;
   const { config, provider } = useContext(RuntimeContext);
 
   const pageNumber = usePageNumber();
-  const total = useGenericTransactionCount(provider, "BlocksRewarded", address);
-  const results = useGenericTransactionList<
-    "BlocksRewarded",
-    BlockRewardedSummary
-  >(provider, "BlocksRewarded", address, pageNumber, PAGE_SIZE, total);
+  const { data: total } = useQuery(
+    genericTransactionCountQuery(provider, "BlocksRewarded", address),
+  );
+  const { data: results } = useQuery(
+    genericTransactionListQuery<"BlocksRewarded", BlockRewardedSummary>(
+      provider,
+      "BlocksRewarded",
+      address,
+      pageNumber,
+      PAGE_SIZE,
+      total,
+    ),
+  );
 
   const items = useMemo(
     () =>

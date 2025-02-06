@@ -14,4 +14,5 @@ export type AddressAwareComponentProps = {
 export type ABIAwareComponentProps = {
   abi: any[];
   unknownSelectors?: string[];
+  address?: string;
 };

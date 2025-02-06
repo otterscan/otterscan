@@ -24,7 +24,7 @@ Cypress.Commands.add("sendTx", (txReq: TransactionRequest) => {
   return cy.wrap(
     (async () => {
       const provider = new ethers.JsonRpcProvider(
-        Cypress.env("DEVNET_ERIGON_URL"),
+        Cypress.env("DEVNET_ERIGON_URL") || "http://127.0.0.1:8545",
         undefined,
         // Speed up polling time from 4000ms => 100ms
         { polling: true, pollingInterval: 100 },

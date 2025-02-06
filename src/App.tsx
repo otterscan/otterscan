@@ -1,26 +1,40 @@
-import { FC, lazy, Suspense } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { isAddress } from "ethers";
+import { FC, lazy, Suspense, useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import {
   Await,
   createBrowserRouter,
   createRoutesFromElements,
-  defer,
   LoaderFunction,
   Outlet,
   Route,
   RouterProvider,
   useLoaderData,
-} from "react-router-dom";
+} from "react-router";
 import ErrorFallback from "./components/ErrorFallback";
 import ConnectionErrorPanel from "./ConnectionErrorPanel";
 import Footer from "./Footer";
 import Home from "./Home";
 import Main from "./Main";
+import {
+  addressAttributesQuery,
+  erc20HoldingsQuery,
+  genericTransactionCountQuery,
+  genericTransactionListQuery,
+  type TransactionSearchType,
+} from "./ots2/usePrototypeTransferHooks";
+import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
+import { queryClient } from "./queryClient";
 import { loader as searchLoader } from "./Search";
+import { getTransactionQuery, searchTransactionsQuery } from "./search/search";
+import { SourcifySourceName } from "./sourcify/useSourcify";
 import { ConnectionStatus } from "./types";
+import { AppConfig, AppConfigContext } from "./useAppConfig";
 import { ChainInfoContext, populateChainInfo } from "./useChainInfo";
 import { loadOtterscanConfig, OtterscanConfig } from "./useConfig";
+import { getBalanceQuery, getCodeQuery, hasCodeQuery } from "./useErigonHooks";
 import { createRuntime, RuntimeContext } from "./useRuntime";
 import WarningHeader from "./WarningHeader";
 
@@ -30,6 +44,30 @@ const BlockTransactionByIndex = lazy(
   () => import("./execution/block/BlockTransactionByIndex"),
 );
 const Address = lazy(() => import("./execution/Address"));
+const AddressTransactionResults = lazy(
+  () => import("./execution/address/AddressTransactionResults"),
+);
+const AddressContract = lazy(
+  () => import("./execution/address/AddressContract"),
+);
+const AddressReadContract = lazy(
+  () => import("./execution/address/AddressReadContract"),
+);
+const AddressERC20Results = lazy(
+  () => import("./execution/address/AddressERC20Results"),
+);
+const AddressERC721Results = lazy(
+  () => import("./execution/address/AddressERC721Results"),
+);
+const AddressTokens = lazy(() => import("./execution/address/AddressTokens"));
+const AddressWithdrawals = lazy(
+  () => import("./execution/address/AddressWithdrawals"),
+);
+const BlocksRewarded = lazy(() => import("./execution/address/BlocksRewarded"));
+const ProxyContract = lazy(() => import("./execution/address/ProxyContract"));
+const ProxyReadContract = lazy(
+  () => import("./execution/address/ProxyReadContract"),
+);
 const Transaction = lazy(() => import("./execution/Transaction"));
 const AllContracts = lazy(() => import("./token/AllContracts"));
 const AllERC20 = lazy(() => import("./token/AllERC20"));
@@ -59,23 +97,156 @@ const runtime = populateChainInfo(createRuntime(config));
  * progress during probing.
  */
 const loader: LoaderFunction = async () => {
-  return defer({
+  return {
     config,
     rt: runtime,
+  };
+};
+
+const addressLoader: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (isAddress(params.addressOrName)) {
+      const query = hasCodeQuery(rt.provider, params.addressOrName, "latest");
+      queryClient.prefetchQuery(query);
+    }
   });
+  return null;
+};
+
+const addressTxResultsLoader: LoaderFunction = async ({ params, request }) => {
+  if (params.addressOrName !== undefined && isAddress(params.addressOrName)) {
+    const address = params.addressOrName;
+    runtime.then((rt) => {
+      if (
+        params.direction === undefined ||
+        params.direction === "first" ||
+        params.direction === "last"
+      ) {
+        const searchQuery = searchTransactionsQuery(
+          rt.provider,
+          address,
+          0,
+          params.direction === "last" ? "after" : "before",
+        );
+        queryClient.prefetchQuery(searchQuery);
+      } else if (params.direction === "next" || params.direction === "prev") {
+        const url = new URL(request.url);
+        const txHash = url.searchParams.get("h");
+        if (txHash) {
+          queryClient
+            .fetchQuery(getTransactionQuery(rt.provider, txHash))
+            .then((tx) => {
+              if (tx !== null) {
+                const searchQuery = searchTransactionsQuery(
+                  rt.provider,
+                  address,
+                  tx.blockNumber!,
+                  params.direction === "prev" ? "after" : "before",
+                );
+                queryClient.prefetchQuery(searchQuery);
+              }
+            });
+        }
+      }
+
+      const balanceQuery = getBalanceQuery(rt.provider, address);
+      queryClient.prefetchQuery(balanceQuery);
+    });
+  }
+  return null;
+};
+
+const addressContractLoader: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (params.addressOrName && isAddress(params.addressOrName)) {
+      const query = getCodeQuery(rt.provider, params.addressOrName, "latest");
+      queryClient.prefetchQuery(query);
+    }
+  });
+  return null;
+};
+
+const proxyContractLoader: LoaderFunction = async ({ params }) => {
+  Promise.all([runtime, config]).then(([rt, cfg]) => {
+    if (
+      cfg.experimental &&
+      params.addressOrName &&
+      isAddress(params.addressOrName)
+    ) {
+      const query = addressAttributesQuery(rt.provider, params.addressOrName);
+      queryClient.prefetchQuery(query);
+    }
+  });
+  return null;
+};
+
+const addressOts2List: (typeName: TransactionSearchType) => LoaderFunction =
+  (typeName: TransactionSearchType) =>
+  async ({ params }) => {
+    runtime.then((rt) => {
+      if (params.addressOrName && isAddress(params.addressOrName)) {
+        const countQuery = genericTransactionCountQuery(
+          rt.provider,
+          typeName,
+          params.addressOrName,
+        );
+        queryClient
+          .fetchQuery(countQuery)
+          .then((total) => {
+            if (total !== undefined && params.addressOrName !== undefined) {
+              let pageNumber = 1;
+              if (params.p) {
+                try {
+                  pageNumber = parseInt(params.p);
+                } catch (e: any) {}
+              }
+              const query = genericTransactionListQuery(
+                rt.provider,
+                typeName,
+                params.addressOrName,
+                pageNumber,
+                PAGE_SIZE,
+                total,
+              );
+              queryClient.prefetchQuery(query);
+            }
+          })
+          .catch((e) => {});
+      }
+    });
+    return null;
+  };
+
+const addressTokenHoldings: LoaderFunction = async ({ params }) => {
+  runtime.then((rt) => {
+    if (isAddress(params.addressOrName)) {
+      const query = erc20HoldingsQuery(rt.provider, params.addressOrName);
+      queryClient.prefetchQuery(query);
+    }
+  });
+  return null;
 };
 
 const Layout: FC = () => {
   // Config + rt map; typings are not available here :(
   const data: any = useLoaderData();
 
+  const [sourcifySource, setSourcifySource] =
+    useState<SourcifySourceName | null>(null);
+  const appConfig = useMemo((): AppConfig => {
+    return {
+      sourcifySource,
+      setSourcifySource,
+    };
+  }, [sourcifySource, setSourcifySource]);
+
   return (
     // Catch all error boundary
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {/* await for config load */}
+      {/* wait for config load */}
       <Await resolve={data.config}>
         {(config: OtterscanConfig) => (
-          // Await for runtime building + probing; suspend while probing;
+          // Wait for runtime building + probing; suspend while probing;
           // don't show probe splash if hardcoded chainId
           <Suspense
             fallback={
@@ -90,15 +261,21 @@ const Layout: FC = () => {
             <Await resolve={data.rt} errorElement={<ProbeErrorHandler />}>
               {(runtime) => (
                 // App is healthy from here
-                <RuntimeContext.Provider value={runtime}>
-                  <ChainInfoContext.Provider value={runtime.config!.chainInfo}>
-                    <div className="flex h-screen flex-col">
-                      <WarningHeader />
-                      <Outlet />
-                      <Footer />
-                    </div>
-                  </ChainInfoContext.Provider>
-                </RuntimeContext.Provider>
+                <QueryClientProvider client={queryClient}>
+                  <RuntimeContext.Provider value={runtime}>
+                    <ChainInfoContext.Provider
+                      value={runtime.config!.chainInfo}
+                    >
+                      <AppConfigContext.Provider value={appConfig}>
+                        <div className="flex h-screen flex-col">
+                          <WarningHeader />
+                          <Outlet />
+                          <Footer />
+                        </div>
+                      </AppConfigContext.Provider>
+                    </ChainInfoContext.Provider>
+                  </RuntimeContext.Provider>
+                </QueryClientProvider>
               )}
             </Await>
           </Suspense>
@@ -121,8 +298,73 @@ const router = createBrowserRouter(
           path="block/:blockNumberOrHash/tx/:txIndex"
           element={<BlockTransactionByIndex />}
         />
-        <Route path="tx/:txhash/*" element={<Transaction />} />
-        <Route path="address/:addressOrName/*" element={<Address />} />
+        <Route path="tx/:txhash">
+          <Route path="*" element={<Transaction />} />
+        </Route>
+        <Route
+          path="address/:addressOrName/"
+          element={<Address />}
+          loader={addressLoader}
+        >
+          <Route
+            index
+            element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
+          />
+          <Route
+            path="txs/:direction"
+            element={<AddressTransactionResults />}
+            loader={addressTxResultsLoader}
+          />
+          {/* Experimental address routes */}
+          <Route
+            path="erc20"
+            element={<AddressERC20Results />}
+            loader={addressOts2List("ERC20Transfer")}
+          />
+          <Route
+            path="erc721"
+            element={<AddressERC721Results />}
+            loader={addressOts2List("ERC721Transfer")}
+          />
+          <Route
+            path="tokens"
+            element={<AddressTokens />}
+            loader={addressTokenHoldings}
+          />
+          <Route
+            path="withdrawals"
+            element={<AddressWithdrawals />}
+            loader={addressOts2List("Withdrawals")}
+          />
+          <Route
+            path="blocksRewarded"
+            element={<BlocksRewarded />}
+            loader={addressOts2List("BlocksRewarded")}
+          />
+          <Route
+            path="contract"
+            element={<AddressContract />}
+            loader={addressContractLoader}
+          />
+          <Route path="readContract" element={<AddressReadContract />} />
+          <Route
+            path="proxyLogicContract"
+            element={<ProxyContract />}
+            loader={proxyContractLoader}
+          />
+          <Route
+            path="readContractAsProxy"
+            element={<ProxyReadContract />}
+            loader={proxyContractLoader}
+          />
+          <Route
+            path="*"
+            element={
+              null /* TODO: Replace with address-specific "tab not found" */
+            }
+          />
+        </Route>
 
         {/* EXPERIMENTAL ROUTES */}
         <Route path="contracts/*" element={<AllContracts />} />
@@ -133,14 +375,18 @@ const router = createBrowserRouter(
         <Route path="contracts/erc1167/*" element={<AllERC1167 />} />
         {/* EXPERIMENTAL ROUTES */}
 
-        <Route path="epoch/:epochNumber/*" element={<Epoch />} />
-        <Route path="slot/:slotNumber/*" element={<Slot />} />
+        <Route path="epoch/:epochNumber" element={<Epoch />} />
+        <Route path="slot/:slotNumber">
+          <Route path="*" element={<Slot />} />
+        </Route>
         <Route
-          path="slotByBlockRoot/:blockRoot/*"
+          path="slotByBlockRoot/:blockRoot"
           element={<SlotByBlockRoot />}
         />
-        <Route path="validator/:validatorIndex/*" element={<Validator />} />
-        <Route path="faucets/*" element={<Faucets />} />
+        <Route path="validator/:validatorIndex">
+          <Route path="*" element={<Validator />} />
+        </Route>
+        <Route path="faucets" element={<Faucets />} />
         <Route path="broadcastTx" element={<BroadcastTransactionPage />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>

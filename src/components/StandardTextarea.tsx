@@ -10,7 +10,7 @@ const StandardTextarea: FC<StandardTextareaProps> = ({
   ...rest
 }) => (
   <textarea
-    className={`h-40 w-full rounded border font-mono ${readOnly ? "bg-gray-50 text-gray-500" : "text-gray-800"} p-2 focus:outline-none`}
+    className={`h-40 w-full rounded-sm border font-mono ${readOnly ? "bg-gray-50 text-gray-500" : "text-gray-800"} p-2 focus:outline-hidden`}
     {...rest}
     readOnly={readOnly}
   />

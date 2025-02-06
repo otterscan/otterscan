@@ -29,6 +29,7 @@ import RelativePosition from "../../components/RelativePosition";
 import StandardTextarea from "../../components/StandardTextarea";
 import Timestamp from "../../components/Timestamp";
 import TransactionType from "../../components/TransactionType";
+import SolidityLogo from "../../sourcify/SolidityLogo";
 import {
   useError,
   useSourcifyMetadata,
@@ -87,7 +88,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
 
   const tokenTransfers = useTokenTransfers(txData);
 
-  const match = useSourcifyMetadata(txData?.to, provider?._network.chainId);
+  const match = useSourcifyMetadata(txData?.to, provider._network.chainId);
   const metadata = match?.metadata;
 
   const txDesc = useSourcifyTransactionDescription(metadata, txData);
@@ -101,13 +102,13 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     nativeCurrency: { name, symbol },
   } = useChainInfo();
 
-  const [errorMsg, outputData, isCustomError] = useTransactionError(
+  const [errorMsg, outputData, errorType] = useTransactionError(
     provider,
     txData.transactionHash,
   );
   const errorDescription = useError(
     metadata,
-    isCustomError ? outputData : undefined,
+    errorType === "custom" ? outputData : undefined,
   );
   const userError = errorDescription
     ? userDoc?.errors?.[errorDescription.signature]?.[0]
@@ -117,18 +118,20 @@ const Details: FC<DetailsProps> = ({ txData }) => {
     : undefined;
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
-  const isOptimistic = isOptimisticChain(provider?._network.chainId);
+  const isOptimistic = isOptimisticChain(provider._network.chainId);
 
   const { totalFees } = calculateFee(txData, block);
 
   return (
     <ContentFrame tabs>
       <InfoRow title="Transaction Hash">
-        <div className="flex items-baseline space-x-2">
+        <div className="flex items-baseline space-x-2 break-all">
           <span className="font-hash" data-test="tx-hash">
             {txData.transactionHash}
           </span>
-          <Copy value={txData.transactionHash} />
+          <div>
+            <Copy value={txData.transactionHash} />
+          </div>
         </div>
       </InfoRow>
       <InfoRow title="Status">
@@ -153,18 +156,15 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                   size="1x"
                 />
                 <span>
-                  Fail
-                  {errorMsg && (
+                  {errorType === "string" && errorMsg && (
                     <>
-                      {" "}
-                      with revert message: '
+                      Fail with revert message: '
                       <span className="font-bold underline">{errorMsg}</span>'
                     </>
                   )}
-                  {isCustomError && (
+                  {errorType === "custom" && (
                     <>
-                      {" "}
-                      with custom error
+                      Fail with custom error
                       {errorDescription && (
                         <>
                           {" '"}
@@ -176,9 +176,17 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                       )}
                     </>
                   )}
+                  {errorType === "panic" && (
+                    <>
+                      <SolidityLogo /> Panic {errorMsg}{" "}
+                      <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
+                        (docs)
+                      </ExternalLink>
+                    </>
+                  )}
                 </span>
               </div>
-              {isCustomError && (
+              {errorType === "custom" && (
                 <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
               )}
             </div>
@@ -218,8 +226,8 @@ const Details: FC<DetailsProps> = ({ txData }) => {
       {txData.confirmedData && (
         <>
           <InfoRow title="Block / Position">
-            <div className="flex items-baseline divide-x-2 divide-dotted divide-gray-300">
-              <div className="mr-3 flex items-baseline space-x-1">
+            <div className="flex flex-wrap gap-y-2 items-baseline divide-x-2 divide-dotted divide-gray-300">
+              <div className="flex items-baseline space-x-1 pr-3">
                 <BlockLink blockTag={txData.confirmedData.blockNumber} />
                 <BlockConfirmations
                   confirmations={txData.confirmedData.confirmations}
@@ -257,9 +265,11 @@ const Details: FC<DetailsProps> = ({ txData }) => {
         </>
       )}
       <InfoRow title="From / Nonce">
-        <div className="flex divide-x-2 divide-dotted divide-gray-300">
-          <TransactionAddressWithCopy address={txData.from} />
-          <div className="ml-3 flex items-baseline pl-3">
+        <div className="flex flex-wrap gap-y-2 divide-x-2 divide-dotted divide-gray-300">
+          <div className="pr-3">
+            <TransactionAddressWithCopy address={txData.from} />
+          </div>
+          <div className="ml-3 flex items-baseline">
             <Nonce value={txData.nonce} />
             <NavNonce sender={txData.from} nonce={txData.nonce} />
           </div>
@@ -385,7 +395,7 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               )
             </span>
             {sendsEthToMiner && (
-              <span className="rounded bg-amber-100 px-2 py-1 text-xs text-amber-500">
+              <span className="rounded-sm bg-amber-100 px-2 py-1 text-xs text-amber-500">
                 Flashbots
               </span>
             )}
@@ -411,32 +421,34 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               />
             </div>
           </InfoRow>
-          {txData.confirmedData && txData.confirmedData.l1GasUsed && (
-            <InfoRow title="L1 Gas Used by Txn">
-              <span>{commify(txData.confirmedData.l1GasUsed)}</span>
-            </InfoRow>
-          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1GasUsed !== undefined && (
+              <InfoRow title="L1 Gas Used by Txn">
+                <span>{commify(txData.confirmedData.l1GasUsed)}</span>
+              </InfoRow>
+            )}
           {txData.confirmedData &&
             txData.confirmedData.l1FeeScalar !== undefined && (
               <InfoRow title="L1 Fee Scalar">
                 <span>{txData.confirmedData.l1FeeScalar}</span>
               </InfoRow>
             )}
-          {txData.confirmedData && txData.confirmedData.l1GasPrice && (
-            <InfoRow title="L1 Gas Price">
-              <div className="flex items-baseline space-x-1">
-                <span>
-                  <FormattedBalance value={txData.confirmedData.l1GasPrice} />{" "}
-                  {symbol} (
-                  <FormattedBalance
-                    value={txData.confirmedData.l1GasPrice}
-                    decimals={9}
-                  />{" "}
-                  Gwei)
-                </span>
-              </div>
-            </InfoRow>
-          )}
+          {txData.confirmedData &&
+            txData.confirmedData.l1GasPrice !== undefined && (
+              <InfoRow title="L1 Gas Price">
+                <div className="flex items-baseline space-x-1">
+                  <span>
+                    <FormattedBalance value={txData.confirmedData.l1GasPrice} />{" "}
+                    {symbol} (
+                    <FormattedBalance
+                      value={txData.confirmedData.l1GasPrice}
+                      decimals={9}
+                    />{" "}
+                    Gwei)
+                  </span>
+                </div>
+              </InfoRow>
+            )}
         </>
       )}
       {block && hasEIP1559 && (

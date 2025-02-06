@@ -1,7 +1,7 @@
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC, lazy, memo, useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router";
 import Logo from "./Logo";
 import SourcifyMenu from "./SourcifyMenu";
 import Timestamp from "./components/Timestamp";
@@ -44,12 +44,12 @@ const Home: FC = () => {
         >
           <div className="mb-10 flex">
             <input
-              className="w-full rounded-l border-b border-l border-t px-2 py-1 focus:outline-none"
+              className="w-full rounded-l border-b border-l border-t px-2 py-1 focus:outline-hidden"
               type="text"
               size={50}
               data-test="home-search-input"
               placeholder={`Search by address / txn hash / block number${
-                provider?._network.getPlugin(
+                provider._network.getPlugin(
                   "org.ethers.plugins.network.Ens",
                 ) !== null
                   ? " / ENS name"
@@ -60,7 +60,7 @@ const Home: FC = () => {
               autoFocus
             />
             <button
-              className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-none"
+              className="flex items-center justify-center rounded-r border bg-skin-button-fill px-2 py-1 text-base text-skin-button hover:bg-skin-button-hover-fill focus:outline-hidden"
               type="button"
               onClick={() => setScanning(true)}
               title="Scan an ETH address using your camera"
@@ -69,7 +69,7 @@ const Home: FC = () => {
             </button>
           </div>
           <button
-            className="mx-auto mb-10 rounded bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-none"
+            className="mx-auto mb-10 rounded-sm bg-skin-button-fill px-3 py-1 hover:bg-skin-button-hover-fill focus:outline-hidden"
             type="submit"
           >
             Search
