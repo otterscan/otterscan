@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { HighlighterCore, getHighlighterCore } from "shiki";
+import { HighlighterCore, createHighlighterCore } from "shiki";
+import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 import langJson from "shiki/langs/json.mjs";
 import langSolidity from "shiki/langs/solidity.mjs";
 import themeGithubLight from "shiki/themes/github-light.mjs";
-import getWasm from "shiki/wasm";
 
 let highlighterSingleton: HighlighterCore | undefined = undefined;
 
 export const getOrCreateHighlighter = async (): Promise<HighlighterCore> => {
   if (!highlighterSingleton) {
-    highlighterSingleton = await getHighlighterCore({
+    highlighterSingleton = await createHighlighterCore({
       themes: [themeGithubLight],
       langs: [langSolidity, langJson],
-      loadWasm: getWasm,
+      engine: createOnigurumaEngine(() => import("shiki/wasm")),
     });
   }
 
