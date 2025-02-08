@@ -4,9 +4,7 @@ import React, { lazy } from "react";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
 
-const HighlightedSolidity = lazy(
-  () => import("./contract/HighlightedSolidity"),
-);
+const HighlightedSource = lazy(() => import("./contract/HighlightedSource"));
 
 type ContractFromRepoProps = {
   checksummedAddress: string;
@@ -14,6 +12,7 @@ type ContractFromRepoProps = {
   filename: string;
   fileHash: string;
   type: MatchType;
+  langName: string;
 };
 
 const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
@@ -22,6 +21,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   filename,
   fileHash,
   type,
+  langName,
 }) => {
   const { sourcifySource } = useAppConfigContext();
   const content = useContract(
@@ -46,7 +46,9 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
           </span>
         </div>
       )}
-      {content !== undefined && <HighlightedSolidity source={content} />}
+      {content !== undefined && (
+        <HighlightedSource source={content} langName={langName} />
+      )}
     </>
   );
 };

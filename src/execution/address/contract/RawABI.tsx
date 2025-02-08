@@ -1,6 +1,7 @@
-import { FC, memo } from "react";
+import { FC, lazy, memo } from "react";
 import { ABIAwareComponentProps } from "../../types";
-import HighlightedSource from "./HighlightedSource";
+
+const HighlightedSource = lazy(() => import("./HighlightedSource"));
 
 const RawABI: FC<ABIAwareComponentProps> = ({ abi }) => (
   <div className="h-60 w-full border font-code text-base overflow-auto">

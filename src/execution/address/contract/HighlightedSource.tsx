@@ -11,7 +11,7 @@ export const getOrCreateHighlighter = async (): Promise<HighlighterCore> => {
   if (!highlighterSingleton) {
     highlighterSingleton = await createHighlighterCore({
       themes: [themeGithubLight],
-      langs: [langSolidity, langJson],
+      langs: [langSolidity, langJson, import("@shikijs/langs/vyper")],
       engine: createOnigurumaEngine(() => import("shiki/wasm")),
     });
   }
