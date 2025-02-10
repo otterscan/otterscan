@@ -1,10 +1,9 @@
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { lazy } from "react";
+import React from "react";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
-
-const HighlightedSource = lazy(() => import("./contract/HighlightedSource"));
+import HighlightedSource from "./contract/HighlightedSource";
 
 type ContractFromRepoProps = {
   checksummedAddress: string;
