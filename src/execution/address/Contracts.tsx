@@ -7,7 +7,7 @@ import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
 import StandardTextarea from "../../components/StandardTextarea";
-import { Match, MatchType } from "../../sourcify/useSourcify";
+import { Match, MatchType, getLangName } from "../../sourcify/useSourcify";
 import { openInRemixURL } from "../../url";
 import { getCodeQuery } from "../../useErigonHooks";
 import { RuntimeContext } from "../../useRuntime";
@@ -17,9 +17,7 @@ import ContractFromRepo from "./ContractFromRepo";
 import WhatsabiWarning from "./WhatsabiWarning";
 import ContractABI from "./contract/ContractABI";
 
-const HighlightedSolidity = lazy(
-  () => import("./contract/HighlightedSolidity"),
-);
+const HighlightedSource = lazy(() => import("./contract/HighlightedSource"));
 
 type ContractsProps = {
   checksummedAddress: string;
@@ -144,8 +142,9 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 {selected && (
                   <>
                     {match.metadata.sources[selected].content ? (
-                      <HighlightedSolidity
+                      <HighlightedSource
                         source={match.metadata.sources[selected].content}
+                        langName={getLangName(match.metadata)}
                       />
                     ) : (
                       <ContractFromRepo
@@ -154,6 +153,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         filename={selected}
                         fileHash={match.metadata.sources[selected].keccak256}
                         type={match.type}
+                        langName={getLangName(match.metadata)}
                       />
                     )}
                   </>

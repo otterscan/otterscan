@@ -382,3 +382,10 @@ export const useError = (
 
   return err;
 };
+
+export function getLangName(metadata: Metadata | null | undefined) {
+  if (metadata?.language === "Vyper") {
+    return "vyper";
+  }
+  return "solidity";
+}
