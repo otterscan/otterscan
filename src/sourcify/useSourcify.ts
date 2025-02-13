@@ -108,7 +108,7 @@ const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
 const defaultSourcifySources = {
   [defaultSourcifySourceName]: {
     url: sourcifyHttpRepoPrefix,
-    backendFormat: "RepositoryV2",
+    backendFormat: "RepositoryV1",
   },
 };
 
