@@ -108,7 +108,7 @@ const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
 const defaultSourcifySources = {
   [defaultSourcifySourceName]: {
     url: sourcifyHttpRepoPrefix,
-    backendFormat: "RepositoryV1",
+    backendFormat: "RepositoryV2",
   },
 };
 
@@ -382,10 +382,3 @@ export const useError = (
 
   return err;
 };
-
-export function getLangName(metadata: Metadata | null | undefined) {
-  if (metadata?.language === "Vyper") {
-    return "vyper";
-  }
-  return "solidity";
-}
