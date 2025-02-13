@@ -9,5 +9,11 @@
         "backendFormat": "RepositoryV1"
       }
     }
+  },
+  "priceOracleInfo": {
+    "nativeTokenPrice": {
+      "ethUSDOracleAddress": "0xd9f2239f5E91BdC2FBB977dBd31e58cfcB39D0e9",
+      "ethUSDOracleDecimals": 18
+    }
   }
 }

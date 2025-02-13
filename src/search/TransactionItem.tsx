@@ -116,7 +116,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             </span>
           </span>
         </td>
-        <td className="min-w-48 max-w-48">
+        <td className="min-w-48 max-w-48" data-test="tx-value">
           <div className="@container">
             <div className="@2xs:hidden inline-block">
               <NativeTokenAmount value={tx.value} />
