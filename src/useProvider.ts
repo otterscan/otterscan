@@ -82,9 +82,6 @@ export const createAndProbeProvider = async (
       throw new ProbeError(ConnectionStatus.NOT_OTTERSCAN_PATCHED, erigonURL);
     }
 
-    throw new Error(
-      "A probe to the backend node failed, but all subsequent requests succeeded. Try refreshing the page.",
-      { cause: err },
-    );
+    throw new Error("Must not happen", { cause: err });
   }
 };

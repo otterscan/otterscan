@@ -149,9 +149,9 @@ const AddressTransactionResults: FC = () => {
       <StandardSelectionBoundary>
         <BlockNumberContext.Provider value="latest">
           <InfoRow title="Balance">
-            <div className="grid grid-cols-3 flex md:divide-x-2 divide-dotted divide-gray-300 text-sm">
+            <div className="grid grid-cols-3 flex divide-x-2 divide-dotted divide-gray-300 text-sm">
               <div
-                className={`${transactionCount !== undefined ? "col-span-3 md:col-span-1" : "col-span-3"}`}
+                className={`${transactionCount !== undefined ? "col-span-1" : "col-span-3"}`}
               >
                 {balance === undefined ? (
                   <div className="w-80">
@@ -165,7 +165,7 @@ const AddressTransactionResults: FC = () => {
                 )}
               </div>
               {transactionCount !== undefined && (
-                <div className="hidden md:visible pl-4 col-span-2 md:grid grid-cols-2">
+                <div className="pl-4 col-span-2 grid grid-cols-2">
                   <div className="col-span-1">Transactions sent:</div>
                   <div className="col-span-1">
                     {commify(transactionCount.toString())}
@@ -174,13 +174,6 @@ const AddressTransactionResults: FC = () => {
               )}
             </div>
           </InfoRow>
-          {transactionCount !== undefined && (
-            <div className="md:hidden">
-              <InfoRow title="Transactions sent">
-                {commify(transactionCount.toString())}
-              </InfoRow>
-            </div>
-          )}
           {creator && (
             <InfoRow title="Contract creator">
               <div className="flex flex-col md:flex-row divide-x-2 divide-dotted divide-gray-300">

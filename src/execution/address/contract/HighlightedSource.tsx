@@ -1,28 +1,18 @@
 import React, { useEffect, useState } from "react";
-import {
-  HighlighterCore,
-  createHighlighterCore,
-  type LanguageInput,
-  type SpecialLanguage,
-} from "shiki";
-import { createOnigurumaEngine } from "shiki/engine/oniguruma";
+import { HighlighterCore, getHighlighterCore } from "shiki";
 import langJson from "shiki/langs/json.mjs";
 import langSolidity from "shiki/langs/solidity.mjs";
 import themeGithubLight from "shiki/themes/github-light.mjs";
-
-type HighlightedSourceProps = {
-  source?: string | null;
-  langName: string;
-};
+import getWasm from "shiki/wasm";
 
 let highlighterSingleton: HighlighterCore | undefined = undefined;
 
 export const getOrCreateHighlighter = async (): Promise<HighlighterCore> => {
   if (!highlighterSingleton) {
-    highlighterSingleton = await createHighlighterCore({
+    highlighterSingleton = await getHighlighterCore({
       themes: [themeGithubLight],
       langs: [langSolidity, langJson],
-      engine: createOnigurumaEngine(() => import("shiki/wasm")),
+      loadWasm: getWasm,
     });
   }
 
@@ -39,22 +29,10 @@ export const useHighlighter = (): HighlighterCore | undefined => {
   return highlighter;
 };
 
-async function loadLanguage(highlighter: HighlighterCore, langName: string) {
-  if (!highlighter.getLoadedLanguages().includes(langName)) {
-    let langModule: undefined | LanguageInput | SpecialLanguage = undefined;
-
-    switch (langName) {
-      case "vyper":
-        langModule = await import(`@shikijs/langs/vyper`);
-        break;
-      default:
-        break;
-    }
-    if (langModule !== undefined) {
-      await highlighter.loadLanguage(langModule);
-    }
-  }
-}
+type HighlightedSourceProps = {
+  source?: string | null;
+  langName: string;
+};
 
 const HighlightedSource: React.FC<HighlightedSourceProps> = ({
   source,
@@ -63,21 +41,17 @@ const HighlightedSource: React.FC<HighlightedSourceProps> = ({
   const [code, setCode] = useState<string>("");
   const highlighter = useHighlighter();
   useEffect(() => {
-    async function loadAndHighlight() {
-      if (source !== undefined && source !== null && highlighter) {
-        await loadLanguage(highlighter, langName);
-        setCode(
-          highlighter.codeToHtml(source, {
-            lang: langName,
-            theme: "github-light",
-          }),
-        );
-      } else {
-        setCode("");
-      }
+    if (source !== undefined && source !== null && highlighter) {
+      setCode(
+        highlighter.codeToHtml(source, {
+          lang: langName,
+          theme: "github-light",
+        }),
+      );
+    } else {
+      setCode("");
     }
-    loadAndHighlight();
-  }, [source, highlighter, langName]);
+  }, [source, highlighter]);
 
   return (
     <div
