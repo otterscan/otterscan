@@ -31,7 +31,15 @@ Use an Otterscan config identical to the one at `cypress/support/devnet-config.j
 
 Run the devnet and common end-to-end tests:
 ```sh
-CYPRESS_DEVNET_SOURCIFY_SOURCE=http://127.0.0.1:7077 npm run cy:run-devnet
+VITE_CONFIG_JSON=$(cat cypress/support/devnet-config.json) npm run start
+CYPRESS_DEVNET_SOURCIFY_SOURCE=http://localhost:7077 npm run cy:run-devnet
+```
+
+On Anvil:
+```sh
+anvil --chain-id 1337
+VITE_CONFIG_JSON=$(cat cypress/support/devnet-config.json) npm run start
+CYPRESS_DEVNET_ACCOUNT_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 CYPRESS_DEVNET_SOURCIFY_SOURCE=http://localhost:7077 npm run cy:run-devnet
 ```
 
 ## Running GitHub Actions workflows locally
