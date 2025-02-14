@@ -87,7 +87,7 @@
   },
   "settings": {
     "compilationTarget": { "AggregatorV3Mock.sol": "AggregatorV3MockContract" },
-    "evmVersion": "cancun",
+    "evmVersion": "london",
     "libraries": {},
     "metadata": { "bytecodeHash": "ipfs" },
     "optimizer": { "enabled": true, "runs": 200 },
