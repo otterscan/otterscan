@@ -1,11 +1,11 @@
-import { ZeroAddress } from "ethers";
+import { ZeroAddress, parseEther } from "ethers";
 
 describe("USD value shown in transaction results in large-width viewports only", () => {
   before(() => {
     // Deploy mock USD price contract
     cy.ensurePriceOracle();
-    // Send a positive-value transaction of 0.0245
-    cy.sendTx({ to: ZeroAddress, value: 2450000000000000n });
+    // Send a positive-value transaction of 0.00245
+    cy.sendTx({ to: ZeroAddress, value: parseEther("0.00245") });
   });
 
   it("Does not show transaction USD values in smaller viewports", () => {
