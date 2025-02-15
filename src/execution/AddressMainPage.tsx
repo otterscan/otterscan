@@ -108,7 +108,7 @@ const AddressMainPage: React.FC = () => {
               isENS={isENS}
             />
             <TabGroup>
-              <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white">
+              <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white overflow-x-auto">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
                 {config?.experimental && (
                   <>
