@@ -27,7 +27,7 @@ const NativeTokenAmountOnlyFiat: FC<NativeTokenAmountOnlyFiatProps> = ({
           <span className="font-balance text-xs text-gray-500">N/A</span>
         )
       ) : (
-        <div className="opacity-40">
+        <div className="opacity-30">
           <FiatValue value={FixedNumber.fromValue(0n, 18)} {...neutralPreset} />
         </div>
       )}
