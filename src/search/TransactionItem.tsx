@@ -4,6 +4,7 @@ import { feePreset } from "../components/FiatValue";
 import MethodName from "../components/MethodName";
 import NativeTokenAmount from "../components/NativeTokenAmount";
 import NativeTokenAmountAndFiat from "../components/NativeTokenAmountAndFiat";
+import NativeTokenAmountOnlyFiat from "../components/NativeTokenAmountOnlyFiat";
 import TimestampAge from "../components/TimestampAge";
 import TransactionDirection, {
   Direction,
@@ -17,18 +18,20 @@ import { BlockNumberContext } from "../useBlockTagContext";
 import { useSendsToMiner } from "../useErigonHooks";
 import { RuntimeContext } from "../useRuntime";
 import TransactionItemFiatFee from "./TransactionItemFiatFee";
-import { FeeDisplay } from "./useFeeToggler";
+import { FeeDisplay, ValueDisplay } from "./useFeeToggler";
 
 type TransactionItemProps = {
   tx: ProcessedTransaction;
   selectedAddress?: string;
   feeDisplay: FeeDisplay;
+  valueDisplay: ValueDisplay;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
   tx,
   selectedAddress,
   feeDisplay,
+  valueDisplay,
 }) => {
   const { provider } = useContext(RuntimeContext);
   const [sendsToMiner] = useSendsToMiner(provider, tx.hash, tx.miner);
@@ -119,7 +122,16 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
         <td className="min-w-48 max-w-48">
           <div className="@container">
             <div className="@2xs:hidden inline-block">
-              <NativeTokenAmount value={tx.value} />
+              {valueDisplay === ValueDisplay.VALUE_NATIVE && (
+                <NativeTokenAmount value={tx.value} />
+              )}
+              {valueDisplay === ValueDisplay.VALUE_USD && (
+                <NativeTokenAmountOnlyFiat
+                  value={tx.value}
+                  blockTag={tx.blockNumber}
+                  {...feePreset}
+                />
+              )}
             </div>
             <div className="@2xs:inline-block hidden">
               <NativeTokenAmountAndFiat

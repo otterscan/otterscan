@@ -13,7 +13,11 @@ import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
 import UndefinedPageControl from "../../search/UndefinedPageControl";
 import { SearchController } from "../../search/search";
-import { useFeeToggler } from "../../search/useFeeToggler";
+import {
+  FeeDisplay,
+  useToggler,
+  ValueDisplay,
+} from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
@@ -53,7 +57,8 @@ const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
 const AddressTransactionResults: FC = () => {
   const { address, hasCode } = useOutletContext() as AddressOutletContext;
   const { config, provider } = useContext(RuntimeContext);
-  const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+  const [feeDisplay, feeDisplayToggler] = useToggler(FeeDisplay);
+  const [valueDisplay, valueDisplayToggler] = useToggler(ValueDisplay);
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -205,6 +210,8 @@ const AddressTransactionResults: FC = () => {
           <ResultHeader
             feeDisplay={feeDisplay}
             feeDisplayToggler={feeDisplayToggler}
+            valueDisplay={valueDisplay}
+            valueDisplayToggler={valueDisplayToggler}
           />
           {page ? (
             <StandardTBody>
@@ -214,6 +221,7 @@ const AddressTransactionResults: FC = () => {
                   tx={tx}
                   selectedAddress={address}
                   feeDisplay={feeDisplay}
+                  valueDisplay={valueDisplay}
                 />
               ))}
             </StandardTBody>
