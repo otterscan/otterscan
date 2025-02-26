@@ -37,7 +37,7 @@ function whatsabiFetcher(
     const selectors = whatsabi.selectorsFromBytecode(code);
     const decodedFunctions: (string | null)[] = await Promise.all(
       selectors.map(async (selector) => {
-        if (!assetsURLPrefix) {
+        if (assetsURLPrefix === null || assetsURLPrefix === undefined) {
           return null;
         }
         try {
