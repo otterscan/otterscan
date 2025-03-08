@@ -83,7 +83,17 @@ export type Metadata = {
   };
 };
 
-const SourcifyBackendFormats = ["RepositoryV1", "RepositoryV2"] as const;
+export enum MatchType {
+  FULL_MATCH,
+  PARTIAL_MATCH,
+  WHATSABI_GUESS,
+}
+
+const SourcifyBackendFormats = [
+  "RepositoryV1",
+  "RepositoryV2",
+  "SourcifyAPIV2",
+] as const;
 type SourcifyBackendFormat = (typeof SourcifyBackendFormats)[number];
 
 export type SourcifySourceName = string;
@@ -103,12 +113,10 @@ function isSourcifyBackendFormat(
   return SourcifyBackendFormats.includes(format as SourcifyBackendFormat);
 }
 
-const sourcifyHttpRepoPrefix = `https://repo.sourcify.dev`;
-
 const defaultSourcifySources = {
   [defaultSourcifySourceName]: {
-    url: sourcifyHttpRepoPrefix,
-    backendFormat: "RepositoryV1",
+    url: "https://sourcify.dev/server",
+    backendFormat: "SourcifyAPIV2",
   },
 };
 
@@ -175,6 +183,11 @@ export function sourcifyMetadata(
   sourcifySources: SourcifySourceMap,
 ): string {
   const { sourcifySource } = resolveSourcifySource(source, sourcifySources);
+
+  if (sourcifySource.backendFormat === "SourcifyAPIV2") {
+    return `${sourcifySource.url}/v2/contract/${chainId}/${address}?fields=metadata`;
+  }
+
   return `${sourcifySource.url}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
   }/${chainId}/${address}/metadata.json`;
@@ -187,16 +200,16 @@ export const sourcifySourceFile = (
   source: SourcifySourceName,
   type: MatchType,
   sourcifySources: SourcifySourceMap,
-) =>
-  `${resolveSourcifySource(source, sourcifySources).sourcifySource.url}/contracts/${
+) => {
+  const { sourcifySource } = resolveSourcifySource(source, sourcifySources);
+  let sourceUrl = sourcifySource.url;
+  if (sourcifySource.backendFormat === "SourcifyAPIV2") {
+    sourceUrl += "/repository";
+  }
+  return `${sourceUrl}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
   }/${chainId}/${address}/sources/${filepath}`;
-
-export enum MatchType {
-  FULL_MATCH,
-  PARTIAL_MATCH,
-  WHATSABI_GUESS,
-}
+};
 
 export type Match = {
   type: MatchType;
@@ -222,6 +235,18 @@ function sourcifyFetcher(
       );
       const res = await fetch(url);
       if (res.ok) {
+        if (
+          sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2"
+        ) {
+          const response = await res.json();
+          return {
+            type:
+              response.runtimeMatch === "exact_match"
+                ? MatchType.FULL_MATCH
+                : MatchType.PARTIAL_MATCH,
+            ...response,
+          };
+        }
         return {
           type: MatchType.FULL_MATCH,
           metadata: await res.json(),
@@ -231,6 +256,11 @@ function sourcifyFetcher(
       console.info(
         `error while getting Sourcify full_match metadata: chainId=${chainId} address=${address} err=${err}; falling back to partial_match`,
       );
+    }
+
+    // Bail early for API type (only one fetch required)
+    if (sourcifySources[sourcifySourceName].backendFormat === "SourcifyAPIV2") {
+      return null;
     }
 
     // Fallback to try partial match
@@ -262,12 +292,16 @@ export const useSourcifyMetadata = (
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
 ): Match | null | undefined => {
-  const { sourcifySource } = useAppConfigContext();
+  const { sourcifySource: appSourcifySourceName } = useAppConfigContext();
   const sourcifySources = useSourcifySources();
+  const { name: sourcifySourceName, sourcifySource } = resolveSourcifySource(
+    appSourcifySourceName,
+    sourcifySources,
+  );
   const metadataURL = () =>
     address === undefined || chainId === undefined
       ? null
-      : ["sourcify", address, chainId, sourcifySource];
+      : ["sourcify", address, chainId, sourcifySourceName];
   const fetcher = sourcifyFetcher(sourcifySources);
   const { data, error } = useSWRImmutable<Match | null | undefined>(
     metadataURL,
@@ -302,7 +336,9 @@ export const useContract = (
   );
   let fetchFilename: string;
   switch (sourcifySource.backendFormat) {
-    case "RepositoryV1": {
+    case "RepositoryV1":
+    // Fallthrough
+    case "SourcifyAPIV2": {
       fetchFilename = filename.replaceAll(/[:]/g, "_");
       break;
     }
