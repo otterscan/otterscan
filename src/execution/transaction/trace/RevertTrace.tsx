@@ -163,7 +163,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
       );
       setRevertLocations(newRevertLocations);
     })();
-  }, [txHash, revertChain.length]);
+  }, [txHash, revertChain.length, sourcifySource]);
 
   let revertLocationsFinal: RevertLocation[] | null =
     revertLocations !== null &&
