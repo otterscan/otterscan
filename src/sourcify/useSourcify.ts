@@ -182,11 +182,13 @@ export function sourcifyMetadata(
   source: SourcifySourceName,
   type: MatchType,
   sourcifySources: SourcifySourceMap,
+  withSourceMap: boolean,
 ): string {
   const { sourcifySource } = resolveSourcifySource(source, sourcifySources);
 
   if (sourcifySource.backendFormat === "SourcifyAPIV2") {
-    return `${sourcifySource.url}/v2/contract/${chainId}/${address}?fields=metadata`;
+    // TODO: Remove once SourcifyV2 support for the sources key is implemented
+    return `${sourcifySource.url}/v2/contract/${chainId}/${address}?fields=metadata${withSourceMap ? ",runtimeBytecode.sourceMap,stdJsonOutput" : ""}`;
   }
 
   return `${sourcifySource.url}/contracts/${
@@ -216,6 +218,12 @@ export type Match = {
   type: MatchType;
   metadata: Metadata;
   unknownSelectors?: string[];
+  runtimeBytecode?: {
+    sourceMap?: string;
+  };
+  stdJsonOutput?: {
+    sources: { [key: string]: { id: number } };
+  };
 };
 
 async function fetchSourcifyMetadata(
@@ -223,6 +231,7 @@ async function fetchSourcifyMetadata(
   sourcifySourceName: SourcifySourceName,
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
+  withSourceMap: boolean,
 ): Promise<Match | null> {
   if (address === undefined || chainId === undefined) {
     return null;
@@ -235,6 +244,7 @@ async function fetchSourcifyMetadata(
       sourcifySourceName,
       MatchType.FULL_MATCH,
       sourcifySources,
+      withSourceMap,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -274,6 +284,7 @@ async function fetchSourcifyMetadata(
       sourcifySourceName,
       MatchType.PARTIAL_MATCH,
       sourcifySources,
+      withSourceMap,
     );
     const res = await fetch(url);
     if (res.ok) {
@@ -294,10 +305,16 @@ function sourcifyFetcher(
   sourcifySources: SourcifySourceMap,
 ): Fetcher<
   Match | null | undefined,
-  ["sourcify", ChecksummedAddress, bigint, SourcifySourceName]
+  ["sourcify", ChecksummedAddress, bigint, SourcifySourceName, boolean]
 > {
   return async ([_, address, chainId, sourcifySource]) =>
-    fetchSourcifyMetadata(sourcifySources, sourcifySource, address, chainId);
+    fetchSourcifyMetadata(
+      sourcifySources,
+      sourcifySource,
+      address,
+      chainId,
+      false,
+    );
 }
 
 export const useSourcifyMetadata = (
@@ -312,6 +329,7 @@ export const useSourcifyMetadata = (
       sourcifySourceName,
       address,
       chainId,
+      false,
     ),
   ).data;
 };
@@ -321,19 +339,27 @@ export const getSourcifyMetadataQuery = (
   sourcifySourceName: SourcifySourceName | null,
   address: ChecksummedAddress | undefined,
   chainId: bigint | undefined,
+  withSourceMap: boolean,
 ): UseQueryOptions<Match | null> => ({
   queryKey: [
     "sourcify",
     address,
     (chainId ?? "").toString(),
     sourcifySourceName,
+    withSourceMap,
   ],
   queryFn: () => {
     const { name, sourcifySource } = resolveSourcifySource(
       sourcifySourceName,
       sourcifySources,
     );
-    return fetchSourcifyMetadata(sourcifySources, name, address, chainId);
+    return fetchSourcifyMetadata(
+      sourcifySources,
+      name,
+      address,
+      chainId,
+      withSourceMap,
+    );
   },
   staleTime: Infinity,
   gcTime: 10 * 60 * 1000,

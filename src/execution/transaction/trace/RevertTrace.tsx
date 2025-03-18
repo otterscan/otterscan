@@ -79,6 +79,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
               sourcifySource,
               targetAddr,
               provider._network.chainId,
+              true,
             ),
           );
 
@@ -99,8 +100,9 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
             targetMatch.metadata.settings !== undefined &&
             targetOffsets !== undefined &&
             targetCode !== undefined &&
-            // TODO: SourcifyV2 only
-            (targetMatch.metadata as any).output.contracts !== undefined
+            targetMatch.runtimeBytecode?.sourceMap !== undefined &&
+            // TODO: Remove once SourcifyV2 support for the sources key is implemented
+            targetMatch.stdJsonOutput?.sources !== undefined
           ) {
             // TODO: metadata only (as before)
             const fileName = Object.keys(
@@ -108,12 +110,9 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
             )[0];
             const sourceName =
               targetMatch.metadata.settings.compilationTarget[fileName];
-            // TODO: This is not part of the metadata object! SourcifyV2 only.
-            const sourceMap = (targetMatch.metadata as any).output.contracts[
-              fileName
-            ][sourceName].evm.deployedBytecode.sourceMap;
+            const sourceMap = targetMatch.runtimeBytecode.sourceMap;
             const soliditySources = Object.values(
-              (targetMatch.metadata as any).output.sources,
+              targetMatch.stdJsonOutput.sources,
             ).map((source: any) => source.id);
             const instructionIndexMap = bytecodeToInstructionIndex(targetCode);
 
@@ -134,11 +133,10 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
                 targetStart = byteOffset;
                 targetEnd = byteOffset + length;
                 targetSource = Object.keys(
-                  (targetMatch.metadata as any).output.sources,
+                  targetMatch.stdJsonOutput.sources,
                 ).find(
                   (key) =>
-                    (targetMatch.metadata as any).output.sources[key].id ===
-                    sourceIndex,
+                    targetMatch.stdJsonOutput.sources[key].id === sourceIndex,
                 );
                 if (
                   targetSource !== undefined &&
