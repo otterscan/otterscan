@@ -136,7 +136,8 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
                   targetMatch.stdJsonOutput.sources,
                 ).find(
                   (key) =>
-                    targetMatch.stdJsonOutput.sources[key].id === sourceIndex,
+                    targetMatch.stdJsonOutput?.sources?.[key]?.id ===
+                    sourceIndex,
                 );
                 if (
                   targetSource !== undefined &&
