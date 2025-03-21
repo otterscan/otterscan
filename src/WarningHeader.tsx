@@ -37,6 +37,8 @@ const WarningHeader: React.FC = () => {
     chainMsg = "OP Sepolia";
   } else if (chainId === 17000n) {
     chainMsg = "Holesky Testnet";
+  } else if (chainId === 560048n) {
+    chainMsg = "Hoodi Testnet";
   } else if (name) {
     chainMsg = name;
   }
