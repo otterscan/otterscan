@@ -108,26 +108,42 @@ export const searchTransactionsQuery = (
 };
 
 export class SearchController {
+  // Guaranteed to include all transactions in the starting and ending blocks
   private txs: ProcessedTransaction[];
 
   private pageStart: number;
-
   private pageEnd: number;
+  public isFirst: boolean;
+  public isLast: boolean;
 
   private constructor(
     readonly address: string,
     txs: ProcessedTransaction[],
-    readonly isFirst: boolean,
-    readonly isLast: boolean,
+    readonly isBatchFirst: boolean,
+    readonly isBatchLast: boolean,
+    // if true, starts at index 0, otherwise considers the "last" parts of the transactions
     boundToStart: boolean,
+    pageStartIndex?: number,
+    pageEndIndex?: number,
   ) {
     this.txs = txs;
     if (boundToStart) {
-      this.pageStart = 0;
-      this.pageEnd = Math.min(txs.length, PAGE_SIZE);
+      this.pageStart = pageStartIndex ?? 0;
+      this.pageEnd = Math.min(txs.length, this.pageStart + PAGE_SIZE);
     } else {
-      this.pageEnd = txs.length;
-      this.pageStart = Math.max(0, txs.length - PAGE_SIZE);
+      this.pageEnd = pageEndIndex ?? txs.length;
+      this.pageStart = Math.max(0, this.pageEnd - PAGE_SIZE);
+    }
+
+    if (isBatchFirst && this.pageStart === 0) {
+      this.isFirst = true;
+    } else {
+      this.isFirst = false;
+    }
+    if (isBatchLast && this.pageEnd === txs.length) {
+      this.isLast = true;
+    } else {
+      this.isLast = false;
     }
   }
 
@@ -153,9 +169,42 @@ export class SearchController {
     hash: string,
     next: boolean,
   ): Promise<SearchController> {
+    const prev = !next;
     const tx = await queryClient.fetchQuery(
       getTransactionQuery(provider, hash),
     );
+
+    // See if there are more transactions from this block we must include
+    let blockQuery: TransactionChunk | null = null;
+    let blockTxs: ProcessedTransaction[] = [];
+
+    if (prev || tx!.blockNumber! > 0) {
+      blockQuery = await queryClient.fetchQuery(
+        searchTransactionsQuery(
+          provider,
+          address,
+          Math.max(0, tx!.blockNumber! + (next ? -1 : 1)),
+          next ? "before" : "after",
+        ),
+      );
+      blockTxs = blockQuery!.txs.filter(
+        (blockTx) => blockTx!.blockNumber === tx!.blockNumber,
+      );
+    }
+
+    let txs: ProcessedTransaction[] = [];
+
+    const txBlockIndex = blockTxs.findIndex((tx) => tx.hash === hash);
+    if (txBlockIndex != -1) {
+      if (next) {
+        // Add transactions after `hash` in the block
+        txs = txs.concat(blockTxs.slice(txBlockIndex + 1));
+      } else {
+        // Add transactions before `hash` in the block
+        txs = blockTxs.slice(0, Math.max(0, txBlockIndex - 1)).concat(txs);
+      }
+    }
+
     // TODO: Can we actually infer that this transaction is not null?
     const newTxs = await queryClient.fetchQuery(
       searchTransactionsQuery(
@@ -165,12 +214,34 @@ export class SearchController {
         next ? "before" : "after",
       ),
     );
+    if (next) {
+      // Add (older) transactions to the end
+      txs = txs.concat(newTxs.txs);
+    } else {
+      // Prepend newer transactions
+      txs = newTxs.txs.concat(txs);
+    }
+
+    let txIndex: number = txs.findIndex((tx) => tx.hash === hash);
+
+    let firstPage = newTxs.firstPage;
+    let lastPage = newTxs.lastPage;
+    if (txBlockIndex >= 0) {
+      if (next && txBlockIndex > 0) {
+        firstPage = false;
+      } else if (prev && txBlockIndex < blockTxs.length - 1) {
+        lastPage = false;
+      }
+    }
+
     return new SearchController(
       address,
-      newTxs.txs,
-      newTxs.firstPage,
-      newTxs.lastPage,
+      txs,
+      firstPage,
+      lastPage,
       next,
+      next && txIndex != -1 ? txIndex + 1 : undefined,
+      prev && txIndex != -1 ? txIndex - 1 : undefined,
     );
   }
 
@@ -198,18 +269,35 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
+    // TODO: What's the purpose of this check?
     if (this.txs[this.pageStart].hash === hash) {
-      const overflowPage = this.txs.slice(0, this.pageStart);
+      if (this.pageStart - PAGE_SIZE >= 0) {
+        // We already have all the transactions needed to go back one page
+        return new SearchController(
+          this.address,
+          this.txs,
+          this.isBatchFirst,
+          this.isBatchLast,
+          false,
+          undefined,
+          this.pageEnd - PAGE_SIZE,
+        );
+      }
+
+      // Fetch more transactions
+      // TODO: Trim transactions beyond current block
       const baseBlock = this.txs[0].blockNumber;
       const prevPage = await queryClient.fetchQuery(
         searchTransactionsQuery(provider, this.address, baseBlock, "after"),
       );
       return new SearchController(
         this.address,
-        prevPage.txs.concat(overflowPage),
+        prevPage.txs.concat(this.txs),
         prevPage.firstPage,
         prevPage.lastPage,
         false,
+        undefined,
+        prevPage.txs.length + this.pageEnd - PAGE_SIZE,
       );
     }
 
@@ -220,18 +308,33 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
+    // TODO: What's the purpose of this check?
     if (this.txs[this.pageEnd - 1].hash === hash) {
-      const overflowPage = this.txs.slice(this.pageEnd);
+      if (this.pageEnd + PAGE_SIZE <= this.txs.length) {
+        // We already have all the transactions needed to go back one page
+        return new SearchController(
+          this.address,
+          this.txs,
+          this.isBatchFirst,
+          this.isBatchLast,
+          true,
+          this.pageStart + PAGE_SIZE,
+          undefined,
+        );
+      }
+
       const baseBlock = this.txs[this.txs.length - 1].blockNumber;
       const nextPage = await queryClient.fetchQuery(
         searchTransactionsQuery(provider, this.address, baseBlock, "before"),
       );
       return new SearchController(
         this.address,
-        overflowPage.concat(nextPage.txs),
+        this.txs.concat(nextPage.txs),
         nextPage.firstPage,
         nextPage.lastPage,
         true,
+        this.pageStart + PAGE_SIZE,
+        undefined,
       );
     }
 
