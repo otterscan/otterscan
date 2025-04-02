@@ -1,6 +1,7 @@
 describe("Advanced search", () => {
   const navigateAndAssert = (
     initialUrl: string,
+    initialHash: string,
     navAssertions: [direction: "next" | "prev", expectedHash: string][],
     txHashIndex: number,
   ) => {
@@ -8,6 +9,10 @@ describe("Advanced search", () => {
     cy.get('[data-test="address"]', { timeout: 15_000 }).contains(
       "0xdAC17F958D2ee523a2206206994597C13D831ec7",
     );
+    cy.get('[data-test="tx-hash"]')
+      .eq(txHashIndex)
+      .invoke("text")
+      .should("equal", initialHash);
 
     navAssertions.forEach(([direction, expectedHash]) => {
       cy.get(`[data-test="nav-${direction}"]`).first().click();
@@ -21,6 +26,8 @@ describe("Advanced search", () => {
   it("Should load correct intra-block transaction hash", () => {
     const initialUrl =
       "/address/0xdAC17F958D2ee523a2206206994597C13D831ec7/txs/next?h=0x0af4ac9aa2654a5a66b988dae5daedd1b22fe3dfa5af2ab5d205f656f22805a3";
+    const initialHash =
+      "0xf9ef591307c4790f95324797f423b8a6ce443ce748d3b574ef7a9e12d2d681cb";
     const navAssertions: [direction: "next" | "prev", expectedHash: string][] =
       [
         [
@@ -40,12 +47,14 @@ describe("Advanced search", () => {
           "0xf9ef591307c4790f95324797f423b8a6ce443ce748d3b574ef7a9e12d2d681cb",
         ],
       ];
-    navigateAndAssert(initialUrl, navAssertions, 1);
+    navigateAndAssert(initialUrl, initialHash, navAssertions, 1);
   });
 
   it("Should correctly step in both directions through a block with over 100 relevant transactions", () => {
     const initialUrl =
       "/address/0xdAC17F958D2ee523a2206206994597C13D831ec7/txs/prev?h=0xb8c6d15e5fceb17f52eae0e1e633d9aa481db2bef23c1483519a1c894ff6f283";
+    const initialHash =
+      "0xaef7598e47d575f7fa9da8bab05dc4436f9080a6c46a53ef76dc81d41577e8f2";
     const navAssertions: [direction: "next" | "prev", expectedHash: string][] =
       [
         [
@@ -121,6 +130,6 @@ describe("Advanced search", () => {
           "0xaef7598e47d575f7fa9da8bab05dc4436f9080a6c46a53ef76dc81d41577e8f2",
         ],
       ];
-    navigateAndAssert(initialUrl, navAssertions, 1);
+    navigateAndAssert(initialUrl, initialHash, navAssertions, 1);
   });
 });
