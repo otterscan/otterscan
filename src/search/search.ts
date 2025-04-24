@@ -13,7 +13,7 @@ import {
   useState,
 } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
-import useKeyboardShortcut from "use-keyboard-shortcut";
+//import useKeyboardShortcut from "use-keyboard-shortcut";
 import {
   getOpFeeData,
   isOptimisticChain,
@@ -375,6 +375,7 @@ export const useGenericSearch = (): [
   };
 
   const searchRef = useRef<HTMLInputElement>(null);
+  /*
   useKeyboardShortcut(
     ["/"],
     () => {
@@ -384,6 +385,7 @@ export const useGenericSearch = (): [
       overrideSystem: true,
     },
   );
+  */
 
   return [searchRef, handleChange, handleSubmit];
 };

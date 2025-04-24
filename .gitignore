@@ -11,6 +11,9 @@
 /cypress/screenshots
 /cypress/videos
 
+# React Router
+.react-router/
+
 # production
 /build
 /dist

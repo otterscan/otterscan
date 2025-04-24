@@ -1,6 +1,6 @@
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FC, lazy, memo, useContext, useState } from "react";
+import { FC, lazy, useContext, useState } from "react";
 import { NavLink } from "react-router";
 import Logo from "./Logo";
 import SourcifyMenu from "./SourcifyMenu";
@@ -108,4 +108,4 @@ const Home: FC = () => {
   );
 };
 
-export default memo(Home);
+export default Home;

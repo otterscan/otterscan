@@ -2,7 +2,7 @@ import { LoaderFunctionArgs, redirect } from "react-router";
 import invariant from "tiny-invariant";
 import { parseSearch } from "./search/search";
 
-export const loader = ({ request }: LoaderFunctionArgs) => {
+export function clientLoader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   invariant(q !== null);
@@ -14,4 +14,4 @@ export const loader = ({ request }: LoaderFunctionArgs) => {
     throw new Response("Not Found", { status: 404 });
   }
   return redirect(redir);
-};
+}
