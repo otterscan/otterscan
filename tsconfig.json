@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "rootDirs": [".", "./.react-router/types"]
+    "rootDirs": [".", "./.react-router/types"],
   },
   "include": ["src", ".react-router/types/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }],
