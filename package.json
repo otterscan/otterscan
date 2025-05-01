@@ -53,7 +53,7 @@
   },
   "scripts": {
     "start": "react-router dev",
-    "build": "tsc && react-router build",
+    "build": "react-router typegen && tsc && react-router build",
     "test": "jest",
     "source-map-explorer": "source-map-explorer build/static/js/*.js",
     "assets-start": "docker run --rm -p 5175:80 --name otterscan-assets -d otterscan/otterscan-assets:v1.0.1",
