@@ -21,12 +21,6 @@ export const populateChainInfo = async (
 
   const url = chainInfoURL(assetsURLPrefix, chainId);
   try {
-    //TODO: REMOVE!! This is to suppress errors
-    if (true) {
-      runtime.config.chainInfo = defaultChainInfo;
-      return Promise.resolve(runtime);
-    }
-
     const res = await fetch(url);
     if (!res.ok) {
       runtime.config.chainInfo = defaultChainInfo;
