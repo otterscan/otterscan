@@ -2,7 +2,7 @@ FROM --platform=linux/amd64 node:20.10.0-alpine3.17 AS builder
 WORKDIR /otterscan-build
 COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm ci
-COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "vite.config.ts", "index.html", "/otterscan-build/"]
+COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "vite.config.ts", "react-router.config.ts", "/otterscan-build/"]
 COPY --link ["public", "/otterscan-build/public/"]
 COPY --link ["src", "/otterscan-build/src/"]
 RUN npm run build
@@ -77,7 +77,7 @@ COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/asset
 COPY --link --from=otterscan/otterscan-assets:v1.1.1 /usr/share/nginx/html/signatures signatures/
 COPY --link nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY --link nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --link --from=builder /otterscan-build/dist /usr/share/nginx/html/
+COPY --link --from=builder /otterscan-build/build/client /usr/share/nginx/html/
 COPY --link --from=builder /otterscan-build/run-nginx.sh /
 WORKDIR /
 
