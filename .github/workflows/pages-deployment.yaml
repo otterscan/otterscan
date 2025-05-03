@@ -35,4 +35,4 @@ jobs:
         with:
           apiToken: ${{ secrets.apiToken }}
           accountId: ${{ secrets.accountId }}
-          command: pages deploy dist --project-name=${{ secrets.projectName }} --commit-dirty=true
+          command: pages deploy build/client --project-name=${{ secrets.projectName }} --commit-dirty=true
