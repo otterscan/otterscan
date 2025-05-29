@@ -18,3 +18,15 @@ import "./commands";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+Cypress.on("uncaught:exception", (err) => {
+  // Disable Cypress uncaught exceptions from React hydration errors
+  // This is a workaround for https://github.com/cypress-io/cypress/issues/27204 /
+  // https://github.com/cypress-io/cypress/issues/31447
+  if (
+    err.message &&
+    err.message.includes("https://react.dev/link/hydration-mismatch")
+  ) {
+    return false;
+  }
+});
