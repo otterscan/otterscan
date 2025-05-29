@@ -13,4 +13,7 @@ export default defineConfig({
     imagetools(),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    entries: ["./src/**/*.{js,jsx,ts,tsx}"],
+  },
 });
