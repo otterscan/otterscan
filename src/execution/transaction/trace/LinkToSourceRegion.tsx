@@ -4,6 +4,8 @@ import { queryClient } from "../../../queryClient";
 import SourcifyLogo from "../../../sourcify/SourcifyLogo";
 import {
   getContractQuery,
+  resolveSourcifySource,
+  transformContractResponse,
   useSourcifyMetadata,
   useSourcifySources,
 } from "../../../sourcify/useSourcify";
@@ -74,17 +76,28 @@ const LinkToSourceRegion: FC<LinkToSourceRegionProps> = ({
     ) {
       // Find the line number of the starting location
       (async function fetchContract() {
-        const contractData = await queryClient.fetchQuery(
-          getContractQuery(
-            sourcifySources,
-            sourcifySource,
-            targetAddr,
-            provider._network.chainId,
-            targetSource,
-            targetSourceHash,
-            match.type,
-          ),
-        );
+        // `fetchQuery` does not support the `select` option, so we must call
+        // the `transformContractResponse` to "select" the target data manually
+        const contractData: string = await queryClient
+          .fetchQuery(
+            getContractQuery(
+              sourcifySources,
+              sourcifySource,
+              targetAddr,
+              provider._network.chainId,
+              targetSource,
+              targetSourceHash,
+              match.type,
+            ),
+          )
+          .then((data) =>
+            transformContractResponse(
+              data,
+              targetSource,
+              resolveSourcifySource(sourcifySource, sourcifySources)
+                .sourcifySource,
+            ),
+          );
 
         if (contractData !== null) {
           const newLineNumber = getLineNumber(contractData, targetStart);

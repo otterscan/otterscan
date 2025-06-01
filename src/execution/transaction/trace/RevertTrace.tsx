@@ -114,6 +114,7 @@ const RevertTrace: React.FC<RevertTraceProps> = ({ txHash }) => {
             const soliditySources = Object.values(
               targetMatch.stdJsonOutput.sources,
             ).map((source: any) => source.id);
+
             const instructionIndexMap = bytecodeToInstructionIndex(targetCode);
 
             const lastUniqueIndex = findLastUniqueLocation(

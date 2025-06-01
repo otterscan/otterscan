@@ -2,7 +2,6 @@ import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
 import { ErrorDescription, Interface } from "ethers";
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
-import useSWRImmutable from "swr/immutable";
 import { ChecksummedAddress, TransactionDescriptionData } from "../types";
 import { useAppConfigContext } from "../useAppConfig";
 import { RuntimeContext } from "../useRuntime";
@@ -207,7 +206,7 @@ export const sourcifySourceFile = (
   const { sourcifySource } = resolveSourcifySource(source, sourcifySources);
   let sourceUrl = sourcifySource.url;
   if (sourcifySource.backendFormat === "SourcifyAPIV2") {
-    sourceUrl += "/repository";
+    return `${sourceUrl}/v2/contract/${chainId}/${address}?fields=sources`;
   }
   return `${sourceUrl}/contracts/${
     type === MatchType.FULL_MATCH ? "full_match" : "partial_match"
@@ -400,6 +399,17 @@ function getFetchFilename(
   return fetchFilename;
 }
 
+export function transformContractResponse(
+  data: any,
+  filename: string,
+  resolvedSourcifySource: SourcifySource,
+): string {
+  if (resolvedSourcifySource.backendFormat === "SourcifyAPIV2") {
+    return JSON.parse(data ?? "{}").sources[filename].content;
+  }
+  return data;
+}
+
 export const getContractQuery = (
   sourcifySources: SourcifySourceMap,
   sourcifySource: SourcifySourceName | null,
@@ -416,6 +426,7 @@ export const getContractQuery = (
     filename,
     fileHash,
   );
+
   const url = sourcifySourceFile(
     address,
     chainId,
@@ -430,6 +441,8 @@ export const getContractQuery = (
     queryFn: () => contractFetcher(url),
     staleTime: Infinity,
     gcTime: 10 * 60 * 1000,
+    select: (data) =>
+      transformContractResponse(data, filename, resolvedSourcifySource),
   };
 };
 
@@ -442,29 +455,16 @@ export const useContract = (
   type: MatchType,
 ) => {
   const sources = useSourcifySources();
-  const { name, sourcifySource } = resolveSourcifySource(
-    sourcifySourceName,
+  const query = getContractQuery(
     sources,
-  );
-  const fetchFilename = getFetchFilename(
-    sourcifySource.backendFormat,
-    filename,
-    fileHash,
-  );
-  const url = sourcifySourceFile(
+    sourcifySourceName,
     checksummedAddress,
     networkId,
-    fetchFilename,
-    name,
+    filename,
+    fileHash,
     type,
-    sources,
   );
-
-  const { data, error } = useSWRImmutable(url, contractFetcher);
-  if (error) {
-    return undefined;
-  }
-  return data;
+  return useQuery(query).data;
 };
 
 export const useTransactionDescription = (
