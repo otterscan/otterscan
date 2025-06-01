@@ -52,7 +52,7 @@ We make use of open-source software and integrate many public data sources, main
 
 To the [Geth](https://geth.ethereum.org/) team whose code Erigon is based on.
 
-To the [Erigon](https://github.com/ledgerwatch/erigon) team that made it possible for regular humans to run an archive node on a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the Otterscan modifications possible.
+To the [Erigon](https://github.com/erigontech/erigon) team that made it possible for regular humans to run an archive node on a retail laptop. Also, they have been very helpful explaining Erigon's internals which made the Otterscan modifications possible.
 
 To the [Test in Prod](https://www.testinprod.io/) team that made OP-Erigon. Their effort made it possible to run Otterscan against any Optimism Superchain.
 
