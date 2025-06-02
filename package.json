@@ -90,7 +90,7 @@
     "@storybook/addon-interactions": "^8.6.9",
     "@storybook/addon-links": "^8.6.9",
     "@storybook/blocks": "^8.6.9",
-    "@storybook/react": "^8.6.9",
+    "@storybook/react": "^9.0.4",
     "@storybook/react-vite": "^8.6.9",
     "@storybook/test": "^8.6.9",
     "@vitejs/plugin-react-swc": "^3.8.1",
