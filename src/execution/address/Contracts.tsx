@@ -18,6 +18,7 @@ import { commify } from "../../utils/utils";
 import ContractFromRepo from "./ContractFromRepo";
 import WhatsabiWarning from "./WhatsabiWarning";
 import ContractABI from "./contract/ContractABI";
+import ContractVerificationSteps from "./contract/ContractVerificationSteps";
 
 const HighlightedSource = lazy(() => import("./contract/HighlightedSource"));
 
@@ -125,6 +126,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
           )}
           <InfoRow title="Match">
             {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
+            <ContractVerificationSteps address={checksummedAddress} />
           </InfoRow>
           <InfoRow title="Language">
             <span>{match.metadata.language}</span>
