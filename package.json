@@ -91,7 +91,7 @@
     "@storybook/addon-links": "^8.6.9",
     "@storybook/blocks": "^8.6.9",
     "@storybook/react": "^8.6.9",
-    "@storybook/react-vite": "^8.6.9",
+    "@storybook/react-vite": "^9.0.10",
     "@storybook/test": "^8.6.9",
     "@vitejs/plugin-react-swc": "^3.10.2",
     "cypress": "^14.4.1",
