@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import { SelectionContext } from "../../selection/useSelection";
 import { runtimeDecorator } from "../../storybook/util";
 import { AddressContext } from "../../types";

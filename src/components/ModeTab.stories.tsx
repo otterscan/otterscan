@@ -1,5 +1,5 @@
 import { TabGroup } from "@headlessui/react";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import ModeTab from "./ModeTab";
 
 const meta = {
