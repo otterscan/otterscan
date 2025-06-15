@@ -1,6 +1,7 @@
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import { DecorationOptions } from "shiki";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
 import HighlightedSource from "./contract/HighlightedSource";
@@ -12,6 +13,7 @@ type ContractFromRepoProps = {
   fileHash: string;
   type: MatchType;
   langName: string;
+  decorations?: DecorationOptions["decorations"];
 };
 
 const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
@@ -21,6 +23,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   fileHash,
   type,
   langName,
+  decorations,
 }) => {
   const { sourcifySource } = useAppConfigContext();
   const content = useContract(
@@ -46,7 +49,11 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
         </div>
       )}
       {content !== undefined && (
-        <HighlightedSource source={content} langName={langName} />
+        <HighlightedSource
+          source={content}
+          langName={langName}
+          decorations={decorations}
+        />
       )}
     </>
   );

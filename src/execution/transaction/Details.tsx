@@ -4,6 +4,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { useQuery } from "@tanstack/react-query";
 import { formatUnits } from "ethers";
 import { FC, memo, useContext, useState } from "react";
 import BlockConfirmations from "../../components/BlockConfirmations";
@@ -44,6 +45,7 @@ import {
 } from "../../use4Bytes";
 import { useChainInfo } from "../../useChainInfo";
 import {
+  getTraceTransactionQuery,
   useBlockDataFromTransaction,
   useSendsToMiner,
   useTokenTransfers,
@@ -59,13 +61,14 @@ import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
 import DecodedParamsTable from "./decoder/DecodedParamsTable";
 import InputDecoder from "./decoder/InputDecoder";
+import RevertTraceToggle from "./trace/RevertTraceToggle";
 
 type DetailsProps = {
   txData: TransactionData;
 };
 
 const Details: FC<DetailsProps> = ({ txData }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { config, provider } = useContext(RuntimeContext);
   const block = useBlockDataFromTransaction(provider, txData);
 
   const hasEIP1559 =
@@ -116,11 +119,16 @@ const Details: FC<DetailsProps> = ({ txData }) => {
   const devError = errorDescription
     ? devDoc?.errors?.[errorDescription.signature]?.[0]
     : undefined;
+
   const [expanded, setExpanded] = useState<boolean>(false);
   const [showFunctionHelp, setShowFunctionHelp] = useState<boolean>(false);
   const isOptimistic = isOptimisticChain(provider._network.chainId);
 
   const { totalFees } = calculateFee(txData, block);
+
+  const { data: otsTrace } = useQuery(
+    getTraceTransactionQuery(provider, txData.transactionHash),
+  );
 
   return (
     <ContentFrame tabs>
@@ -148,78 +156,84 @@ const Details: FC<DetailsProps> = ({ txData }) => {
           </span>
         ) : (
           <>
-            <div className="flex items-baseline space-x-1">
-              <div className="flex items-baseline space-x-1 rounded-lg bg-red-50 px-3 py-1 text-xs text-red-500">
-                <FontAwesomeIcon
-                  className="self-center"
-                  icon={faTimesCircle}
-                  size="1x"
-                />
-                <span>
-                  {errorType === "string" && errorMsg && (
-                    <>
-                      Fail with revert message: '
-                      <span className="font-bold underline">{errorMsg}</span>'
-                    </>
-                  )}
-                  {errorType === "custom" && (
-                    <>
-                      Fail with custom error
-                      {errorDescription && (
-                        <>
-                          {" '"}
-                          <span className="font-code font-bold underline">
-                            {errorDescription.name}
-                          </span>
-                          {"'"}
-                        </>
-                      )}
-                    </>
-                  )}
-                  {errorType === "panic" && (
-                    <>
-                      <SolidityLogo /> Panic {errorMsg}{" "}
-                      <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
-                        (docs)
-                      </ExternalLink>
-                    </>
-                  )}
-                </span>
-              </div>
-              {errorType === "custom" && (
-                <ExpanderSwitch expanded={expanded} setExpanded={setExpanded} />
-              )}
-            </div>
-            {expanded && (
-              <TabGroup>
-                <TabList className="mb-1 mt-2 flex space-x-1">
-                  <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
-                  <ModeTab>Raw</ModeTab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    {errorDescription === undefined ? (
-                      <>Waiting for data...</>
-                    ) : errorDescription === null ? (
-                      <>Can't decode data</>
-                    ) : errorDescription.args.length === 0 ? (
-                      <>No parameters</>
-                    ) : (
-                      <DecodedParamsTable
-                        args={errorDescription.args}
-                        paramTypes={errorDescription.fragment.inputs}
-                        hasParamNames
-                        userMethod={userError}
-                        devMethod={devError}
-                      />
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-baseline space-x-1">
+                <div className="flex items-baseline space-x-1 rounded-lg bg-red-50 px-3 py-1 text-xs text-red-500">
+                  <FontAwesomeIcon
+                    className="self-center"
+                    icon={faTimesCircle}
+                    size="1x"
+                  />
+                  <span>
+                    {errorType === "string" && errorMsg && (
+                      <>
+                        Fail with revert message: '
+                        <span className="font-bold underline">{errorMsg}</span>'
+                      </>
                     )}
-                  </TabPanel>
-                  <TabPanel>
-                    <StandardTextarea value={outputData} />
-                  </TabPanel>
-                </TabPanels>
-              </TabGroup>
-            )}
+                    {errorType === "custom" && (
+                      <>
+                        Fail with custom error
+                        {errorDescription && (
+                          <>
+                            {" '"}
+                            <span className="font-code font-bold underline">
+                              {errorDescription.name}
+                            </span>
+                            {"'"}
+                          </>
+                        )}
+                      </>
+                    )}
+                    {errorType === "panic" && (
+                      <>
+                        <SolidityLogo /> Panic {errorMsg}{" "}
+                        <ExternalLink href="https://docs.soliditylang.org/en/latest/control-structures.html#panic-via-assert-and-error-via-require">
+                          (docs)
+                        </ExternalLink>
+                      </>
+                    )}
+                  </span>
+                </div>
+                {errorType === "custom" && (
+                  <ExpanderSwitch
+                    expanded={expanded}
+                    setExpanded={setExpanded}
+                  />
+                )}
+              </div>
+              {expanded && (
+                <TabGroup>
+                  <TabList className="mb-1 mt-2 flex space-x-1">
+                    <ModeTab disabled={!errorDescription}>Decoded</ModeTab>
+                    <ModeTab>Raw</ModeTab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel>
+                      {errorDescription === undefined ? (
+                        <>Waiting for data...</>
+                      ) : errorDescription === null ? (
+                        <>Can't decode data</>
+                      ) : errorDescription.args.length === 0 ? (
+                        <>No parameters</>
+                      ) : (
+                        <DecodedParamsTable
+                          args={errorDescription.args}
+                          paramTypes={errorDescription.fragment.inputs}
+                          hasParamNames
+                          userMethod={userError}
+                          devMethod={devError}
+                        />
+                      )}
+                    </TabPanel>
+                    <TabPanel>
+                      <StandardTextarea value={outputData} />
+                    </TabPanel>
+                  </TabPanels>
+                </TabGroup>
+              )}
+              <RevertTraceToggle txData={txData} />
+            </div>
           </>
         )}
       </InfoRow>
