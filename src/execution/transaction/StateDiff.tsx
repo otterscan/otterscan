@@ -81,7 +81,7 @@ const buildStateDiffTree = (
             >
               {depth === 0 ? (
                 <div className="relative flex">
-                  <div className="rounded-sm border px-1 py-0.5 hover:border-gray-500">
+                  <div className="rounded-sm border px-1 py-0.5 mb-3 hover:border-gray-500">
                     <TransactionAddress
                       address={getAddress(group.title)}
                       showCodeIndicator={true}
