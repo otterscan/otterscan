@@ -88,7 +88,7 @@
   "devDependencies": {
     "@storybook/addon-docs": "^9.0.10",
     "@storybook/addon-links": "^9.0.10",
-    "@storybook/react-vite": "^9.0.10",
+    "@storybook/react-vite": "^9.0.11",
     "@vitejs/plugin-react-swc": "^3.10.2",
     "cypress": "^14.4.1",
     "jest": "^30.0.0",
