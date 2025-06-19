@@ -75,10 +75,10 @@ Cypress.Commands.add("ensurePriceOracle", () => {
           const priceOracleContractAddr =
             "0xd9f2239f5E91BdC2FBB977dBd31e58cfcB39D0e9";
 
-          if (
-            (await provider.getTransactionCount(deployerWallet.address)) < 2
-          ) {
-            console.log("Needs");
+          const deployerTxCount = await provider.getTransactionCount(
+            deployerWallet.address,
+          );
+          if (deployerTxCount < 2) {
             // Send some funds to the deployer address
             const defaultWallet = new ethers.Wallet(
               getDefaultPrivateKey(),
@@ -88,6 +88,7 @@ Cypress.Commands.add("ensurePriceOracle", () => {
               .sendTransaction({
                 to: deployerWallet.address,
                 value: ethers.parseEther("0.1"),
+                nonce: deployerTxCount,
               })
               .then((tx) => tx.wait());
 
@@ -104,7 +105,9 @@ Cypress.Commands.add("ensurePriceOracle", () => {
               deployerWallet,
             );
             await priceOracle
-              .setRoundData(ethers.parseUnits("1234.5678", 18))
+              .setRoundData(ethers.parseUnits("1234.5678", 18), {
+                nonce: deployerTxCount + 1,
+              })
               .then((tx) => tx.wait());
           }
         })(),
