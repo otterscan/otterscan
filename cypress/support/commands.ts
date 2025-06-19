@@ -88,13 +88,13 @@ Cypress.Commands.add("ensurePriceOracle", () => {
               .sendTransaction({
                 to: deployerWallet.address,
                 value: ethers.parseEther("0.1"),
-                nonce: deployerTxCount,
               })
               .then((tx) => tx.wait());
 
             // Deploy price oracle contract
             const txResponse = await deployerWallet.sendTransaction({
               data: priceOracleBytecode.trim(),
+              nonce: deployerTxCount,
             });
             const txReceipt = await txResponse.wait();
 
