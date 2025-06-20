@@ -46,7 +46,7 @@ export const QrReader: React.FC<QrReaderProps> = ({
   className,
   onResult = () => {},
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useQrReader({
     constraints,
