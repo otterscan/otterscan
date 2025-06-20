@@ -91,7 +91,6 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
       if (lines.length !== 2) {
         console.error("Invalid lines in URL parameter");
       } else {
-        console.log("These lines:", lines);
         setHighlightLines(lines);
       }
     }
