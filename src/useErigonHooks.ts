@@ -294,6 +294,7 @@ export const useTxData = (
           data: _response.data,
           maxFeePerBlobGas: _response.maxFeePerBlobGas ?? undefined,
           blobVersionedHashes: _response.blobVersionedHashes ?? undefined,
+          authorizationList: _response.authorizationList ?? undefined,
           confirmedData:
             _receipt === null
               ? undefined

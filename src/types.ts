@@ -1,4 +1,4 @@
-import { Log } from "ethers";
+import { Authorization, Log } from "ethers";
 
 export enum ConnectionStatus {
   CONNECTING,
@@ -50,6 +50,7 @@ export type TransactionData = {
   data: string;
   maxFeePerBlobGas?: bigint | undefined;
   blobVersionedHashes?: string[] | undefined;
+  authorizationList?: Authorization[] | undefined;
   confirmedData?: ConfirmedTransactionData | undefined;
 };
 
