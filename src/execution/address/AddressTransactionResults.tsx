@@ -67,6 +67,7 @@ const AddressTransactionResults: FC = () => {
 
   const [searchParams] = useSearchParams();
   const hash = searchParams.get("h");
+  const blockNumber = searchParams.get("b");
 
   const [controller, setController] = useState<SearchController>();
 
@@ -85,13 +86,24 @@ const AddressTransactionResults: FC = () => {
       setController(_controller);
     };
     const readMiddlePage = async (next: boolean) => {
-      const _controller = await SearchController.middlePage(
-        provider,
-        address,
-        hash!,
-        next,
-      );
-      setController(_controller);
+      if (hash !== null) {
+        const _controller = await SearchController.middlePage(
+          provider,
+          address,
+          hash!,
+          next,
+        );
+        setController(_controller);
+      } else if (blockNumber !== null) {
+        const _controller = await SearchController.middlePage(
+          provider,
+          address,
+          null,
+          next,
+          Number(blockNumber),
+        );
+        setController(_controller);
+      }
     };
     const readLastPage = async () => {
       const _controller = await SearchController.lastPage(provider, address);

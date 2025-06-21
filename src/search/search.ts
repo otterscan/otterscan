@@ -114,6 +114,8 @@ interface TransactionBatch {
   isLast: boolean;
 }
 
+type StartParamsType = ["next" | "prev" | "first" | "last", string | null];
+
 export class SearchController {
   // Guaranteed to include all transactions in the starting and ending blocks
   private txs: ProcessedTransaction[];
@@ -122,7 +124,7 @@ export class SearchController {
   private pageEnd: number;
   public isFirst: boolean;
   public isLast: boolean;
-  public startParams: [string, string];
+  public startParams: StartParamsType;
 
   private constructor(
     readonly address: string,
@@ -130,7 +132,7 @@ export class SearchController {
     readonly batches: TransactionBatch[],
     // if true, starts at index 0, otherwise considers the "last" parts of the transactions
     boundToStart: boolean,
-    startParams: [string, string],
+    startParams: StartParamsType,
     pageStartIndex?: number,
     pageEndIndex?: number,
   ) {
@@ -178,38 +180,77 @@ export class SearchController {
   static async middlePage(
     provider: JsonRpcApiProvider,
     address: string,
-    hash: string,
+    hash: string | null,
     next: boolean,
+    blockNumberBegin?: number,
   ): Promise<SearchController> {
     const prev = !next;
-    const tx = await queryClient.fetchQuery(
-      getTransactionQuery(provider, hash),
-    );
+
+    if (hash === "") {
+      // Start from the beginning
+      return next
+        ? SearchController.lastPage(provider, address)
+        : SearchController.firstPage(provider, address);
+    }
 
     // See if there are more transactions from this block we must include
     let blockQuery: TransactionChunk | null = null;
     let blockTxs: ProcessedTransaction[] = [];
+    let blockNumber: number;
 
-    if (prev || tx!.blockNumber! > 0) {
+    if (hash !== null) {
+      const tx = await queryClient.fetchQuery(
+        getTransactionQuery(provider, hash),
+      );
+      if (tx === null) {
+        throw new Error("Transaction " + hash + " not found");
+      }
+      blockNumber = tx.blockNumber!;
+
+      if (prev || blockNumber > 0) {
+        blockQuery = await queryClient.fetchQuery(
+          searchTransactionsQuery(
+            provider,
+            address,
+            // We must include the block that `hash` is in
+            Math.max(0, blockNumber + (next ? 1 : -1)),
+            next ? "before" : "after",
+          ),
+        );
+        blockTxs = blockQuery!.txs.filter(
+          (blockTx) => blockTx!.blockNumber === blockNumber,
+        );
+      }
+    } else if (blockNumberBegin !== undefined) {
+      blockNumber = blockNumberBegin;
       blockQuery = await queryClient.fetchQuery(
         searchTransactionsQuery(
           provider,
           address,
-          // We must include the block that `hash` is in
-          Math.max(0, tx!.blockNumber! + (next ? 1 : -1)),
+          // We must include the block that `blockNumber` is in
+          Math.max(0, blockNumber + (next ? 1 : -1)),
           next ? "before" : "after",
         ),
       );
-      blockTxs = blockQuery!.txs.filter(
-        (blockTx) => blockTx!.blockNumber === tx!.blockNumber,
-      );
+      blockTxs = blockQuery!.txs;
+      if (blockTxs.length === 0) {
+        // Start from the beginning
+        return next
+          ? SearchController.lastPage(provider, address)
+          : SearchController.firstPage(provider, address);
+      }
+    } else {
+      throw new Error("Transaction hash or block number not provided");
     }
 
     let batches: TransactionBatch[] = [];
     let txs: ProcessedTransaction[] = [];
 
     const txBlockIndex = blockTxs.findIndex((tx) => tx.hash === hash);
-    if (txBlockIndex != -1) {
+    if (
+      txBlockIndex != -1 ||
+      (hash === null && blockNumberBegin !== undefined)
+    ) {
       // Make another call to verify whether this is really not the first/last page.
       // This compensates for the behavior in the ots API that if you call
       // ots_searchTransactionsBefore with a very high block number (say,
@@ -254,21 +295,24 @@ export class SearchController {
       (next && !batches[batches.length - 1].isLast) ||
       (prev && !batches[0].isFirst)
     ) {
-      // TODO: Can we actually infer that this transaction is not null?
-      let blockNumber = tx!.blockNumber!;
-      if (batches.length > 0) {
-        if (next) {
-          blockNumber = txs[txs.length - 1].blockNumber;
-        } else {
-          blockNumber = txs[0].blockNumber;
-        }
-      }
+      // TODO: This code appears to have been unused before (blockNumber assigned but never read)
+      /*
+          // TODO: Can we actually infer that this transaction is not null?
+          let blockNumber = tx!.blockNumber!;
+          if (batches.length > 0) {
+            if (next) {
+              blockNumber = txs[txs.length - 1].blockNumber;
+            } else {
+              blockNumber = txs[0].blockNumber;
+            }
+          }
+      */
 
       const newTxs = await queryClient.fetchQuery(
         searchTransactionsQuery(
           provider,
           address,
-          tx!.blockNumber!,
+          blockNumber,
           next ? "before" : "after",
         ),
       );
