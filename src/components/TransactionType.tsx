@@ -32,6 +32,13 @@ const TransactionType: React.FC<TransactionTypeProps> = ({ type }) => {
         </ExternalLink>
       );
       break;
+    case 4:
+      description = (
+        <ExternalLink href="https://eips.ethereum.org/EIPS/eip-7702">
+          EIP-7702 (Set Code)
+        </ExternalLink>
+      );
+      break;
     case 126:
       description = (
         <ExternalLink href="https://specs.optimism.io/protocol/deposits.html#the-deposited-transaction-type">

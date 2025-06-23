@@ -56,6 +56,7 @@ import { commify } from "../../utils/utils";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { calculateFee } from "../feeCalc";
 import { isOptimisticChain } from "../op-tx-calculation";
+import AuthorizationsTable from "./AuthorizationsTable";
 import NavNonce from "./NavNonce";
 import RewardSplit from "./RewardSplit";
 import TokenTransferItem from "./TokenTransferItem";
@@ -341,6 +342,11 @@ const Details: FC<DetailsProps> = ({ txData }) => {
               )}
             </div>
           )}
+        </InfoRow>
+      )}
+      {txData.authorizationList && txData.authorizationList.length > 0 && (
+        <InfoRow title={"Authorizations"}>
+          <AuthorizationsTable authorizationList={txData.authorizationList} />
         </InfoRow>
       )}
       {tokenTransfers && tokenTransfers.length > 0 && (
