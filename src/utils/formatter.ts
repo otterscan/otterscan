@@ -1,5 +1,6 @@
 import {
   AccessList,
+  Authorization,
   BlockParams,
   LogParams,
   Signature,
@@ -126,10 +127,22 @@ class Formatter {
       s: Formatter.allowNull(Formatter.uint256),
       v: Formatter.allowNull(Formatter.number),
 
+      authorizationList: Formatter.allowNull(
+        Formatter.arrayOf(Formatter.authorization),
+      ),
+
       // TODO: Removed in ethers v6
       creates: Formatter.allowNull(Formatter.address, null),
 
       raw: Formatter.allowNull(Formatter.data),
+    },
+    authorization: {
+      chainId: Formatter.bigInt,
+      address: Formatter.address,
+      nonce: Formatter.bigInt,
+      yParity: Formatter.number,
+      r: Formatter.uint256,
+      s: Formatter.uint256,
     },
   };
 
@@ -386,6 +399,34 @@ class Formatter {
       signature,
     };
     return result;
+  }
+
+  static authorization(authObj: any): Authorization {
+    type ParsedAuthorizationType = FormatObject<
+      typeof Formatter.formats.authorization
+    >;
+    const parsedAuthObj: ParsedAuthorizationType = Formatter.check(
+      Formatter.formats.authorization,
+      authObj,
+    );
+    const yParity = parsedAuthObj.yParity;
+    if (yParity !== 0 && yParity !== 1) {
+      throw makeError("check failed", "INVALID_ARGUMENT", {
+        argument: "yParity",
+        value: yParity,
+      });
+    }
+    const signature = Signature.from({
+      r: parsedAuthObj.r,
+      s: parsedAuthObj.s,
+      yParity,
+    });
+    return {
+      address: parsedAuthObj.address,
+      chainId: parsedAuthObj.chainId,
+      nonce: parsedAuthObj.nonce,
+      signature,
+    };
   }
 }
 
