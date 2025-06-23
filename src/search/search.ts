@@ -557,7 +557,7 @@ export const parseSearch = (q: string): string | undefined => {
 };
 
 export const useGenericSearch = (): [
-  RefObject<HTMLInputElement>,
+  RefObject<HTMLInputElement | null>,
   ChangeEventHandler<HTMLInputElement>,
   FormEventHandler<HTMLFormElement>,
 ] => {

@@ -49,7 +49,7 @@ const buildStateDiffTree = (
     const group = groups[i];
 
     const last = i == groups.length - 1;
-    function getBranch(key?: string | number): JSX.Element | null {
+    function getBranch(key?: string | number): React.JSX.Element | null {
       // This is the L-shaped line that drops down to a child element
       if (depth > 0 && depth < 3) {
         return (

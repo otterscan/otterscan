@@ -34,7 +34,7 @@ type GenericTransactionSearchResultProps<T> = {
   /**
    * Table header; customize for pseudotransactions
    */
-  header?: JSX.Element;
+  header?: React.JSX.Element;
 
   /**
    * Name of the transaction type, e.g. 'transaction' or 'withdrawal'

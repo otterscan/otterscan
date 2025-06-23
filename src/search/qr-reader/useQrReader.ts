@@ -34,7 +34,7 @@ export type UseQrReaderHookProps = {
   /**
    * Property that represents the video element
    */
-  videoRef: RefObject<HTMLVideoElement>;
+  videoRef: RefObject<HTMLVideoElement | null>;
 };
 
 export type UseQrReaderHook = (props: UseQrReaderHookProps) => void;
