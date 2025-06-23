@@ -62,6 +62,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
             txHash={tx.hash}
             fail={tx.status === 0}
             blob={tx.type === 3}
+            setCode={tx.type === 4}
             deposit={tx.type === 126}
           />
         </td>
