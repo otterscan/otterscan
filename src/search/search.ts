@@ -122,6 +122,7 @@ export class SearchController {
   private pageEnd: number;
   public isFirst: boolean;
   public isLast: boolean;
+  public startParams: [string, string];
 
   private constructor(
     readonly address: string,
@@ -129,6 +130,7 @@ export class SearchController {
     readonly batches: TransactionBatch[],
     // if true, starts at index 0, otherwise considers the "last" parts of the transactions
     boundToStart: boolean,
+    startParams: [string, string],
     pageStartIndex?: number,
     pageEndIndex?: number,
   ) {
@@ -148,6 +150,7 @@ export class SearchController {
     this.isFirst = this.pageStart === 0 && batches[0].isFirst;
     this.isLast =
       this.pageEnd === txs.length && batches[batches.length - 1].isLast;
+    this.startParams = startParams;
   }
 
   static async firstPage(
@@ -168,6 +171,7 @@ export class SearchController {
         },
       ],
       true,
+      ["first", ""],
     );
   }
 
@@ -294,6 +298,7 @@ export class SearchController {
       txs,
       batches,
       next,
+      [next ? "next" : "prev", hash],
       next && txIndex != -1 ? txIndex + 1 : undefined,
       prev && txIndex != -1 ? txIndex : undefined,
     );
@@ -317,6 +322,7 @@ export class SearchController {
         },
       ],
       false,
+      ["last", ""],
     );
   }
 
@@ -328,7 +334,12 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // TODO: What's the purpose of this check?
+    // Already on this page
+    if (this.startParams[0] === "prev" && this.startParams[1] === hash) {
+      return this;
+    }
+    // Ensure we are navigating correctly relative to our current transaction listing
+    // I think this tries to prevent navigating multiple times in a row to the same page.
     if (this.txs[this.pageStart].hash === hash) {
       if (
         this.pageStart - PAGE_SIZE >= 0 ||
@@ -340,6 +351,7 @@ export class SearchController {
           this.txs,
           this.batches,
           false,
+          ["prev", hash],
           undefined,
           this.pageEnd - (this.pageEnd - this.pageStart),
         );
@@ -377,6 +389,7 @@ export class SearchController {
         trimmedList,
         trimmedBatches,
         false,
+        ["prev", hash],
         undefined,
         prevPage.txs.length + this.pageEnd - PAGE_SIZE,
       );
@@ -389,7 +402,12 @@ export class SearchController {
     provider: JsonRpcApiProvider,
     hash: string,
   ): Promise<SearchController> {
-    // TODO: What's the purpose of this check?
+    // Already on this page
+    if (this.startParams[0] === "next" && this.startParams[1] === hash) {
+      return this;
+    }
+    // Ensure we are navigating correctly relative to our current transaction listing
+    // I think this tries to prevent navigating multiple times in a row to the same page.
     if (this.txs[this.pageEnd - 1].hash === hash) {
       if (
         this.pageEnd + PAGE_SIZE <= this.txs.length ||
@@ -402,6 +420,7 @@ export class SearchController {
           this.txs,
           this.batches,
           true,
+          ["next", hash],
           this.pageStart + (this.pageEnd - this.pageStart),
           undefined,
         );
@@ -439,6 +458,7 @@ export class SearchController {
         trimmedList,
         trimmedBatches,
         true,
+        ["next", hash],
         this.pageStart + PAGE_SIZE - txsTrimmed,
         undefined,
       );

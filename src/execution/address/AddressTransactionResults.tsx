@@ -112,13 +112,23 @@ const AddressTransactionResults: FC = () => {
         readFirstPage();
       }
     } else if (direction === "prev") {
-      if (controller && controller.address === address) {
+      if (
+        controller &&
+        controller.address === address &&
+        controller.startParams[0] === "prev" &&
+        controller.startParams[1] === hash
+      ) {
         prevPage();
       } else {
         readMiddlePage(false);
       }
     } else if (direction === "next") {
-      if (controller && controller.address === address) {
+      if (
+        controller &&
+        controller.address === address &&
+        controller.startParams[0] === "next" &&
+        controller.startParams[1] === hash
+      ) {
         nextPage();
       } else {
         readMiddlePage(true);
