@@ -10,6 +10,7 @@
   --color-verified-contract-hover: #26007b;
   --color-source-line-numbers: #738a9486;
   --color-source-line-highlight: #99ff00;
+  --color-source-line-bg-highlight: #ffdddd;
 
   --font-sans: Roboto;
   --font-title: Space Grotesk;
@@ -88,6 +89,9 @@
     --color-to-fill: 125 211 252;
 
     --color-table-row-hover: 2 132 199;
+  }
+  .dark {
+    --color-source-line-highlight: #33ff00;
   }
 }
 

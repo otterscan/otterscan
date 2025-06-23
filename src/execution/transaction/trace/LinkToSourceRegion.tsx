@@ -44,7 +44,7 @@ const LinkToSourceRegion: FC<LinkToSourceRegionProps> = ({
   children,
 }) => {
   const [safeUrl, setSafeUrl] = useState<string>();
-  const [lineNumber, setLineNumber] = useState<number | null>(null);
+  const [lineNumbers, setLineNumbers] = useState<number[] | null>(null);
   const { sourcifySource } = useAppConfigContext();
   const sourcifySources = useSourcifySources();
   const { provider } = useContext(RuntimeContext);
@@ -61,9 +61,13 @@ const LinkToSourceRegion: FC<LinkToSourceRegionProps> = ({
       searchParams.append("source", targetSource);
     }
 
+    if (lineNumbers !== null && lineNumbers.length === 2) {
+      searchParams.append("hl", `${lineNumbers[0]}-${lineNumbers[1]}`);
+    }
+
     const url = `/address/${encodeURIComponent(targetAddr)}/contract?${searchParams.toString()}`;
     setSafeUrl(url);
-  }, [targetAddr, targetStart, targetEnd, targetSource]);
+  }, [targetAddr, targetStart, targetEnd, targetSource, lineNumbers]);
 
   useEffect(() => {
     if (
@@ -100,9 +104,18 @@ const LinkToSourceRegion: FC<LinkToSourceRegionProps> = ({
           );
 
         if (contractData !== null) {
-          const newLineNumber = getLineNumber(contractData, targetStart);
-          if (newLineNumber !== null) {
-            setLineNumber(newLineNumber);
+          const newLineNumbers = [];
+          const newStartLine = getLineNumber(contractData, targetStart);
+          if (newStartLine !== null) {
+            newLineNumbers.push(newStartLine);
+          }
+          const newEndLine = getLineNumber(contractData, targetEnd);
+          if (newEndLine !== null) {
+            newLineNumbers.push(newEndLine);
+          }
+
+          if (newLineNumbers.length > 0) {
+            setLineNumbers(newLineNumbers);
           }
         }
       })();
@@ -129,8 +142,8 @@ const LinkToSourceRegion: FC<LinkToSourceRegionProps> = ({
           <SourcifyLogo />
           <span>
             {contractName}
-            {lineNumber !== null && targetSource
-              ? " - " + getFilenameFromPath(targetSource) + ":" + lineNumber
+            {lineNumbers !== null && lineNumbers.length > 0 && targetSource
+              ? " - " + getFilenameFromPath(targetSource) + ":" + lineNumbers[0]
               : null}
           </span>
         </div>

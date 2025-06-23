@@ -65,6 +65,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
     start: number;
     end: number;
   } | null>(null);
+  const [highlightLines, setHighlightLines] = useState<number[] | null>(null);
   useEffect(() => {
     const hrParam = searchParams.get("hr");
     if (hrParam) {
@@ -75,20 +76,42 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
       const [start, end] = split.map(Number).map(Math.floor);
       if (isNaN(start) || isNaN(end)) {
         console.error("Invalid offsets in URL parameter");
-        return;
+      } else {
+        setHighlightOffsets({ start, end });
       }
-      setHighlightOffsets({ start, end });
+    }
+
+    const hlParam = searchParams.get("hl");
+    if (hlParam) {
+      const lines = hlParam
+        .split("-")
+        .map(Number)
+        .map(Math.floor)
+        .filter((line) => !isNaN(line));
+      if (lines.length !== 2) {
+        console.error("Invalid lines in URL parameter");
+      } else {
+        setHighlightLines(lines);
+      }
     }
   }, [searchParams]);
-  const sourceDecorations: DecorationOptions["decorations"] | undefined =
-    highlightOffsets
-      ? [
-          {
-            ...highlightOffsets,
-            properties: { class: "bg-source-line-highlight bg-clip-padding" },
-          },
-        ]
-      : undefined;
+
+  const sourceDecorations: DecorationOptions["decorations"] | undefined = [];
+
+  if (highlightLines && highlightLines.length === 2) {
+    sourceDecorations.push({
+      start: { line: highlightLines[0] - 1, character: 0 },
+      end: { line: highlightLines[1], character: 0 },
+      properties: { class: "bg-source-line-bg-highlight bg-clip-padding" },
+    });
+  }
+
+  if (highlightOffsets) {
+    sourceDecorations.push({
+      ...highlightOffsets,
+      properties: { class: "bg-source-line-highlight bg-clip-padding" },
+    });
+  }
 
   return (
     <ContentFrame tabs>
