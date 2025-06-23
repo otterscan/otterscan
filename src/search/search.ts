@@ -220,7 +220,7 @@ export class SearchController {
           provider,
           address,
           0,
-          next ? "before" : "after",
+          next ? "after" : "before",
         ),
       );
       if (next) {
@@ -228,25 +228,23 @@ export class SearchController {
         txs = txs.concat(blockTxs);
         batches.push({
           length: blockTxs.length,
-          isFirst:
-            blockQuery!.firstPage ||
-            (pageEndsQuery.txs!.length > 0 &&
-              blockTxs[0].hash === pageEndsQuery.txs[0].hash &&
-              pageEndsQuery.firstPage),
-          isLast: blockQuery!.lastPage,
+          isFirst: blockQuery!.firstPage,
+          isLast:
+            pageEndsQuery.txs!.length > 0 &&
+            blockTxs[blockTxs.length - 1].hash ===
+              pageEndsQuery.txs[pageEndsQuery.txs.length - 1].hash &&
+            pageEndsQuery.lastPage,
         });
       } else {
         // Add transactions from this block
         txs = blockTxs.concat(txs);
         batches.unshift({
           length: blockTxs.length,
-          isFirst: blockQuery!.firstPage,
-          isLast:
-            blockQuery!.lastPage ||
-            (pageEndsQuery.txs!.length > 0 &&
-              blockTxs[blockTxs.length - 1].hash ===
-                pageEndsQuery.txs[pageEndsQuery.txs.length - 1].hash &&
-              pageEndsQuery.lastPage),
+          isFirst:
+            pageEndsQuery.txs!.length > 0 &&
+            blockTxs[0].hash === pageEndsQuery.txs[0].hash &&
+            pageEndsQuery.firstPage,
+          isLast: blockQuery!.lastPage,
         });
       }
     }
