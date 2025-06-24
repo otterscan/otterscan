@@ -115,8 +115,9 @@ const AddressTransactionResults: FC = () => {
       if (
         controller &&
         controller.address === address &&
-        controller.startParams[0] === "prev" &&
-        controller.startParams[1] === hash
+        ((controller.startParams[0] === "prev" &&
+          controller.startParams[1] === hash) ||
+          controller.isAdjacentPage(hash, "prev"))
       ) {
         prevPage();
       } else {
@@ -126,8 +127,9 @@ const AddressTransactionResults: FC = () => {
       if (
         controller &&
         controller.address === address &&
-        controller.startParams[0] === "next" &&
-        controller.startParams[1] === hash
+        ((controller.startParams[0] === "next" &&
+          controller.startParams[1] === hash) ||
+          controller.isAdjacentPage(hash, "next"))
       ) {
         nextPage();
       } else {

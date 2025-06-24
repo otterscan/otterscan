@@ -328,6 +328,23 @@ export class SearchController {
     return this.txs.slice(this.pageStart, this.pageEnd);
   }
 
+  /**
+    Returns true if navigating toward `direction` with the given hash is an
+    adjacent page navigation.
+
+    @param hash Hash to check
+    @param direction Direction of proposed navigation
+    @return True if "hash" is on the current page at the `direction` end
+  */
+  isAdjacentPage(hash: string | null, direction: "next" | "prev") {
+    return (
+      hash !== null &&
+      (direction === "prev"
+        ? this.txs[this.pageStart].hash === hash
+        : this.txs[this.pageEnd - 1].hash === hash)
+    );
+  }
+
   async prevPage(
     provider: JsonRpcApiProvider,
     hash: string,
@@ -337,8 +354,7 @@ export class SearchController {
       return this;
     }
     // Ensure we are navigating correctly relative to our current transaction listing
-    // I think this tries to prevent navigating multiple times in a row to the same page.
-    if (this.txs[this.pageStart].hash === hash) {
+    if (this.isAdjacentPage(hash, "prev")) {
       if (
         this.pageStart - PAGE_SIZE >= 0 ||
         (this.batches.length > 0 && this.batches[0].isFirst)
@@ -405,8 +421,7 @@ export class SearchController {
       return this;
     }
     // Ensure we are navigating correctly relative to our current transaction listing
-    // I think this tries to prevent navigating multiple times in a row to the same page.
-    if (this.txs[this.pageEnd - 1].hash === hash) {
+    if (this.isAdjacentPage(hash, "next")) {
       if (
         this.pageEnd + PAGE_SIZE <= this.txs.length ||
         (this.batches.length > 0 &&
