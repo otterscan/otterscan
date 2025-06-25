@@ -114,17 +114,20 @@ interface TransactionBatch {
   isLast: boolean;
 }
 
-type StartParamsType = ["next" | "prev" | "first" | "last", string | null];
+interface StartParams {
+  pageType: "next" | "prev" | "first" | "last";
+  tx: string | null;
+  blockNumber?: number;
+}
 
 export class SearchController {
   // Guaranteed to include all transactions in the starting and ending blocks
   private txs: ProcessedTransaction[];
-
   private pageStart: number;
   private pageEnd: number;
   public isFirst: boolean;
   public isLast: boolean;
-  public startParams: StartParamsType;
+  public startParams: StartParams;
 
   private constructor(
     readonly address: string,
@@ -132,7 +135,7 @@ export class SearchController {
     readonly batches: TransactionBatch[],
     // if true, starts at index 0, otherwise considers the "last" parts of the transactions
     boundToStart: boolean,
-    startParams: StartParamsType,
+    startParams: StartParams,
     pageStartIndex?: number,
     pageEndIndex?: number,
   ) {
@@ -158,6 +161,7 @@ export class SearchController {
   static async firstPage(
     provider: JsonRpcApiProvider,
     address: string,
+    startParamsOverride?: StartParams,
   ): Promise<SearchController> {
     const newTxs: TransactionChunk = await queryClient.fetchQuery(
       searchTransactionsQuery(provider, address, 0, "before"),
@@ -173,7 +177,7 @@ export class SearchController {
         },
       ],
       true,
-      ["first", ""],
+      startParamsOverride ?? { pageType: "first", tx: null },
     );
   }
 
@@ -186,17 +190,22 @@ export class SearchController {
   ): Promise<SearchController> {
     const prev = !next;
 
-    if (hash === "") {
-      // Start from the beginning
-      return next
-        ? SearchController.lastPage(provider, address)
-        : SearchController.firstPage(provider, address);
-    }
+    const startParams: StartParams = {
+      pageType: next ? "next" : "prev",
+      tx: hash,
+      blockNumber: hash === null ? blockNumberBegin : undefined,
+    };
 
     // See if there are more transactions from this block we must include
     let blockQuery: TransactionChunk | null = null;
+    // If a tx hash is provided, only contains transactions in the tx's block
+    // If a block number is provided, contains all the transactions from the
+    // query
     let blockTxs: ProcessedTransaction[] = [];
     let blockNumber: number;
+
+    // Indicates that the target block number is the first/end
+    let blockBatchIsEnd: boolean;
 
     if (hash !== null) {
       const tx = await queryClient.fetchQuery(
@@ -220,6 +229,13 @@ export class SearchController {
         blockTxs = blockQuery!.txs.filter(
           (blockTx) => blockTx!.blockNumber === blockNumber,
         );
+        blockBatchIsEnd =
+          (blockQuery!.txs.length === 0 ||
+            blockQuery!.txs[next ? blockQuery!.txs.length - 1 : 0]
+              .blockNumber === blockNumber) &&
+          (next ? blockQuery!.lastPage : blockQuery!.firstPage);
+      } else {
+        blockBatchIsEnd = false;
       }
     } else if (blockNumberBegin !== undefined) {
       blockNumber = blockNumberBegin;
@@ -236,9 +252,18 @@ export class SearchController {
       if (blockTxs.length === 0) {
         // Start from the beginning
         return next
-          ? SearchController.lastPage(provider, address)
-          : SearchController.firstPage(provider, address);
+          ? SearchController.lastPage(provider, address, startParams)
+          : SearchController.firstPage(provider, address, startParams);
       }
+      blockTxs = blockQuery!.txs.filter(
+        (blockTx) => blockTx!.blockNumber === blockNumber,
+      );
+
+      blockBatchIsEnd =
+        (blockQuery!.txs.length === 0 ||
+          blockQuery!.txs[next ? blockQuery!.txs.length - 1 : 0].blockNumber ===
+            blockNumber) &&
+        (next ? blockQuery!.lastPage : blockQuery!.firstPage);
     } else {
       throw new Error("Transaction hash or block number not provided");
     }
@@ -249,7 +274,7 @@ export class SearchController {
     const txBlockIndex = blockTxs.findIndex((tx) => tx.hash === hash);
     if (
       txBlockIndex != -1 ||
-      (hash === null && blockNumberBegin !== undefined)
+      (hash === null && blockNumberBegin !== undefined && blockTxs.length > 0)
     ) {
       // Make another call to verify whether this is really not the first/last page.
       // This compensates for the behavior in the ots API that if you call
@@ -261,7 +286,11 @@ export class SearchController {
           provider,
           address,
           0,
-          next ? "after" : "before",
+          // If we are navigating to the next page (older transactions), find the
+          // oldest transactions (after 0).
+          // If we are navigating to the previous page (newer transactions), find
+          // the newest transactions (before the latest block, = 0)
+          next ? "before" : "after",
         ),
       );
       if (next) {
@@ -269,45 +298,35 @@ export class SearchController {
         txs = txs.concat(blockTxs);
         batches.push({
           length: blockTxs.length,
-          isFirst: blockQuery!.firstPage,
-          isLast:
+          isFirst:
             pageEndsQuery.txs!.length > 0 &&
-            blockTxs[blockTxs.length - 1].hash ===
-              pageEndsQuery.txs[pageEndsQuery.txs.length - 1].hash &&
-            pageEndsQuery.lastPage,
+            blockTxs[0].hash === pageEndsQuery.txs[0].hash &&
+            pageEndsQuery.firstPage,
+          isLast: blockBatchIsEnd,
         });
       } else {
         // Add transactions from this block
         txs = blockTxs.concat(txs);
         batches.unshift({
           length: blockTxs.length,
-          isFirst:
+          isFirst: blockBatchIsEnd,
+          isLast:
             pageEndsQuery.txs!.length > 0 &&
-            blockTxs[0].hash === pageEndsQuery.txs[0].hash &&
-            pageEndsQuery.firstPage,
-          isLast: blockQuery!.lastPage,
+            blockTxs[blockTxs.length - 1].hash ===
+              pageEndsQuery.txs[pageEndsQuery.txs.length - 1].hash &&
+            pageEndsQuery.lastPage,
         });
       }
     }
 
+    // If tx hash is specified, add transactions after the tx's block
     if (
-      batches.length === 0 ||
-      (next && !batches[batches.length - 1].isLast) ||
-      (prev && !batches[0].isFirst)
+      hash !== null &&
+      blockNumberBegin === undefined &&
+      (batches.length === 0 ||
+        (next && !batches[batches.length - 1].isLast) ||
+        (prev && !batches[0].isFirst))
     ) {
-      // TODO: This code appears to have been unused before (blockNumber assigned but never read)
-      /*
-          // TODO: Can we actually infer that this transaction is not null?
-          let blockNumber = tx!.blockNumber!;
-          if (batches.length > 0) {
-            if (next) {
-              blockNumber = txs[txs.length - 1].blockNumber;
-            } else {
-              blockNumber = txs[0].blockNumber;
-            }
-          }
-      */
-
       const newTxs = await queryClient.fetchQuery(
         searchTransactionsQuery(
           provider,
@@ -340,7 +359,7 @@ export class SearchController {
       txs,
       batches,
       next,
-      [next ? "next" : "prev", hash],
+      startParams,
       next && txIndex != -1 ? txIndex + 1 : undefined,
       prev && txIndex != -1 ? txIndex : undefined,
     );
@@ -349,6 +368,7 @@ export class SearchController {
   static async lastPage(
     provider: JsonRpcApiProvider,
     address: string,
+    startParamsOverride?: StartParams,
   ): Promise<SearchController> {
     const newTxs = await queryClient.fetchQuery(
       searchTransactionsQuery(provider, address, 0, "after"),
@@ -364,7 +384,7 @@ export class SearchController {
         },
       ],
       false,
-      ["last", ""],
+      startParamsOverride ?? { pageType: "last", tx: null },
     );
   }
 
@@ -391,10 +411,10 @@ export class SearchController {
 
   async prevPage(
     provider: JsonRpcApiProvider,
-    hash: string,
+    hash: string | null,
   ): Promise<SearchController> {
     // Already on this page
-    if (this.startParams[0] === "prev" && this.startParams[1] === hash) {
+    if (this.startParams.pageType === "prev" && this.startParams.tx === hash) {
       return this;
     }
     // Ensure we are navigating correctly relative to our current transaction listing
@@ -409,7 +429,7 @@ export class SearchController {
           this.txs,
           this.batches,
           false,
-          ["prev", hash],
+          { pageType: "prev", tx: hash },
           undefined,
           this.pageEnd - (this.pageEnd - this.pageStart),
         );
@@ -434,12 +454,13 @@ export class SearchController {
       // which would lead to quick paging through transactions already
       // downloaded. In order to ensure firstPage is up to date, it's kept to
       // PAGE_SIZE for now.
+      const lastPageSize = this.pageEnd - this.pageStart;
       const { list: trimmedList, batches: trimmedBatches } = trimBatchesToSize(
         combinedTxList,
         batches,
         PAGE_SIZE,
         true,
-        prevPage.txs.length + this.pageEnd - PAGE_SIZE,
+        prevPage.txs.length + this.pageEnd - lastPageSize,
       );
 
       return new SearchController(
@@ -447,9 +468,9 @@ export class SearchController {
         trimmedList,
         trimmedBatches,
         false,
-        ["prev", hash],
+        { pageType: "prev", tx: hash },
         undefined,
-        prevPage.txs.length + this.pageEnd - PAGE_SIZE,
+        prevPage.txs.length + this.pageEnd - lastPageSize,
       );
     }
 
@@ -458,10 +479,10 @@ export class SearchController {
 
   async nextPage(
     provider: JsonRpcApiProvider,
-    hash: string,
+    hash: string | null,
   ): Promise<SearchController> {
     // Already on this page
-    if (this.startParams[0] === "next" && this.startParams[1] === hash) {
+    if (this.startParams.pageType === "next" && this.startParams.tx === hash) {
       return this;
     }
     // Ensure we are navigating correctly relative to our current transaction listing
@@ -477,7 +498,7 @@ export class SearchController {
           this.txs,
           this.batches,
           true,
-          ["next", hash],
+          { pageType: "next", tx: hash },
           this.pageStart + (this.pageEnd - this.pageStart),
           undefined,
         );
@@ -497,6 +518,7 @@ export class SearchController {
         },
       ];
       const combinedTxList = this.txs.concat(nextPage.txs);
+      const lastPageSize = this.pageEnd - this.pageStart;
       // TODO: We *could* save more transactions in memory than PAGE_SIZE,
       // which would lead to quick paging through transactions already
       // downloaded. In order to ensure firstPage is up to date, it's kept to
@@ -506,7 +528,7 @@ export class SearchController {
         batches,
         PAGE_SIZE,
         false,
-        this.pageStart + PAGE_SIZE,
+        this.pageStart + lastPageSize,
       );
       const txsTrimmed = combinedTxList.length - trimmedList.length;
 
@@ -515,8 +537,8 @@ export class SearchController {
         trimmedList,
         trimmedBatches,
         true,
-        ["next", hash],
-        this.pageStart + PAGE_SIZE - txsTrimmed,
+        { pageType: "next", tx: hash },
+        this.pageStart + lastPageSize - txsTrimmed,
         undefined,
       );
     }

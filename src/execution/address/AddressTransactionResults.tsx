@@ -1,6 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { FC, useContext, useEffect, useMemo, useState } from "react";
-import { useOutletContext, useParams, useSearchParams } from "react-router";
+import {
+  useNavigate,
+  useOutletContext,
+  useParams,
+  useSearchParams,
+} from "react-router";
 import ContentFrame from "../../components/ContentFrame";
 import { balancePreset } from "../../components/FiatValue";
 import InfoRow from "../../components/InfoRow";
@@ -34,6 +39,7 @@ import { type AddressOutletContext } from "../AddressMainPage";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
 import { AddressAwareComponentProps } from "../types";
+import BlockNumberInput from "./BlockNumberInput";
 import PendingItem from "./PendingItem";
 import PendingPage from "./PendingPage";
 
@@ -65,6 +71,7 @@ const AddressTransactionResults: FC = () => {
     throw new Error("addressOrName couldn't be undefined here");
   }
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const hash = searchParams.get("h");
   const blockNumber = searchParams.get("b");
@@ -110,11 +117,11 @@ const AddressTransactionResults: FC = () => {
       setController(_controller);
     };
     const prevPage = async () => {
-      const _controller = await controller!.prevPage(provider, hash!);
+      const _controller = await controller!.prevPage(provider, hash);
       setController(_controller);
     };
     const nextPage = async () => {
-      const _controller = await controller!.nextPage(provider, hash!);
+      const _controller = await controller!.nextPage(provider, hash);
       setController(_controller);
     };
 
@@ -127,9 +134,11 @@ const AddressTransactionResults: FC = () => {
       if (
         controller &&
         controller.address === address &&
-        ((controller.startParams[0] === "prev" &&
-          controller.startParams[1] === hash) ||
-          controller.isAdjacentPage(hash, "prev"))
+        ((controller.startParams.pageType === "prev" &&
+          controller.startParams.tx !== null &&
+          controller.startParams.tx === hash) ||
+          controller.isAdjacentPage(hash, "prev") ||
+          controller.startParams.blockNumber === Number(blockNumber))
       ) {
         prevPage();
       } else {
@@ -139,9 +148,11 @@ const AddressTransactionResults: FC = () => {
       if (
         controller &&
         controller.address === address &&
-        ((controller.startParams[0] === "next" &&
-          controller.startParams[1] === hash) ||
-          controller.isAdjacentPage(hash, "next"))
+        ((controller.startParams.pageType === "next" &&
+          controller.startParams.tx !== null &&
+          controller.startParams.tx === hash) ||
+          controller.isAdjacentPage(hash, "next") ||
+          controller.startParams.blockNumber === Number(blockNumber))
       ) {
         nextPage();
       } else {
@@ -152,7 +163,7 @@ const AddressTransactionResults: FC = () => {
         readLastPage();
       }
     }
-  }, [provider, address, direction, hash, controller]);
+  }, [provider, address, direction, hash, controller, blockNumber]);
 
   const page = useMemo(() => controller?.getPage(), [controller]);
 
@@ -172,6 +183,10 @@ const AddressTransactionResults: FC = () => {
   );
 
   const { data: balance } = useQuery(getBalanceQuery(provider, address));
+
+  async function onBlockNumberEntry(blockNumberStr: string) {
+    navigate(`/address/${address}/txs/${"next"}?b=${blockNumberStr}`);
+  }
 
   return (
     <ContentFrame tabs>
@@ -229,7 +244,12 @@ const AddressTransactionResults: FC = () => {
           )}
           {config.experimental && <ProxyInfo address={address} />}
         </BlockNumberContext.Provider>
-        <NavBar address={address} page={page} controller={controller} />
+        <NavBar
+          address={address}
+          page={page}
+          controller={controller}
+          onBlockNumberEntry={onBlockNumberEntry}
+        />
         <StandardScrollableTable isAuto={true}>
           <ResultHeader
             feeDisplay={feeDisplay}
@@ -253,7 +273,12 @@ const AddressTransactionResults: FC = () => {
             <PendingPage rows={1} cols={8} />
           )}
         </StandardScrollableTable>
-        <NavBar address={address} page={page} controller={controller} />
+        <NavBar
+          address={address}
+          page={page}
+          controller={controller}
+          onBlockNumberEntry={onBlockNumberEntry}
+        />
       </StandardSelectionBoundary>
     </ContentFrame>
   );
@@ -262,9 +287,15 @@ const AddressTransactionResults: FC = () => {
 type NavBarProps = AddressAwareComponentProps & {
   page: ProcessedTransaction[] | undefined;
   controller: SearchController | undefined;
+  onBlockNumberEntry: (blockNumber: string) => void;
 };
 
-const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
+const NavBar: FC<NavBarProps> = ({
+  address,
+  page,
+  controller,
+  onBlockNumberEntry,
+}) => (
   <div className="flex items-baseline justify-between py-3">
     <div className="text-sm text-gray-500">
       {page === undefined ? (
@@ -276,14 +307,22 @@ const NavBar: FC<NavBarProps> = ({ address, page, controller }) => (
         </>
       )}
     </div>
-    <UndefinedPageControl
-      address={address}
-      isFirst={controller?.isFirst}
-      isLast={controller?.isLast}
-      prevHash={page?.[0]?.hash ?? ""}
-      nextHash={page?.[page.length - 1]?.hash ?? ""}
-      disabled={controller === undefined}
-    />
+    <div className="flex space-x-8">
+      <div className="flex items-center">
+        <BlockNumberInput
+          onSearch={onBlockNumberEntry}
+          placeholder="Jump to block number"
+        />
+      </div>
+      <UndefinedPageControl
+        address={address}
+        isFirst={controller?.isFirst}
+        isLast={controller?.isLast}
+        prevHash={page?.[0]?.hash ?? ""}
+        nextHash={page?.[page.length - 1]?.hash ?? ""}
+        disabled={controller === undefined}
+      />
+    </div>
   </div>
 );
 

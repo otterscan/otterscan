@@ -164,6 +164,142 @@ describe("Advanced search", () => {
         "0x012616c16fc2dbffe6dfba0f450aca81624743a684e176cea208e499a1af9b62",
       ],
     ];
+    // We use index 0 because this is a non-contract page and does not show the
+    // contract creation transaction hash.
     navigateAndAssert(address, initialUrl, initialHash, navAssertions, 0);
+  });
+
+  it("Should navigate to a near-end 5-transaction page correctly", () => {
+    const address = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
+    const initialUrl =
+      "/address/0xdAC17F958D2ee523a2206206994597C13D831ec7/txs/next?h=0x71b20cbf7befcfe39decc7f692d7617e6414037e6d6ff8473a9278c8f2661344";
+    cy.visit(initialUrl);
+    cy.get('[data-test="address"]', { timeout: 15_000 }).contains(address);
+    cy.get('[data-test="tx-hash"]')
+      .eq(1)
+      .invoke("text")
+      .should(
+        "equal",
+        "0x1ae98fd33665954d2676d46b1dfad65059f25e2623bcfa447fdb2da237797bb9",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190",
+      );
+
+    // Previous page
+    cy.get(`[data-test="nav-prev"]`).first().click();
+
+    cy.get('[data-test="tx-hash"]')
+      .eq(1)
+      .invoke("text")
+      .should(
+        "equal",
+        "0xdb573f4b290b458255a259f16cbc9359167fb7ea971198c6c0379ab8fc8d801f",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0x71b20cbf7befcfe39decc7f692d7617e6414037e6d6ff8473a9278c8f2661344",
+      );
+
+    // Back to last page
+    cy.get(`[data-test="nav-next"]`).first().click();
+    cy.get('[data-test="tx-hash"]')
+      .eq(1)
+      .invoke("text")
+      .should(
+        "equal",
+        "0x1ae98fd33665954d2676d46b1dfad65059f25e2623bcfa447fdb2da237797bb9",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0x2f1c5c2b44f771e942a8506148e256f94f1a464babc938ae0690c6e34cd79190",
+      );
+  });
+
+  it("Should navigate to transactions after a target block number (partial)", () => {
+    const address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045";
+    const initialUrl =
+      "/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045/txs/next?b=318620";
+    cy.visit(initialUrl);
+    cy.get('[data-test="address"]', { timeout: 15_000 }).contains(address);
+    cy.get('[data-test="tx-hash"]')
+      .eq(0)
+      .invoke("text")
+      .should(
+        "equal",
+        "0x6ff0860e202c61189cb2a3a38286bffd694acbc50577df6cb5a7ff40e21ea074",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0x9b629147b75dc0b275d478fa34d97c5d4a26926457540b15a5ce871df36c23fd",
+      );
+
+    // Previous page
+    cy.get(`[data-test="nav-prev"]`).first().click();
+
+    cy.get('[data-test="tx-hash"]')
+      .eq(0)
+      .invoke("text")
+      .should(
+        "equal",
+        "0x4d76896ab6b112cb7e524c439580a50bc8185915be879f777a649f649707f555",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0xf3c0067e8aca43cf421dc502c0976525b89727fdfaee12bf356895f3b2bd7205",
+      );
+
+    // Back to last page
+    cy.get(`[data-test="nav-next"]`).first().click();
+    cy.get('[data-test="tx-hash"]')
+      .eq(0)
+      .invoke("text")
+      .should(
+        "equal",
+        "0x6ff0860e202c61189cb2a3a38286bffd694acbc50577df6cb5a7ff40e21ea074",
+      );
+
+    cy.get('[data-test="tx-hash"]')
+      .last()
+      .invoke("text")
+      .should(
+        "equal",
+        "0x9b629147b75dc0b275d478fa34d97c5d4a26926457540b15a5ce871df36c23fd",
+      );
+  });
+
+  it("Should detect an extremely large block number as the first page", () => {
+    const address = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045";
+    const initialUrl =
+      "/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045/txs/next?b=12345678910";
+    cy.visit(initialUrl);
+
+    // Wait for Last button to become enabled
+    cy.get("a").contains("Last").should("have.class", "text-xs text-link-blue");
+    // First button should be disabled
+    cy.get("span")
+      .contains("First")
+      .should("have.class", "text-xs text-gray-400");
   });
 });
