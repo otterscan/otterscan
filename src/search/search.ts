@@ -255,15 +255,8 @@ export class SearchController {
           ? SearchController.lastPage(provider, address, startParams)
           : SearchController.firstPage(provider, address, startParams);
       }
-      blockTxs = blockQuery!.txs.filter(
-        (blockTx) => blockTx!.blockNumber === blockNumber,
-      );
-
-      blockBatchIsEnd =
-        (blockQuery!.txs.length === 0 ||
-          blockQuery!.txs[next ? blockQuery!.txs.length - 1 : 0].blockNumber ===
-            blockNumber) &&
-        (next ? blockQuery!.lastPage : blockQuery!.firstPage);
+      blockTxs = blockQuery!.txs;
+      blockBatchIsEnd = next ? blockQuery!.lastPage : blockQuery!.firstPage;
     } else {
       throw new Error("Transaction hash or block number not provided");
     }
