@@ -166,11 +166,12 @@ const Details: FC<DetailsProps> = ({ txData }) => {
                     size="1x"
                   />
                   <span>
-                    {errorType === "string" && errorMsg && (
+                    {errorType === "string" && (
+                      errorMsg ? (
                       <>
                         Fail with revert message: '
                         <span className="font-bold underline">{errorMsg}</span>'
-                      </>
+                      </>) : "Fail"
                     )}
                     {errorType === "custom" && (
                       <>
