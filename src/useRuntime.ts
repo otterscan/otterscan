@@ -43,17 +43,19 @@ export const createRuntime = async (
   const effectiveConfig = await config;
 
   // Hardcoded config
+  let provider: JsonRpcApiProvider;
   if (effectiveConfig.experimentalFixedChainId !== undefined) {
     const network = Network.from(effectiveConfig.experimentalFixedChainId);
-    return {
-      config: effectiveConfig,
-      provider: new JsonRpcProvider(effectiveConfig.erigonURL, network, {
-        staticNetwork: network,
-      }),
-    };
+    provider = new JsonRpcProvider(effectiveConfig.erigonURL, network, {
+      staticNetwork: network,
+    });
+  } else {
+    provider = await createAndProbeProvider(effectiveConfig.erigonURL);
   }
 
-  const provider = await createAndProbeProvider(effectiveConfig.erigonURL);
+  provider.disableCcipRead = !(
+    effectiveConfig.enableOffchainEnsLookups ?? false
+  );
   return {
     config: effectiveConfig,
     provider,
