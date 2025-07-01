@@ -208,6 +208,13 @@ export type OtterscanConfig = {
   };
 
   /**
+   * Enable off-chain CCIP reads (EIP-3368) to third parties in smart contracts
+   * that support them, during ENS lookups only. It leaks your request to the
+   * URL specified in the CCIP read, so it is disabled by default for privacy.
+   */
+  enableOffchainEnsLookups?: boolean;
+
+  /**
    * Temporary config option, until address labels are complete: Enables setting
    * address labels which are kept in local storage.
    */
