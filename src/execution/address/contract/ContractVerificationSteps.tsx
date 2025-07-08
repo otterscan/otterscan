@@ -81,6 +81,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       }
 
       // Get contract creation transaction
+      // TODO: Fold into a getContractCreatorQuery function in useErigonHooks
       let creationTx: undefined | string = undefined;
       try {
         const creatorResult = await provider.send("ots_getContractCreator", [
