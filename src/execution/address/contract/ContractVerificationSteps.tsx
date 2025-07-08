@@ -80,6 +80,20 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         return;
       }
 
+      // Get contract creation transaction
+      let creationTx: undefined | string = undefined;
+      try {
+        const creatorResult = await provider.send("ots_getContractCreator", [
+          address,
+        ]);
+        if (creatorResult !== null) {
+          creationTx = creatorResult.hash ?? undefined;
+        }
+        console.log("Creation tx hash:", creationTx);
+      } catch (e) {
+        console.warn("Failed to fetch creation tx");
+      }
+
       const match = await queryClient.fetchQuery(
         getSourcifyMetadataQuery(
           sourcifySources,
@@ -178,7 +192,12 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         supported: true,
       });
 
-      const verification = new Verification(compilation, myChain, address);
+      const verification = new Verification(
+        compilation,
+        myChain,
+        address,
+        creationTx,
+      );
       await verification.verify();
 
       setSteps((prevSteps) =>
@@ -200,11 +219,27 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         exportedVerification.status.runtimeMatch === "partial" ||
         exportedVerification.status.runtimeMatch === "perfect";
 
+      let creationMatchResult: null | ReactNode = null;
+      if (
+        exportedVerification.status.creationMatch === "partial" ||
+        exportedVerification.status.creationMatch === "perfect"
+      ) {
+        creationMatchResult = (
+          <span className="ml-3">
+            <span className="text-lg">✅</span> Creation bytecode
+            {exportedVerification.status.creationMatch === "perfect"
+              ? " perfect"
+              : ""}{" "}
+            match
+          </span>
+        );
+      }
+
       setResult(
         goodMatch ? (
           <span>
             <span className="text-lg">✅</span> Local verification confirmed
-            Sourcify’s result
+            Sourcify’s result {creationMatchResult}
           </span>
         ) : (
           <span>
