@@ -7,7 +7,7 @@ import {
   Verification,
 } from "@ethereum-sourcify/lib-sourcify";
 import { keccak256, toUtf8Bytes } from "ethers";
-import React, { useContext, useEffect, useState } from "react";
+import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchSolc } from "web-solc";
 import StepByStep, { Step } from "../../../components/StepByStep";
 import { queryClient } from "../../../queryClient";
@@ -40,14 +40,26 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
   address,
 }) => {
   const [steps, setSteps] = useState<Step[]>([
-    { name: "Fetching Sources", completed: false },
-    { name: "Compiling Contract", completed: false },
-    { name: "Verifying Contract", completed: false },
-    { name: "Exporting Verification", completed: false },
+    {
+      name: "Fetching Sources",
+      description: "Downloading from Sourcify",
+      completed: false,
+    },
+    {
+      name: "Compiling Contract",
+      description: "Compiling locally in the browser",
+      completed: false,
+    },
+    {
+      name: "Verifying Contract",
+      description: "Executing verification logic in the browser",
+      completed: false,
+    },
+    { name: "Reporting Verification", completed: false },
   ]);
   const { sourcifySource } = useAppConfigContext();
   const sourcifySources = useSourcifySources();
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<ReactNode | null>(null);
 
   const { provider, config } = useContext(RuntimeContext);
 
@@ -175,7 +187,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         ),
       );
 
-      // Step 5: Exporting Verification
+      // Step 4: Exporting Verification
       setSteps((prevSteps) =>
         prevSteps.map((step, index) =>
           index === 3 ? { ...step, inProgress: true } : step,
@@ -183,11 +195,24 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       );
 
       const exportedVerification = verification.export();
+      console.log("Verification result:", exportedVerification);
+      const goodMatch =
+        exportedVerification.status.runtimeMatch === "partial" ||
+        exportedVerification.status.runtimeMatch === "perfect";
+
       setResult(
-        "Runtime match: " +
-          exportedVerification.status.runtimeMatch +
-          ", Creation match: " +
-          exportedVerification.status.creationMatch,
+        goodMatch ? (
+          <span>
+            <span className="text-lg">✅</span> Local verification confirmed
+            Sourcify’s result
+          </span>
+        ) : (
+          <span>
+            <span className="text-lg">❌</span> Local verification failed: It
+            might not be safe to interact with this contract. Please report it
+            to Sourcify before proceeding.
+          </span>
+        ),
       );
 
       setSteps((prevSteps) =>

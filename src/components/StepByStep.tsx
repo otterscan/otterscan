@@ -3,6 +3,7 @@ import React from "react";
 export interface Step {
   name: string;
   completed: boolean;
+  description?: string;
   inProgress?: boolean;
 }
 
@@ -31,6 +32,9 @@ const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
           </div>
           <span className={`${step.inProgress ? `font-bold` : ""}`}>
             {step.name}
+            {step.description ? (
+              <span className="text-xs ml-5">{step.description}</span>
+            ) : null}
           </span>
         </div>
       ))}
