@@ -6,6 +6,13 @@ import {
   SourcifyChain,
   Verification,
 } from "@ethereum-sourcify/lib-sourcify";
+import {
+  faCheck,
+  faCheckCircle,
+  faCheckDouble,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { keccak256, toUtf8Bytes } from "ethers";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchSolc } from "web-solc";
@@ -216,32 +223,55 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
 
       const exportedVerification = verification.export();
       console.log("Verification result:", exportedVerification);
-      const goodMatch =
-        exportedVerification.status.runtimeMatch === "partial" ||
-        exportedVerification.status.runtimeMatch === "perfect";
+      const runtimeMatch = exportedVerification.status.runtimeMatch;
+      const creationMatch = exportedVerification.status.creationMatch;
 
-      let creationMatchResult: null | ReactNode = null;
-      if (
-        exportedVerification.status.creationMatch === "partial" ||
-        exportedVerification.status.creationMatch === "perfect"
-      ) {
-        creationMatchResult = (
-          <span className="ml-3">
-            <span className="text-lg">✅</span> Creation bytecode
-            {exportedVerification.status.creationMatch === "perfect"
-              ? " perfect"
-              : ""}{" "}
-            match
-          </span>
-        );
-      }
+      const explainer =
+        runtimeMatch === "perfect"
+          ? "Exact match: The onchain and compiled bytecode match exactly, including the metadata hashes."
+          : "Match: The onchain and compiled bytecode match, but metadata hashes differ or don't exist.";
 
       setResult(
-        goodMatch ? (
-          <span>
-            <span className="text-lg">✅</span> Local verification confirmed
-            Sourcify’s result {creationMatchResult}
-          </span>
+        runtimeMatch === "partial" || runtimeMatch === "perfect" ? (
+          <div>
+            <div className="mb-1 font-bold">Local verification result:</div>
+            <div className="flex items-center gap-3">
+              <div
+                className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base"
+                title={explainer}
+              >
+                {" "}
+                <FontAwesomeIcon
+                  icon={runtimeMatch === "perfect" ? faCheckDouble : faCheck}
+                />{" "}
+                {runtimeMatch === "perfect" && "Exact "}Match
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1">
+                  <FontAwesomeIcon
+                    className="self-center text-emerald-500"
+                    icon={faCheckCircle}
+                  />{" "}
+                  runtime bytecode
+                </div>
+                <div className="flex gap-1">
+                  {creationMatch === "partial" ||
+                  creationMatch === "perfect" ? (
+                    <FontAwesomeIcon
+                      className="self-center text-emerald-500"
+                      icon={faCheckCircle}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      className="self-center text-red-500"
+                      icon={faTimesCircle}
+                    />
+                  )}{" "}
+                  creation bytecode
+                </div>
+              </div>
+            </div>
+          </div>
         ) : (
           <span>
             <span className="text-lg">❌</span> Local verification failed: It
