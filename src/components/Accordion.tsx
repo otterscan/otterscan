@@ -30,11 +30,7 @@ const Accordion: React.FC<AccordionProps> = ({ children, title, neighbor }) => {
         className={`transition-all duration-300 ease-in-out overflow-hidden ${
           isVisible ? "max-h-80 pb-1" : "max-h-0"
         }`}
-        {
-          ...{
-            inert: isVisible ? undefined : "",
-          } /* Workaround until we upgrade to React 19 */
-        }
+        inert={!isVisible}
       >
         {children}
       </div>

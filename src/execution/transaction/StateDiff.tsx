@@ -49,7 +49,7 @@ const buildStateDiffTree = (
     const group = groups[i];
 
     const last = i == groups.length - 1;
-    function getBranch(key?: string | number): JSX.Element | null {
+    function getBranch(key?: string | number): React.JSX.Element | null {
       // This is the L-shaped line that drops down to a child element
       if (depth > 0 && depth < 3) {
         return (
@@ -81,7 +81,7 @@ const buildStateDiffTree = (
             >
               {depth === 0 ? (
                 <div className="relative flex">
-                  <div className="rounded-sm border px-1 py-0.5 hover:border-gray-500">
+                  <div className="rounded-sm border px-1 py-0.5 mb-3 hover:border-gray-500">
                     <TransactionAddress
                       address={getAddress(group.title)}
                       showCodeIndicator={true}

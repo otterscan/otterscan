@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import { ParamType } from "ethers";
 import { runtimeDecorator } from "../../../storybook/util";
 import DecodedParamRow from "./DecodedParamRow";

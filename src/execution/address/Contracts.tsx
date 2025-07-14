@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
 import React, { lazy, useContext, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
+import { type DecorationOptions } from "shiki";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
 import InfoRow from "../../components/InfoRow";
@@ -31,18 +33,85 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
     getCodeQuery(provider, checksummedAddress, "latest"),
   );
 
+  // Currently selected source file
   const [selected, setSelected] = useState<string>();
+  const [searchParams, setSearchParams] = useSearchParams();
   useEffect(() => {
     if (match) {
       const targetSource = match.metadata.settings?.compilationTarget;
-      if (targetSource !== undefined && Object.keys(targetSource)[0] !== "") {
-        setSelected(Object.keys(targetSource)[0]);
-      } else {
-        setSelected(Object.keys(match.metadata.sources)[0]);
+      let defaultTargetSource =
+        targetSource !== undefined && Object.keys(targetSource)[0] !== ""
+          ? Object.keys(targetSource)[0]
+          : Object.keys(match.metadata.sources)[0];
+      let selectedKey = defaultTargetSource;
+      const sourceSearchParam = searchParams.get("source");
+      if (sourceSearchParam !== null) {
+        if (Object.keys(match.metadata.sources).includes(sourceSearchParam)) {
+          selectedKey = sourceSearchParam;
+        } else {
+          setSearchParams({
+            ...Object.fromEntries(searchParams),
+            source: selectedKey,
+          });
+        }
       }
+      setSelected(selectedKey);
     }
   }, [match]);
   const optimizer = match?.metadata.settings?.optimizer;
+
+  // Highlighted region
+  const [highlightOffsets, setHighlightOffsets] = useState<{
+    start: number;
+    end: number;
+  } | null>(null);
+  const [highlightLines, setHighlightLines] = useState<number[] | null>(null);
+  useEffect(() => {
+    const hrParam = searchParams.get("hr");
+    if (hrParam) {
+      const split = hrParam.split("-");
+      if (split.length < 2) {
+        return;
+      }
+      const [start, end] = split.map(Number).map(Math.floor);
+      if (isNaN(start) || isNaN(end)) {
+        console.error("Invalid offsets in URL parameter");
+      } else {
+        setHighlightOffsets({ start, end });
+      }
+    }
+
+    const hlParam = searchParams.get("hl");
+    if (hlParam) {
+      const lines = hlParam
+        .split("-")
+        .map(Number)
+        .map(Math.floor)
+        .filter((line) => !isNaN(line));
+      if (lines.length !== 2) {
+        console.error("Invalid lines in URL parameter");
+      } else {
+        setHighlightLines(lines);
+      }
+    }
+  }, [searchParams]);
+
+  const sourceDecorations: DecorationOptions["decorations"] | undefined = [];
+
+  if (highlightLines && highlightLines.length === 2) {
+    sourceDecorations.push({
+      start: { line: highlightLines[0] - 1, character: 0 },
+      end: { line: highlightLines[1], character: 0 },
+      properties: { class: "bg-source-line-bg-highlight bg-clip-padding" },
+    });
+  }
+
+  if (highlightOffsets) {
+    sourceDecorations.push({
+      ...highlightOffsets,
+      properties: { class: "bg-source-line-highlight bg-clip-padding" },
+    });
+  }
 
   return (
     <ContentFrame tabs>
@@ -130,7 +199,17 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                                 ? "bg-gray-200 font-bold text-gray-500"
                                 : "text-gray-400 transition-colors duration-75 hover:text-gray-500"
                             }`}
-                            onClick={() => setSelected(k)}
+                            onClick={() => {
+                              setSelected(k);
+                              setSearchParams(
+                                {
+                                  ...Object.fromEntries(searchParams),
+                                  source: k,
+                                },
+                                { replace: true },
+                              );
+                              setHighlightOffsets(null);
+                            }}
                           >
                             {k}
                           </button>
@@ -145,6 +224,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                       <HighlightedSource
                         source={match.metadata.sources[selected].content}
                         langName={getLangName(match.metadata)}
+                        decorations={sourceDecorations}
                       />
                     ) : (
                       <ContractFromRepo
@@ -154,6 +234,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                         fileHash={match.metadata.sources[selected].keccak256}
                         type={match.type}
                         langName={getLangName(match.metadata)}
+                        decorations={sourceDecorations}
                       />
                     )}
                   </>

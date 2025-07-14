@@ -9,7 +9,9 @@ import SlotTimestamp from "./SlotTimestamp";
 const LoadingSlotItem: FC<SlotAwareComponentProps> = ({ slotNumber }) => {
   const epochNumber = useSlotToEpoch(slotNumber);
   const proposers = useProposerMap(epochNumber);
-  const expectedProposer = proposers && parseInt(proposers?.[slotNumber]);
+  const expectedProposer =
+    proposers &&
+    (slotNumber in proposers ? parseInt(proposers?.[slotNumber]) : undefined);
 
   return (
     <tr>

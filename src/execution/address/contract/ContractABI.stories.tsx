@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import erc20 from "../../../abi/erc20.json";
 import ContractABI from "./ContractABI";
 
