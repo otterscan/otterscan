@@ -1,4 +1,4 @@
-import { type Decorator } from "@storybook/react";
+import { type Decorator } from "@storybook/react-vite";
 import { JsonRpcProvider } from "ethers";
 import StandardSelectionBoundary from "../selection/StandardSelectionBoundary";
 import { defaultSourcifySourceName } from "../sourcify/useSourcify";

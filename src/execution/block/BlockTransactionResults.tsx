@@ -7,7 +7,11 @@ import ResultHeader from "../../search/ResultHeader";
 import SearchResultNavBar from "../../search/SearchResultNavBar";
 import TransactionItem from "../../search/TransactionItem";
 import { totalTransactionsFormatter } from "../../search/messages";
-import { useFeeToggler } from "../../search/useFeeToggler";
+import {
+  FeeDisplay,
+  useToggler,
+  ValueDisplay,
+} from "../../search/useFeeToggler";
 import StandardSelectionBoundary from "../../selection/StandardSelectionBoundary";
 import { ProcessedTransaction } from "../../types";
 import PendingPage from "../address/PendingPage";
@@ -25,7 +29,8 @@ const BlockTransactionResults: FC<BlockTransactionResultsProps> = ({
   pageNumber,
   isLoading,
 }) => {
-  const [feeDisplay, feeDisplayToggler] = useFeeToggler();
+  const [feeDisplay, feeDisplayToggler] = useToggler(FeeDisplay);
+  const [valueDisplay, valueDisplayToggler] = useToggler(ValueDisplay);
 
   return (
     <ContentFrame isLoading={isLoading}>
@@ -39,6 +44,8 @@ const BlockTransactionResults: FC<BlockTransactionResultsProps> = ({
         <ResultHeader
           feeDisplay={feeDisplay}
           feeDisplayToggler={feeDisplayToggler}
+          valueDisplay={valueDisplay}
+          valueDisplayToggler={valueDisplayToggler}
         />
         {page ? (
           <StandardSelectionBoundary>
@@ -48,6 +55,7 @@ const BlockTransactionResults: FC<BlockTransactionResultsProps> = ({
                   key={tx.hash}
                   tx={tx}
                   feeDisplay={feeDisplay}
+                  valueDisplay={valueDisplay}
                 />
               ))}
             </StandardTBody>

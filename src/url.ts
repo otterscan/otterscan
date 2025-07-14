@@ -44,4 +44,4 @@ export const addressByNonceURL = (address: ChecksummedAddress, nonce: bigint) =>
   `/address/${address}?nonce=${nonce}`;
 
 export const openInRemixURL = (checksummedAddress: string, networkId: bigint) =>
-  `https://remix.ethereum.org/#activate=sourcify&call=sourcify//fetchAndSave//${checksummedAddress}//${networkId}`;
+  `https://remix.ethereum.org/#activate=contract-verification&call=contract-verification//lookupAndSave//sourcify//${networkId}//${checksummedAddress}`;

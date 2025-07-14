@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react-vite";
 import { runtimeDecorator } from "../../../storybook/util";
 import AddressDecoder from "./AddressDecoder";
 

@@ -93,3 +93,34 @@ export function commify(value: string | number | bigint): string {
 
   return negative + formatted.join(",") + suffix;
 }
+
+/**
+ * Converts a hex string to an array.
+ *
+ * @remarks
+ *
+ * Same as ethers' `toBeArray` except much more efficient for long strings
+ * (such as contract code) because we don't try converting the entire string
+ * to a BigInt.
+ *
+ * @param hexString - Hex string to be converted
+ * @returns Converted Uint8Array
+ */
+export function hexToArray(hexString: string): Uint8Array {
+  let hex = hexString;
+  if (hex.startsWith("0x")) {
+    hex = hex.slice(2);
+  }
+
+  if (hex.length % 2 === 1) {
+    hex = "0" + hex;
+  }
+
+  const result = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < result.length; i++) {
+    const offset = i * 2;
+    result[i] = parseInt(hex.substring(offset, offset + 2), 16);
+  }
+
+  return result;
+}
