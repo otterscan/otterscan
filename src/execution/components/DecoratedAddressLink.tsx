@@ -12,6 +12,8 @@ import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { useKlerosAddressTags } from "../../kleros/useKleros";
+import KlerosTagBadge from "../../kleros/KlerosTagBadge";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
@@ -48,6 +50,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
 }) => {
   const { config, provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(address, provider._network.chainId);
+  const klerosTags = useKlerosAddressTags(address);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -129,6 +132,9 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
         </>
       )}
       {config.experimental && <AddressAttributes address={address} />}
+      {klerosTags && klerosTags.length > 0 && (
+        <KlerosTagBadge tag={klerosTags[0]} address={address} compact />
+      )}
     </div>
   );
 };

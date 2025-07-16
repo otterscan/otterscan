@@ -13,6 +13,8 @@ import StandardSubtitle from "../../components/StandardSubtitle";
 import { useChainInfo } from "../../useChainInfo";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
+import { useKlerosAddressTags } from "../../kleros/useKleros";
+import KlerosTagBadge from "../../kleros/KlerosTagBadge";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
 import EditableAddressTag, { clearAllLabels } from "./EditableAddressTag";
@@ -42,6 +44,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
     resolvedNameTrusted = true;
   }
 
+  const klerosTags = useKlerosAddressTags(address);
   const [editingAddressTag, setEditingAddressTag] = useState<boolean>(false);
 
   return (
@@ -63,6 +66,9 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
         {config.experimental && <AddressAttributes address={address} full />}
+        {klerosTags && klerosTags.length > 0 && (
+          <KlerosTagBadge tag={klerosTags[0]} address={address} />
+        )}
         {resolvedName && resolvedNameTrusted && !editingAddressTag && (
           <div className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500 text-nowrap">
             <FontAwesomeIcon icon={faTag} size="1x" />
@@ -75,7 +81,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
               <EditableAddressTag
                 address={address}
                 defaultTag={resolvedName}
-                editedCallback={(address: string) =>
+                editedCallback={(_address: string) =>
                   setEditingAddressTag(false)
                 }
               />
