@@ -243,7 +243,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                     </MenuItems>
                   </div>
                 </Menu>
-                {selected && (
+                {selected && match.metadata.sources[selected] && (
                   <>
                     {match.metadata.sources[selected].content ? (
                       <HighlightedSource
