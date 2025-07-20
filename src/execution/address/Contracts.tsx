@@ -127,7 +127,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             </InfoRow>
           )}
           <InfoRow title="Match">
-            {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
+            {match.type === MatchType.FULL_MATCH ? "Exact Match" : "Match"}
 
             {!showLocalVerification && (
               <button
