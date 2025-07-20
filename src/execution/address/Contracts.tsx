@@ -134,6 +134,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 type="button"
                 onClick={() => setShowLocalVerification(true)}
                 className="ml-3 px-2 py-1 border border-blue-900 text-blue-900 rounded-md hover:bg-blue-100 text-xs"
+                title="Fetch sources from Sourcify, download the Solidity compiler from soliditylang.org, and recompile the contract to confirm Sourcify's result."
               >
                 Verify Locally
               </button>
