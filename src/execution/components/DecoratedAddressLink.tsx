@@ -13,7 +13,7 @@ import AddressLegend from "../../components/AddressLegend";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { useKlerosAddressTags } from "../../kleros/useKleros";
-import KlerosTagBadge from "../../kleros/KlerosTagBadge";
+import KlerosLogo from "../../kleros/KlerosLogo";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
@@ -96,7 +96,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
           <FontAwesomeIcon icon={faCoins} size="1x" />
         </span>
       )}
-      {match && (
+      {match && (!klerosTags || klerosTags.length === 0) && (
         <NavLink
           className="flex shrink-0 items-center self-center"
           to={`/address/${address}/contract`}
@@ -132,9 +132,6 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
         </>
       )}
       {config.experimental && <AddressAttributes address={address} />}
-      {klerosTags && klerosTags.length > 0 && (
-        <KlerosTagBadge tag={klerosTags[0]} address={address} compact />
-      )}
     </div>
   );
 };
@@ -151,8 +148,37 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
   const resolvedAddress = useResolvedAddress(provider, address);
+  const klerosTags = useKlerosAddressTags(address);
   const linkable = address !== selectedAddress;
   const match = useSourcifyMetadata(address, provider._network.chainId);
+
+  // Prioritize Kleros tags over other resolvers
+  if (klerosTags && klerosTags.length > 0) {
+    const klerosName = `${klerosTags[0].project_name}: ${klerosTags[0].name_tag}`;
+    return (
+      <NavLink
+        to={`/address/${address}`}
+        className={`flex items-baseline space-x-1 font-sans truncate ${
+          dontOverrideColors 
+            ? "" 
+            : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+        }`}
+        style={!dontOverrideColors ? {
+          color: 'var(--color-kleros-tag)',
+        } : undefined}
+        onMouseOver={!dontOverrideColors ? (e) => 
+          e.currentTarget.style.color = 'var(--color-kleros-tag-hover)'
+        : undefined}
+        onMouseOut={!dontOverrideColors ? (e) => 
+          e.currentTarget.style.color = 'var(--color-kleros-tag)'
+        : undefined}
+        title={`Verified by Kleros (${klerosName}): ${address}`}
+      >
+        <KlerosLogo className="h-3 w-3 flex-shrink-0" />
+        <span className="truncate">{klerosName}</span>
+      </NavLink>
+    );
+  }
 
   if (!resolvedAddress && match && match.metadata.settings?.compilationTarget) {
     const compilationTarget = match.metadata.settings?.compilationTarget;
