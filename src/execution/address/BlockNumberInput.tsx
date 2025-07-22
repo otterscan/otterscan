@@ -23,7 +23,7 @@ const BlockNumberInput: React.FC<BlockNumberInputProps> = ({
       <input
         type="number"
         min="0"
-        className="w-48 rounded-sm border px-2 py-1 text-sm text-gray-600"
+        className="w-42 rounded-sm border px-2 py-1 text-sm text-gray-600 input-number-no-arrows"
         value={blockNumber}
         onChange={(e) => setBlockNumber(e.target.value)}
         placeholder={placeholder}
