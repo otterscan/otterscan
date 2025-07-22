@@ -2,6 +2,7 @@ import { SolidityJsonInput } from "@ethereum-sourcify/compilers-types";
 import {
   ISolidityCompiler,
   Metadata,
+  SolidityCompilation,
   SolidityMetadataContract,
   SourcifyChain,
   Verification,
@@ -16,7 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { keccak256, toUtf8Bytes } from "ethers";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchSolc } from "web-solc";
-import StepByStep, { Step } from "../../../components/StepByStep";
+import StepByStep, { useStepManagement } from "../../../components/StepByStep";
 import { queryClient } from "../../../queryClient";
 import {
   getContractQuery,
@@ -46,7 +47,7 @@ interface ContractVerificationStepsProps {
 const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
   address,
 }) => {
-  const [steps, setSteps] = useState<Step[]>([
+  const { steps, updateStep, clearSteps } = useStepManagement([
     {
       name: "Fetching Sources",
       description: "Downloading from Sourcify",
@@ -72,14 +73,8 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
 
   useEffect(() => {
     const verifyContract = async () => {
-      // Step 1: Fetching sources
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 0
-            ? { ...step, inProgress: true }
-            : { ...step, completed: false },
-        ),
-      );
+      clearSteps();
+      updateStep(0, { inProgress: true, completed: false });
 
       const rpcUrl = config.erigonURL;
       if (!rpcUrl) {
@@ -162,36 +157,24 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         }
       }
       setResult("");
-
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 0 ? { ...step, completed: true, inProgress: false } : step,
-        ),
-      );
+      updateStep(0, { inProgress: false, completed: true });
 
       // Step 2: Compiling Contract
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 1 ? { ...step, inProgress: true } : step,
-        ),
-      );
+      updateStep(1, { inProgress: true, completed: false });
 
-      const metadataContract = new SolidityMetadataContract(metadata, []);
-      const isCompilable = await metadataContract.isCompilable();
-      const compilation = await metadataContract.createCompilation(new Solc());
-
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 1 ? { ...step, completed: true, inProgress: false } : step,
-        ),
-      );
+      let metadataContract: SolidityMetadataContract;
+      let compilation: SolidityCompilation;
+      try {
+        metadataContract = new SolidityMetadataContract(metadata, []);
+        compilation = await metadataContract.createCompilation(new Solc());
+      } catch (e: any) {
+        setResult("Failed to create compilation: " + e.toString());
+        return;
+      }
+      updateStep(1, { inProgress: false, completed: true });
 
       // Step 3: Verifying contract
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 2 ? { ...step, inProgress: true } : step,
-        ),
-      );
+      updateStep(2, { inProgress: true, completed: false });
 
       const myChain = new SourcifyChain({
         name: "Ethereum Mainnet",
@@ -200,26 +183,24 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         supported: true,
       });
 
-      const verification = new Verification(
-        compilation,
-        myChain,
-        address,
-        creationTx,
-      );
-      await verification.verify();
+      let verification: Verification;
+      try {
+        verification = new Verification(
+          compilation,
+          myChain,
+          address,
+          creationTx,
+        );
+        await verification.verify();
+      } catch (e: any) {
+        setResult("Vailed to verify contract: " + e.toString());
+        return;
+      }
 
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 2 ? { ...step, completed: true, inProgress: false } : step,
-        ),
-      );
+      updateStep(2, { inProgress: false, completed: true });
 
       // Step 4: Exporting Verification
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 3 ? { ...step, inProgress: true } : step,
-        ),
-      );
+      updateStep(3, { inProgress: true, completed: false });
 
       const exportedVerification = verification.export();
       console.log("Verification result:", exportedVerification);
@@ -281,11 +262,11 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         ),
       );
 
-      setSteps((prevSteps) =>
-        prevSteps.map((step, index) =>
-          index === 3 ? { ...step, completed: true, inProgress: false } : step,
-        ),
-      );
+      updateStep(3, {
+        inProgress: false,
+        completed: true,
+        showDuration: false,
+      });
     };
 
     verifyContract();

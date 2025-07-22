@@ -1,11 +1,63 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 
 export interface Step {
   name: string;
   completed: boolean;
   description?: string;
   inProgress?: boolean;
+  duration?: number;
 }
+
+export const useStepManagement = (defaultSteps: Step[]) => {
+  const [steps, setSteps] = useState<Step[]>(defaultSteps);
+  const startTimes = useRef<{ [key: number]: number }>({});
+
+  const updateStep = (
+    index: number,
+    progress: {
+      inProgress: boolean;
+      completed: boolean;
+      showDuration?: boolean;
+    },
+  ) => {
+    const { inProgress, completed, showDuration } = progress;
+    setSteps((prevSteps) =>
+      prevSteps.map((step, i) => {
+        if (i === index) {
+          if (inProgress) {
+            startTimes.current[index] = Date.now();
+          }
+          if (
+            completed &&
+            index in startTimes.current &&
+            showDuration !== false
+          ) {
+            const endTime = Date.now();
+            const duration =
+              (endTime - (startTimes.current[index] || endTime)) / 1000;
+            return { ...step, inProgress, completed, duration };
+          }
+          return { ...step, inProgress, completed };
+        }
+        return step;
+      }),
+    );
+  };
+
+  const clearSteps = () => {
+    setSteps((prevSteps) =>
+      prevSteps.map((step, index) => ({
+        ...step,
+        inProgress: false,
+        completed: false,
+        duration: undefined,
+      })),
+    );
+    startTimes.current = {};
+  };
+
+  return { steps, updateStep, clearSteps };
+};
 
 const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
   return (
@@ -34,6 +86,11 @@ const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
             {step.name}
             {step.description ? (
               <span className="text-xs ml-5">{step.description}</span>
+            ) : null}
+            {step.duration !== undefined ? (
+              <span className="text-xs ml-1">
+                ({step.duration.toFixed(2)}s)
+              </span>
             ) : null}
           </span>
         </div>
