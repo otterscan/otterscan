@@ -78,22 +78,29 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
                 </div>
               )}
 
-              {/* Verified domains - show all but in a compact flexbox */}
+              {/* Verified domains - hover to view */}
               {tag.verified_domains && tag.verified_domains.length > 0 && (
                 <div>
-                  <span className="text-xs text-gray-500 mb-1 block">
-                    Verified domains ({tag.verified_domains.length}):
-                  </span>
-                  <div className="flex flex-wrap gap-1">
-                    {tag.verified_domains.map((domain, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center px-1.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 rounded"
-                        title={domain}
-                      >
-                        {domain}
-                      </span>
-                    ))}
+                  <div className="flex items-center text-xs text-gray-500 mb-1">
+                    <span className="mr-1">
+                      Verified domains:
+                    </span>
+                    <div className="group relative inline-block">
+                      <button className="text-xs text-gray-600 hover:text-blue-500 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+                        {tag.verified_domains.length} domains
+                      </button>
+                      <div className="hidden group-hover:block absolute z-10 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded shadow-lg p-2 mt-1 min-w-max">
+                        <div className="flex items-center mb-1 text-xs font-medium text-gray-700 dark:text-gray-200">
+                          <KlerosLogo className="h-3 w-3 mr-1" />
+                          Verified by Kleros:
+                        </div>
+                        <ul className="text-sm text-gray-600 dark:text-gray-300 list-disc pl-4">
+                          {tag.verified_domains.map((domain, idx) => (
+                            <li key={idx}>{domain}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
