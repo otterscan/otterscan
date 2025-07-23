@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from "react";
-import klerosSymbol from "./kleros-symbol.svg";
 import klerosSymbolWhite from "./kleros-symbol-white-flat.svg";
+import klerosSymbol from "./kleros-symbol.svg";
 
 const KlerosLogo: React.FC<HTMLAttributes<HTMLImageElement>> = (props) => (
   <>

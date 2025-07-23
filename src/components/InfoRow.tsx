@@ -5,9 +5,16 @@ type InfoRowProps = React.PropsWithChildren<{
   noColon?: boolean;
 }>;
 
-const InfoRow: React.FC<InfoRowProps> = ({ title, children, noColon = false }) => (
+const InfoRow: React.FC<InfoRowProps> = ({
+  title,
+  children,
+  noColon = false,
+}) => (
   <div className="sm:grid sm:grid-cols-4 py-3 sm:py-4 text-sm">
-    <div className="mb-2 sm:mb-auto">{title}{noColon ? '' : ':'}</div>
+    <div className="mb-2 sm:mb-auto">
+      {title}
+      {noColon ? "" : ":"}
+    </div>
     <div className="sm:col-span-3">{children}</div>
   </div>
 );
