@@ -32,7 +32,7 @@ export type KlerosResponse = {
 async function fetchKlerosAddressTags(
   apiUrl: string,
   chainId: string,
-  addresses: ChecksummedAddress[]
+  addresses: ChecksummedAddress[],
 ): Promise<KlerosResponse | null> {
   if (addresses.length === 0) {
     return null;
@@ -41,10 +41,10 @@ async function fetchKlerosAddressTags(
   try {
     // Use proxy in development, direct API in production
     const isDevelopment = import.meta.env.DEV;
-    const endpoint = isDevelopment 
+    const endpoint = isDevelopment
       ? "/api/kleros/api/address-tags"
       : `${apiUrl}/api/address-tags`;
-    
+
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
@@ -72,7 +72,7 @@ export const getKlerosAddressTagsQuery = (
   enabled: boolean,
   apiUrl: string,
   chainId: bigint | undefined,
-  addresses: ChecksummedAddress[]
+  addresses: ChecksummedAddress[],
 ): UseQueryOptions<KlerosResponse | null> => ({
   queryKey: ["kleros", chainId?.toString(), ...addresses],
   queryFn: () => {
@@ -85,11 +85,11 @@ export const getKlerosAddressTagsQuery = (
 });
 
 export const useKlerosAddressTags = (
-  address: ChecksummedAddress | undefined
+  address: ChecksummedAddress | undefined,
 ): KlerosAddressTag[] | null | undefined => {
   const { config, provider } = useContext(RuntimeContext);
   const klerosConfig = config.kleros;
-  
+
   if (!klerosConfig?.enabled || !address) {
     return null;
   }
@@ -99,8 +99,8 @@ export const useKlerosAddressTags = (
       klerosConfig.enabled,
       klerosConfig.apiUrl || "https://scout-api.kleros.link",
       provider._network.chainId,
-      [address]
-    )
+      [address],
+    ),
   );
 
   if (!query.data) {
@@ -108,8 +108,10 @@ export const useKlerosAddressTags = (
   }
 
   // Extract tags for the specific address
-  const addressResponse = query.data.addresses.find(
-    (item) => Object.keys(item).some(key => key.toLowerCase() === address.toLowerCase())
+  const addressResponse = query.data.addresses.find((item) =>
+    Object.keys(item).some(
+      (key) => key.toLowerCase() === address.toLowerCase(),
+    ),
   );
 
   if (!addressResponse) {
@@ -118,7 +120,7 @@ export const useKlerosAddressTags = (
 
   // Get the tags for this address (case-insensitive lookup)
   const addressKey = Object.keys(addressResponse).find(
-    (key) => key.toLowerCase() === address.toLowerCase()
+    (key) => key.toLowerCase() === address.toLowerCase(),
   );
 
   return addressKey ? addressResponse[addressKey] : null;
@@ -126,11 +128,11 @@ export const useKlerosAddressTags = (
 
 // Batch hook for fetching multiple addresses at once (useful for transaction logs)
 export const useKlerosAddressTagsBatch = (
-  addresses: ChecksummedAddress[]
+  addresses: ChecksummedAddress[],
 ): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
   const { config, provider } = useContext(RuntimeContext);
   const klerosConfig = config.kleros;
-  
+
   if (!klerosConfig?.enabled || addresses.length === 0) {
     return null;
   }
@@ -140,8 +142,8 @@ export const useKlerosAddressTagsBatch = (
       klerosConfig.enabled,
       klerosConfig.apiUrl || "https://scout-api.kleros.link",
       provider._network.chainId,
-      addresses
-    )
+      addresses,
+    ),
   );
 
   if (!query.data) {
@@ -150,7 +152,7 @@ export const useKlerosAddressTagsBatch = (
 
   // Build a map for efficient lookups
   const tagsMap = new Map<ChecksummedAddress, KlerosAddressTag[]>();
-  
+
   query.data.addresses.forEach((addressObj) => {
     Object.entries(addressObj).forEach(([addr, tags]) => {
       tagsMap.set(addr as ChecksummedAddress, tags);

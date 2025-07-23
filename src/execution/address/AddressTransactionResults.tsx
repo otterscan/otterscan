@@ -8,6 +8,8 @@ import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat"
 import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import TransactionLink from "../../components/TransactionLink";
+import KlerosAddressInfo from "../../kleros/KlerosAddressInfo";
+import { useKlerosAddressTags } from "../../kleros/useKleros";
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
@@ -30,8 +32,6 @@ import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { usePageTitle } from "../../useTitle";
 import { commify } from "../../utils/utils";
-import { useKlerosAddressTags } from "../../kleros/useKleros";
-import KlerosAddressInfo from "../../kleros/KlerosAddressInfo";
 import { type AddressOutletContext } from "../AddressMainPage";
 import DecoratedAddressLink from "../components/DecoratedAddressLink";
 import TransactionAddressWithCopy from "../components/TransactionAddressWithCopy";
@@ -61,7 +61,7 @@ const AddressTransactionResults: FC = () => {
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useToggler(FeeDisplay);
   const [valueDisplay, valueDisplayToggler] = useToggler(ValueDisplay);
-  
+
   const klerosTags = useKlerosAddressTags(address);
 
   const { addressOrName, direction } = useParams();

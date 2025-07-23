@@ -10,10 +10,10 @@ import { FC, memo, useContext } from "react";
 import { NavLink } from "react-router";
 import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
+import KlerosLogo from "../../kleros/KlerosLogo";
+import { useKlerosAddressTags } from "../../kleros/useKleros";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
-import { useKlerosAddressTags } from "../../kleros/useKleros";
-import KlerosLogo from "../../kleros/KlerosLogo";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
@@ -159,19 +159,28 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
       <NavLink
         to={`/address/${address}`}
         className={`flex items-baseline space-x-1 font-sans truncate ${
-          dontOverrideColors 
-            ? "" 
+          dontOverrideColors
+            ? ""
             : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
         }`}
-        style={!dontOverrideColors ? {
-          color: 'var(--color-kleros-tag)',
-        } : undefined}
-        onMouseOver={!dontOverrideColors ? (e) => 
-          e.currentTarget.style.color = 'var(--color-kleros-tag-hover)'
-        : undefined}
-        onMouseOut={!dontOverrideColors ? (e) => 
-          e.currentTarget.style.color = 'var(--color-kleros-tag)'
-        : undefined}
+        style={
+          !dontOverrideColors
+            ? {
+                color: "var(--color-kleros-tag)",
+              }
+            : undefined
+        }
+        onMouseOver={
+          !dontOverrideColors
+            ? (e) =>
+                (e.currentTarget.style.color = "var(--color-kleros-tag-hover)")
+            : undefined
+        }
+        onMouseOut={
+          !dontOverrideColors
+            ? (e) => (e.currentTarget.style.color = "var(--color-kleros-tag)")
+            : undefined
+        }
         title={`Verified by Kleros (${klerosName}): ${address}`}
       >
         <KlerosLogo className="h-3 w-3 flex-shrink-0" />

@@ -21,26 +21,31 @@ Based on the provided cURL demo, we can test these addresses:
 ## Features Implemented
 
 ✅ **Service Layer**: `src/kleros/useKleros.ts`
+
 - Hook for fetching single address tags
 - Hook for batch fetching multiple addresses
 - React Query integration with proper caching
 - Error handling and fallbacks
 
 ✅ **Configuration**: `src/useConfig.ts`
+
 - Added Kleros config section to OtterscanConfig type
 - Support for enabled/disabled, custom API URL, supported chains
 
 ✅ **UI Components**:
+
 - `KlerosLogo.tsx`: Small logo for badges
 - `KlerosTagBadge.tsx`: Compact display for address links
 - `KlerosAddressInfo.tsx`: Detailed information panel
 
 ✅ **Integration Points**:
+
 - `DecoratedAddressLink`: Shows compact Kleros badge next to addresses
 - `AddressSubtitle`: Shows project name in address header
 - `AddressTransactionResults`: Shows detailed Kleros info on overview page
 
 ✅ **Configuration**: `public/config.json`
+
 - Added example Kleros configuration
 - Enabled for chains 1, 137, 42161 (Ethereum, Polygon, Arbitrum)
 
@@ -49,6 +54,7 @@ Based on the provided cURL demo, we can test these addresses:
 The development server is running at http://localhost:5174/
 
 To test:
+
 1. Navigate to one of the test addresses above
 2. Look for the Kleros logo and project name
 3. Check the overview page for detailed Kleros information
