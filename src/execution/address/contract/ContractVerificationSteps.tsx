@@ -16,7 +16,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { keccak256, toUtf8Bytes } from "ethers";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
-import { fetchSolc } from "web-solc";
+import { fetchAndLoadSolc } from "web-solc";
 import StepByStep, { useStepManagement } from "../../../components/StepByStep";
 import { queryClient } from "../../../queryClient";
 import {
@@ -36,7 +36,7 @@ class Solc implements ISolidityCompiler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     // TODO: Separate into its own function to create a separate "Downloading compiler" step
-    const { compile } = await fetchSolc(version);
+    const { compile } = await fetchAndLoadSolc(version);
     return await compile(solcJsonInput);
   }
 }
