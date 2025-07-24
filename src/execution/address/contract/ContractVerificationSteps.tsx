@@ -35,6 +35,7 @@ class Solc implements ISolidityCompiler {
     solcJsonInput: SolidityJsonInput,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
+    // TODO: Separate into its own function to create a separate "Downloading compiler" step
     const { compile } = await fetchSolc(version);
     return await compile(solcJsonInput);
   }
@@ -193,7 +194,12 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         );
         await verification.verify();
       } catch (e: any) {
-        setResult("Vailed to verify contract: " + e.toString());
+        setResult(
+          <>
+            <strong>Failed to verify contract:</strong> {e.toString()}
+          </>,
+        );
+        updateStep(2, { inProgress: false, completed: false });
         return;
       }
 
