@@ -216,7 +216,7 @@ export type OtterscanConfig = {
   /**
    * Temporary config option: Enables local re-verification of contracts.
    */
-  WIP_localContractReverification?: boolean;
+  EXPERIMENTAL_localContractReverification?: boolean;
 };
 
 /**

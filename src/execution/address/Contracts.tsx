@@ -129,7 +129,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
           <InfoRow title="Match">
             {match.type === MatchType.FULL_MATCH ? "Exact Match" : "Match"}
 
-            {config.WIP_localContractReverification === true && (
+            {config.EXPERIMENTAL_localContractReverification === true && (
               <>
                 {!showLocalVerification && (
                   <button
