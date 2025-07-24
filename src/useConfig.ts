@@ -212,6 +212,26 @@ export type OtterscanConfig = {
    * address labels which are kept in local storage.
    */
   WIP_customAddressLabels?: boolean;
+
+  /**
+   * Optional Kleros Scout integration for address tagging and verification
+   */
+  kleros?: {
+    /**
+     * Enable/disable Kleros Scout integration
+     */
+    enabled: boolean;
+
+    /**
+     * Kleros Scout API URL (defaults to https://scout-api.kleros.link)
+     */
+    apiUrl?: string;
+
+    /**
+     * List of chain IDs that Kleros Scout supports (optional - will try all chains if not specified)
+     */
+    supportedChains?: string[];
+  };
 };
 
 /**
