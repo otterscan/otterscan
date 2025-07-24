@@ -101,7 +101,7 @@
     "ts-node": "^10.9.2",
     "tspeg": "^3.3.2",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5",
+    "vite": "^7.0.6",
     "vite-imagetools": "^7.1.0",
     "vite-plugin-compression": "^0.5.1"
   },
