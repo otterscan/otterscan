@@ -8,6 +8,7 @@ export interface Step {
   description?: string;
   inProgress?: boolean;
   duration?: number;
+  hasError?: boolean;
 }
 
 export const useStepManagement = (defaultSteps: Step[]) => {
@@ -20,6 +21,7 @@ export const useStepManagement = (defaultSteps: Step[]) => {
       inProgress: boolean;
       completed: boolean;
       showDuration?: boolean;
+      hasError?: boolean;
     },
   ) => {
     const { inProgress, completed, showDuration } = progress;
@@ -29,6 +31,11 @@ export const useStepManagement = (defaultSteps: Step[]) => {
           if (inProgress) {
             startTimes.current[index] = Date.now();
           }
+          const otherSteps = {
+            ...(progress.hasError !== undefined && {
+              hasError: progress.hasError,
+            }),
+          };
           if (
             completed &&
             index in startTimes.current &&
@@ -37,9 +44,9 @@ export const useStepManagement = (defaultSteps: Step[]) => {
             const endTime = Date.now();
             const duration =
               (endTime - (startTimes.current[index] || endTime)) / 1000;
-            return { ...step, inProgress, completed, duration };
+            return { ...step, inProgress, completed, duration, ...otherSteps };
           }
-          return { ...step, inProgress, completed };
+          return { ...step, inProgress, completed, ...otherSteps };
         }
         return step;
       }),
@@ -53,6 +60,7 @@ export const useStepManagement = (defaultSteps: Step[]) => {
         inProgress: false,
         completed: false,
         duration: undefined,
+        hasError: false,
       })),
     );
     startTimes.current = {};
@@ -71,7 +79,7 @@ const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
               className={`w-8 h-8 flex items-center justify-center rounded-full ${
                 step.completed
                   ? "bg-green-500 text-white"
-                  : `bg-white text-black ${step.inProgress ? "border-gray-500" : "border-gray-300"} border-2`
+                  : `bg-white text-black ${step.hasError ? "border-red-600 text-red-600" : step.inProgress ? "border-gray-500" : "border-gray-300"} border-2`
               } ${step.inProgress ? `font-bold` : ""}`}
             >
               {index + 1}
