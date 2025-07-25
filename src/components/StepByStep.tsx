@@ -93,7 +93,9 @@ const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
             )}
           </div>
           <span className={`${step.inProgress ? `font-bold` : ""}`}>
-            {step.name}
+            <span className={`${step.hasError === true ? "text-red-600" : ""}`}>
+              {step.name}
+            </span>
             {step.description ? (
               <span className="text-xs ml-5">{step.description}</span>
             ) : null}
