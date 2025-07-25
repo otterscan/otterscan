@@ -108,54 +108,71 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         ),
       );
       if (!match) {
+        updateStep(0, { inProgress: false, completed: false, hasError: true });
         setResult("No Sourcify match found for this contract.");
         return;
       }
       const metadata = match.metadata as unknown as Metadata;
       if (!metadata) {
+        updateStep(0, { inProgress: false, completed: false, hasError: true });
         setResult("Metadata not found in match response.");
         return;
       }
 
       const sources = match.metadata.sources;
-      for (const filename in sources) {
-        if (sources.hasOwnProperty(filename)) {
-          setResult(`Fetching ${filename}`);
-          let content = await queryClient.fetchQuery(
-            getContractQuery(
-              sourcifySources,
-              sourcifySource,
-              address,
-              provider._network.chainId,
-              filename,
-              sources[filename].keccak256,
-              match.type,
-            ),
-          );
-          // Error if content is undefined!
-          content = content ?? "";
-          const resolvedSourcifySource = resolveSourcifySource(
-            sourcifySource,
-            sourcifySources,
-          );
-          content = transformContractResponse(
-            content,
-            filename,
-            resolvedSourcifySource.sourcifySource,
-          );
-          const calculatedHash = keccak256(toUtf8Bytes(content));
-          if (calculatedHash !== sources[filename].keccak256) {
-            setResult(
-              `Hash mismatch for ${filename}. Got ${calculatedHash}, but ${sources[filename].keccak256} in the metadata`,
+      try {
+        for (const filename in sources) {
+          if (sources.hasOwnProperty(filename)) {
+            setResult(`Fetching ${filename}`);
+            let content = await queryClient.fetchQuery(
+              getContractQuery(
+                sourcifySources,
+                sourcifySource,
+                address,
+                provider._network.chainId,
+                filename,
+                sources[filename].keccak256,
+                match.type,
+              ),
             );
-            return;
-          }
+            // Error if content is undefined!
+            content = content ?? "";
+            const resolvedSourcifySource = resolveSourcifySource(
+              sourcifySource,
+              sourcifySources,
+            );
+            content = transformContractResponse(
+              content,
+              filename,
+              resolvedSourcifySource.sourcifySource,
+            );
+            const calculatedHash = keccak256(toUtf8Bytes(content));
+            if (calculatedHash !== sources[filename].keccak256) {
+              setResult(
+                `Hash mismatch for ${filename}. Got ${calculatedHash}, but ${sources[filename].keccak256} in the metadata`,
+              );
+              updateStep(0, {
+                inProgress: false,
+                completed: false,
+                hasError: true,
+              });
+              return;
+            }
 
-          sources[filename] = {
-            ...sources[filename],
-            content: content,
-          };
+            sources[filename] = {
+              ...sources[filename],
+              content: content,
+            };
+          }
         }
+      } catch (e: any) {
+        setResult(
+          <>
+            <strong>Failed to fetch sources:</strong> {e.toString()}
+          </>,
+        );
+        updateStep(0, { inProgress: false, completed: false, hasError: true });
+        return;
       }
       setResult("");
       updateStep(0, { inProgress: false, completed: true });
@@ -170,6 +187,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         compilation = await metadataContract.createCompilation(new Solc());
       } catch (e: any) {
         setResult("Failed to create compilation: " + e.toString());
+        updateStep(1, { inProgress: false, completed: false, hasError: true });
         return;
       }
       updateStep(1, { inProgress: false, completed: true });
@@ -199,7 +217,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
             <strong>Failed to verify contract:</strong> {e.toString()}
           </>,
         );
-        updateStep(2, { inProgress: false, completed: false });
+        updateStep(2, { inProgress: false, completed: false, hasError: true });
         return;
       }
 
