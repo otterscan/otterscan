@@ -212,6 +212,11 @@ export type OtterscanConfig = {
    * address labels which are kept in local storage.
    */
   WIP_customAddressLabels?: boolean;
+
+  /**
+   * Temporary config option: Enables local re-verification of contracts.
+   */
+  EXPERIMENTAL_localContractReverification?: boolean;
 };
 
 /**

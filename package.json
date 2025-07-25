@@ -9,6 +9,8 @@
     "@fontsource/roboto": "^5.2.6",
     "@fontsource/roboto-mono": "^5.2.6",
     "@fontsource/space-grotesk": "^5.2.8",
+    "@ethereum-sourcify/compilers-types": "^1.0.3",
+    "@ethereum-sourcify/lib-sourcify": "^2.1.3",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
@@ -45,6 +47,7 @@
     "swr": "^2.3.4",
     "tiny-invariant": "^1.3.3",
     "use-keyboard-shortcut": "^1.1.6",
+    "web-solc": "^0.6.0",
     "web-vitals": "^3.5.2"
   },
   "scripts": {
