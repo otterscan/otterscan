@@ -1,3 +1,5 @@
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useRef, useState } from "react";
 
 export interface Step {
@@ -92,6 +94,12 @@ const StepByStep: React.FC<{ steps: Step[] }> = ({ steps }) => {
                 ({step.duration.toFixed(2)}s)
               </span>
             ) : null}
+            {step.inProgress && (
+              <FontAwesomeIcon
+                className="animate-spin ml-2"
+                icon={faCircleNotch}
+              />
+            )}
           </span>
         </div>
       ))}
