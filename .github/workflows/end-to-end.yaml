@@ -40,6 +40,15 @@ jobs:
           sudo apt update
           sudo apt install -y libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
 
+      - name: Install Tailscale
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tailscale
+          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=gh-cypress --accept-routes
+
+      - name: Confirm Tailscale is up
+        run: tailscale status
+
       - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
         with:
