@@ -42,7 +42,7 @@ jobs:
 
       - name: Install Tailscale
         run: |
-          sudo apt-get install -y tailscale
+          sudo apt install -y tailscale
           sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=gh-cypress --accept-routes
 
       - name: Confirm Tailscale is up
