@@ -40,6 +40,17 @@ jobs:
           sudo apt update
           sudo apt install -y libgtk2.0-0t64 libgtk-3-0t64 libgbm-dev libnotify-dev libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
 
+      - name: Install Tailscale
+        run: |
+          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+          curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+          sudo apt update
+          sudo apt install -y tailscale
+          sudo tailscale up --authkey=${{ secrets.TAILSCALE_AUTH_KEY }} --hostname=gh-cypress --accept-routes
+
+      - name: Confirm Tailscale is up
+        run: tailscale status
+
       - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
         with:
