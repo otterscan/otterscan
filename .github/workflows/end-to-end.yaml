@@ -1,3 +1,10 @@
+# Runs Cypress e2e tests on GitHub Actions
+#
+# Secret configuration (MUST be configured at github project level: Settings -> Secrets and variables -> Actions -> Repository secrets):
+#
+# - TAILSCALE_AUTH_KEY: tailscale API key required in order to access Erigon nodes inside our tailscale dev env
+# - E2E_ERIGON_URL: JSON-RPC endpoint URL, e.g., http://erigon-node:8545
+# - E2E_CYPRESS_RECORD_KEY: Cypress API key
 name: End-to-End Tests
 on:
   pull_request:
