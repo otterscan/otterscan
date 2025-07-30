@@ -1,4 +1,4 @@
-# Runs Cypress e2e tests on github actions
+# Runs Cypress e2e tests on GitHub Actions
 #
 # Secret configuration (MUST be configured at github project level: Settings -> Secrets and variables -> Actions -> Repository secrets):
 #
