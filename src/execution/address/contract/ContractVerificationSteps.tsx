@@ -31,6 +31,24 @@ import {
 import { useAppConfigContext } from "../../../useAppConfig";
 import { RuntimeContext } from "../../../useRuntime";
 
+function parseSolidityVersion(version: string): {
+  major: number;
+  minor: number;
+  patch: number;
+} {
+  const regex = /(\d+)\.(\d+)\.(\d+)/;
+  const match = version.match(regex);
+  if (!match) {
+    throw new Error("Unknown Solidity version format: " + version);
+  }
+
+  return {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+    patch: Number(match[3]),
+  };
+}
+
 class Solc implements ISolidityCompiler {
   async compile(
     version: string,
@@ -38,8 +56,16 @@ class Solc implements ISolidityCompiler {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<any> {
     // TODO: Separate into its own function to create a separate "Downloading compiler" step
-    const { compile } = await fetchAndLoadSolc(version);
-    return await compile(solcJsonInput);
+    try {
+      const { compile } = await fetchAndLoadSolc(version);
+      return await compile(solcJsonInput);
+    } catch (e) {
+      const { major, minor, patch } = parseSolidityVersion(version);
+      if (major === 0 && (minor < 4 || (minor === 4 && patch < 11))) {
+        throw new Error("Solidity version not supported (too old): " + version);
+      }
+      throw e;
+    }
   }
 }
 
