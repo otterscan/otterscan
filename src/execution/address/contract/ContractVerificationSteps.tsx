@@ -12,11 +12,13 @@ import {
   faCheckCircle,
   faCheckDouble,
   faTimesCircle,
+  faWarning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { keccak256, toUtf8Bytes } from "ethers";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchAndLoadSolc } from "web-solc";
+import Alert from "../../../components/Alert";
 import StepByStep, { useStepManagement } from "../../../components/StepByStep";
 import { queryClient } from "../../../queryClient";
 import {
@@ -68,7 +70,10 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
   ]);
   const { sourcifySource } = useAppConfigContext();
   const sourcifySources = useSourcifySources();
-  const [result, setResult] = useState<ReactNode | null>(null);
+  const [result, setResult] = useState<{
+    node: ReactNode;
+    isError?: boolean;
+  } | null>(null);
 
   const { provider, config } = useContext(RuntimeContext);
 
@@ -109,13 +114,19 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       );
       if (!match) {
         updateStep(0, { inProgress: false, completed: false, hasError: true });
-        setResult("No Sourcify match found for this contract.");
+        setResult({
+          node: "No Sourcify match found for this contract.",
+          isError: true,
+        });
         return;
       }
       const metadata = match.metadata as unknown as Metadata;
       if (!metadata) {
         updateStep(0, { inProgress: false, completed: false, hasError: true });
-        setResult("Metadata not found in match response.");
+        setResult({
+          node: "Metadata not found in match response.",
+          isError: true,
+        });
         return;
       }
 
@@ -123,7 +134,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       try {
         for (const filename in sources) {
           if (sources.hasOwnProperty(filename)) {
-            setResult(`Fetching ${filename}`);
+            setResult({ node: `Fetching ${filename}` });
             let content = await queryClient.fetchQuery(
               getContractQuery(
                 sourcifySources,
@@ -148,9 +159,10 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
             );
             const calculatedHash = keccak256(toUtf8Bytes(content));
             if (calculatedHash !== sources[filename].keccak256) {
-              setResult(
-                `Hash mismatch for ${filename}. Got ${calculatedHash}, but ${sources[filename].keccak256} in the metadata`,
-              );
+              setResult({
+                node: `Hash mismatch for ${filename}. Got ${calculatedHash}, but ${sources[filename].keccak256} in the metadata`,
+                isError: true,
+              });
               updateStep(0, {
                 inProgress: false,
                 completed: false,
@@ -166,15 +178,18 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
           }
         }
       } catch (e: any) {
-        setResult(
-          <>
-            <strong>Failed to fetch sources:</strong> {e.toString()}
-          </>,
-        );
+        setResult({
+          node: (
+            <>
+              <strong>Failed to fetch sources:</strong> {e.toString()}
+            </>
+          ),
+          isError: true,
+        });
         updateStep(0, { inProgress: false, completed: false, hasError: true });
         return;
       }
-      setResult("");
+      setResult({ node: "" });
       updateStep(0, { inProgress: false, completed: true });
 
       // Step 2: Compiling Contract
@@ -186,7 +201,10 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         metadataContract = new SolidityMetadataContract(metadata, []);
         compilation = await metadataContract.createCompilation(new Solc());
       } catch (e: any) {
-        setResult("Failed to create compilation: " + e.toString());
+        setResult({
+          node: "Failed to create compilation: " + e.toString(),
+          isError: true,
+        });
         updateStep(1, { inProgress: false, completed: false, hasError: true });
         return;
       }
@@ -212,11 +230,14 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         );
         await verification.verify();
       } catch (e: any) {
-        setResult(
-          <>
-            <strong>Failed to verify contract:</strong> {e.toString()}
-          </>,
-        );
+        setResult({
+          node: (
+            <>
+              <strong>Failed to verify contract:</strong> {e.toString()}
+            </>
+          ),
+          isError: true,
+        });
         updateStep(2, { inProgress: false, completed: false, hasError: true });
         return;
       }
@@ -236,55 +257,56 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
           ? "Exact match: The onchain and compiled bytecode match exactly, including the metadata hashes."
           : "Match: The onchain and compiled bytecode match, but metadata hashes differ or don't exist.";
 
-      setResult(
-        runtimeMatch === "partial" || runtimeMatch === "perfect" ? (
-          <div>
-            <div className="mb-1 font-bold">Local verification result:</div>
-            <div className="flex items-center gap-3">
-              <div
-                className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base"
-                title={explainer}
-              >
-                {" "}
-                <FontAwesomeIcon
-                  icon={runtimeMatch === "perfect" ? faCheckDouble : faCheck}
-                />{" "}
-                {runtimeMatch === "perfect" && "Exact "}Match
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
+      setResult({
+        node:
+          runtimeMatch === "partial" || runtimeMatch === "perfect" ? (
+            <div>
+              <div className="mb-1 font-bold">Local verification result:</div>
+              <div className="flex items-center gap-3">
+                <div
+                  className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base"
+                  title={explainer}
+                >
+                  {" "}
                   <FontAwesomeIcon
-                    className="self-center text-emerald-500"
-                    icon={faCheckCircle}
+                    icon={runtimeMatch === "perfect" ? faCheckDouble : faCheck}
                   />{" "}
-                  runtime bytecode
+                  {runtimeMatch === "perfect" && "Exact "}Match
                 </div>
-                <div className="flex gap-1">
-                  {creationMatch === "partial" ||
-                  creationMatch === "perfect" ? (
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
                     <FontAwesomeIcon
                       className="self-center text-emerald-500"
                       icon={faCheckCircle}
-                    />
-                  ) : (
-                    <FontAwesomeIcon
-                      className="self-center text-red-500"
-                      icon={faTimesCircle}
-                    />
-                  )}{" "}
-                  creation bytecode
+                    />{" "}
+                    runtime bytecode
+                  </div>
+                  <div className="flex gap-1">
+                    {creationMatch === "partial" ||
+                    creationMatch === "perfect" ? (
+                      <FontAwesomeIcon
+                        className="self-center text-emerald-500"
+                        icon={faCheckCircle}
+                      />
+                    ) : (
+                      <FontAwesomeIcon
+                        className="self-center text-red-500"
+                        icon={faTimesCircle}
+                      />
+                    )}{" "}
+                    creation bytecode
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <span>
-            <span className="text-lg">❌</span> Local verification failed: It
-            might not be safe to interact with this contract. Please report it
-            to Sourcify before proceeding.
-          </span>
-        ),
-      );
+          ) : (
+            <span>
+              <span className="text-lg">❌</span> Local verification failed: It
+              might not be safe to interact with this contract. Please report it
+              to Sourcify before proceeding.
+            </span>
+          ),
+      });
 
       updateStep(3, {
         inProgress: false,
@@ -299,7 +321,19 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
   return (
     <div>
       <StepByStep steps={steps} />
-      <div className="pt-4">{result}</div>
+      <div className="pt-4">
+        {result !== null &&
+          (result.isError === true ? (
+            <Alert
+              className="bg-red-100 border-red-500 text-red-700"
+              icon={faWarning}
+            >
+              {result.node}
+            </Alert>
+          ) : (
+            result.node
+          ))}
+      </div>
     </div>
   );
 };
