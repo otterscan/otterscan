@@ -15,9 +15,10 @@ import {
   faWarning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { type UseQueryOptions } from "@tanstack/react-query";
 import { keccak256, toUtf8Bytes } from "ethers";
 import React, { ReactNode, useContext, useEffect, useState } from "react";
-import { fetchAndLoadSolc } from "web-solc";
+import { fetchSolc, loadSolc } from "web-solc";
 import Alert from "../../../components/Alert";
 import StepByStep, { useStepManagement } from "../../../components/StepByStep";
 import { queryClient } from "../../../queryClient";
@@ -49,7 +50,18 @@ function parseSolidityVersion(version: string): {
   };
 }
 
+export const fetchSolcQuery = (version: string): UseQueryOptions<string> => ({
+  queryKey: ["solc", version],
+  queryFn: () => fetchSolc(version),
+});
+
 class Solc implements ISolidityCompiler {
+  private solc: string;
+
+  constructor(solc: string) {
+    this.solc = solc;
+  }
+
   async compile(
     version: string,
     solcJsonInput: SolidityJsonInput,
@@ -57,7 +69,7 @@ class Solc implements ISolidityCompiler {
   ): Promise<any> {
     // TODO: Separate into its own function to create a separate "Downloading compiler" step
     try {
-      const { compile } = await fetchAndLoadSolc(version);
+      const { compile } = await loadSolc(this.solc);
       return await compile(solcJsonInput);
     } catch (e) {
       const { major, minor, patch } = parseSolidityVersion(version);
@@ -83,13 +95,13 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       completed: false,
     },
     {
-      name: "Compiling Contract",
-      description: "Compiling locally in the browser",
+      name: "Downloading compiler",
+      description: "Loading the Solidity compiler",
       completed: false,
     },
     {
       name: "Verifying Contract",
-      description: "Executing verification logic in the browser",
+      description: "Recompiling contract in the browser",
       completed: false,
     },
     { name: "Reporting Verification", completed: false },
@@ -221,11 +233,29 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       // Step 2: Compiling Contract
       updateStep(1, { inProgress: true, completed: false });
 
+      let solc: string;
+      try {
+        solc = await queryClient.fetchQuery(
+          fetchSolcQuery(metadata.compiler.version),
+        );
+      } catch (e: any) {
+        setResult({
+          node: (
+            <>
+              <strong>Failed to download compiler:</strong> {e.toString()}
+            </>
+          ),
+          isError: true,
+        });
+        updateStep(1, { inProgress: false, completed: false, hasError: true });
+        return;
+      }
+
       let metadataContract: SolidityMetadataContract;
       let compilation: SolidityCompilation;
       try {
         metadataContract = new SolidityMetadataContract(metadata, []);
-        compilation = await metadataContract.createCompilation(new Solc());
+        compilation = await metadataContract.createCompilation(new Solc(solc));
       } catch (e: any) {
         setResult({
           node: "Failed to create compilation: " + e.toString(),
