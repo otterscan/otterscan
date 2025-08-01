@@ -95,7 +95,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       completed: false,
     },
     {
-      name: "Downloading compiler",
+      name: "Downloading Compiler",
       description: "Loading the Solidity compiler",
       completed: false,
     },
