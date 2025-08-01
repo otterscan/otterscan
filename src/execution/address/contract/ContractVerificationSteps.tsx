@@ -101,7 +101,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
     },
     {
       name: "Verifying Contract",
-      description: "Recompiling contract in the browser",
+      description: "Compiling locally in the browser",
       completed: false,
     },
     { name: "Reporting Verification", completed: false },
