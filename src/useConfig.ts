@@ -208,6 +208,17 @@ export type OtterscanConfig = {
   };
 
   /**
+   * External data sources
+   */
+  externalDataSources?: {
+    /**
+     * The root URL for downloading Solidity compilers for local contract
+     * verification. Defaults to "https://binaries.soliditylang.org".
+     */
+    contractCompilerBaseURL?: string;
+  };
+
+  /**
    * Temporary config option, until address labels are complete: Enables setting
    * address labels which are kept in local storage.
    */

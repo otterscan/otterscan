@@ -50,15 +50,23 @@ function parseSolidityVersion(version: string): {
   };
 }
 
-export const fetchSolcQuery = (version: string): UseQueryOptions<string> => ({
-  queryKey: ["solc", version],
-  queryFn: () => fetchSolc(version),
+export const fetchSolcQuery = (
+  version: string,
+  baseUrl: string,
+): UseQueryOptions<string> => ({
+  queryKey: ["solc", baseUrl, version],
+  queryFn: () =>
+    fetchSolc(version, {
+      repository: {
+        baseUrl,
+      },
+    }),
 });
 
 class Solc implements ISolidityCompiler {
   private solc: string;
 
-  constructor(solc: string) {
+  constructor(solc: string, baseUrl: string) {
     this.solc = solc;
   }
 
@@ -114,6 +122,9 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
   } | null>(null);
 
   const { provider, config } = useContext(RuntimeContext);
+  const compilerBaseUrl =
+    config.externalDataSources?.contractCompilerBaseURL ??
+    "https://binaries.soliditylang.org";
 
   useEffect(() => {
     const verifyContract = async () => {
@@ -236,7 +247,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       let solc: string;
       try {
         solc = await queryClient.fetchQuery(
-          fetchSolcQuery(metadata.compiler.version),
+          fetchSolcQuery(metadata.compiler.version, compilerBaseUrl),
         );
       } catch (e: any) {
         setResult({
@@ -255,7 +266,9 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       let compilation: SolidityCompilation;
       try {
         metadataContract = new SolidityMetadataContract(metadata, []);
-        compilation = await metadataContract.createCompilation(new Solc(solc));
+        compilation = await metadataContract.createCompilation(
+          new Solc(solc, compilerBaseUrl),
+        );
       } catch (e: any) {
         setResult({
           node: "Failed to create compilation: " + e.toString(),
