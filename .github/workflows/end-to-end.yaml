@@ -41,7 +41,7 @@ jobs:
     needs: [check-secrets]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -85,7 +85,7 @@ jobs:
     needs: [check-secrets]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -139,7 +139,7 @@ jobs:
     needs: [check-secrets]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set up xvfb
         run: |
           sudo apt update
