@@ -21,6 +21,7 @@ import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchSolc, loadSolc } from "web-solc";
 import Alert from "../../../components/Alert";
 import StepByStep, { useStepManagement } from "../../../components/StepByStep";
+import Tooltip from "../../../components/Tooltip";
 import { queryClient } from "../../../queryClient";
 import {
   getContractQuery,
@@ -332,16 +333,17 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
             <div>
               <div className="mb-1 font-bold">Local verification result:</div>
               <div className="flex items-center gap-3">
-                <div
-                  className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base"
-                  title={explainer}
-                >
-                  {" "}
-                  <FontAwesomeIcon
-                    icon={runtimeMatch === "perfect" ? faCheckDouble : faCheck}
-                  />{" "}
-                  {runtimeMatch === "perfect" && "Exact "}Match
-                </div>
+                <Tooltip text={explainer}>
+                  <div className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base">
+                    {" "}
+                    <FontAwesomeIcon
+                      icon={
+                        runtimeMatch === "perfect" ? faCheckDouble : faCheck
+                      }
+                    />{" "}
+                    {runtimeMatch === "perfect" && "Exact "}Match
+                  </div>
+                </Tooltip>
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
                     <FontAwesomeIcon

@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router";
 import { type DecorationOptions } from "shiki";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
+import InfoButton from "../../components/InfoButton";
 import InfoRow from "../../components/InfoRow";
 import StandardTextarea from "../../components/StandardTextarea";
 import { Match, MatchType, getLangName } from "../../sourcify/useSourcify";
@@ -132,14 +133,26 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
             {config.EXPERIMENTAL_localContractReverification === true && (
               <>
                 {!showLocalVerification && (
-                  <button
-                    type="button"
-                    onClick={() => setShowLocalVerification(true)}
-                    className="ml-3 px-2 py-1 border border-blue-900 text-blue-900 rounded-md hover:bg-blue-100 text-xs"
-                    title="Fetch sources from Sourcify, download the Solidity compiler from soliditylang.org, and recompile the contract to confirm Sourcify's result."
-                  >
-                    Verify Locally
-                  </button>
+                  <>
+                    <div className="inline-flex items-center gap-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setShowLocalVerification(true)}
+                        className="ml-3 px-2 py-1 border border-blue-900 text-blue-900 rounded-md hover:bg-blue-100 text-xs"
+                        title="Fetch sources from Sourcify, download the Solidity compiler from soliditylang.org, and recompile the contract to confirm Sourcify's result."
+                      >
+                        Verify Locally
+                      </button>
+                      <InfoButton>
+                        Downloads the compiler executable and runs the
+                        verification in the browser using{" "}
+                        <ExternalLink href="https://github.com/ethereum/sourcify/tree/staging/packages/lib-sourcify">
+                          lib-sourcify
+                        </ExternalLink>
+                        . This way you don't need to trust an external verifier.
+                      </InfoButton>
+                    </div>
+                  </>
                 )}
                 {showLocalVerification && (
                   <div className="mt-3">
@@ -147,7 +160,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                       initial={{ height: 0 }}
                       animate={{ height: "auto" }}
                       transition={{ duration: 0.5 }}
-                      className="overflow-hidden"
+                      className="overflow-y-hidden"
                     >
                       <ContractVerificationSteps address={checksummedAddress} />
                     </motion.div>
