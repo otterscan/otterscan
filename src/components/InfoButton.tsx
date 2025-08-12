@@ -10,7 +10,7 @@ interface InfoButtonProps {
 const InfoButton: React.FC<InfoButtonProps> = ({ children }) => (
   <div className="inline-flex items-center h-full">
     <Tooltip text={children}>
-      <button className="flex items-center justify-center w-5 h-5 text-md text-black rounded-full focus:outline-none">
+      <button className="flex items-center justify-center w-4 h-4 text-md text-white bg-blue-800 rounded-full focus:outline-none">
         <FontAwesomeIcon icon={faInfoCircle} size="1x" />
       </button>
     </Tooltip>
