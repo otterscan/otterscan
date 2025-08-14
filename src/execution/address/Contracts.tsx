@@ -160,7 +160,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                       initial={{ height: 0 }}
                       animate={{ height: "auto" }}
                       transition={{ duration: 0.5 }}
-                      className="overflow-y-hidden"
+                      className="overflow-y-clip"
                     >
                       <ContractVerificationSteps address={checksummedAddress} />
                     </motion.div>
