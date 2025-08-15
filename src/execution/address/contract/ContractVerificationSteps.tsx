@@ -8,9 +8,7 @@ import {
   Verification,
 } from "@ethereum-sourcify/lib-sourcify";
 import {
-  faCheck,
   faCheckCircle,
-  faCheckDouble,
   faTimesCircle,
   faWarning,
 } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +19,6 @@ import React, { ReactNode, useContext, useEffect, useState } from "react";
 import { fetchSolc, loadSolc } from "web-solc";
 import Alert from "../../../components/Alert";
 import StepByStep, { useStepManagement } from "../../../components/StepByStep";
-import Tooltip from "../../../components/Tooltip";
 import { queryClient } from "../../../queryClient";
 import {
   getContractQuery,
@@ -32,6 +29,7 @@ import {
 } from "../../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../../useAppConfig";
 import { RuntimeContext } from "../../../useRuntime";
+import VerificationStatus from "./VerificationStatus";
 
 function parseSolidityVersion(version: string): {
   major: number;
@@ -322,28 +320,13 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       const runtimeMatch = exportedVerification.status.runtimeMatch;
       const creationMatch = exportedVerification.status.creationMatch;
 
-      const explainer =
-        runtimeMatch === "perfect"
-          ? "Exact match: The onchain and compiled bytecode match exactly, including the metadata hashes."
-          : "Match: The onchain and compiled bytecode match, but metadata hashes differ or don't exist.";
-
       setResult({
         node:
           runtimeMatch === "partial" || runtimeMatch === "perfect" ? (
             <div>
               <div className="mb-1 font-bold">Local verification result:</div>
               <div className="flex items-center gap-3">
-                <Tooltip text={explainer}>
-                  <div className="inline-flex items-center gap-1 px-2 py-1 md:px-3 md:py-1 rounded-md font-semibold border bg-green-100 text-green-800 border-green-200 text-sm w-auto flex-shrink-0 md:text-base">
-                    {" "}
-                    <FontAwesomeIcon
-                      icon={
-                        runtimeMatch === "perfect" ? faCheckDouble : faCheck
-                      }
-                    />{" "}
-                    {runtimeMatch === "perfect" && "Exact "}Match
-                  </div>
-                </Tooltip>
+                <VerificationStatus runtimeMatch={runtimeMatch} />
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1">
                     <FontAwesomeIcon
