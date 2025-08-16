@@ -266,7 +266,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       try {
         metadataContract = new SolidityMetadataContract(metadata, []);
         compilation = await metadataContract.createCompilation(
-          new Solc(solc, compilerBaseUrl),
+          new Solc(solc),
         );
       } catch (e: any) {
         setResult({
