@@ -181,7 +181,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       const sources = match.metadata.sources;
       try {
         for (const filename in sources) {
-          if (sources.hasOwnProperty(filename)) {
+          if (Object.prototype.hasOwnProperty.call(sources, filename)) {
             setResult({ node: `Fetching ${filename}` });
             let content = await queryClient.fetchQuery(
               getContractQuery(
