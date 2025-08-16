@@ -65,7 +65,7 @@ export const fetchSolcQuery = (
 class Solc implements ISolidityCompiler {
   private solc: string;
 
-  constructor(solc: string, baseUrl: string) {
+  constructor(solc: string) {
     this.solc = solc;
   }
 
