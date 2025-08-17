@@ -9,27 +9,32 @@ Otterscan is an open-source, local Ethereum block explorer built as a React appl
 ## Development Commands
 
 ### Core Development
+
 - `npm start` - Start development server with Vite (default port 5173)
 - `npm run build` - Build production version (TypeScript compilation + Vite build)
 - `npm run preview` - Preview production build
 - `npm test` - Run Jest unit tests
 
 ### Specialized Development
+
 - `npm run start-devnet` - Start with devnet configuration using `cypress/support/devnet-config.json`
 - `npm run storybook` - Start Storybook development server on port 6006
 - `npm run build-storybook` - Build static Storybook
 
 ### Testing
+
 - `npm run cy:run-mainnet` - Run Cypress E2E tests for mainnet
 - `npm run cy:run-devnet` - Run Cypress E2E tests for devnet
 - `npm run source-map-explorer` - Analyze bundle size
 
 ### Parser Generation
+
 - `npm run build-parsers` - Generate contract input data parser from grammar file
 
 ## Architecture Overview
 
 ### Core Structure
+
 The application follows a React Router-based architecture with lazy-loaded components:
 
 - **App.tsx**: Main application entry with router configuration, context providers, and loading states
@@ -40,7 +45,9 @@ The application follows a React Router-based architecture with lazy-loaded compo
 ### Key Directories
 
 #### `/src/execution/`
+
 Contains all execution layer (Ethereum L1) related components:
+
 - **Block.tsx**, **Transaction.tsx**, **Address.tsx**: Main entity pages
 - **address/**: Address-specific functionality including contract interaction, token holdings, transactions
 - **block/**: Block-specific components and transaction listings
@@ -48,43 +55,55 @@ Contains all execution layer (Ethereum L1) related components:
 - **components/**: Shared execution layer components
 
 #### `/src/consensus/`
+
 Consensus layer (Beacon Chain) related components:
+
 - **Epoch.tsx**, **Slot.tsx**, **Validator.tsx**: Main consensus entities
 - **epoch/**, **slot/**, **validator/**: Entity-specific components
 - **components/**: Shared consensus components
 
 #### `/src/api/`
+
 External service integrations:
+
 - **address-resolver/**: Multi-source address name resolution (ENS, tokens, Uniswap, hardcoded)
 - **token-price-resolver/**: Token price fetching from Uniswap pools
 
 #### `/src/components/`
+
 Reusable UI components with extensive Storybook stories
 
 #### `/src/sourcify/`
+
 Sourcify contract verification integration
 
 #### `/src/search/`
+
 Search functionality including QR code scanning
 
 #### `/src/token/`
+
 Token-related pages and components (ERC20, ERC721, etc.)
 
 #### `/src/special/`
+
 Special features like London hard fork live blocks visualization
 
 #### `/src/ots2/`
+
 Integration with Otterscan API v2 (OTS2) for enhanced functionality
 
 ### Configuration System
 
 The application uses a flexible configuration system:
+
 - **public/config.json**: Main configuration file loaded at runtime
 - **useConfig.ts**: Configuration loading and environment variable overrides
 - **VITE_CONFIG_JSON**: Environment variable for complete config override
-- **VITE_*** variables**: Individual config overrides during development
+- **VITE\_\*** variables\*\*: Individual config overrides during development
 
 Key configuration options:
+
 - `erigonURL`: Erigon node JSON-RPC endpoint
 - `beaconAPI`: Beacon chain API endpoint (optional)
 - `assetsURLPrefix`: Static assets URL
@@ -103,6 +122,7 @@ Key configuration options:
 ### Runtime System
 
 The application builds a runtime context that includes:
+
 - Provider connection to Erigon node
 - Chain information detection/configuration
 - API level verification
@@ -119,6 +139,7 @@ The application builds a runtime context that includes:
 ### Component Architecture
 
 Components follow React best practices:
+
 - Extensive use of lazy loading for performance
 - Comprehensive Storybook stories for UI components
 - TypeScript throughout with strict typing
