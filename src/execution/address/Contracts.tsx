@@ -2,11 +2,13 @@ import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import React, { lazy, useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { type DecorationOptions } from "shiki";
 import ContentFrame from "../../components/ContentFrame";
 import ExternalLink from "../../components/ExternalLink";
+import InfoButton from "../../components/InfoButton";
 import InfoRow from "../../components/InfoRow";
 import StandardTextarea from "../../components/StandardTextarea";
 import { Match, MatchType, getLangName } from "../../sourcify/useSourcify";
@@ -18,6 +20,8 @@ import { commify } from "../../utils/utils";
 import ContractFromRepo from "./ContractFromRepo";
 import WhatsabiWarning from "./WhatsabiWarning";
 import ContractABI from "./contract/ContractABI";
+import ContractVerificationSteps from "./contract/ContractVerificationSteps";
+import VerificationStatus from "./contract/VerificationStatus";
 
 const HighlightedSource = lazy(() => import("./contract/HighlightedSource"));
 
@@ -27,7 +31,8 @@ type ContractsProps = {
 };
 
 const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
-  const { provider } = useContext(RuntimeContext);
+  const { provider, config } = useContext(RuntimeContext);
+  const [showLocalVerification, setShowLocalVerification] = useState(false);
   usePageTitle(`Contract | ${checksummedAddress}`);
   const { data: code } = useQuery(
     getCodeQuery(provider, checksummedAddress, "latest"),
@@ -123,8 +128,54 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
               {Object.values(match.metadata.settings.compilationTarget)[0]}
             </InfoRow>
           )}
-          <InfoRow title="Match">
-            {match.type === MatchType.FULL_MATCH ? "Full" : "Partial"}
+          <InfoRow title="Contract Verification">
+            <div className="inline-flex items-center">
+              <VerificationStatus
+                runtimeMatch={
+                  match.type === MatchType.FULL_MATCH ? "perfect" : "partial"
+                }
+              />
+
+              {config.EXPERIMENTAL_localContractReverification === true && (
+                <>
+                  {!showLocalVerification && (
+                    <>
+                      <div className="inline-flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowLocalVerification(true)}
+                          className="ml-3 px-2 py-1 border border-blue-800 text-blue-800 rounded-md hover:bg-blue-100 text-xs"
+                          title="Fetch sources from Sourcify, download the Solidity compiler from soliditylang.org, and recompile the contract to confirm Sourcify's result."
+                        >
+                          Verify Locally
+                        </button>
+                        <InfoButton>
+                          Downloads the compiler executable and runs the
+                          verification in the browser using{" "}
+                          <ExternalLink href="https://github.com/ethereum/sourcify/tree/staging/packages/lib-sourcify">
+                            lib-sourcify
+                          </ExternalLink>
+                          . This way you don't need to trust an external
+                          verifier.
+                        </InfoButton>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+            {showLocalVerification && (
+              <div className="mt-3">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  transition={{ duration: 0.5 }}
+                  className="overflow-y-clip"
+                >
+                  <ContractVerificationSteps address={checksummedAddress} />
+                </motion.div>
+              </div>
+            )}
           </InfoRow>
           <InfoRow title="Language">
             <span>{match.metadata.language}</span>
@@ -218,7 +269,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                     </MenuItems>
                   </div>
                 </Menu>
-                {selected && (
+                {selected && match.metadata.sources[selected] && (
                   <>
                     {match.metadata.sources[selected].content ? (
                       <HighlightedSource
