@@ -136,7 +136,8 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 }
               />
 
-              {config.EXPERIMENTAL_localContractReverification === true && (
+              {config.sourcify?.localContractVerification?.enabled !==
+                false && (
                 <>
                   {!showLocalVerification && (
                     <>
