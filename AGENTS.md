@@ -23,6 +23,7 @@ This guide helps contributors work effectively on Otterscan.
 - Assets CDN (optional): `npm run assets-start` / `npm run assets-stop`.
 
 Examples:
+
 - Devnet config: `VITE_CONFIG_JSON=$(cat cypress/support/devnet-config.json) npm start`
 
 ## Coding Style & Naming Conventions
@@ -48,4 +49,3 @@ Examples:
 
 - Use `VITE_*` env vars for client-side config; keep secrets out of git. Local overrides belong in `.env.development.local`.
 - When testing against Erigon, expose required APIs: `--http.api eth,erigon,trace,ots,ots2`.
-
