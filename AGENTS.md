@@ -1,41 +1,51 @@
 # Repository Guidelines
 
+This guide helps contributors work effectively on Otterscan.
+
 ## Project Structure & Module Organization
 
-- Source: `src/` (React + TypeScript). Notable subfolders: `components/`, `execution/`, `search/`, `utils/`, hooks like `use*.ts(x)`. UI stories live alongside code as `*.stories.tsx`.
-- Assets: `public/` (static), `.storybook/` (Storybook config), `docs/` (project docs), `nginx/` (container config), `dist/` (build output).
-- Tests: Unit tests co-located in `src/` as `*.test.ts(x)`; E2E specs under `cypress/e2e/`.
+- `src/`: React + TypeScript source (components, hooks, features). Tests live alongside code as `*.test.ts(x)`.
+- `public/`: Static assets served by Vite.
+- `.storybook/`: Storybook config and previews.
+- `cypress/`: E2E tests (`cypress/e2e/**`).
+- `docs/`: Project documentation; `dist/`: production build output.
+- `scripts/`: Local helper scripts (devnet, Docker).
 
 ## Build, Test, and Development Commands
 
-- `npm start`: Run Vite dev server at `http://localhost:5173`.
-- `npm run start-devnet`: Start with local devnet config (`VITE_CONFIG_JSON`).
-- `npm run build`: Type-check then build production bundle into `dist/`.
-- `npm run preview`: Serve the built app locally.
+- `npm start`: Start Vite dev server at `http://localhost:5173`.
+- `npm run build`: Type-check with `tsc` and produce optimized build.
+- `npm run preview`: Serve the build locally for smoke checks.
 - `npm test`: Run Jest unit tests.
-- `npm run storybook` / `npm run build-storybook`: Run/build component docs.
+- `npm run storybook` / `npm run build-storybook`: Develop or build component stories.
 - `npm run cy:run-mainnet` / `npm run cy:run-devnet`: Run Cypress E2E suites.
-- Docker helpers: `docker-build`, `docker-start`, `docker-hub-start`, and matching `*-stop`.
+- Docker: `npm run docker-build`, `npm run docker-start`, `npm run docker-stop`.
+- Assets CDN (optional): `npm run assets-start` / `npm run assets-stop`.
+
+Examples:
+- Devnet config: `VITE_CONFIG_JSON=$(cat cypress/support/devnet-config.json) npm start`
 
 ## Coding Style & Naming Conventions
 
-- Language: TypeScript + React 19, Vite.
-- Formatting: Prettier with organize-imports; Tailwind CSS is enabled. Run `npx prettier -w .` before pushing.
-- Linting: ESLint extends `react-app` defaults.
-- Naming: Components in `PascalCase` (`ComponentName.tsx`), hooks prefixed `use*`, utilities under `utils/`, tests `*.test.ts(x)` next to subjects.
+- Language: TypeScript, strict mode enabled.
+- Formatting: Prettier with organize-imports (and Tailwind plugin). Run `npx prettier --write .` before pushing.
+- Indentation: 2 spaces; file names use `camelCase.tsx` for components, `kebab-case` for assets.
+- React: Functional components, hooks for state/data fetching; co-locate tests.
 
 ## Testing Guidelines
 
-- Unit: Jest via `ts-jest` (`testEnvironment: node`). Place tests beside code: `thing.test.ts`.
-- E2E: Cypress under `cypress/e2e/`. Ensure the dev server is reachable and, for devnet flows, Erigon/Sourcify endpoints from `cypress.config.ts` are available.
-- Add tests for new logic and edge cases; update Storybook stories for visual changes.
+- Unit tests: Jest + Testing Library. Name as `*.test.ts` or `*.test.tsx` near sources.
+- E2E: Cypress under `cypress/e2e/**`. Devnet tests expect a local Erigon/anvil; use scripts in `scripts/`.
+- Coverage: Keep or raise existing coverage; add tests for new logic and edge cases.
 
 ## Commit & Pull Request Guidelines
 
-- Messages: Short, imperative, and descriptive (e.g., "Fix spacing in validator view"). Version bumps typically follow "Bump <pkg> from A to B (#PR)".
-- PRs: Include clear description, linked issues, and screenshots or videos for UI changes. Note any config/env impacts. Keep diffs focused and pass CI (build + tests).
+- Commits: Imperative, concise subject; include scope when useful (e.g., `search:`). Reference issues/PRs (e.g., `#1234`).
+- PRs: Clear description, motivation, and screenshots/GIFs for UI changes; link issues; note testing performed (unit/E2E); include Storybook updates when relevant.
+- CI hygiene: Ensure `npm test` and E2E (as applicable) pass locally; run Prettier.
 
 ## Security & Configuration Tips
 
-- Do not commit secrets. Use `.env.*` locally (Vite reads `VITE_*` at build time).
-- For local devnet, confirm `DEVNET_ERIGON_URL` and `DEVNET_SOURCIFY_SOURCE` (see `cypress.config.ts`).
+- Use `VITE_*` env vars for client-side config; keep secrets out of git. Local overrides belong in `.env.development.local`.
+- When testing against Erigon, expose required APIs: `--http.api eth,erigon,trace,ots,ots2`.
+
