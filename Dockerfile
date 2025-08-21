@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:20.10.0-alpine3.17 AS builder
+FROM --platform=linux/amd64 node:22.17.1-alpine3.22 AS builder
 WORKDIR /otterscan-build
 COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
 RUN npm ci

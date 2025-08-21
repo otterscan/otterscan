@@ -28,7 +28,7 @@ import { PAGE_SIZE } from "./params";
 import ProbeErrorHandler from "./ProbeErrorHandler";
 import { queryClient } from "./queryClient";
 import { loader as searchLoader } from "./Search";
-import { getTransactionQuery, searchTransactionsQuery } from "./search/search";
+import { searchTransactionsQuery } from "./search/search";
 import { SourcifySourceName } from "./sourcify/useSourcify";
 import { ConnectionStatus } from "./types";
 import { AppConfig, AppConfigContext } from "./useAppConfig";
@@ -129,24 +129,6 @@ const addressTxResultsLoader: LoaderFunction = async ({ params, request }) => {
           params.direction === "last" ? "after" : "before",
         );
         queryClient.prefetchQuery(searchQuery);
-      } else if (params.direction === "next" || params.direction === "prev") {
-        const url = new URL(request.url);
-        const txHash = url.searchParams.get("h");
-        if (txHash) {
-          queryClient
-            .fetchQuery(getTransactionQuery(rt.provider, txHash))
-            .then((tx) => {
-              if (tx !== null) {
-                const searchQuery = searchTransactionsQuery(
-                  rt.provider,
-                  address,
-                  tx.blockNumber!,
-                  params.direction === "prev" ? "after" : "before",
-                );
-                queryClient.prefetchQuery(searchQuery);
-              }
-            });
-        }
       }
 
       const balanceQuery = getBalanceQuery(rt.provider, address);

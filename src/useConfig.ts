@@ -178,6 +178,21 @@ export type OtterscanConfig = {
         backendFormat: string;
       };
     };
+
+    /**
+     * Feature on the Contract page for recompiling and reverifying contracts locally
+     */
+    localContractVerification?: {
+      /**
+       * The root URL for downloading Solidity compilers for local contract
+       * verification. Defaults to "https://binaries.soliditylang.org".
+       */
+      contractCompilerBaseURL?: string;
+      /**
+       * If set to false, disables the feature.
+       */
+      enabled?: boolean;
+    };
   };
 
   /**
