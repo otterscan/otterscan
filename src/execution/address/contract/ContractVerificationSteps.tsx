@@ -122,7 +122,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
 
   const { provider, config } = useContext(RuntimeContext);
   const compilerBaseUrl =
-    config.externalDataSources?.contractCompilerBaseURL ??
+    config.sourcify?.localContractVerification?.contractCompilerBaseURL ??
     "https://binaries.soliditylang.org";
 
   useEffect(() => {

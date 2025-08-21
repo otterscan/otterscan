@@ -178,6 +178,21 @@ export type OtterscanConfig = {
         backendFormat: string;
       };
     };
+
+    /**
+     * Feature on the Contract page for recompiling and reverifying contracts locally
+     */
+    localContractVerification?: {
+      /**
+       * The root URL for downloading Solidity compilers for local contract
+       * verification. Defaults to "https://binaries.soliditylang.org".
+       */
+      contractCompilerBaseURL?: string;
+      /**
+       * If set to false, disables the feature.
+       */
+      enabled?: boolean;
+    };
   };
 
   /**
@@ -208,26 +223,10 @@ export type OtterscanConfig = {
   };
 
   /**
-   * External data sources
-   */
-  externalDataSources?: {
-    /**
-     * The root URL for downloading Solidity compilers for local contract
-     * verification. Defaults to "https://binaries.soliditylang.org".
-     */
-    contractCompilerBaseURL?: string;
-  };
-
-  /**
    * Temporary config option, until address labels are complete: Enables setting
    * address labels which are kept in local storage.
    */
   WIP_customAddressLabels?: boolean;
-
-  /**
-   * Temporary config option: Enables local re-verification of contracts.
-   */
-  EXPERIMENTAL_localContractReverification?: boolean;
 };
 
 /**
