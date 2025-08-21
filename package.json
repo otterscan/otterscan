@@ -9,7 +9,7 @@
     "@fontsource/roboto": "^5.2.6",
     "@fontsource/roboto-mono": "^5.2.6",
     "@fontsource/space-grotesk": "^5.2.8",
-    "@ethereum-sourcify/compilers-types": "^1.0.5",
+    "@ethereum-sourcify/compilers-types": "^1.0.6",
     "@ethereum-sourcify/lib-sourcify": "^2.2.0",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
