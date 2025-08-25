@@ -264,6 +264,7 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                                 { replace: true },
                               );
                               setHighlightOffsets(null);
+                              setHighlightLines(null);
                             }}
                           >
                             {k}
