@@ -53,14 +53,17 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
       if (sourceSearchParam !== null) {
         if (Object.keys(match.metadata.sources).includes(sourceSearchParam)) {
           selectedKey = sourceSearchParam;
-        } else {
+        } else if (selectedKey !== undefined) {
           setSearchParams({
             ...Object.fromEntries(searchParams),
             source: selectedKey,
           });
         }
       }
-      setSelected(selectedKey);
+
+      if (selectedKey !== undefined) {
+        setSelected(selectedKey);
+      }
     }
   }, [match]);
   const optimizer = match?.metadata.settings?.optimizer;
