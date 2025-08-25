@@ -88,8 +88,8 @@ export const useKlerosAddressTags = (
   address: ChecksummedAddress | undefined,
 ): KlerosAddressTag[] | null | undefined => {
   const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = config.kleros;
-
+  const klerosConfig = config.datasources?.kleros;
+  
   if (!klerosConfig?.enabled || !address) {
     return null;
   }
@@ -131,8 +131,8 @@ export const useKlerosAddressTagsBatch = (
   addresses: ChecksummedAddress[],
 ): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
   const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = config.kleros;
-
+  const klerosConfig = config.datasources?.kleros;
+  
   if (!klerosConfig?.enabled || addresses.length === 0) {
     return null;
   }

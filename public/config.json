@@ -1,9 +1,12 @@
 {
   "erigonURL": "https://docs-demo.quiknode.pro",
   "assetsURLPrefix": "http://localhost:5175",
-  "kleros": {
-    "enabled": true,
-    "apiUrl": "https://scout-api.kleros.link",
-    "supportedChains": ["1", "137", "42161"]
+  "datasources":
+  {
+      "kleros":
+      {
+          "enabled": true,
+          "apiUrl": "https://scout-api.kleros.link"
+      }
   }
 }
