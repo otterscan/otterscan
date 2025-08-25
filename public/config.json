@@ -1,7 +1,7 @@
 {
   "erigonURL": "https://docs-demo.quiknode.pro",
   "assetsURLPrefix": "http://localhost:5175",
-  "datasources":
+  "externalDataSources":
   {
       "kleros":
       {

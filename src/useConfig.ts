@@ -243,9 +243,9 @@ export type OtterscanConfig = {
   WIP_customAddressLabels?: boolean;
 
   /**
-   * Optional data sources configuration
+   * Optional external data sources configuration
    */
-  datasources?: {
+  externalDataSources?: {
     /**
      * Kleros Scout integration for address tagging and verification
      */
