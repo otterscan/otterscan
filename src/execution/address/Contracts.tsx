@@ -107,17 +107,26 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const sourceDecorations: DecorationOptions["decorations"] | undefined = [];
 
   if (highlightLines && highlightLines.length === 2) {
+    const singleLine = highlightLines[0] === highlightLines[1];
     sourceDecorations.push({
       start: { line: highlightLines[0] - 1, character: 0 },
-      end: { line: highlightLines[1], character: 0 },
-      properties: { class: "bg-source-line-bg-highlight bg-clip-padding" },
+      end: {
+        line: highlightLines[1] - (singleLine ? 0 : 1),
+        character: singleLine ? 0 : -1,
+      },
+      properties: {
+        class:
+          "bg-source-line-bg-highlight bg-clip-padding w-full inline-block",
+      },
     });
   }
 
   if (highlightOffsets) {
     sourceDecorations.push({
       ...highlightOffsets,
-      properties: { class: "bg-source-line-highlight bg-clip-padding" },
+      properties: {
+        class: "bg-source-line-highlight bg-clip-padding inline-block",
+      },
     });
   }
 
