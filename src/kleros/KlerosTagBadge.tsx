@@ -1,7 +1,7 @@
 import React from "react";
+import ExternalLink from "../components/ExternalLink";
 import KlerosLogo from "./KlerosLogo";
 import { KlerosAddressTag } from "./useKleros";
-import ExternalLink from "../components/ExternalLink";
 
 type KlerosTagBadgeProps = {
   tag: KlerosAddressTag;
@@ -30,8 +30,7 @@ const KlerosTagBadge: React.FC<KlerosTagBadgeProps> = ({
         </span>
 
         {tag.website_link && !compact && (
-          <ExternalLink href={tag.website_link}>
-          </ExternalLink>
+          <ExternalLink href={tag.website_link}></ExternalLink>
         )}
       </div>
     </div>

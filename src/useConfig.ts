@@ -254,7 +254,7 @@ export type OtterscanConfig = {
        * Enable/disable Kleros Scout integration
        */
       enabled: boolean;
-      
+
       /**
        * Kleros Scout API URL (defaults to https://scout-api.kleros.link)
        */

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
+import ExternalLink from "../components/ExternalLink";
 import InfoRow from "../components/InfoRow";
+import LabeledSwitch from "../components/LabeledSwitch";
 import KlerosLogo from "./KlerosLogo";
 import { KlerosAddressTag } from "./useKleros";
-import ExternalLink from "../components/ExternalLink";
-import LabeledSwitch from "../components/LabeledSwitch";
 
 type KlerosAddressInfoProps = {
   tags: KlerosAddressTag[];
@@ -112,9 +112,7 @@ const VerifiedDomains: React.FC<{ domains: string[] }> = ({ domains }) => {
         <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
           {domains.map((domain, idx) => (
             <li key={idx} className="break-all">
-              <ExternalLink href={`https://${domain}`}>
-                {domain}
-              </ExternalLink>
+              <ExternalLink href={`https://${domain}`}>{domain}</ExternalLink>
             </li>
           ))}
         </ul>
