@@ -53,14 +53,17 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
       if (sourceSearchParam !== null) {
         if (Object.keys(match.metadata.sources).includes(sourceSearchParam)) {
           selectedKey = sourceSearchParam;
-        } else {
+        } else if (selectedKey !== undefined) {
           setSearchParams({
             ...Object.fromEntries(searchParams),
             source: selectedKey,
           });
         }
       }
-      setSelected(selectedKey);
+
+      if (selectedKey !== undefined) {
+        setSelected(selectedKey);
+      }
     }
   }, [match]);
   const optimizer = match?.metadata.settings?.optimizer;
@@ -104,17 +107,26 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
   const sourceDecorations: DecorationOptions["decorations"] | undefined = [];
 
   if (highlightLines && highlightLines.length === 2) {
+    const singleLine = highlightLines[0] === highlightLines[1];
     sourceDecorations.push({
       start: { line: highlightLines[0] - 1, character: 0 },
-      end: { line: highlightLines[1], character: 0 },
-      properties: { class: "bg-source-line-bg-highlight bg-clip-padding" },
+      end: {
+        line: highlightLines[1] - (singleLine ? 0 : 1),
+        character: singleLine ? 0 : -1,
+      },
+      properties: {
+        class:
+          "bg-source-line-bg-highlight bg-clip-padding w-full inline-block",
+      },
     });
   }
 
   if (highlightOffsets) {
     sourceDecorations.push({
       ...highlightOffsets,
-      properties: { class: "bg-source-line-highlight bg-clip-padding" },
+      properties: {
+        class: "bg-source-line-highlight bg-clip-padding inline-block",
+      },
     });
   }
 
@@ -253,14 +265,17 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                             }`}
                             onClick={() => {
                               setSelected(k);
-                              setSearchParams(
-                                {
-                                  ...Object.fromEntries(searchParams),
-                                  source: k,
-                                },
-                                { replace: true },
-                              );
+                              const newSearchParams: Record<string, string> = {
+                                ...Object.fromEntries(searchParams),
+                                source: k,
+                              };
+                              delete newSearchParams.hr;
+                              delete newSearchParams.hl;
+                              setSearchParams(newSearchParams, {
+                                replace: true,
+                              });
                               setHighlightOffsets(null);
+                              setHighlightLines(null);
                             }}
                           >
                             {k}
