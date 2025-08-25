@@ -256,13 +256,15 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                             }`}
                             onClick={() => {
                               setSelected(k);
-                              setSearchParams(
-                                {
-                                  ...Object.fromEntries(searchParams),
-                                  source: k,
-                                },
-                                { replace: true },
-                              );
+                              const newSearchParams: Record<string, string> = {
+                                ...Object.fromEntries(searchParams),
+                                source: k,
+                              };
+                              delete newSearchParams.hr;
+                              delete newSearchParams.hl;
+                              setSearchParams(newSearchParams, {
+                                replace: true,
+                              });
                               setHighlightOffsets(null);
                               setHighlightLines(null);
                             }}
