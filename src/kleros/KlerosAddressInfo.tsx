@@ -23,7 +23,7 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
             title={
               <div className="flex items-center space-x-2 whitespace-nowrap">
                 <KlerosLogo />
-                <span>Project:</span>
+                <span>Verified Info:</span>
               </div>
             }
           >
