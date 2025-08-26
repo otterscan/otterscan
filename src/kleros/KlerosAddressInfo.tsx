@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import ExternalLink from "../components/ExternalLink";
 import InfoRow from "../components/InfoRow";
-import LabeledSwitch from "../components/LabeledSwitch";
 import KlerosLogo from "./KlerosLogo";
 import { KlerosAddressTag } from "./useKleros";
+import ExternalLink from "../components/ExternalLink";
 
 type KlerosAddressInfoProps = {
   tags: KlerosAddressTag[];
@@ -23,7 +22,11 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
             title={
               <div className="flex items-center space-x-2 whitespace-nowrap">
                 <KlerosLogo />
-                <span>Verified Info:</span>
+                <span>Verified Info by</span>
+                <ExternalLink href={tag.data_origin_link}>
+                  Kleros Scout
+                </ExternalLink>
+                <span>:</span>
               </div>
             }
           >
@@ -79,17 +82,10 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
                 </div>
               )}
 
-              {/* Verified domains - collapsible section */}
+              {/* Verified domains - always show first 2, expandable for more */}
               {tag.verified_domains && tag.verified_domains.length > 0 && (
                 <VerifiedDomains domains={tag.verified_domains} />
               )}
-
-              {/* Source link */}
-              <div className="flex items-center justify-between">
-                <ExternalLink href={tag.data_origin_link}>
-                  <span className="text-xs">View on Kleros Scout →</span>
-                </ExternalLink>
-              </div>
             </div>
           </InfoRow>
         </React.Fragment>
@@ -100,23 +96,54 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
 
 export default KlerosAddressInfo;
 
-// Collapsible verified domains list mirroring the Read Contract toggle UX
+// Always show first 2 domains, expandable for more
 const VerifiedDomains: React.FC<{ domains: string[] }> = ({ domains }) => {
   const [expanded, setExpanded] = useState<boolean>(false);
+
+  if (domains.length <= 2) {
+    return (
+      <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
+        {domains.map((domain, idx) => (
+          <li key={idx} className="break-all">
+            <ExternalLink href={`https://${domain}`}>
+              {domain}
+            </ExternalLink>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (expanded) {
+    return (
+      <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
+        {domains.map((domain, idx) => (
+          <li key={idx} className="break-all">
+            <ExternalLink href={`https://${domain}`}>
+              {domain}
+            </ExternalLink>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  // Show first domain + "show N more" link
   return (
-    <div className="mt-2">
-      <LabeledSwitch defaultEnabled={expanded} onToggle={setExpanded}>
-        Show verified domains ({domains.length})
-      </LabeledSwitch>
-      {expanded && (
-        <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
-          {domains.map((domain, idx) => (
-            <li key={idx} className="break-all">
-              <ExternalLink href={`https://${domain}`}>{domain}</ExternalLink>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="text-sm text-gray-700 dark:text-gray-300">
+      <ul className="list-disc pl-5 space-y-0.5">
+        <li className="break-all">
+          <ExternalLink href={`https://${domains[0]}`}>
+            {domains[0]}
+          </ExternalLink>
+        </li>
+      </ul>
+      <button
+        onClick={() => setExpanded(true)}
+        className="text-link-blue hover:text-link-blue-hover text-xs ml-5 mt-1"
+      >
+        (show {domains.length - 1} more domains)
+      </button>
     </div>
   );
 };
