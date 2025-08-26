@@ -33,12 +33,25 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
             <div className="space-y-1">
               {/* Project name and tag */}
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="font-semibold">{tag.project_name}</span>
-                <span className="text-gray-600 dark:text-gray-400">•</span>
-                <span className="text-sm">{tag.name_tag}</span>
+                {tag.project_name && (
+                  <>
+                    <span className="font-semibold">{tag.project_name}</span>
+                    {tag.name_tag && (
+                      <>
+                        <span className="text-gray-600 dark:text-gray-400">•</span>
+                        <span className="text-sm">{tag.name_tag}</span>
+                      </>
+                    )}
+                  </>
+                )}
+                {!tag.project_name && tag.name_tag && (
+                  <span className="text-sm">{tag.name_tag}</span>
+                )}
                 {tag.website_link && (
                   <>
-                    <span className="text-gray-600 dark:text-gray-400">•</span>
+                    {(tag.project_name || tag.name_tag) && (
+                      <span className="text-gray-600 dark:text-gray-400">•</span>
+                    )}
                     <ExternalLink href={tag.website_link}>
                       <span className="text-sm">{tag.website_link}</span>
                     </ExternalLink>
@@ -102,35 +115,42 @@ const VerifiedDomains: React.FC<{ domains: string[] }> = ({ domains }) => {
 
   if (domains.length <= 2) {
     return (
-      <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
-        {domains.map((domain, idx) => (
-          <li key={idx} className="break-all">
-            <ExternalLink href={`https://${domain}`}>
-              {domain}
-            </ExternalLink>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Verified domains:</div>
+        <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
+          {domains.map((domain, idx) => (
+            <li key={idx} className="break-all">
+              <ExternalLink href={`https://${domain}`}>
+                {domain}
+              </ExternalLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 
   if (expanded) {
     return (
-      <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
-        {domains.map((domain, idx) => (
-          <li key={idx} className="break-all">
-            <ExternalLink href={`https://${domain}`}>
-              {domain}
-            </ExternalLink>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Verified domains:</div>
+        <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
+          {domains.map((domain, idx) => (
+            <li key={idx} className="break-all">
+              <ExternalLink href={`https://${domain}`}>
+                {domain}
+              </ExternalLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
   }
 
   // Show first domain + "show N more" link
   return (
     <div className="text-sm text-gray-700 dark:text-gray-300">
+      <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">Verified domains:</div>
       <ul className="list-disc pl-5 space-y-0.5">
         <li className="break-all">
           <ExternalLink href={`https://${domains[0]}`}>
