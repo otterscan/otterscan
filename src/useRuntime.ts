@@ -54,7 +54,7 @@ export const createRuntime = async (
   }
 
   provider.disableCcipRead = !(
-    effectiveConfig.enableOffchainEnsLookups ?? false
+    effectiveConfig.externalDataSources?.ccip?.ensLookups ?? true
   );
   return {
     config: effectiveConfig,
