@@ -27,6 +27,7 @@ import {
   transformContractResponse,
   useSourcifySources,
 } from "../../../sourcify/useSourcify";
+import CheckedContractStorage from "../../../storage/CheckedContractStorage";
 import { useAppConfigContext } from "../../../useAppConfig";
 import { RuntimeContext } from "../../../useRuntime";
 import VerificationStatus from "./VerificationStatus";
@@ -179,6 +180,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       }
 
       const sources = match.metadata.sources;
+      const chainId = provider._network.chainId;
       try {
         for (const filename in sources) {
           if (Object.prototype.hasOwnProperty.call(sources, filename)) {
@@ -188,7 +190,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
                 sourcifySources,
                 sourcifySource,
                 address,
-                provider._network.chainId,
+                chainId,
                 filename,
                 sources[filename].keccak256,
                 match.type,
@@ -317,6 +319,13 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       console.log("Verification result:", exportedVerification);
       const runtimeMatch = exportedVerification.status.runtimeMatch;
       const creationMatch = exportedVerification.status.creationMatch;
+
+      if (runtimeMatch === "partial" || runtimeMatch === "perfect") {
+        // Save result in local storage
+        CheckedContractStorage.hashMetadata(metadata).then((metadataHash) =>
+          CheckedContractStorage.save(chainId, address, metadataHash),
+        );
+      }
 
       setResult({
         node:
