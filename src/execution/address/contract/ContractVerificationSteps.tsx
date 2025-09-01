@@ -169,7 +169,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         });
         return;
       }
-      const metadata = match.metadata as unknown as Metadata;
+      const metadata = structuredClone(match.metadata as unknown as Metadata);
       if (!metadata) {
         updateStep(0, { inProgress: false, completed: false, hasError: true });
         setResult({
@@ -179,7 +179,17 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         return;
       }
 
-      const sources = match.metadata.sources;
+      // Preserve the metadata hash before the sources field is manipulated
+      let originalMetadataHash: string | null = null;
+      try {
+        const originalMetadata = structuredClone(metadata);
+        originalMetadataHash =
+          await CheckedContractStorage.hashMetadata(originalMetadata);
+      } catch (e) {
+        console.error("Error calculating metadata hash:", e);
+      }
+
+      const sources = metadata.sources;
       const chainId = provider._network.chainId;
       try {
         for (const filename in sources) {
@@ -322,9 +332,9 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
 
       if (runtimeMatch === "partial" || runtimeMatch === "perfect") {
         // Save result in local storage
-        CheckedContractStorage.hashMetadata(metadata).then((metadataHash) =>
-          CheckedContractStorage.save(chainId, address, metadataHash),
-        );
+        if (originalMetadataHash !== null) {
+          CheckedContractStorage.save(chainId, address, originalMetadataHash);
+        }
       }
 
       setResult({
