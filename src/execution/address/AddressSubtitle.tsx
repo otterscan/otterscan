@@ -11,13 +11,23 @@ import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import KlerosTagBadge from "../../kleros/KlerosTagBadge";
-import { useKlerosAddressTags } from "../../kleros/useKleros";
+import { useKlerosAddressTags, KlerosAddressTag } from "../../kleros/useKleros";
 import { useChainInfo } from "../../useChainInfo";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
 import EditableAddressTag, { clearAllLabels } from "./EditableAddressTag";
+
+// Helper function to check if a Kleros tag has valid display data
+const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
+  return !!(
+    tag.project_name && 
+    tag.name_tag && 
+    tag.project_name.trim() !== '' && 
+    tag.name_tag.trim() !== ''
+  );
+};
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
   isENS: boolean | undefined;
@@ -66,7 +76,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
         {config.experimental && <AddressAttributes address={address} full />}
-        {klerosTags && klerosTags.length > 0 && (
+        {klerosTags && klerosTags.length > 0 && hasValidKlerosData(klerosTags[0]) && (
           <KlerosTagBadge tag={klerosTags[0]} address={address} />
         )}
         {resolvedName && resolvedNameTrusted && !editingAddressTag && (

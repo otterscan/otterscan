@@ -14,6 +14,11 @@ const KlerosTagBadge: React.FC<KlerosTagBadgeProps> = ({
   address,
   compact = false,
 }) => {
+  // Defensive programming: ensure we have valid data
+  if (!tag.project_name || !tag.name_tag) {
+    return null;
+  }
+
   const displayName = compact
     ? tag.name_tag
     : `${tag.project_name}: ${tag.name_tag}`;
