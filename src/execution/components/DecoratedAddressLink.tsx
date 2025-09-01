@@ -64,6 +64,13 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
         ).then((metadataHash) => {
           if (metadataHash === savedMetadataHash) {
             setLocallyVerified(true);
+          } else {
+            console.warn(
+              "Mismatched metadata compared to locally verified: got",
+              metadataHash,
+              "but locally verified =",
+              savedMetadataHash,
+            );
           }
         });
       }
