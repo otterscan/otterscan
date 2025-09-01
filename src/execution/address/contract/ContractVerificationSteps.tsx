@@ -185,6 +185,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         const originalMetadata = structuredClone(metadata);
         originalMetadataHash =
           await CheckedContractStorage.hashMetadata(originalMetadata);
+        console.log("Metadata hash:", originalMetadataHash);
       } catch (e) {
         console.error("Error calculating metadata hash:", e);
       }
