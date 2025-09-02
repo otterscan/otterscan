@@ -1,5 +1,6 @@
 import { Metadata } from "@ethereum-sourcify/lib-sourcify";
 import { hexlify, toUtf8Bytes } from "ethers";
+import { useEffect, useState } from "react";
 
 // From @sourcify/lib-sourcify variationsUtils.ts
 function reorderAlphabetically(obj: any): any {
@@ -70,5 +71,41 @@ class CheckedContractStorage {
     return `${this.storageKeyPrefix}_${chainId}_${address}`;
   }
 }
+
+export const useIsLocallyVerified = (
+  match: any,
+  chainId: bigint,
+  address: string | undefined,
+) => {
+  const [isLocallyVerified, setIsLocallyVerified] = useState<boolean>(false);
+
+  useEffect(() => {
+    let matchesLocalVerification = false;
+    if (match && address !== undefined) {
+      const savedMetadataHash = CheckedContractStorage.get(chainId, address);
+      if (savedMetadataHash !== null) {
+        CheckedContractStorage.hashMetadata(
+          match.metadata as unknown as Metadata,
+        ).then((metadataHash) => {
+          if (metadataHash === savedMetadataHash) {
+            matchesLocalVerification = true;
+          } else {
+            console.warn(
+              "For",
+              address,
+              "mismatched metadata compared to locally verified: got",
+              metadataHash,
+              "but locally verified =",
+              savedMetadataHash,
+            );
+          }
+        });
+      }
+    }
+    setIsLocallyVerified(matchesLocalVerification);
+  }, [match, chainId, address]);
+
+  return isLocallyVerified;
+};
 
 export default CheckedContractStorage;
