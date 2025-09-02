@@ -1,11 +1,12 @@
 FROM --platform=linux/amd64 node:22.17.1-alpine3.22 AS builder
 WORKDIR /otterscan-build
-COPY --link ["package.json", "package-lock.json", "/otterscan-build/"]
-RUN npm ci
+COPY --link ["package.json", "pnpm-lock.yaml", "/otterscan-build/"]
+RUN corepack enable
+RUN pnpm install --frozen-lockfile
 COPY --link ["run-nginx.sh", "tsconfig.json", "tsconfig.node.json", "vite.config.ts", "index.html", "/otterscan-build/"]
 COPY --link ["public", "/otterscan-build/public/"]
 COPY --link ["src", "/otterscan-build/src/"]
-RUN npm run build
+RUN pnpm build
 
 # Add brotli module to official nginx image
 # Based on: https://github.com/nginxinc/docker-nginx/tree/master/modules
