@@ -234,18 +234,6 @@ export type OtterscanConfig = {
        */
       ensLookups?: boolean;
     };
-  };
-
-  /**
-   * Temporary config option, until address labels are complete: Enables setting
-   * address labels which are kept in local storage.
-   */
-  WIP_customAddressLabels?: boolean;
-
-  /**
-   * Optional external data sources configuration
-   */
-  externalDataSources?: {
     /**
      * Kleros Scout integration for address tagging and verification
      */
@@ -261,6 +249,12 @@ export type OtterscanConfig = {
       apiUrl?: string;
     };
   };
+
+  /**
+   * Temporary config option, until address labels are complete: Enables setting
+   * address labels which are kept in local storage.
+   */
+  WIP_customAddressLabels?: boolean;
 };
 
 /**
