@@ -1,4 +1,3 @@
-strictDepBuilds: true
 onlyBuiltDependencies:
   - '@swc/core'
   - '@tailwindcss/oxide'
@@ -7,3 +6,7 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - unrs-resolver
+
+sideEffectsCache: false
+
+strictDepBuilds: true
