@@ -4,6 +4,8 @@ docs
 nginx
 public
 scripts
+pnppm-lock.yaml
+pnpm-workspace.yaml
 
 # submodules
 4bytes
