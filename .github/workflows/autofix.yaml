@@ -14,9 +14,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: "npm"
+          cache: "pnpm"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
-      - run: npm ci
-      - run: npx prettier --write .
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prettier --write .
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

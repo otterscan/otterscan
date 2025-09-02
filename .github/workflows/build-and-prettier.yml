@@ -17,10 +17,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: "npm"
+          cache: "pnpm"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
       - name: Install packages
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Run prettier
-        run: npx prettier -c .
+        run: pnpm exec prettier -c .
       - name: Build Otterscan
-        run: npm run build
+        run: pnpm build
