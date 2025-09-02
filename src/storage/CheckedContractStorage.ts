@@ -80,7 +80,6 @@ export const useIsLocallyVerified = (
   const [isLocallyVerified, setIsLocallyVerified] = useState<boolean>(false);
 
   useEffect(() => {
-    let matchesLocalVerification = false;
     if (match && address !== undefined) {
       const savedMetadataHash = CheckedContractStorage.get(chainId, address);
       if (savedMetadataHash !== null) {
@@ -88,7 +87,7 @@ export const useIsLocallyVerified = (
           match.metadata as unknown as Metadata,
         ).then((metadataHash) => {
           if (metadataHash === savedMetadataHash) {
-            matchesLocalVerification = true;
+            setIsLocallyVerified(true);
           } else {
             console.warn(
               "For",
@@ -98,11 +97,15 @@ export const useIsLocallyVerified = (
               "but locally verified =",
               savedMetadataHash,
             );
+            setIsLocallyVerified(false);
           }
         });
+      } else {
+        setIsLocallyVerified(false);
       }
+    } else {
+      setIsLocallyVerified(false);
     }
-    setIsLocallyVerified(matchesLocalVerification);
   }, [match, chainId, address]);
 
   return isLocallyVerified;
