@@ -50,6 +50,9 @@ const AddressTransactionResults = lazy(
 const AddressContract = lazy(
   () => import("./execution/address/AddressContract"),
 );
+const AddressKlerosInfo = lazy(
+  () => import("./execution/address/AddressKlerosInfo"),
+);
 const AddressReadContract = lazy(
   () => import("./execution/address/AddressReadContract"),
 );
@@ -329,6 +332,7 @@ const router = createBrowserRouter(
             element={<AddressContract />}
             loader={addressContractLoader}
           />
+          <Route path="kleros" element={<AddressKlerosInfo />} />
           <Route path="readContract" element={<AddressReadContract />} />
           <Route
             path="proxyLogicContract"

@@ -16,8 +16,20 @@ import { ChecksummedAddress } from "../types";
 import { hasCodeQuery } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
+import KlerosLogo from "../kleros/KlerosLogo";
+import { useKlerosAddressTags, KlerosAddressTag } from "../kleros/useKleros";
 import AddressSubtitle from "./address/AddressSubtitle";
 import { AddressAwareComponentProps } from "./types";
+
+// Helper function to check if a Kleros tag has valid display data
+const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
+  return !!(
+    tag.project_name && 
+    tag.name_tag && 
+    tag.project_name.trim() !== '' && 
+    tag.name_tag.trim() !== ''
+  );
+};
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
@@ -89,6 +101,8 @@ const AddressMainPage: React.FC = () => {
     config.assetsURLPrefix,
   );
 
+  const klerosTags = useKlerosAddressTags(checksummedAddress);
+
   return (
     <StandardFrame>
       {error ? (
@@ -110,6 +124,14 @@ const AddressMainPage: React.FC = () => {
             <TabGroup>
               <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white overflow-x-auto whitespace-nowrap">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
+                {klerosTags && klerosTags.length > 0 && hasValidKlerosData(klerosTags[0]) && (
+                  <NavTab href={`/address/${addressOrName}/kleros`}>
+                    <span className="flex items-baseline space-x-2">
+                      <span>Kleros Info</span>
+                      <KlerosLogo />
+                    </span>
+                  </NavTab>
+                )}
                 {config?.experimental && (
                   <>
                     <NavTab href={`/address/${addressOrName}/erc20`}>
