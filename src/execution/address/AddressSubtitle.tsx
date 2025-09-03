@@ -10,24 +10,12 @@ import Blockies from "react-blockies";
 import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
 import StandardSubtitle from "../../components/StandardSubtitle";
-import KlerosTagBadge from "../../kleros/KlerosTagBadge";
-import { useKlerosAddressTags, KlerosAddressTag } from "../../kleros/useKleros";
 import { useChainInfo } from "../../useChainInfo";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
 import EditableAddressTag, { clearAllLabels } from "./EditableAddressTag";
-
-// Helper function to check if a Kleros tag has valid display data
-const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
-  return !!(
-    tag.project_name && 
-    tag.name_tag && 
-    tag.project_name.trim() !== '' && 
-    tag.name_tag.trim() !== ''
-  );
-};
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
   isENS: boolean | undefined;
@@ -54,7 +42,6 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
     resolvedNameTrusted = true;
   }
 
-  const klerosTags = useKlerosAddressTags(address);
   const [editingAddressTag, setEditingAddressTag] = useState<boolean>(false);
 
   return (
@@ -76,9 +63,6 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         {/* Only display faucets for testnets who actually have any */}
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
         {config.experimental && <AddressAttributes address={address} full />}
-        {klerosTags && klerosTags.length > 0 && hasValidKlerosData(klerosTags[0]) && (
-          <KlerosTagBadge tag={klerosTags[0]} address={address} />
-        )}
         {resolvedName && resolvedNameTrusted && !editingAddressTag && (
           <div className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500 text-nowrap">
             <FontAwesomeIcon icon={faTag} size="1x" />
