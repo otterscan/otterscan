@@ -66,18 +66,8 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
                     }}
                   />
                 )}
-                <span className="text-sm">
-                  <span className="font-medium">
-                    {tag.token_attributes.token_name}
-                  </span>
-                  <span className="text-gray-600 dark:text-gray-400 mx-1">
-                    •
-                  </span>
-                  <span>{tag.token_attributes.token_symbol}</span>
-                  <span className="text-gray-600 dark:text-gray-400 mx-1">
-                    •
-                  </span>
-                  <span>{tag.token_attributes.decimals} decimals</span>
+                <span>
+                  {tag.token_attributes.token_name} ({tag.token_attributes.token_symbol}) - {tag.token_attributes.decimals} decimal{tag.token_attributes.decimals !== 1 ? 's' : ''}
                 </span>
               </div>
             </InfoRow>
