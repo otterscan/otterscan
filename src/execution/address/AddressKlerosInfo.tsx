@@ -20,10 +20,8 @@ const AddressKlerosInfo: React.FC = () => {
   }
 
   return (
-    <ContentFrame>
-      <div className="py-4">
-        <KlerosAddressInfo tags={klerosTags} />
-      </div>
+    <ContentFrame tabs>
+      <KlerosAddressInfo tags={klerosTags} />
     </ContentFrame>
   );
 };

@@ -18,7 +18,13 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
       {tags.map((tag, index) => (
         <React.Fragment key={index}>
           {/* Name field */}
-          <InfoRow title="Name">
+          <InfoRow 
+            title={
+              <span>
+                Name (<ExternalLink href={tag.data_origin_link}>Kleros Scout</ExternalLink>):
+              </span>
+            }
+          >
             <span>{tag.name_tag || tag.project_name}</span>
           </InfoRow>
 
@@ -80,7 +86,7 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
           {/* Verified domains */}
           {tag.verified_domains && tag.verified_domains.length > 0 && (
             <InfoRow title="Verified Domains">
-              <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-0.5">
+              <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-1">
                 {tag.verified_domains.map((domain, idx) => (
                   <li key={idx} className="break-all">
                     <ExternalLink href={`https://${domain}`}>{domain}</ExternalLink>
@@ -90,10 +96,7 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
             </InfoRow>
           )}
 
-          {/* Verify on Kleros Scout */}
-          <div className="text-sm text-gray-700 dark:text-gray-300">
-            Verify on <ExternalLink href={tag.data_origin_link}>Kleros Scout</ExternalLink>
-          </div>
+
         </React.Fragment>
       ))}
     </>

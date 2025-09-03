@@ -128,7 +128,9 @@ const AddressMainPage: React.FC = () => {
                   <NavTab href={`/address/${addressOrName}/kleros`}>
                     <span className="flex items-baseline space-x-2">
                       <span>Info</span>
-                      <KlerosLogo />
+                      <span className="self-center">
+                        <KlerosLogo />
+                      </span>
                     </span>
                   </NavTab>
                 )}
