@@ -13,8 +13,7 @@ import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat"
 import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import TransactionLink from "../../components/TransactionLink";
-import KlerosAddressInfo from "../../kleros/KlerosAddressInfo";
-import { useKlerosAddressTags, KlerosAddressTag } from "../../kleros/useKleros";
+
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
@@ -45,15 +44,7 @@ import BlockNumberInput from "./BlockNumberInput";
 import PendingItem from "./PendingItem";
 import PendingPage from "./PendingPage";
 
-// Helper function to check if a Kleros tag has valid display data
-const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
-  return !!(
-    tag.project_name && 
-    tag.name_tag && 
-    tag.project_name.trim() !== '' && 
-    tag.name_tag.trim() !== ''
-  );
-};
+
 
 const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
@@ -77,8 +68,6 @@ const AddressTransactionResults: FC = () => {
   const { config, provider } = useContext(RuntimeContext);
   const [feeDisplay, feeDisplayToggler] = useToggler(FeeDisplay);
   const [valueDisplay, valueDisplayToggler] = useToggler(ValueDisplay);
-
-  const klerosTags = useKlerosAddressTags(address);
 
   const { addressOrName, direction } = useParams();
   if (addressOrName === undefined) {
@@ -257,9 +246,6 @@ const AddressTransactionResults: FC = () => {
             </InfoRow>
           )}
           {config.experimental && <ProxyInfo address={address} />}
-          {klerosTags && klerosTags.length > 0 && hasValidKlerosData(klerosTags[0]) && (
-            <KlerosAddressInfo tags={klerosTags} />
-          )}
         </BlockNumberContext.Provider>
         <NavBar
           address={address}
