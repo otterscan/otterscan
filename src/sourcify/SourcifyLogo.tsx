@@ -17,6 +17,7 @@ const SourcifyLogo: React.FC<SourcifyLogoProps> = ({ locallyVerified }) => {
         title={title}
         width={16}
         height={16}
+        className="min-w-[16px] min-h-[16px]"
       />
       {locallyVerified && (
         <div title={title}>
