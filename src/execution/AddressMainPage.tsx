@@ -127,7 +127,7 @@ const AddressMainPage: React.FC = () => {
                 {klerosTags && klerosTags.length > 0 && hasValidKlerosData(klerosTags[0]) && (
                   <NavTab href={`/address/${addressOrName}/kleros`}>
                     <span className="flex items-baseline space-x-2">
-                      <span>Kleros Info</span>
+                      <span>Info</span>
                       <KlerosLogo />
                     </span>
                   </NavTab>
