@@ -10,7 +10,7 @@ interface SourcifyLogoProps {
 const SourcifyLogo: React.FC<SourcifyLogoProps> = ({ locallyVerified }) => {
   const title = locallyVerified ? "Locally verified" : "Verified by Sourcify";
   return (
-    <div className="relative inline-block">
+    <div className="relative">
       <img
         src={SourcifyIcon}
         alt="Sourcify logo"
