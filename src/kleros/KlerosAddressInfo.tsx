@@ -3,6 +3,7 @@ import ExternalLink from "../components/ExternalLink";
 import InfoRow from "../components/InfoRow";
 import KlerosLogo from "./KlerosLogo";
 import { KlerosAddressTag } from "./useKleros";
+import fallbackTokenIcon from "./fallback-token-icon.svg";
 
 type KlerosAddressInfoProps = {
   tags: KlerosAddressTag[];
@@ -62,7 +63,7 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
                     className="h-5 w-5 rounded-full"
                     onError={(e) => {
                       e.currentTarget.onerror = null; // Prevent infinite loop
-                      e.currentTarget.src = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMTAiIGZpbGw9IiNmM2Y0ZjYiLz4KPHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iMTIiIHZpZXdCb3g9IjAgMCAxMiAxMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4PSI0IiB5PSI0Ij4KPHBhdGggZD0iTTYgNkg0VjEwSDZWNloiIGZpbGw9IiM5Q0EzQUYiLz4KPC9zdmc+Cjwvc3ZnPgo=";
+                      e.currentTarget.src = fallbackTokenIcon;
                     }}
                   />
                 )}
