@@ -21,7 +21,7 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
           <InfoRow 
             title={
               <span>
-                Name (<ExternalLink href={tag.data_origin_link}>Kleros Scout</ExternalLink>):
+                Name (<ExternalLink href={tag.data_origin_link}>Kleros Scout</ExternalLink>)
               </span>
             }
           >
