@@ -94,7 +94,7 @@ jobs:
       - name: Download Erigon
         run: git clone --branch v3.0.4 --single-branch https://github.com/erigontech/erigon.git
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: "erigon/go.mod"
           cache-dependency-path: "erigon/go.sum"
