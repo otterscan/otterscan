@@ -1,5 +1,5 @@
 {
-  "erigonURL": "https://docs-demo.quiknode.pro",
+  "erigonURL": "http://localhost:8545",
   "assetsURLPrefix": "http://localhost:5175",
   "externalDataSources":
   {
