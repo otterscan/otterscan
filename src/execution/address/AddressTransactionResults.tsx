@@ -44,8 +44,6 @@ import BlockNumberInput from "./BlockNumberInput";
 import PendingItem from "./PendingItem";
 import PendingPage from "./PendingPage";
 
-
-
 const ProxyInfo: FC<AddressAwareComponentProps> = ({ address }) => {
   const { provider } = useContext(RuntimeContext);
   const proxyAttributes = useProxyAttributes(provider, address);

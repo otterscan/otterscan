@@ -1,9 +1,8 @@
 import React from "react";
 import ExternalLink from "../components/ExternalLink";
 import InfoRow from "../components/InfoRow";
-import KlerosLogo from "./KlerosLogo";
-import { KlerosAddressTag } from "./useKleros";
 import fallbackTokenIcon from "./fallback-token-icon.svg";
+import { KlerosAddressTag } from "./useKleros";
 
 type KlerosAddressInfoProps = {
   tags: KlerosAddressTag[];
@@ -19,10 +18,14 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
       {tags.map((tag, index) => (
         <React.Fragment key={index}>
           {/* Name field */}
-          <InfoRow 
+          <InfoRow
             title={
               <span>
-                Name (<ExternalLink href={tag.data_origin_link}>Kleros Scout</ExternalLink>)
+                Name (
+                <ExternalLink href={tag.data_origin_link}>
+                  Kleros Scout
+                </ExternalLink>
+                )
               </span>
             }
           >
@@ -68,7 +71,10 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
                   />
                 )}
                 <span>
-                  {tag.token_attributes.token_name} ({tag.token_attributes.token_symbol}) - {tag.token_attributes.decimals} decimal{tag.token_attributes.decimals !== 1 ? 's' : ''}
+                  {tag.token_attributes.token_name} (
+                  {tag.token_attributes.token_symbol}) -{" "}
+                  {tag.token_attributes.decimals} decimal
+                  {tag.token_attributes.decimals !== 1 ? "s" : ""}
                 </span>
               </div>
             </InfoRow>
@@ -80,14 +86,14 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
               <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc pl-5 space-y-1">
                 {tag.verified_domains.map((domain, idx) => (
                   <li key={idx} className="break-all">
-                    <ExternalLink href={`https://${domain}`}>{domain}</ExternalLink>
+                    <ExternalLink href={`https://${domain}`}>
+                      {domain}
+                    </ExternalLink>
                   </li>
                 ))}
               </ul>
             </InfoRow>
           )}
-
-
         </React.Fragment>
       ))}
     </>
