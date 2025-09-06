@@ -19,15 +19,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install packages
-        run: npm ci
+        run: pnpm install --frozen-lockfile
       - name: Build Otterscan
-        run: npm run build
+        run: pnpm build
         env:
           VITE_CONFIG_JSON: ${{ secrets.viteConfigJson }}
       - name: Publish

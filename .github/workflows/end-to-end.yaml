@@ -42,6 +42,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -61,7 +70,7 @@ jobs:
       - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
+          start: pnpm start
           wait-on: "http://localhost:5173"
           spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'mainnet' || ''}}
@@ -86,6 +95,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -113,7 +131,7 @@ jobs:
         with:
           start: |
             sh ./scripts/run-erigon-devnet-e2e-tests.sh
-            npm run start
+            pnpm start
           wait-on: "http://127.0.0.1:8545, http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'devnet' || ''}}
@@ -140,6 +158,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -159,7 +186,7 @@ jobs:
         with:
           start: |
             sh ./scripts/run-anvil-devnet.sh
-            npm run start
+            pnpm start
           # Cypress can't detect Anvil's RPC server, so we have to assume it is up
           wait-on: "http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
