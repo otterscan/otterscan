@@ -453,7 +453,7 @@ export const useContract = (
   fileHash: string,
   sourcifySourceName: SourcifySourceName | null,
   type: MatchType,
-) => {
+): { source: string | undefined; failedHashCheck: boolean } => {
   const sources = useSourcifySources();
   const query = getContractQuery(
     sources,
@@ -475,10 +475,11 @@ export const useContract = (
   const contractData = useQuery(query).data;
 
   if (!match || !contractData) {
-    return null;
+    return { source: undefined, failedHashCheck: false };
   }
 
   // Verify against hash in metadata
+  let failedHashCheck = false;
   if (
     Object.prototype.hasOwnProperty.call(match?.metadata?.sources, filename)
   ) {
@@ -494,11 +495,10 @@ export const useContract = (
         "but received contract with hash",
         contractDataHash,
       );
-      // For now, we just won't return the source.
-      return null;
+      failedHashCheck = true;
     }
   }
-  return contractData;
+  return { source: contractData, failedHashCheck };
 };
 
 export const useTransactionDescription = (
