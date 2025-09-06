@@ -1,5 +1,5 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import { ErrorDescription, Interface } from "ethers";
+import { ErrorDescription, Interface, keccak256, toUtf8Bytes } from "ethers";
 import { useContext, useMemo } from "react";
 import { Fetcher } from "swr";
 import { ChecksummedAddress, TransactionDescriptionData } from "../types";
@@ -464,7 +464,41 @@ export const useContract = (
     fileHash,
     type,
   );
-  return useQuery(query).data;
+  const metadataQuery = getSourcifyMetadataQuery(
+    sources,
+    sourcifySourceName,
+    checksummedAddress,
+    networkId,
+    false,
+  );
+  const match = useQuery(metadataQuery).data;
+  const contractData = useQuery(query).data;
+
+  if (!match || !contractData) {
+    return null;
+  }
+
+  // Verify against hash in metadata
+  if (
+    Object.prototype.hasOwnProperty.call(match?.metadata?.sources, filename)
+  ) {
+    const sourceObject = match?.metadata?.sources[filename];
+    const contractDataHash = keccak256(toUtf8Bytes(contractData));
+
+    if (contractDataHash !== sourceObject.keccak256) {
+      console.warn(
+        "Contract hash differs from expected:",
+        filename,
+        "metadata has hash",
+        match?.metadata?.sources[filename].keccak256,
+        "but received contract with hash",
+        contractDataHash,
+      );
+      // For now, we just won't return the source.
+      return null;
+    }
+  }
+  return contractData;
 };
 
 export const useTransactionDescription = (
