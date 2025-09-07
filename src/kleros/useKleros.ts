@@ -3,6 +3,24 @@ import { useContext } from "react";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 
+type KlerosConfig = {
+  enabled: boolean;
+  apiUrl?: string;
+};
+
+const DEFAULT_KLEROS_CONFIG: KlerosConfig = {
+  enabled: true,
+  apiUrl: "https://scout-api.kleros.link",
+};
+
+function getEffectiveKlerosConfig(raw: unknown): KlerosConfig {
+  const cfg = (raw as { enabled?: boolean; apiUrl?: string }) ?? {};
+  return {
+    enabled: cfg.enabled ?? DEFAULT_KLEROS_CONFIG.enabled,
+    apiUrl: cfg.apiUrl ?? DEFAULT_KLEROS_CONFIG.apiUrl,
+  };
+}
+
 export type TokenAttributes = {
   logo_url: string;
   token_symbol: string;
@@ -88,7 +106,9 @@ export const useKlerosAddressTags = (
   address: ChecksummedAddress | undefined,
 ): KlerosAddressTag[] | null | undefined => {
   const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = config.externalDataSources?.kleros;
+  const klerosConfig = getEffectiveKlerosConfig(
+    (config as any)?.externalDataSources?.kleros,
+  );
 
   if (!klerosConfig?.enabled || !address) {
     return null;
@@ -131,7 +151,9 @@ export const useKlerosAddressTagsBatch = (
   addresses: ChecksummedAddress[],
 ): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
   const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = config.externalDataSources?.kleros;
+  const klerosConfig = getEffectiveKlerosConfig(
+    (config as any)?.externalDataSources?.kleros,
+  );
 
   if (!klerosConfig?.enabled || addresses.length === 0) {
     return null;

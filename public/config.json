@@ -1,12 +1,5 @@
 {
   "erigonURL": "http://localhost:8545",
-  "assetsURLPrefix": "http://localhost:5175",
-  "externalDataSources":
-  {
-      "kleros":
-      {
-          "enabled": true,
-          "apiUrl": "https://scout-api.kleros.link"
-      }
-  }
+  "assetsURLPrefix": "http://localhost:5175"
+  
 }
