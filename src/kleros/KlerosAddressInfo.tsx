@@ -59,17 +59,15 @@ const KlerosAddressInfo: React.FC<KlerosAddressInfoProps> = ({ tags }) => {
           {tag.token_attributes && (
             <InfoRow title="Token">
               <div className="flex items-center gap-2">
-                {tag.token_attributes.logo_url && (
-                  <img
-                    src={tag.token_attributes.logo_url}
-                    alt={tag.token_attributes.token_symbol}
-                    className="h-5 w-5 rounded-full"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null; // Prevent infinite loop
-                      e.currentTarget.src = fallbackTokenIcon;
-                    }}
-                  />
-                )}
+                <img
+                  src={tag.token_attributes.logo_url || fallbackTokenIcon}
+                  alt={tag.token_attributes.token_symbol}
+                  className="h-5 w-5 rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null; // Prevent infinite loop
+                    e.currentTarget.src = fallbackTokenIcon;
+                  }}
+                />
                 <span>
                   {tag.token_attributes.token_name} (
                   {tag.token_attributes.token_symbol}) -{" "}

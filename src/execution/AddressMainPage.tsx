@@ -9,7 +9,7 @@ import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import KlerosLogo from "../kleros/KlerosLogo";
-import { KlerosAddressTag, useKlerosAddressTags, hasValidKlerosTags } from "../kleros/useKleros";
+import { hasValidKlerosTags, useKlerosAddressTags } from "../kleros/useKleros";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
@@ -20,7 +20,6 @@ import { useAddressOrENS } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
 import { AddressAwareComponentProps } from "./types";
-
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
