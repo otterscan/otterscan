@@ -11,7 +11,7 @@ import { NavLink } from "react-router";
 import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
 import KlerosLogo from "../../kleros/KlerosLogo";
-import { KlerosAddressTag, useKlerosAddressTags, hasValidKlerosData } from "../../kleros/useKleros";
+import { KlerosAddressTag, useKlerosAddressTags, hasValidKlerosTags } from "../../kleros/useKleros";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
@@ -151,12 +151,8 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
   const match = useSourcifyMetadata(address, provider._network.chainId);
 
   // Prioritize Kleros tags over other resolvers, but only if they have valid data
-  if (
-    klerosTags &&
-    klerosTags.length > 0 &&
-    hasValidKlerosData(klerosTags[0])
-  ) {
-    const klerosName = `${klerosTags[0].project_name}: ${klerosTags[0].name_tag}`;
+  if (hasValidKlerosTags(klerosTags)) {
+    const klerosName = `${klerosTags![0].project_name}: ${klerosTags![0].name_tag}`;
     return (
       <NavLink
         to={`/address/${address}`}

@@ -12,6 +12,13 @@ export const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
   );
 };
 
+// Helper function to check if Kleros tags array has valid data for display
+export const hasValidKlerosTags = (
+  tags: KlerosAddressTag[] | null | undefined,
+): boolean => {
+  return !!(tags && tags.length > 0 && hasValidKlerosData(tags[0]));
+};
+
 type KlerosConfig = {
   enabled: boolean;
   apiUrl?: string;
@@ -28,6 +35,12 @@ function getEffectiveKlerosConfig(raw: unknown): KlerosConfig {
     enabled: cfg.enabled ?? DEFAULT_KLEROS_CONFIG.enabled,
     apiUrl: cfg.apiUrl ?? DEFAULT_KLEROS_CONFIG.apiUrl,
   };
+}
+
+// Centralized helper to get Kleros config from runtime context
+function useKlerosConfig() {
+  const { config } = useContext(RuntimeContext);
+  return getEffectiveKlerosConfig((config as any)?.externalDataSources?.kleros);
 }
 
 export type TokenAttributes = {
@@ -114,10 +127,8 @@ export const getKlerosAddressTagsQuery = (
 export const useKlerosAddressTags = (
   address: ChecksummedAddress | undefined,
 ): KlerosAddressTag[] | null | undefined => {
-  const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = getEffectiveKlerosConfig(
-    (config as any)?.externalDataSources?.kleros,
-  );
+  const { provider } = useContext(RuntimeContext);
+  const klerosConfig = useKlerosConfig();
 
   if (!klerosConfig?.enabled || !address) {
     return null;
@@ -126,7 +137,7 @@ export const useKlerosAddressTags = (
   const query = useQuery(
     getKlerosAddressTagsQuery(
       klerosConfig.enabled,
-      klerosConfig.apiUrl || "https://scout-api.kleros.link",
+      klerosConfig.apiUrl!,
       provider._network.chainId,
       [address],
     ),
@@ -159,10 +170,8 @@ export const useKlerosAddressTags = (
 export const useKlerosAddressTagsBatch = (
   addresses: ChecksummedAddress[],
 ): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
-  const { config, provider } = useContext(RuntimeContext);
-  const klerosConfig = getEffectiveKlerosConfig(
-    (config as any)?.externalDataSources?.kleros,
-  );
+  const { provider } = useContext(RuntimeContext);
+  const klerosConfig = useKlerosConfig();
 
   if (!klerosConfig?.enabled || addresses.length === 0) {
     return null;
@@ -171,7 +180,7 @@ export const useKlerosAddressTagsBatch = (
   const query = useQuery(
     getKlerosAddressTagsQuery(
       klerosConfig.enabled,
-      klerosConfig.apiUrl || "https://scout-api.kleros.link",
+      klerosConfig.apiUrl!,
       provider._network.chainId,
       addresses,
     ),
