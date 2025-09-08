@@ -23,11 +23,11 @@ const SourcifyLogo: React.FC<SourcifyLogoProps> = ({ locallyVerified }) => {
         <div title={title}>
           {/* Draws a white circle behind to ensure the checkmark is white */}
           <FontAwesomeIcon
-            className="absolute bottom-[0.5px] right-[-3.2px] ml-1 text-white dark:text-black text-[5.1pt]"
+            className="absolute bottom-[0.4px] right-[-1.2px] ml-1 text-white dark:text-black text-[4.6pt]"
             icon={faCircle}
           />
           <FontAwesomeIcon
-            className="absolute bottom-0 right-[-3.5px] text-emerald-500 text-[5.5pt]"
+            className="absolute bottom-0 right-[-1.5px] text-emerald-500 text-[5pt]"
             icon={faCheckCircle}
           />
         </div>
