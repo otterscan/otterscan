@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 
-// Helper function to check if a Kleros tag has valid display data
+/** True if a single Kleros tag has both non-empty project_name and name_tag. */
 export const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
   return !!(
     tag.project_name &&
@@ -12,7 +12,7 @@ export const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
   );
 };
 
-// Helper function to check if Kleros tags array has valid data for display
+/** True if the list has at least one tag and the first tag is valid. */
 export const hasValidKlerosTags = (
   tags: KlerosAddressTag[] | null | undefined,
 ): boolean => {
@@ -31,6 +31,7 @@ const DEFAULT_KLEROS_CONFIG: KlerosConfig = {
 
 type RawKlerosConfig = { enabled?: boolean; apiUrl?: string } | undefined;
 
+/** Merge optional Kleros config overrides with defaults. */
 function getEffectiveKlerosConfig(raw: RawKlerosConfig): KlerosConfig {
   const cfg = raw ?? {};
   return {
@@ -39,7 +40,7 @@ function getEffectiveKlerosConfig(raw: RawKlerosConfig): KlerosConfig {
   };
 }
 
-// Centralized helper to get Kleros config from runtime context
+/** Returns the effective Kleros config from the runtime context. */
 function useKlerosConfig(): KlerosConfig {
   const { config } = useContext(RuntimeContext);
   return getEffectiveKlerosConfig(config.externalDataSources?.kleros);
@@ -71,6 +72,7 @@ export type KlerosResponse = {
   addresses: KlerosAddressResponse[];
 };
 
+/** Low-level fetcher for the Kleros address-tags API. */
 async function fetchKlerosAddressTags(
   apiUrl: string,
   chainId: string,
@@ -110,6 +112,7 @@ async function fetchKlerosAddressTags(
   }
 }
 
+/** React Query options factory to load Kleros tags for one or more addresses. */
 export const getKlerosAddressTagsQuery = (
   enabled: boolean,
   apiUrl: string,
@@ -126,6 +129,7 @@ export const getKlerosAddressTagsQuery = (
   enabled: enabled && !!chainId && addresses.length > 0,
 });
 
+/** Fetch Kleros tags for a single address. */
 export const useKlerosAddressTags = (
   address: ChecksummedAddress | undefined,
 ): KlerosAddressTag[] | null | undefined => {
@@ -168,7 +172,7 @@ export const useKlerosAddressTags = (
   return addressKey ? addressResponse[addressKey] : null;
 };
 
-// Batch hook for fetching multiple addresses at once (useful for transaction logs)
+/** Fetch Kleros tags for multiple addresses; useful for lists. */
 export const useKlerosAddressTagsBatch = (
   addresses: ChecksummedAddress[],
 ): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
