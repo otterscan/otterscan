@@ -53,7 +53,6 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
 }) => {
   const { config, provider } = useContext(RuntimeContext);
   const match = useSourcifyMetadata(address, provider._network.chainId);
-  const klerosTags = useKlerosAddressTags(address);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
