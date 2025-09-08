@@ -19,9 +19,6 @@ export default defineConfig({
         target: "https://scout-api.kleros.link",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/kleros/, ""),
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
       },
     },
   },

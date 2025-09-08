@@ -164,26 +164,8 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
         className={`flex items-center space-x-1 font-sans truncate ${
           dontOverrideColors
             ? ""
-            : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+            : "text-[var(--color-kleros-tag)] hover:text-[var(--color-kleros-tag-hover)]"
         }`}
-        style={
-          !dontOverrideColors
-            ? {
-                color: "var(--color-kleros-tag)",
-              }
-            : undefined
-        }
-        onMouseOver={
-          !dontOverrideColors
-            ? (e) =>
-                (e.currentTarget.style.color = "var(--color-kleros-tag-hover)")
-            : undefined
-        }
-        onMouseOut={
-          !dontOverrideColors
-            ? (e) => (e.currentTarget.style.color = "var(--color-kleros-tag)")
-            : undefined
-        }
         title={`Verified by Kleros (${klerosName}): ${address}`}
       >
         <KlerosLogo className="h-3 w-3 flex-shrink-0" />
