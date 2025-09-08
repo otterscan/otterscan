@@ -12,6 +12,7 @@ import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
 import KlerosLogo from "../../kleros/KlerosLogo";
 import {
+  formatKlerosName,
   hasValidKlerosTags,
   useKlerosAddressTags,
 } from "../../kleros/useKleros";
@@ -59,10 +60,13 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
 
   return (
     <div
-      className={`flex items-baseline space-x-1 ${txFrom ? "bg-skin-from" : ""
-        } ${txTo ? "bg-skin-to" : ""} ${mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
-        } ${burn ? "text-orange-500 line-through hover:text-orange-700" : ""} ${selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
-        }`}
+      className={`flex items-baseline space-x-1 ${
+        txFrom ? "bg-skin-from" : ""
+      } ${txTo ? "bg-skin-to" : ""} ${
+        mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
+      } ${burn ? "text-orange-500 line-through hover:text-orange-700" : ""} ${
+        selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
+      }`}
     >
       {creation && (
         <span
@@ -153,25 +157,26 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
 
   // Prioritize Kleros tags over other resolvers, but only if they have valid data
   if (hasValidKlerosTags(klerosTags)) {
-    const klerosName = `${klerosTags![0].project_name}: ${klerosTags![0].name_tag}`;
+    const klerosName = formatKlerosName(klerosTags![0]);
     return (
       <NavLink
         to={`/address/${address}`}
-        className={`flex items-center space-x-1 font-sans truncate ${dontOverrideColors
-          ? ""
-          : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-          }`}
+        className={`flex items-center space-x-1 font-sans truncate ${
+          dontOverrideColors
+            ? ""
+            : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+        }`}
         style={
           !dontOverrideColors
             ? {
-              color: "var(--color-kleros-tag)",
-            }
+                color: "var(--color-kleros-tag)",
+              }
             : undefined
         }
         onMouseOver={
           !dontOverrideColors
             ? (e) =>
-              (e.currentTarget.style.color = "var(--color-kleros-tag-hover)")
+                (e.currentTarget.style.color = "var(--color-kleros-tag-hover)")
             : undefined
         }
         onMouseOut={

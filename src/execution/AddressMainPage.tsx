@@ -62,7 +62,8 @@ const AddressMainPage: React.FC = () => {
   const urlFixer = useCallback(
     (address: ChecksummedAddress) => {
       navigate(
-        `/address/${address}${direction ? "/" + direction : ""
+        `/address/${address}${
+          direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
         { replace: true },
       );
@@ -146,8 +147,9 @@ const AddressMainPage: React.FC = () => {
                   <>
                     <NavTab href={`/address/${addressOrName}/contract`}>
                       <span
-                        className={`flex items-baseline space-x-2 ${match === undefined ? "italic opacity-50" : ""
-                          }`}
+                        className={`flex items-baseline space-x-2 ${
+                          match === undefined ? "italic opacity-50" : ""
+                        }`}
                       >
                         <span>Contract</span>
                         {match === undefined ? (

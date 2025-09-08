@@ -19,6 +19,11 @@ export const hasValidKlerosTags = (
   return !!(tags && tags.length > 0 && hasValidKlerosData(tags[0]));
 };
 
+/** Format a concise and human-readable Kleros label (Project: Name). */
+export const formatKlerosName = (tag: KlerosAddressTag): string => {
+  return `${tag.project_name}: ${tag.name_tag}`;
+};
+
 type KlerosConfig = {
   enabled: boolean;
   apiUrl?: string;
