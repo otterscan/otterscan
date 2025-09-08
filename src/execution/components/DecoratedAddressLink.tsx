@@ -11,7 +11,7 @@ import { NavLink } from "react-router";
 import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
 import KlerosLogo from "../../kleros/KlerosLogo";
-import { KlerosAddressTag, useKlerosAddressTags } from "../../kleros/useKleros";
+import { KlerosAddressTag, useKlerosAddressTags, hasValidKlerosData } from "../../kleros/useKleros";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
@@ -22,15 +22,6 @@ import { VerifiedContractRenderer } from "../address/renderer/VerifiedContractNa
 import { AddressAwareComponentProps } from "../types";
 import PlainAddress from "./PlainAddress";
 
-// Helper function to check if a Kleros tag has valid display data
-const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
-  return !!(
-    tag.project_name &&
-    tag.name_tag &&
-    tag.project_name.trim() !== "" &&
-    tag.name_tag.trim() !== ""
-  );
-};
 
 export type DecoratedAddressLinkProps = AddressAwareComponentProps & {
   selectedAddress?: ChecksummedAddress | undefined;
@@ -170,8 +161,8 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
       <NavLink
         to={`/address/${address}`}
         className={`flex items-baseline space-x-1 font-sans truncate ${dontOverrideColors
-            ? ""
-            : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+          ? ""
+          : "text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
           }`}
         style={
           !dontOverrideColors

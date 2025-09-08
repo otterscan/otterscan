@@ -3,6 +3,15 @@ import { useContext } from "react";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
 
+// Helper function to check if a Kleros tag has valid display data
+export const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
+  return !!(
+    tag.project_name &&
+    tag.name_tag &&
+    (tag.project_name.trim() !== "" || tag.name_tag.trim() !== "")
+  );
+};
+
 type KlerosConfig = {
   enabled: boolean;
   apiUrl?: string;

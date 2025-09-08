@@ -9,7 +9,7 @@ import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
 import KlerosLogo from "../kleros/KlerosLogo";
-import { KlerosAddressTag, useKlerosAddressTags } from "../kleros/useKleros";
+import { KlerosAddressTag, useKlerosAddressTags, hasValidKlerosData } from "../kleros/useKleros";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
@@ -21,15 +21,6 @@ import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
 import { AddressAwareComponentProps } from "./types";
 
-// Helper function to check if a Kleros tag has valid display data
-const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
-  return !!(
-    tag.project_name &&
-    tag.name_tag &&
-    tag.project_name.trim() !== "" &&
-    tag.name_tag.trim() !== ""
-  );
-};
 
 const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
@@ -72,8 +63,7 @@ const AddressMainPage: React.FC = () => {
   const urlFixer = useCallback(
     (address: ChecksummedAddress) => {
       navigate(
-        `/address/${address}${
-          direction ? "/" + direction : ""
+        `/address/${address}${direction ? "/" + direction : ""
         }?${searchParams.toString()}`,
         { replace: true },
       );
@@ -159,9 +149,8 @@ const AddressMainPage: React.FC = () => {
                   <>
                     <NavTab href={`/address/${addressOrName}/contract`}>
                       <span
-                        className={`flex items-baseline space-x-2 ${
-                          match === undefined ? "italic opacity-50" : ""
-                        }`}
+                        className={`flex items-baseline space-x-2 ${match === undefined ? "italic opacity-50" : ""
+                          }`}
                       >
                         <span>Contract</span>
                         {match === undefined ? (
