@@ -29,8 +29,10 @@ const DEFAULT_KLEROS_CONFIG: KlerosConfig = {
   apiUrl: "https://scout-api.kleros.link",
 };
 
-function getEffectiveKlerosConfig(raw: unknown): KlerosConfig {
-  const cfg = (raw as { enabled?: boolean; apiUrl?: string }) ?? {};
+type RawKlerosConfig = { enabled?: boolean; apiUrl?: string } | undefined;
+
+function getEffectiveKlerosConfig(raw: RawKlerosConfig): KlerosConfig {
+  const cfg = raw ?? {};
   return {
     enabled: cfg.enabled ?? DEFAULT_KLEROS_CONFIG.enabled,
     apiUrl: cfg.apiUrl ?? DEFAULT_KLEROS_CONFIG.apiUrl,
@@ -38,9 +40,9 @@ function getEffectiveKlerosConfig(raw: unknown): KlerosConfig {
 }
 
 // Centralized helper to get Kleros config from runtime context
-function useKlerosConfig() {
+function useKlerosConfig(): KlerosConfig {
   const { config } = useContext(RuntimeContext);
-  return getEffectiveKlerosConfig((config as any)?.externalDataSources?.kleros);
+  return getEffectiveKlerosConfig(config.externalDataSources?.kleros);
 }
 
 export type TokenAttributes = {

@@ -118,7 +118,7 @@ const AddressMainPage: React.FC = () => {
                     <span className="flex items-baseline space-x-2">
                       <span>Info</span>
                       <span className="self-center">
-                        <KlerosLogo />
+                        <KlerosLogo className="h-4 w-4" />
                       </span>
                     </span>
                   </NavTab>
