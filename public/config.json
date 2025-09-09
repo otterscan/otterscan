@@ -1,4 +1,4 @@
 {
-  "erigonURL": "http://localhost:8545",
+  "erigonURL": "https://docs-demo.quiknode.pro",
   "assetsURLPrefix": "http://localhost:5175"
 }
