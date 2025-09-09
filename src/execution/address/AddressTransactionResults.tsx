@@ -13,7 +13,6 @@ import NativeTokenAmountAndFiat from "../../components/NativeTokenAmountAndFiat"
 import StandardScrollableTable from "../../components/StandardScrollableTable";
 import StandardTBody from "../../components/StandardTBody";
 import TransactionLink from "../../components/TransactionLink";
-
 import { useProxyAttributes } from "../../ots2/usePrototypeTransferHooks";
 import ResultHeader from "../../search/ResultHeader";
 import TransactionItem from "../../search/TransactionItem";
