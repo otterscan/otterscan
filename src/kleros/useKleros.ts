@@ -88,11 +88,8 @@ async function fetchKlerosAddressTags(
   }
 
   try {
-    // Use proxy in development, direct API in production
-    const isDevelopment = import.meta.env.DEV;
-    const endpoint = isDevelopment
-      ? "/api/kleros/api/address-tags"
-      : `${apiUrl}/api/address-tags`;
+    // Always call the upstream API directly; CORS must be enabled server-side
+    const endpoint = `${apiUrl}/api/address-tags`;
 
     const response = await fetch(endpoint, {
       method: "POST",
