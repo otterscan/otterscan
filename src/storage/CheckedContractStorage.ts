@@ -1,4 +1,5 @@
 import { Metadata } from "@ethereum-sourcify/lib-sourcify";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { hexlify, toUtf8Bytes } from "ethers";
 import { useEffect, useState } from "react";
 
@@ -72,43 +73,50 @@ class CheckedContractStorage {
   }
 }
 
+const fetchIsLocallyVerified = async (
+  chainId: bigint,
+  address: string,
+  metadataHash: string,
+) => {
+  const savedMetadataHash = CheckedContractStorage.get(chainId, address);
+  if (savedMetadataHash === metadataHash) {
+    return true;
+  }
+  return false;
+};
+
 export const useIsLocallyVerified = (
   match: any,
   chainId: bigint,
   address: string | undefined,
 ) => {
-  const [isLocallyVerified, setIsLocallyVerified] = useState<boolean>(false);
+  const [metadataHash, setMetadataHash] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (match && address !== undefined) {
-      const savedMetadataHash = CheckedContractStorage.get(chainId, address);
-      if (savedMetadataHash !== null) {
-        CheckedContractStorage.hashMetadata(
-          match.metadata as unknown as Metadata,
-        ).then((metadataHash) => {
-          if (metadataHash === savedMetadataHash) {
-            setIsLocallyVerified(true);
-          } else {
-            console.warn(
-              "For",
-              address,
-              "mismatched metadata compared to locally verified: got",
-              metadataHash,
-              "but locally verified =",
-              savedMetadataHash,
-            );
-            setIsLocallyVerified(false);
-          }
-        });
-      } else {
-        setIsLocallyVerified(false);
-      }
-    } else {
-      setIsLocallyVerified(false);
+    if (match) {
+      CheckedContractStorage.hashMetadata(
+        match.metadata as unknown as Metadata,
+      ).then(setMetadataHash);
     }
-  }, [match, chainId, address]);
+  }, [match]);
 
-  return isLocallyVerified;
+  const { data: isLocallyVerified, isLoading } = useQuery({
+    queryKey: ["locallyVerified", chainId.toString(), address, metadataHash],
+    queryFn: () => {
+      if (metadataHash !== null && address !== undefined) {
+        return fetchIsLocallyVerified(chainId, address, metadataHash);
+      }
+      return false;
+    },
+    enabled: metadataHash !== null && address !== undefined,
+
+    // The only advantage to enabling a stale time is if the user locally
+    // verifies this contract in another browser tab
+    staleTime: Infinity,
+  });
+
+  return isLocallyVerified === true;
 };
 
 export default CheckedContractStorage;

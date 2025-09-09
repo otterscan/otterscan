@@ -336,6 +336,11 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         if (originalMetadataHash !== null) {
           CheckedContractStorage.save(chainId, address, originalMetadataHash);
         }
+
+        // Invalidate any queries with this chain ID and address to refresh tab logo
+        await queryClient.invalidateQueries({
+          queryKey: ["locallyVerified", chainId.toString(), address],
+        });
       }
 
       setResult({
