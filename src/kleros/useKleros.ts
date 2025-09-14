@@ -126,8 +126,8 @@ export const getKlerosAddressTagsQuery = (
     if (!enabled || !chainId) return null;
     return fetchKlerosAddressTags(apiUrl, chainId.toString(), addresses);
   },
-  staleTime: 5 * 60 * 1000, // 5 minutes
-  gcTime: 10 * 60 * 1000, // 10 minutes
+  staleTime: 60 * 60 * 1000, // 1 hour
+  gcTime: 4 * 60 * 60 * 1000, // 4 hours
   enabled: enabled && !!chainId && addresses.length > 0,
 });
 

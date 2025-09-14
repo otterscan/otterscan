@@ -18,9 +18,8 @@ const AddressLegend: FC<PropsWithChildren<AddressLegendProps>> = ({
   //   selector={tagSelector}
   // >
   <span
-    className={`font-code ${
-      full ? "text-sm text-gray-500/70" : "text-xs text-gray-400/70"
-    } text-clip not-italic`}
+    className={`font-code ${full ? "text-sm text-gray-500/70" : "text-xs text-gray-400/70"
+      } text-clip not-italic`}
     title={title}
   >
     {children}
