@@ -112,7 +112,7 @@
     "vite-plugin-compression": "^0.5.1"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.46.2"
+    "@rollup/rollup-linux-x64-gnu": "^4.50.2"
   },
   "overrides": {
     "storybook": "$storybook",
