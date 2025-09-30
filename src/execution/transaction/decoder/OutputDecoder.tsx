@@ -12,17 +12,13 @@ import DecodedParamsTable from "./DecodedParamsTable";
  * Returns null if the type string is empty or invalid.
  */
 function parseTypeString(typeString: string): ParamType[] | null {
-  const raw = typeString
-    .trim()
-    .split(/[\s,]+/)
-    .filter(Boolean);
-
+  const raw = typeString.trim();
   if (raw.length === 0) {
     return null;
   }
 
   try {
-    return raw.map((t) => ParamType.from(t));
+    return [ParamType.from(raw)];
   } catch {
     return null;
   }
