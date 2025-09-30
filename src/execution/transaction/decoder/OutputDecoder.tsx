@@ -64,8 +64,11 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
     setCustomParamTypes(parsed);
 
     try {
-      const decoded = AbiCoder.defaultAbiCoder().decode(parsed, data);
-      setCustomDecoded(decoded);
+      const decodedProxy = AbiCoder.defaultAbiCoder().decode(parsed, data);
+      // Throws if there were deferred ABI decoding errors
+      decodedProxy.toArray(true);
+
+      setCustomDecoded(decodedProxy);
     } catch {
       setCustomError(
         "Decoding failed: the data does not match the supplied type(s).",
