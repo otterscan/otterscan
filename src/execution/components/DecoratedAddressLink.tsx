@@ -60,10 +60,13 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
 
   return (
     <div
-      className={`flex items-baseline space-x-1 ${txFrom ? "bg-skin-from" : ""
-        } ${txTo ? "bg-skin-to" : ""} ${mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
-        } ${burn ? "text-orange-500 line-through hover:text-orange-700" : ""} ${selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
-        }`}
+      className={`flex items-baseline space-x-1 ${
+        txFrom ? "bg-skin-from" : ""
+      } ${txTo ? "bg-skin-to" : ""} ${
+        mint ? "italic text-emerald-500 hover:text-emerald-700" : ""
+      } ${burn ? "text-orange-500 line-through hover:text-orange-700" : ""} ${
+        selfDestruct ? "line-through opacity-70 hover:opacity-100" : ""
+      }`}
     >
       {creation && (
         <span
@@ -158,10 +161,11 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
     return (
       <NavLink
         to={`/address/${address}`}
-        className={`flex items-baseline space-x-1 font-sans truncate ${dontOverrideColors
-          ? ""
-          : "text-[var(--color-kleros-tag)] hover:text-[var(--color-kleros-tag-hover)]"
-          }`}
+        className={`flex items-baseline space-x-1 font-sans truncate ${
+          dontOverrideColors
+            ? ""
+            : "text-[var(--color-kleros-tag)] hover:text-[var(--color-kleros-tag-hover)]"
+        }`}
         title={`Verified by Kleros (${klerosName}): ${address}`}
       >
         <KlerosLogo className="h-3 w-3 flex-shrink-0" />
