@@ -332,13 +332,28 @@ export const findTokenTransfersInLogs = (
   logs: readonly Log[],
 ): TokenTransfer[] => {
   return logs
-    .filter((l) => l.topics.length === 3 && l.topics[0] === TRANSFER_TOPIC)
-    .map((l) => ({
-      token: l.address,
-      from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
-      to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
-      value: BigInt(l.data),
-    }));
+    .filter(
+      (l) =>
+        (l.topics.length === 3 || l.topics.length === 4) &&
+        l.topics[0] === TRANSFER_TOPIC,
+    )
+    .map((l) =>
+      l.topics.length === 3
+        ? {
+            token: l.address,
+            from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
+            to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
+            value: BigInt(l.data),
+            type: "erc20",
+          }
+        : {
+            token: l.address,
+            from: getAddress(dataSlice(getBytes(l.topics[1]), 12)),
+            to: getAddress(dataSlice(getBytes(l.topics[2]), 12)),
+            tokenId: BigInt(l.topics[3]),
+            type: "erc721",
+          },
+    );
 };
 
 export const useTokenTransfers = (

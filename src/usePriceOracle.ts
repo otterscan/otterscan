@@ -232,11 +232,11 @@ const feedRegistryFetcher =
 export const useTokenUSDOracle = (
   provider: JsonRpcApiProvider,
   blockTag: BlockTag | undefined,
-  tokenAddress: ChecksummedAddress,
+  tokenAddress: ChecksummedAddress | undefined,
   tokenDecimals: bigint | undefined,
 ): FeedRegistryFetcherData => {
   const netTokenEquivMap = tokenEquivMap.get(provider._network.chainId);
-  if (netTokenEquivMap !== undefined) {
+  if (netTokenEquivMap !== undefined && tokenAddress !== undefined) {
     const tokenEquiv = netTokenEquivMap.get(tokenAddress);
     if (tokenEquiv !== undefined) {
       tokenAddress = tokenEquiv;
@@ -258,7 +258,9 @@ export const useTokenUSDOracle = (
   );
   // Conditional data fetching, since token price resolvers depend on the ETH price
   const { data, error } = useSWRImmutable(
-    ethPrice !== undefined && tokenDecimals !== undefined
+    ethPrice !== undefined &&
+      tokenDecimals !== undefined &&
+      tokenAddress !== undefined
       ? feedRegistryFetcherKey(tokenAddress, blockTag)
       : null,
     fetcher,

@@ -5,7 +5,7 @@ import NativeTokenAmount from "../../components/NativeTokenAmount";
 import TimestampAge from "../../components/TimestampAge";
 import TransactionDirection from "../../components/TransactionDirection";
 import TransactionLink from "../../components/TransactionLink";
-import { TokenTransfer } from "../../types";
+import { ERC20Transfer } from "../../types";
 import { BlockNumberContext } from "../../useBlockTagContext";
 import TransactionAddress from "../components/TransactionAddress";
 import { AddressAwareComponentProps } from "../types";
@@ -21,7 +21,7 @@ export type ERC20ItemProps = AddressAwareComponentProps & {
   to: string | null;
   value: bigint;
   type: number;
-  tokenTransfers: TokenTransfer[];
+  tokenTransfers: ERC20Transfer[];
 };
 
 const ERC20Item: FC<ERC20ItemProps> = ({
@@ -85,7 +85,7 @@ const ERC20Item: FC<ERC20ItemProps> = ({
         </td>
       </tr>
       {tokenTransfers &&
-        tokenTransfers.map((transfer: TokenTransfer, index: number) =>
+        tokenTransfers.map((transfer: ERC20Transfer, index: number) =>
           transfer.from === address || transfer.to === address ? (
             <tr key={index}>
               <td></td>

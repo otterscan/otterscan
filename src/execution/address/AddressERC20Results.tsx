@@ -61,7 +61,9 @@ const AddressERC20Results: FC = () => {
           to: m.receipt.to,
           value: m.transaction.value,
           type: m.transaction.type,
-          tokenTransfers: findTokenTransfersInLogs(m.receipt.logs),
+          tokenTransfers: findTokenTransfersInLogs(m.receipt.logs).filter(
+            (transfer) => transfer.type === "erc20",
+          ),
         }),
       ),
     [results],

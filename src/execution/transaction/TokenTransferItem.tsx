@@ -10,6 +10,7 @@ import { useTokenMetadata } from "../../useErigonHooks";
 import { useTokenUSDOracle } from "../../usePriceOracle";
 import { RuntimeContext } from "../../useRuntime";
 import TransactionAddress from "../components/TransactionAddress";
+import NftIcon from "./nft-icon.svg";
 
 type TokenTransferItemProps = {
   t: TokenTransfer;
@@ -28,10 +29,8 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
     source: priceSource,
   } = useTokenUSDOracle(
     provider,
-    blockNumber !== undefined && typeof blockNumber === "number"
-      ? blockNumber - 1
-      : blockNumber,
-    t.token,
+    typeof blockNumber === "number" ? blockNumber - 1 : blockNumber,
+    t.type === "erc20" ? t.token : undefined,
     tokenMeta?.decimals !== undefined ? BigInt(tokenMeta?.decimals) : undefined,
   );
 
@@ -56,25 +55,43 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
           />
         </div>
         <div className="col-span-2 flex items-baseline space-x-1">
-          <span className="text-gray-500">
-            <FontAwesomeIcon icon={faSackDollar} size="1x" />
-          </span>
-          <span>
-            <FormattedBalanceHighlighter
-              value={t.value}
-              decimals={tokenMeta?.decimals ?? 0}
-            />
-          </span>
-          <TransactionAddress address={t.token} />
-          {tokenMeta && quote !== undefined && decimals !== undefined && (
-            <USDAmount
-              amount={t.value}
-              amountDecimals={tokenMeta.decimals}
-              quote={quote}
-              quoteDecimals={Number(decimals ?? 0)}
-              colorScheme={getPriceOraclePreset(priceSource)}
-            />
+          {t.type === "erc20" && (
+            <span>
+              <span className="text-gray-500">
+                <FontAwesomeIcon icon={faSackDollar} size="1x" />
+              </span>
+              <FormattedBalanceHighlighter
+                value={t.value}
+                decimals={tokenMeta?.decimals ?? 0}
+              />
+            </span>
           )}
+          {t.type === "erc721" && (
+            <span className="inline-flex items-baseline">
+              <span>
+                {/* For the same height as the FA icons, use h-[1em] [vertical-align:-0.125em] */}
+                <img
+                  src={NftIcon}
+                  title="NFT"
+                  className="inline-block h-[1.5em] [vertical-align:-0.375em]"
+                />
+              </span>
+              <span className="px-1">NFT #{t.tokenId}</span>
+            </span>
+          )}
+          <TransactionAddress address={t.token} />
+          {t.type === "erc20" &&
+            tokenMeta &&
+            quote !== undefined &&
+            decimals !== undefined && (
+              <USDAmount
+                amount={t.value}
+                amountDecimals={tokenMeta.decimals}
+                quote={quote}
+                quoteDecimals={Number(decimals ?? 0)}
+                colorScheme={getPriceOraclePreset(priceSource)}
+              />
+            )}
         </div>
       </div>
     </div>
