@@ -73,7 +73,7 @@ const TokenTransferItem: FC<TokenTransferItemProps> = ({ t }) => {
                 <img
                   src={NftIcon}
                   title="NFT"
-                  className="inline-block h-[1.5em] [vertical-align:-0.375em]"
+                  className="inline-block min-w-[1.5em] h-[1.5em] [vertical-align:-0.375em]"
                 />
               </span>
               <span className="px-1">NFT #{t.tokenId}</span>
