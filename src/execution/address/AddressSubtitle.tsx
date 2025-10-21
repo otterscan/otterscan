@@ -75,7 +75,7 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
               <EditableAddressTag
                 address={address}
                 defaultTag={resolvedName}
-                editedCallback={(address: string) =>
+                editedCallback={(_address: string) =>
                   setEditingAddressTag(false)
                 }
               />

@@ -234,6 +234,20 @@ export type OtterscanConfig = {
        */
       ensLookups?: boolean;
     };
+    /**
+     * Kleros Scout integration for address tagging and verification
+     */
+    kleros?: {
+      /**
+       * Enable/disable Kleros Scout integration
+       */
+      enabled: boolean;
+
+      /**
+       * Kleros Scout API URL (defaults to https://scout-api.kleros.link)
+       */
+      apiUrl?: string;
+    };
   };
 
   /**

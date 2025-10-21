@@ -8,6 +8,8 @@ import { Outlet, useNavigate, useParams, useSearchParams } from "react-router";
 import AddressOrENSNameNotFound from "../components/AddressOrENSNameNotFound";
 import NavTab from "../components/NavTab";
 import StandardFrame from "../components/StandardFrame";
+import KlerosLogo from "../kleros/KlerosLogo";
+import { hasValidKlerosTags, useKlerosAddressTags } from "../kleros/useKleros";
 import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
@@ -89,6 +91,8 @@ const AddressMainPage: React.FC = () => {
     config.assetsURLPrefix,
   );
 
+  const klerosTags = useKlerosAddressTags(checksummedAddress);
+
   return (
     <StandardFrame>
       {error ? (
@@ -110,6 +114,16 @@ const AddressMainPage: React.FC = () => {
             <TabGroup>
               <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white overflow-x-auto whitespace-nowrap">
                 <NavTab href={`/address/${addressOrName}`}>Overview</NavTab>
+                {hasValidKlerosTags(klerosTags) && (
+                  <NavTab href={`/address/${addressOrName}/kleros`}>
+                    <span className="flex items-baseline space-x-2">
+                      <span>Info</span>
+                      <span className="self-center">
+                        <KlerosLogo className="h-4 w-4" />
+                      </span>
+                    </span>
+                  </NavTab>
+                )}
                 {config?.experimental && (
                   <>
                     <NavTab href={`/address/${addressOrName}/erc20`}>
