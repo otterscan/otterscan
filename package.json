@@ -6,7 +6,7 @@
   "type": "module",
   "packageManager": "pnpm@10.15.1",
   "dependencies": {
-    "@ethereum-sourcify/compilers-types": "^1.0.6",
+    "@ethereum-sourcify/compilers-types": "^1.0.10",
     "@ethereum-sourcify/lib-sourcify": "^2.2.2",
     "@fontsource/fira-code": "^5.2.6",
     "@fontsource/roboto": "^5.2.6",
