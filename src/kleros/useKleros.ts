@@ -138,21 +138,22 @@ export const useKlerosAddressTags = (
   const { provider } = useContext(RuntimeContext);
   const klerosConfig = useKlerosConfig();
 
-  if (!klerosConfig?.enabled || !address) {
-    return null;
-  }
-
   const query = useQuery(
     getKlerosAddressTagsQuery(
-      klerosConfig.enabled,
+      klerosConfig.enabled && !!address,
       klerosConfig.apiUrl!,
       provider._network.chainId,
-      [address],
+      address ? [address] : [],
     ),
   );
 
+  if (address === undefined) {
+    return undefined;
+  }
+
   if (!query.data) {
-    return query.data; // undefined or null
+    // undefined or null
+    return query.data;
   }
 
   // Extract tags for the specific address
