@@ -80,7 +80,7 @@ jobs:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Mainnet Screenshots
@@ -143,7 +143,7 @@ jobs:
           CYPRESS_DEVNET_ERIGON_URL: "http://127.0.0.1:8545"
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Devnet Screenshots
@@ -200,7 +200,7 @@ jobs:
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
           CYPRESS_DEVNET_ACCOUNT_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Devnet Screenshots
