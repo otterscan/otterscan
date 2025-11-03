@@ -11,14 +11,14 @@ import DecodedParamsTable from "./DecodedParamsTable";
  * Convert a comma-separated list of type names into ParamType objects.
  * Returns null if the type string is empty or invalid.
  */
-function parseTypeString(typeString: string): ParamType[] | null {
+function parseTypeString(typeString: string): readonly ParamType[] | null {
   const raw = typeString.trim();
   if (raw.length === 0) {
     return null;
   }
 
   try {
-    return [ParamType.from(raw)];
+    return ParamType.from(`(${raw})`).components;
   } catch {
     return null;
   }
@@ -40,9 +40,9 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
   const [selectedIdx, setSelectedIdx] = useState(0);
 
   const [customTypeInput, setCustomTypeInput] = useState<string>("");
-  const [customParamTypes, setCustomParamTypes] = useState<ParamType[] | null>(
-    null,
-  );
+  const [customParamTypes, setCustomParamTypes] = useState<
+    readonly ParamType[] | null
+  >(null);
   const [customDecoded, setCustomDecoded] = useState<Result | null>(null);
   const [customError, setCustomError] = useState<string | null>(null);
 
