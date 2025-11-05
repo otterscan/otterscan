@@ -10,7 +10,7 @@
     "@ethereum-sourcify/lib-sourcify": "^2.2.2",
     "@fontsource/fira-code": "^5.2.6",
     "@fontsource/roboto": "^5.2.6",
-    "@fontsource/roboto-mono": "^5.2.6",
+    "@fontsource/roboto-mono": "^5.2.8",
     "@fontsource/space-grotesk": "^5.2.8",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^6.7.2",

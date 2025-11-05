@@ -21,8 +21,8 @@ importers:
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/roboto-mono':
-        specifier: ^5.2.6
-        version: 5.2.6
+        specifier: ^5.2.8
+        version: 5.2.8
       '@fontsource/space-grotesk':
         specifier: ^5.2.8
         version: 5.2.8
@@ -727,8 +727,8 @@ packages:
   '@fontsource/fira-code@5.2.6':
     resolution: {integrity: sha512-wCkIpPm0BqlkCPLYeY4Vui96ODmVUV0/GpEe3OfJ4v8EJn/BF2SlyxvarFsTs1CKiGjrO2cXlIZbBrKi9F+hUQ==}
 
-  '@fontsource/roboto-mono@5.2.6':
-    resolution: {integrity: sha512-fLCa3zs9XruKE8Fdbq0UWB0wqTi5dzi09QsnW7HgTwwnSVDZ3nH+X7Qg7l0yeIZs+E472cKE3RUD21ZnaXk4Zg==}
+  '@fontsource/roboto-mono@5.2.8':
+    resolution: {integrity: sha512-M0XPRcvkOKiTPooXwX7yJSNpuad3CPcQwsADBfnopz3apBs+VKI47pc42mlvAxJjNTRauu5rndSxHc8F52bR7Q==}
 
   '@fontsource/roboto@5.2.6':
     resolution: {integrity: sha512-hzarG7yAhMoP418smNgfY4fO7UmuUEm5JUtbxCoCcFHT0hOJB+d/qAEyoNjz7YkPU5OjM2LM8rJnW8hfm0JLaA==}
@@ -4996,7 +4996,7 @@ snapshots:
 
   '@fontsource/fira-code@5.2.6': {}
 
-  '@fontsource/roboto-mono@5.2.6': {}
+  '@fontsource/roboto-mono@5.2.8': {}
 
   '@fontsource/roboto@5.2.6': {}
 
