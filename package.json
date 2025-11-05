@@ -31,7 +31,7 @@
     "@types/react-dom": "^19.1.6",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "^0.21.3",
-    "chart.js": "^4.5.0",
+    "chart.js": "^4.5.1",
     "ethers": "^6.15.0",
     "motion": "^12.23.12",
     "prettier-plugin-organize-imports": "^4.3.0",
