@@ -24,8 +24,8 @@ importers:
         specifier: ^5.2.6
         version: 5.2.6
       '@fontsource/space-grotesk':
-        specifier: ^5.2.8
-        version: 5.2.8
+        specifier: ^5.2.10
+        version: 5.2.10
       '@fortawesome/fontawesome-svg-core':
         specifier: ^6.7.2
         version: 6.7.2
@@ -733,8 +733,8 @@ packages:
   '@fontsource/roboto@5.2.6':
     resolution: {integrity: sha512-hzarG7yAhMoP418smNgfY4fO7UmuUEm5JUtbxCoCcFHT0hOJB+d/qAEyoNjz7YkPU5OjM2LM8rJnW8hfm0JLaA==}
 
-  '@fontsource/space-grotesk@5.2.8':
-    resolution: {integrity: sha512-8rlIzpX+lo36y0g77OlwjeBj2DPo9XOwrzqKRLHYZcWcsj73SlkVI6UdXxDCZGLO7oQti1q9QPXzMBYbzSz60w==}
+  '@fontsource/space-grotesk@5.2.10':
+    resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
 
   '@fortawesome/fontawesome-common-types@6.7.2':
     resolution: {integrity: sha512-Zs+YeHUC5fkt7Mg1l6XTniei3k4bwG/yo3iFUtZWd/pMx9g3fdvkSK9E0FOC+++phXOka78uJcYb8JaFkW52Xg==}
@@ -5000,7 +5000,7 @@ snapshots:
 
   '@fontsource/roboto@5.2.6': {}
 
-  '@fontsource/space-grotesk@5.2.8': {}
+  '@fontsource/space-grotesk@5.2.10': {}
 
   '@fortawesome/fontawesome-common-types@6.7.2': {}
 
