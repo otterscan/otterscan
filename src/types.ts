@@ -104,12 +104,24 @@ export type InternalOperation = {
   value: bigint;
 };
 
-export type TokenTransfer = {
+interface BaseTransfer {
+  // Contract address of the token
   token: string;
   from: string;
   to: string;
+}
+
+export interface ERC20Transfer extends BaseTransfer {
+  type: "erc20";
   value: bigint;
-};
+}
+
+export interface ERC721Transfer extends BaseTransfer {
+  type: "erc721";
+  tokenId: bigint;
+}
+
+export type TokenTransfer = ERC20Transfer | ERC721Transfer;
 
 export type TokenMeta = {
   name: string;
