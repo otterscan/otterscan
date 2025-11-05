@@ -15,8 +15,8 @@ importers:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.9.3)
       '@fontsource/fira-code':
-        specifier: ^5.2.6
-        version: 5.2.6
+        specifier: ^5.2.7
+        version: 5.2.7
       '@fontsource/roboto':
         specifier: ^5.2.6
         version: 5.2.6
@@ -724,8 +724,8 @@ packages:
   '@floating-ui/utils@0.2.10':
     resolution: {integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==}
 
-  '@fontsource/fira-code@5.2.6':
-    resolution: {integrity: sha512-wCkIpPm0BqlkCPLYeY4Vui96ODmVUV0/GpEe3OfJ4v8EJn/BF2SlyxvarFsTs1CKiGjrO2cXlIZbBrKi9F+hUQ==}
+  '@fontsource/fira-code@5.2.7':
+    resolution: {integrity: sha512-tnB9NNund9TwIym8/7DMJe573nlPEQb+fKUV5GL8TBYXjIhDvL0D7mgmNVNQUPhXp+R7RylQeiBdkA4EbOHPGQ==}
 
   '@fontsource/roboto-mono@5.2.6':
     resolution: {integrity: sha512-fLCa3zs9XruKE8Fdbq0UWB0wqTi5dzi09QsnW7HgTwwnSVDZ3nH+X7Qg7l0yeIZs+E472cKE3RUD21ZnaXk4Zg==}
@@ -4994,7 +4994,7 @@ snapshots:
 
   '@floating-ui/utils@0.2.10': {}
 
-  '@fontsource/fira-code@5.2.6': {}
+  '@fontsource/fira-code@5.2.7': {}
 
   '@fontsource/roboto-mono@5.2.6': {}
 
