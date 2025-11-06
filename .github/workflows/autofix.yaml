@@ -11,12 +11,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: "npm"
-
-      - run: npm ci
-      - run: npx prettier --write .
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec prettier --write .
 
       - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27

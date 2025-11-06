@@ -10,6 +10,12 @@ import { FC, memo, useContext } from "react";
 import { NavLink } from "react-router";
 import { resolverRendererRegistry } from "../../api/address-resolver";
 import AddressLegend from "../../components/AddressLegend";
+import KlerosLogo from "../../kleros/KlerosLogo";
+import {
+  formatKlerosName,
+  hasValidKlerosTags,
+  useKlerosAddressTags,
+} from "../../kleros/useKleros";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
@@ -145,8 +151,28 @@ const ResolvedAddress: FC<ResolvedAddressProps> = ({
 }) => {
   const { provider } = useContext(RuntimeContext);
   const resolvedAddress = useResolvedAddress(provider, address);
+  const klerosTags = useKlerosAddressTags(address);
   const linkable = address !== selectedAddress;
   const match = useSourcifyMetadata(address, provider._network.chainId);
+
+  // Prioritize Kleros tags over other resolvers, but only if they have valid data
+  if (hasValidKlerosTags(klerosTags)) {
+    const klerosName = formatKlerosName(klerosTags![0]);
+    return (
+      <NavLink
+        to={`/address/${address}`}
+        className={`flex items-baseline space-x-1 font-sans truncate ${
+          dontOverrideColors
+            ? ""
+            : "text-[var(--color-kleros-tag)] hover:text-[var(--color-kleros-tag-hover)]"
+        }`}
+        title={`Verified by Kleros (${klerosName}): ${address}`}
+      >
+        <KlerosLogo className="h-3 w-3 flex-shrink-0" />
+        <span className="truncate">{klerosName}</span>
+      </NavLink>
+    );
+  }
 
   if (!resolvedAddress && match && match.metadata.settings?.compilationTarget) {
     const compilationTarget = match.metadata.settings?.compilationTarget;

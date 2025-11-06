@@ -42,6 +42,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -61,7 +70,7 @@ jobs:
       - name: Run Cypress tests on mainnet
         uses: cypress-io/github-action@v6
         with:
-          start: npm start
+          start: pnpm start
           wait-on: "http://localhost:5173"
           spec: "cypress/e2e/mainnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'mainnet' || ''}}
@@ -71,7 +80,7 @@ jobs:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Mainnet Screenshots
@@ -86,6 +95,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -113,7 +131,7 @@ jobs:
         with:
           start: |
             sh ./scripts/run-erigon-devnet-e2e-tests.sh
-            npm run start
+            pnpm start
           wait-on: "http://127.0.0.1:8545, http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
           tag: ${{needs.check-secrets.outputs.e2e-cypress-record-key == 'true' && 'devnet' || ''}}
@@ -125,7 +143,7 @@ jobs:
           CYPRESS_DEVNET_ERIGON_URL: "http://127.0.0.1:8545"
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Devnet Screenshots
@@ -140,6 +158,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Install node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - name: Install packages
+        run: pnpm install --frozen-lockfile
       - name: Set up xvfb
         run: |
           sudo apt update
@@ -159,7 +186,7 @@ jobs:
         with:
           start: |
             sh ./scripts/run-anvil-devnet.sh
-            npm run start
+            pnpm start
           # Cypress can't detect Anvil's RPC server, so we have to assume it is up
           wait-on: "http://localhost:5173"
           spec: "cypress/e2e/devnet/**/*.cy.ts,cypress/e2e/*.cy.ts"
@@ -173,7 +200,7 @@ jobs:
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
           CYPRESS_DEVNET_ACCOUNT_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: failure()
         with:
           name: Cypress Devnet Screenshots

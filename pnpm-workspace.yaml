@@ -1,0 +1,13 @@
+onlyBuiltDependencies:
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - cbor-extract
+  - cypress
+  - esbuild
+  - sharp
+  - unrs-resolver
+  - workerd
+
+sideEffectsCache: false
+
+strictDepBuilds: true
