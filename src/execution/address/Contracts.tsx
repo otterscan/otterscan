@@ -287,6 +287,12 @@ const Contracts: React.FC<ContractsProps> = ({ checksummedAddress, match }) => {
                 </Menu>
                 {selected && match.metadata.sources[selected] && (
                   <>
+                    {/* Note for contract content verification: If the metadata
+                        specifies `useLiteralContent: true`, we assume the
+                        content has already been checked as part of local
+                        contract verification. See
+                        0x9641d764fc13c8B624c04430C7356C1C7C8102e2 on Hoodi as
+                        an example. */}
                     {match.metadata.sources[selected].content ? (
                       <HighlightedSource
                         source={match.metadata.sources[selected].content}

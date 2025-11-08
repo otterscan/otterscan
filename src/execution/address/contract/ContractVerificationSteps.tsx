@@ -27,6 +27,7 @@ import {
   transformContractResponse,
   useSourcifySources,
 } from "../../../sourcify/useSourcify";
+import CheckedContractStorage from "../../../storage/CheckedContractStorage";
 import { useAppConfigContext } from "../../../useAppConfig";
 import { RuntimeContext } from "../../../useRuntime";
 import VerificationStatus from "./VerificationStatus";
@@ -168,7 +169,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         });
         return;
       }
-      const metadata = match.metadata as unknown as Metadata;
+      const metadata = structuredClone(match.metadata as unknown as Metadata);
       if (!metadata) {
         updateStep(0, { inProgress: false, completed: false, hasError: true });
         setResult({
@@ -178,7 +179,19 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
         return;
       }
 
-      const sources = match.metadata.sources;
+      // Preserve the metadata hash before the sources field is manipulated
+      let originalMetadataHash: string | null = null;
+      try {
+        const originalMetadata = structuredClone(metadata);
+        originalMetadataHash =
+          await CheckedContractStorage.hashMetadata(originalMetadata);
+        console.log("Metadata hash:", originalMetadataHash);
+      } catch (e) {
+        console.error("Error calculating metadata hash:", e);
+      }
+
+      const sources = metadata.sources;
+      const chainId = provider._network.chainId;
       try {
         for (const filename in sources) {
           if (Object.prototype.hasOwnProperty.call(sources, filename)) {
@@ -188,7 +201,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
                 sourcifySources,
                 sourcifySource,
                 address,
-                provider._network.chainId,
+                chainId,
                 filename,
                 sources[filename].keccak256,
                 match.type,
@@ -317,6 +330,18 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       console.log("Verification result:", exportedVerification);
       const runtimeMatch = exportedVerification.status.runtimeMatch;
       const creationMatch = exportedVerification.status.creationMatch;
+
+      if (runtimeMatch === "partial" || runtimeMatch === "perfect") {
+        // Save result in local storage
+        if (originalMetadataHash !== null) {
+          CheckedContractStorage.save(chainId, address, originalMetadataHash);
+        }
+
+        // Invalidate any queries with this chain ID and address to refresh tab logo
+        await queryClient.invalidateQueries({
+          queryKey: ["locallyVerified", chainId.toString(), address],
+        });
+      }
 
       setResult({
         node:

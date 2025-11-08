@@ -1,6 +1,8 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import { NavLink } from "react-router";
 import { ResolvedAddressRenderer } from "../../../api/address-resolver/address-resolver";
+import { useSourcifyMetadata } from "../../../sourcify/useSourcify";
+import { RuntimeContext } from "../../../useRuntime";
 
 type VerifiedContractNameProps = {
   chainId: bigint;
@@ -17,6 +19,9 @@ const VerifiedContractName: FC<VerifiedContractNameProps> = ({
   resolvedName,
   dontOverrideColors,
 }) => {
+  const { provider } = useContext(RuntimeContext);
+  const match = useSourcifyMetadata(address, provider._network.chainId);
+
   const contents = <>{resolvedName}</>;
   const title = `Verified Contract (${resolvedName}): ${address}`;
   if (linkable) {

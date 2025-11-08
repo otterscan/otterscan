@@ -18,6 +18,7 @@ import {
 } from "../../kleros/useKleros";
 import SourcifyLogo from "../../sourcify/SourcifyLogo";
 import { useSourcifyMetadata } from "../../sourcify/useSourcify";
+import { useIsLocallyVerified } from "../../storage/CheckedContractStorage";
 import { AddressContext, ChecksummedAddress, ZERO_ADDRESS } from "../../types";
 import { useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
@@ -53,7 +54,9 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
   plain,
 }) => {
   const { config, provider } = useContext(RuntimeContext);
-  const match = useSourcifyMetadata(address, provider._network.chainId);
+  const chainId = provider._network.chainId;
+  const match = useSourcifyMetadata(address, chainId);
+  const locallyVerified = useIsLocallyVerified(match, chainId, address);
 
   const mint = addressCtx === AddressContext.FROM && address === ZERO_ADDRESS;
   const burn = addressCtx === AddressContext.TO && address === ZERO_ADDRESS;
@@ -104,7 +107,7 @@ const DecoratedAddressLink: FC<DecoratedAddressLinkProps> = ({
           className="flex shrink-0 items-center self-center"
           to={`/address/${address}/contract`}
         >
-          <SourcifyLogo />
+          <SourcifyLogo locallyVerified={locallyVerified} />
         </NavLink>
       )}
       {plain ? (

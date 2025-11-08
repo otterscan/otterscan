@@ -1,7 +1,8 @@
-import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faCircleNotch, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { DecorationOptions } from "shiki";
+import Alert from "../../components/Alert";
 import { MatchType, useContract } from "../../sourcify/useSourcify";
 import { useAppConfigContext } from "../../useAppConfig";
 import HighlightedSource from "./contract/HighlightedSource";
@@ -26,7 +27,7 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
   decorations,
 }) => {
   const { sourcifySource } = useAppConfigContext();
-  const content = useContract(
+  const { source: content, failedHashCheck } = useContract(
     checksummedAddress,
     networkId,
     filename,
@@ -49,11 +50,23 @@ const ContractFromRepo: React.FC<ContractFromRepoProps> = ({
         </div>
       )}
       {content !== undefined && (
-        <HighlightedSource
-          source={content}
-          langName={langName}
-          decorations={decorations}
-        />
+        <>
+          {failedHashCheck && (
+            <Alert
+              className="bg-red-100 border-red-500 text-red-700"
+              margin=""
+              icon={faWarning}
+            >
+              This source might be incorrect and should not be trusted. Its hash
+              does not match the hash found in the contract metadata.
+            </Alert>
+          )}
+          <HighlightedSource
+            source={content}
+            langName={langName}
+            decorations={decorations}
+          />
+        </>
       )}
     </>
   );

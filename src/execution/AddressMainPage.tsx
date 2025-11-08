@@ -14,6 +14,7 @@ import { useProxyAttributes } from "../ots2/usePrototypeTransferHooks";
 import SourcifyLogo from "../sourcify/SourcifyLogo";
 import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
+import { useIsLocallyVerified } from "../storage/CheckedContractStorage";
 import { ChecksummedAddress } from "../types";
 import { hasCodeQuery } from "../useErigonHooks";
 import { useAddressOrENS } from "../useResolvedAddresses";
@@ -25,13 +26,18 @@ const ProxyTabs: React.FC<AddressAwareComponentProps> = ({ address }) => {
   const { addressOrName } = useParams();
   const { provider } = useContext(RuntimeContext);
   const proxyAttrs = useProxyAttributes(provider, address);
+  const isLocallyVerified = useIsLocallyVerified(
+    proxyAttrs.proxyMatch,
+    provider._network.chainId,
+    address,
+  );
   return (
     <>
       {proxyAttrs.proxyHasCode && proxyAttrs.proxyMatch && (
         <NavTab href={`/address/${addressOrName}/proxyLogicContract`}>
           <span className={`flex items-baseline space-x-2`}>
             <span>Logic Contract</span>
-            <SourcifyLogo />
+            <SourcifyLogo locallyVerified={isLocallyVerified} />
           </span>
         </NavTab>
       )}
@@ -83,6 +89,11 @@ const AddressMainPage: React.FC = () => {
   const match = useSourcifyMetadata(
     hasCode ? checksummedAddress : undefined,
     provider._network.chainId,
+  );
+  const isLocallyVerified = useIsLocallyVerified(
+    match,
+    provider._network.chainId,
+    checksummedAddress,
   );
   const whatsabiMatch = useWhatsabiMetadata(
     match === null && hasCode ? checksummedAddress : undefined,
@@ -165,7 +176,7 @@ const AddressMainPage: React.FC = () => {
                           </span>
                         ) : (
                           <span className="self-center">
-                            <SourcifyLogo />
+                            <SourcifyLogo locallyVerified={isLocallyVerified} />
                           </span>
                         )}
                       </span>
