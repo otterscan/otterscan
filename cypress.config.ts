@@ -30,7 +30,7 @@ export default defineConfig({
     },
     baseUrl: "http://localhost:5173",
     // SyntaxHighlighter files may take several seconds to load in dev mode
-    defaultCommandTimeout: 15_000,
+    defaultCommandTimeout: 25_000,
     video: true,
     env: {
       DEVNET_ERIGON_URL: "http://localhost:8545",
