@@ -1,5 +1,5 @@
 import { TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { AbiCoder, ParamType, Result } from "ethers";
+import { AbiCoder, ParamType, Result, dataLength } from "ethers";
 import React, { useEffect, useState } from "react";
 
 import ModeTab from "../../../components/ModeTab";
@@ -37,7 +37,9 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
   data,
   devMethod,
 }) => {
-  const [selectedIdx, setSelectedIdx] = useState(0);
+  const requiresCustom =
+    !paramTypes || (paramTypes.length === 0 && dataLength(data) > 0);
+  const [selectedIdx, setSelectedIdx] = useState(requiresCustom ? 1 : 0);
 
   const [customTypeInput, setCustomTypeInput] = useState<string>("");
   const [customParamTypes, setCustomParamTypes] = useState<
@@ -76,21 +78,15 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
     }
   }, [customTypeInput, data]);
 
-  // If `paramTypes` is falsy we have three tabs (Decoded, Raw, Custom)
-  // otherwise only two tabs (Decoded, Raw)
-  const hasCustom = !paramTypes;
-  const customTabIdx = hasCustom ? 2 : -1;
-
+  const customTabIdx = 2;
   return (
     <TabGroup selectedIndex={selectedIdx} onChange={setSelectedIdx}>
       <TabList className="mb-1 flex items-center space-x-1">
         <ModeTab disabled={!paramTypes}>Decoded</ModeTab>
         <ModeTab>Raw</ModeTab>
-        {/* Only rendered when Decoded is disabled */}
-        {hasCustom && <ModeTab>Custom</ModeTab>}
-
+        <ModeTab>Custom</ModeTab>
         {/* Show the input field when the Custom tab is active */}
-        {hasCustom && selectedIdx === customTabIdx && (
+        {selectedIdx === customTabIdx && (
           <div className="ml-1">
             <input
               type="text"
@@ -134,26 +130,24 @@ const OutputDecoder: React.FC<OutputDecoderProps> = ({
           <StandardTextarea value={data} />
         </TabPanel>
 
-        {hasCustom && (
-          <TabPanel>
-            <div className="space-y-4 mt-2">
-              {customError && (
-                <p className="text-sm text-red-600">{customError}</p>
-              )}
+        <TabPanel>
+          <div className="space-y-4 mt-2">
+            {customError && (
+              <p className="text-sm text-red-600">{customError}</p>
+            )}
 
-              {/* Show table when decoded successfully */}
-              {customDecoded && customParamTypes && (
-                <DecodedParamsTable
-                  args={customDecoded}
-                  paramTypes={customParamTypes}
-                  hasParamNames={false}
-                  devMethod={undefined}
-                  defaultNameBase="ret"
-                />
-              )}
-            </div>
-          </TabPanel>
-        )}
+            {/* Show table when decoded successfully */}
+            {customDecoded && customParamTypes && (
+              <DecodedParamsTable
+                args={customDecoded}
+                paramTypes={customParamTypes}
+                hasParamNames={false}
+                devMethod={undefined}
+                defaultNameBase="ret"
+              />
+            )}
+          </div>
+        </TabPanel>
       </TabPanels>
     </TabGroup>
   );
