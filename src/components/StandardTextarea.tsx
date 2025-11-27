@@ -1,7 +1,6 @@
 import { FC, TextareaHTMLAttributes } from "react";
 
-interface StandardTextareaProps
-  extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface StandardTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   readOnly?: boolean;
 }
 
