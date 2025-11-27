@@ -3,9 +3,9 @@ import { AddressResolver } from "./address-resolver";
 
 export type SelectedResolvedName<T> = [AddressResolver<T>, T] | null;
 
-export class CompositeAddressResolver<T = any>
-  implements AddressResolver<SelectedResolvedName<T>>
-{
+export class CompositeAddressResolver<T = any> implements AddressResolver<
+  SelectedResolvedName<T>
+> {
   private resolvers: AddressResolver<T>[] = [];
 
   addResolver(resolver: AddressResolver<T>) {
