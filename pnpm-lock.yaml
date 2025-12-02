@@ -90,8 +90,8 @@ importers:
         specifier: ^6.15.0
         version: 6.15.0
       motion:
-        specifier: ^12.23.12
-        version: 12.23.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^12.23.25
+        version: 12.23.25(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       prettier-plugin-organize-imports:
         specifier: ^4.3.0
         version: 4.3.0(prettier@3.6.2)(typescript@5.9.3)
@@ -2550,8 +2550,8 @@ packages:
     resolution: {integrity: sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==}
     engines: {node: '>= 6'}
 
-  framer-motion@12.23.12:
-    resolution: {integrity: sha512-6e78rdVtnBvlEVgu6eFEAgG9v3wLnYEboM8I5O5EXvfKC8gxGQB8wXJdhkMy10iVcn05jl6CNw7/HTsTCfwcWg==}
+  framer-motion@12.23.25:
+    resolution: {integrity: sha512-gUHGl2e4VG66jOcH0JHhuJQr6ZNwrET9g31ZG0xdXzT0CznP7fHX4P8Bcvuc4MiUB90ysNnWX2ukHRIggkl6hQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -3281,14 +3281,14 @@ packages:
     resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
     hasBin: true
 
-  motion-dom@12.23.12:
-    resolution: {integrity: sha512-RcR4fvMCTESQBD/uKQe49D5RUeDOokkGRmz4ceaJKDBgHYtZtntC/s2vLvY38gqGaytinij/yi3hMcWVcEF5Kw==}
+  motion-dom@12.23.23:
+    resolution: {integrity: sha512-n5yolOs0TQQBRUFImrRfs/+6X4p3Q4n1dUEqt/H58Vx7OW6RF+foWEgmTVDhIWJIMXOuNNL0apKH2S16en9eiA==}
 
   motion-utils@12.23.6:
     resolution: {integrity: sha512-eAWoPgr4eFEOFfg2WjIsMoqJTW6Z8MTUCgn/GZ3VRpClWBdnbjryiA3ZSNLyxCTmCQx4RmYX6jX1iWHbenUPNQ==}
 
-  motion@12.23.12:
-    resolution: {integrity: sha512-8jCD8uW5GD1csOoqh1WhH1A6j5APHVE15nuBkFeRiMzYBdRwyAHmSP/oXSuW0WJPZRXTFdBoG4hY9TFWNhhwng==}
+  motion@12.23.25:
+    resolution: {integrity: sha512-Fk5Y1kcgxYiTYOUjmwfXQAP7tP+iGqw/on1UID9WEL/6KpzxPr9jY2169OsjgZvXJdpraKXy0orkjaCVIl5fgQ==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -6917,9 +6917,9 @@ snapshots:
       hasown: 2.0.2
       mime-types: 2.1.35
 
-  framer-motion@12.23.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  framer-motion@12.23.25(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      motion-dom: 12.23.12
+      motion-dom: 12.23.23
       motion-utils: 12.23.6
       tslib: 2.8.1
     optionalDependencies:
@@ -7885,15 +7885,15 @@ snapshots:
     dependencies:
       minimist: 1.2.8
 
-  motion-dom@12.23.12:
+  motion-dom@12.23.23:
     dependencies:
       motion-utils: 12.23.6
 
   motion-utils@12.23.6: {}
 
-  motion@12.23.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
+  motion@12.23.25(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
-      framer-motion: 12.23.12(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      framer-motion: 12.23.25(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       tslib: 2.8.1
     optionalDependencies:
       react: 19.1.0
