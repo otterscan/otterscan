@@ -96,7 +96,7 @@
     "@storybook/react-vite": "^9.1.16",
     "@types/node": "^22.19.0",
     "@vitejs/plugin-react-swc": "^4.2.0",
-    "cypress": "^15.5.0",
+    "cypress": "^15.7.1",
     "jest": "^30.0.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
