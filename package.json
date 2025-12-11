@@ -94,7 +94,7 @@
     "@storybook/addon-docs": "^9.1.16",
     "@storybook/addon-links": "^9.1.16",
     "@storybook/react-vite": "^9.1.16",
-    "@types/node": "^22.19.0",
+    "@types/node": "^25.0.0",
     "@vitejs/plugin-react-swc": "^4.2.0",
     "cypress": "^15.5.0",
     "jest": "^30.0.0",
