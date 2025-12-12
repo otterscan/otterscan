@@ -181,8 +181,8 @@ importers:
         specifier: ^9.1.16
         version: 9.1.16(@testing-library/dom@10.4.0)(prettier@3.6.2)(vite@7.1.12(@types/node@22.19.0)(jiti@2.6.1)(lightningcss@1.30.2))
       tailwindcss:
-        specifier: ^4.1.16
-        version: 4.1.16
+        specifier: ^4.1.18
+        version: 4.1.18
       ts-jest:
         specifier: ^29.4.1
         version: 29.4.1(@babel/core@7.27.4)(@jest/transform@30.1.2)(@jest/types@30.0.5)(babel-jest@30.0.0(@babel/core@7.27.4))(esbuild@0.25.12)(jest-util@30.0.5)(jest@30.0.0(@types/node@22.19.0)(esbuild-register@3.6.0(esbuild@0.25.12))(ts-node@10.9.2(@swc/core@1.14.0(@swc/helpers@0.5.17))(@types/node@22.19.0)(typescript@5.9.3)))(typescript@5.9.3)
@@ -758,6 +758,7 @@ packages:
 
   '@fortawesome/react-fontawesome@0.2.2':
     resolution: {integrity: sha512-EnkrprPNqI6SXJl//m29hpaNzOp1bruISWaOiRtkMi/xSvHJlzc2j2JAYS7egxt/EbjSNV/k6Xy0AQI6vB2+1g==}
+    deprecated: v0.2.x is no longer supported. Unless you are still using FontAwesome 5, please update to v3.1.1 or greater.
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': ~1 || ~6
       react: '>=16.3'
@@ -3956,6 +3957,9 @@ packages:
 
   tailwindcss@4.1.16:
     resolution: {integrity: sha512-pONL5awpaQX4LN5eiv7moSiSPd/DLDzKVRJz8Q9PgzmAdd1R4307GQS2ZpfiN7ZmekdQrfhZZiSE5jkLR4WNaA==}
+
+  tailwindcss@4.1.18:
+    resolution: {integrity: sha512-4+Z+0yiYyEtUVCScyfHCxOYP06L5Ne+JiHhY2IjR2KWMIWhJOYZKLSGZaP5HkZ8+bY0cxfzwDE5uOmzFXyIwxw==}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
@@ -8551,6 +8555,8 @@ snapshots:
   tabbable@6.2.0: {}
 
   tailwindcss@4.1.16: {}
+
+  tailwindcss@4.1.18: {}
 
   tapable@2.3.0: {}
 
