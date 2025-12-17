@@ -101,7 +101,7 @@
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "source-map-explorer": "^2.5.3",
-    "storybook": "^9.1.16",
+    "storybook": "^9.1.17",
     "tailwindcss": "^4.1.16",
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
