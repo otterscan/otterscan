@@ -55,10 +55,10 @@ const TraceInput: React.FC<TraceInputProps> = ({ t }) => {
   const devDoc = metadata?.output.devdoc;
   // TODO: Consider checking stateVariables too
   const userMethod = sourcifyTxDesc
-    ? userDoc?.methods[sourcifyTxDesc.signature]
+    ? userDoc?.methods?.[sourcifyTxDesc.signature]
     : undefined;
   const devMethod = sourcifyTxDesc
-    ? devDoc?.methods[sourcifyTxDesc.signature]
+    ? devDoc?.methods?.[sourcifyTxDesc.signature]
     : undefined;
   const txDesc = sourcifyTxDesc ?? fourBytesTxDesc;
 
