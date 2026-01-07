@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ethereum-sourcify/compilers-types':
-        specifier: ^1.0.6
-        version: 1.0.6
+        specifier: ^1.0.11
+        version: 1.0.11
       '@ethereum-sourcify/lib-sourcify':
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.9.3)
@@ -596,8 +596,8 @@ packages:
     resolution: {integrity: sha512-dhjw7B4e57ec1aEvZ1DZMls8bG5DXVh6ocUkr8xhgt0Xsf1dlYhmXXGkUmtPQa15SFKJqK56A4lajJ5Sk6qmaQ==}
     engines: {node: '>=22.0.0'}
 
-  '@ethereum-sourcify/compilers-types@1.0.6':
-    resolution: {integrity: sha512-RL3Sa6/QfH/15Wz5mO+cYvFhy/rWMRvqciDVxgvmGuoq47WV0GKf0MKbJN6F/6qMXcbQ6uqoed75vdoDsIxkSQ==}
+  '@ethereum-sourcify/compilers-types@1.0.11':
+    resolution: {integrity: sha512-WFabBTfVqud2kjcXsLCSkNDCdYpWU88UXsT9ubC5+hvgGcObZLIul4gDG2irkPlgtPokf+VIKFekiw9/0WYhbA==}
 
   '@ethereum-sourcify/lib-sourcify@2.2.2':
     resolution: {integrity: sha512-IjuJiRahJqcyazMWKoExYUw+uce+Yi2u0/NQquXbf000CP6TVF8Bw5lpyddD64fJ1P8Li5dVUKe56xoLD3ttfA==}
@@ -758,6 +758,7 @@ packages:
 
   '@fortawesome/react-fontawesome@0.2.2':
     resolution: {integrity: sha512-EnkrprPNqI6SXJl//m29hpaNzOp1bruISWaOiRtkMi/xSvHJlzc2j2JAYS7egxt/EbjSNV/k6Xy0AQI6vB2+1g==}
+    deprecated: v0.2.x is no longer supported. Unless you are still using FontAwesome 5, please update to v3.1.1 or greater.
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': ~1 || ~6
       react: '>=16.3'
@@ -4708,7 +4709,7 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  '@ethereum-sourcify/compilers-types@1.0.6': {}
+  '@ethereum-sourcify/compilers-types@1.0.11': {}
 
   '@ethereum-sourcify/lib-sourcify@2.2.2(typescript@5.9.3)':
     dependencies:
