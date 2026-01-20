@@ -7,7 +7,7 @@
   "packageManager": "pnpm@10.15.1",
   "dependencies": {
     "@ethereum-sourcify/compilers-types": "^1.0.6",
-    "@ethereum-sourcify/lib-sourcify": "^2.2.2",
+    "@ethereum-sourcify/lib-sourcify": "^3.1.1",
     "@fontsource/fira-code": "^5.2.6",
     "@fontsource/roboto": "^5.2.6",
     "@fontsource/roboto-mono": "^5.2.6",
