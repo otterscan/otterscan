@@ -33,7 +33,7 @@
     "@zxing/library": "^0.21.3",
     "chart.js": "^4.5.0",
     "ethers": "^6.15.0",
-    "motion": "^12.23.12",
+    "motion": "^12.28.1",
     "prettier-plugin-organize-imports": "^4.3.0",
     "react": "^19.1.0",
     "react-blockies": "^1.4.1",
