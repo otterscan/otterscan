@@ -68,7 +68,7 @@ jobs:
         run: tailscale status
 
       - name: Run Cypress tests on mainnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: pnpm start
           wait-on: "http://localhost:5173"
@@ -127,7 +127,7 @@ jobs:
           OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
           echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
       - name: Run Cypress tests on devnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: |
             sh ./scripts/run-erigon-devnet-e2e-tests.sh
@@ -182,7 +182,7 @@ jobs:
           OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
           echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
       - name: Run Cypress tests on Anvil devnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: |
             sh ./scripts/run-anvil-devnet.sh
