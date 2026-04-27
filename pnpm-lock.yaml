@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ensdomains/ethers-patch-v6':
+        specifier: ^0.0.5
+        version: 0.0.5(ethers@6.15.0)(typescript@5.9.3)
       '@ethereum-sourcify/compilers-types':
         specifier: ^1.0.6
         version: 1.0.6
@@ -435,6 +438,12 @@ packages:
 
   '@emnapi/wasi-threads@1.0.4':
     resolution: {integrity: sha512-PJR+bOmMOPH8AtcTGAyYNiuJ3/Fcoj2XN/gBEWzDIKh254XO+mM9XoXHk5GNEhodxeMznbg7BlRojVbKN+gC6g==}
+
+  '@ensdomains/ethers-patch-v6@0.0.5':
+    resolution: {integrity: sha512-bWeBKpplx/03HIyD4kA6qF4oSJlu9ePEbnpsZMMU4mxx5aZeS70ePGIxPRuxmd3Au+juyP3TreJZ8/wKLGK2Xg==}
+    peerDependencies:
+      ethers: '6'
+      typescript: ^5
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -4619,6 +4628,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
     optional: true
+
+  '@ensdomains/ethers-patch-v6@0.0.5(ethers@6.15.0)(typescript@5.9.3)':
+    dependencies:
+      ethers: 6.15.0
+      typescript: 5.9.3
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true

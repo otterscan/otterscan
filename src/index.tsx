@@ -1,3 +1,4 @@
+import "@ensdomains/ethers-patch-v6";
 import "@fontsource/fira-code/index.css";
 import "@fontsource/roboto-mono/index.css";
 import "@fontsource/roboto/index.css";
