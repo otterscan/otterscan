@@ -11,20 +11,20 @@ import Copy from "../../components/Copy";
 import Faucet from "../../components/Faucet";
 import StandardSubtitle from "../../components/StandardSubtitle";
 import { useChainInfo } from "../../useChainInfo";
-import { useResolvedAddress } from "../../useResolvedAddresses";
+import { NameResolver, useResolvedAddress } from "../../useResolvedAddresses";
 import { RuntimeContext } from "../../useRuntime";
 import { AddressAwareComponentProps } from "../types";
 import AddressAttributes from "./AddressAttributes";
 import EditableAddressTag, { clearAllLabels } from "./EditableAddressTag";
 
 type AddressSubtitleProps = AddressAwareComponentProps & {
-  isENS: boolean | undefined;
+  nameResolver: NameResolver | undefined;
   addressOrName: string;
 };
 
 const AddressSubtitle: FC<AddressSubtitleProps> = ({
   address,
-  isENS,
+  nameResolver,
   addressOrName,
 }) => {
   const { config, provider } = useContext(RuntimeContext);
@@ -37,8 +37,8 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
   let resolvedNameTrusted = resolvedAddress
     ? resolvedAddress[0].trusted(resolvedAddress[1])
     : undefined;
-  if (isENS && !resolvedName) {
-    resolvedName = "ENS: " + addressOrName;
+  if (nameResolver && !resolvedName) {
+    resolvedName = `${nameResolver}: ${addressOrName}`;
     resolvedNameTrusted = true;
   }
 
@@ -64,7 +64,10 @@ const AddressSubtitle: FC<AddressSubtitleProps> = ({
         {faucets && faucets.length > 0 && <Faucet address={address} rounded />}
         {config.experimental && <AddressAttributes address={address} full />}
         {resolvedName && resolvedNameTrusted && !editingAddressTag && (
-          <div className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500 text-nowrap">
+          <div
+            className="rounded-lg bg-gray-200 px-2 py-1 text-sm text-gray-500 text-nowrap"
+            data-test="resolved-name"
+          >
             <FontAwesomeIcon icon={faTag} size="1x" />
             <span className="pl-1 text-nowrap">{resolvedName}</span>
           </div>

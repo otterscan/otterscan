@@ -4,6 +4,7 @@ import { FC, lazy, memo, useContext, useState } from "react";
 import { Link } from "react-router";
 import PriceBox from "./PriceBox";
 import SourcifyMenu from "./SourcifyMenu";
+import { supportsGNS } from "./api/name-resolver/GNSNameResolver";
 import { useGenericSearch } from "./search/search";
 import { RuntimeContext } from "./useRuntime";
 // @ts-expect-error
@@ -64,6 +65,8 @@ const Header: FC = () => {
                 ) !== null
                   ? " / ENS name"
                   : ""
+              }${
+                supportsGNS(provider._network.chainId) ? " / .gwei name" : ""
               }`}
               onChange={handleChange}
               ref={searchRef}

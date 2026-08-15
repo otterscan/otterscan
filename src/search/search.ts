@@ -644,7 +644,7 @@ export const parseSearch = (q: string): string | undefined => {
     }
   }
 
-  // Assume it is an ENS name
+  // Assume it is a supported name
   return `/address/${maybeAddress}${maybeIndex !== "" ? `?nonce=${maybeIndex}` : ""}`;
 };
 

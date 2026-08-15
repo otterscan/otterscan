@@ -13,7 +13,7 @@ import StandardFrame from "../components/StandardFrame";
 import { ChecksummedAddress } from "../types";
 import { transactionURL } from "../url";
 import { useTransactionBySenderAndNonce } from "../useErigonHooks";
-import { useAddressOrENS } from "../useResolvedAddresses";
+import { useAddressOrName } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 
 type AddressTransactionByNonceProps = {
@@ -44,7 +44,7 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     },
     [navigate, direction, searchParams],
   );
-  const [checksummedAddress, , ensError] = useAddressOrENS(
+  const [checksummedAddress, , nameResolutionError] = useAddressOrName(
     addressOrName,
     urlFixer,
   );
@@ -99,17 +99,11 @@ const AddressTransactionByNonce: React.FC<AddressTransactionByNonceProps> = ({
     });
   }, [txHash, navigate, startTransition]);
 
-  // Invalid ENS
-  if (ensError) {
+  // Invalid address or name
+  if (nameResolutionError) {
     return (
       <StandardFrame>
-        <AddressOrENSNameNotFound
-          addressOrENSName={addressOrName}
-          supportsENS={
-            provider._network.getPlugin("org.ethers.plugins.network.Ens") !==
-            null
-          }
-        />
+        <AddressOrENSNameNotFound addressOrName={addressOrName} />
       </StandardFrame>
     );
   }

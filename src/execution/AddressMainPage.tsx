@@ -16,7 +16,7 @@ import { Match, useSourcifyMetadata } from "../sourcify/useSourcify";
 import { useWhatsabiMetadata } from "../sourcify/useWhatsabi";
 import { ChecksummedAddress } from "../types";
 import { hasCodeQuery } from "../useErigonHooks";
-import { useAddressOrENS } from "../useResolvedAddresses";
+import { useAddressOrName } from "../useResolvedAddresses";
 import { RuntimeContext } from "../useRuntime";
 import AddressSubtitle from "./address/AddressSubtitle";
 import { AddressAwareComponentProps } from "./types";
@@ -70,7 +70,7 @@ const AddressMainPage: React.FC = () => {
     },
     [navigate, direction, searchParams],
   );
-  const [checksummedAddress, isENS, error] = useAddressOrENS(
+  const [checksummedAddress, nameResolver, error] = useAddressOrName(
     addressOrName,
     urlFixer,
   );
@@ -96,20 +96,14 @@ const AddressMainPage: React.FC = () => {
   return (
     <StandardFrame>
       {error ? (
-        <AddressOrENSNameNotFound
-          addressOrENSName={addressOrName}
-          supportsENS={
-            provider._network.getPlugin("org.ethers.plugins.network.Ens") !==
-            null
-          }
-        />
+        <AddressOrENSNameNotFound addressOrName={addressOrName} />
       ) : (
         checksummedAddress && (
           <>
             <AddressSubtitle
               addressOrName={addressOrName}
               address={checksummedAddress}
-              isENS={isENS}
+              nameResolver={nameResolver}
             />
             <TabGroup>
               <TabList className="flex space-x-2 rounded-t-lg border-l border-r border-t bg-white overflow-x-auto whitespace-nowrap">
