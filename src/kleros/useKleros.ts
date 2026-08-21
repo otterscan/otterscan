@@ -1,7 +1,14 @@
 import { useQuery, type UseQueryOptions } from "@tanstack/react-query";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { queryClient } from "../queryClient";
 import { ChecksummedAddress } from "../types";
 import { RuntimeContext } from "../useRuntime";
+
+/** Cache duration for a successful Kleros response (1 hour). */
+export const KLEROS_STALE_TIME = 60 * 60 * 1000;
+
+/** Cache duration for a failed/empty Kleros response (30 seconds). */
+export const KLEROS_ERROR_STALE_TIME = 30 * 1000;
 
 /** True if a single Kleros tag has both non-empty project_name and name_tag. */
 export const hasValidKlerosData = (tag: KlerosAddressTag): boolean => {
@@ -114,22 +121,125 @@ async function fetchKlerosAddressTags(
   }
 }
 
-/** React Query options factory to load Kleros tags for one or more addresses. */
-export const getKlerosAddressTagsQuery = (
-  enabled: boolean,
-  apiUrl: string,
-  chainId: bigint | undefined,
-  addresses: ChecksummedAddress[],
-): UseQueryOptions<KlerosResponse | null> => ({
-  queryKey: ["kleros", chainId?.toString(), ...addresses],
-  queryFn: () => {
-    if (!enabled || !chainId) return null;
-    return fetchKlerosAddressTags(apiUrl, chainId.toString(), addresses);
-  },
-  staleTime: 60 * 60 * 1000, // 1 hour
-  gcTime: 4 * 60 * 60 * 1000, // 4 hours
-  enabled: enabled && !!chainId && addresses.length > 0,
-});
+/**
+ * Microtask batcher that coalesces multiple single-address Kleros lookups
+ * within the same render frame into a single batch API request.
+ *
+ * Keyed by `apiUrl + chainId` so different chains/endpoints never collide.
+ */
+export class KlerosTagsBatcher {
+  private pending = new Set<ChecksummedAddress>();
+  private scheduled = false;
+
+  constructor(
+    private readonly apiUrl: string,
+    private readonly chainId: string,
+  ) {}
+
+  /** Register an address to be fetched in the next batch. */
+  schedule(address: ChecksummedAddress): void {
+    // Skip if the individual cache entry is already fresh
+    const existing = queryClient.getQueryState([
+      "kleros",
+      this.chainId,
+      address,
+    ]);
+    if (existing?.data !== undefined && !existing.isInvalidated) {
+      const age = Date.now() - existing.dataUpdatedAt;
+      if (age < KLEROS_STALE_TIME) {
+        return;
+      }
+    }
+
+    this.pending.add(address);
+
+    if (!this.scheduled) {
+      this.scheduled = true;
+      queueMicrotask(() => this.flush());
+    }
+  }
+
+  /** Flush all pending addresses into one batch fetch. */
+  private async flush(): Promise<void> {
+    const addresses = Array.from(this.pending);
+    this.pending.clear();
+    this.scheduled = false;
+
+    if (addresses.length === 0) {
+      return;
+    }
+
+    const response = await fetchKlerosAddressTags(
+      this.apiUrl,
+      this.chainId,
+      addresses,
+    );
+
+    if (!response) {
+      // Negative-cache: seed an empty result per address so the cache-reader
+      // observer gets a defined value (stopping re-render loops) and the batcher
+      // skips re-scheduling until KLEROS_ERROR_STALE_TIME has elapsed.
+      const emptyData: KlerosResponse = { addresses: [] };
+      // Back-date the entry so it expires after KLEROS_ERROR_STALE_TIME.
+      const backdatedAt =
+        Date.now() - KLEROS_STALE_TIME + KLEROS_ERROR_STALE_TIME;
+      for (const address of addresses) {
+        queryClient.setQueryData(["kleros", this.chainId, address], emptyData, {
+          updatedAt: backdatedAt,
+        });
+      }
+      return;
+    }
+
+    // Seed individual cache entries so each useQuery picks up its data
+    for (const address of addresses) {
+      const addressEntry = response.addresses.find((item) =>
+        Object.keys(item).some(
+          (key) => key.toLowerCase() === address.toLowerCase(),
+        ),
+      );
+
+      const wrappedData: KlerosResponse = {
+        addresses: addressEntry ? [addressEntry] : [],
+      };
+
+      queryClient.setQueryData(["kleros", this.chainId, address], wrappedData, {
+        updatedAt: Date.now(),
+      });
+    }
+  }
+}
+
+/** Registry of active batchers keyed by "apiUrl|chainId". */
+const batcherRegistry = new Map<string, KlerosTagsBatcher>();
+
+function getBatcher(apiUrl: string, chainId: string): KlerosTagsBatcher {
+  const key = `${apiUrl}|${chainId}`;
+  let batcher = batcherRegistry.get(key);
+  if (!batcher) {
+    batcher = new KlerosTagsBatcher(apiUrl, chainId);
+    batcherRegistry.set(key, batcher);
+  }
+  return batcher;
+}
+
+/**
+ * Query options for the per-address cache reader.
+ *
+ * `enabled: false` prevents any auto-fetch — the batcher is solely responsible
+ * for network calls and seeds the cache via `queryClient.setQueryData`.
+ * The `useQuery` observer still re-renders when that data arrives.
+ */
+export function getCacheReaderQueryOptions(
+  chainIdStr: string | undefined,
+  address: ChecksummedAddress | undefined,
+): UseQueryOptions<KlerosResponse | null> {
+  return {
+    queryKey: ["kleros", chainIdStr, address],
+    queryFn: () => null, // never called; batcher seeds cache via setQueryData
+    enabled: false,
+  };
+}
 
 /** Fetch Kleros tags for a single address. */
 export const useKlerosAddressTags = (
@@ -137,15 +247,27 @@ export const useKlerosAddressTags = (
 ): KlerosAddressTag[] | null | undefined => {
   const { provider } = useContext(RuntimeContext);
   const klerosConfig = useKlerosConfig();
+  const chainId = provider._network.chainId;
+  const chainIdStr = chainId?.toString();
 
-  const query = useQuery(
-    getKlerosAddressTagsQuery(
-      klerosConfig.enabled && !!address,
-      klerosConfig.apiUrl!,
-      provider._network.chainId,
-      address ? [address] : [],
-    ),
-  );
+  // Register this address with the batcher so concurrent calls
+  // within the same render frame are coalesced into one API request.
+  useEffect(() => {
+    if (
+      !klerosConfig.enabled ||
+      !address ||
+      !chainIdStr ||
+      !klerosConfig.apiUrl
+    ) {
+      return;
+    }
+    const batcher = getBatcher(klerosConfig.apiUrl, chainIdStr);
+    batcher.schedule(address);
+  }, [klerosConfig.enabled, klerosConfig.apiUrl, address, chainIdStr]);
+
+  // Pure cache reader: never auto-fetches. The batcher (above) seeds this
+  // query's cache entry; the observer re-renders when setQueryData fires.
+  const query = useQuery(getCacheReaderQueryOptions(chainIdStr, address));
 
   if (address === undefined) {
     return undefined;
@@ -173,40 +295,4 @@ export const useKlerosAddressTags = (
   );
 
   return addressKey ? addressResponse[addressKey] : null;
-};
-
-/** Fetch Kleros tags for multiple addresses; useful for lists. */
-export const useKlerosAddressTagsBatch = (
-  addresses: ChecksummedAddress[],
-): Map<ChecksummedAddress, KlerosAddressTag[]> | null => {
-  const { provider } = useContext(RuntimeContext);
-  const klerosConfig = useKlerosConfig();
-
-  if (!klerosConfig?.enabled || addresses.length === 0) {
-    return null;
-  }
-
-  const query = useQuery(
-    getKlerosAddressTagsQuery(
-      klerosConfig.enabled,
-      klerosConfig.apiUrl!,
-      provider._network.chainId,
-      addresses,
-    ),
-  );
-
-  if (!query.data) {
-    return null;
-  }
-
-  // Build a map for efficient lookups
-  const tagsMap = new Map<ChecksummedAddress, KlerosAddressTag[]>();
-
-  query.data.addresses.forEach((addressObj) => {
-    Object.entries(addressObj).forEach(([addr, tags]) => {
-      tagsMap.set(addr as ChecksummedAddress, tags);
-    });
-  });
-
-  return tagsMap;
 };
