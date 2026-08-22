@@ -555,11 +555,11 @@ export const parseSearch = (q: string): string | undefined => {
   let maybeIndex = "";
   const sepIndex = q.lastIndexOf(":");
   if (sepIndex !== -1) {
-    maybeAddress = q.substring(0, sepIndex);
     const afterAddress = q.substring(sepIndex + 1);
-    maybeIndex = !isNaN(parseInt(afterAddress))
-      ? parseInt(afterAddress).toString()
-      : "";
+    if (/^\d+$/.test(afterAddress)) {
+      maybeAddress = q.substring(0, sepIndex);
+      maybeIndex = parseInt(afterAddress).toString();
+    }
   }
 
   // Parse URLs for other block explorers
@@ -605,8 +605,8 @@ export const parseSearch = (q: string): string | undefined => {
   }
 
   // Block number?
-  const blockNumber = parseInt(q);
-  if (!isNaN(blockNumber)) {
+  if (/^\d+$/.test(q)) {
+    const blockNumber = parseInt(q);
     return `/block/${blockNumber}`;
   }
 
