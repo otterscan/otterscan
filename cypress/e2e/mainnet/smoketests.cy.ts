@@ -1,4 +1,14 @@
 describe("Basic navigation", () => {
+  it("Should load gns.gwei address", () => {
+    cy.visit("/");
+    cy.get('[data-test="home-search-input"]').type(`gns.gwei{enter}`);
+
+    cy.get('[data-test="address"]', { timeout: 15_000 }).contains(
+      "0xbBBCe157ecBB945b1F92Af88413b911910C727c8",
+    );
+    cy.get('[data-test="resolved-name"]').contains("GNS: gns.gwei");
+  });
+
   it("Should load vitalik.eth address", () => {
     // From the home page, go to vitalik.eth address page, expect it finds it
     cy.visit("/");

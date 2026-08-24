@@ -4,70 +4,101 @@ import { Fetcher } from "swr";
 import useSWRImmutable from "swr/immutable";
 import { getResolver } from "./api/address-resolver";
 import { SelectedResolvedName } from "./api/address-resolver/CompositeAddressResolver";
+import {
+  isGNSName,
+  resolveGNSName,
+  supportsGNS,
+} from "./api/name-resolver/GNSNameResolver";
 import { ChecksummedAddress } from "./types";
 import { RuntimeContext } from "./useRuntime";
 
-export const useAddressOrENS = (
+export type NameResolver = "ENS" | "GNS";
+
+export const useAddressOrName = (
   addressOrName: string,
   urlFixer: (address: ChecksummedAddress) => void,
 ): [
   ChecksummedAddress | undefined,
-  boolean | undefined,
+  NameResolver | undefined,
   boolean | undefined,
 ] => {
   const { provider } = useContext(RuntimeContext);
   const [checksummedAddress, setChecksummedAddress] = useState<
     ChecksummedAddress | undefined
-  >(isAddress(addressOrName) ? addressOrName : undefined);
-  const [isENS, setENS] = useState<boolean>();
+  >(isAddress(addressOrName) ? getAddress(addressOrName) : undefined);
+  const [nameResolver, setNameResolver] = useState<NameResolver>();
   const [error, setError] = useState<boolean>();
 
-  // If it looks like it is an ENS name, try to resolve it
   useEffect(() => {
+    let cancelled = false;
+
     // TODO: handle and offer fallback to bad checksummed addresses
     if (isAddress(addressOrName)) {
       // Normalize to checksummed address
       const _checksummedAddress = getAddress(addressOrName);
+      setNameResolver(undefined);
+      setError(false);
+      setChecksummedAddress(_checksummedAddress);
       if (_checksummedAddress !== addressOrName) {
         // Request came with a non-checksummed address; fix the URL
         urlFixer(_checksummedAddress);
-        return;
       }
-
-      setENS(false);
-      setError(false);
-      setChecksummedAddress(_checksummedAddress);
       return;
     }
 
-    if (
-      (
-        provider._network.getPlugin(
-          "org.ethers.plugins.network.Ens",
-        ) as EnsPlugin | null
-      )?.address
-    ) {
-      const resolveName = async () => {
-        const resolvedAddress = await provider.resolveName(addressOrName);
-        if (resolvedAddress !== null) {
-          setENS(true);
-          setError(false);
-          setChecksummedAddress(resolvedAddress);
-        } else {
-          setENS(false);
-          setError(true);
-          setChecksummedAddress(undefined);
+    setNameResolver(undefined);
+    setError(undefined);
+    setChecksummedAddress(undefined);
+
+    const resolveName = async () => {
+      const gnsName = isGNSName(addressOrName);
+      const resolver: NameResolver = gnsName ? "GNS" : "ENS";
+      let resolvedAddress: string | null = null;
+
+      try {
+        if (gnsName) {
+          if (supportsGNS(provider._network.chainId)) {
+            resolvedAddress = await resolveGNSName(
+              provider,
+              provider._network.chainId,
+              addressOrName,
+            );
+          }
+        } else if (
+          (
+            provider._network.getPlugin(
+              "org.ethers.plugins.network.Ens",
+            ) as EnsPlugin | null
+          )?.address
+        ) {
+          resolvedAddress = await provider.resolveName(addressOrName);
         }
-      };
-      resolveName();
-    } else {
-      setENS(false);
-      setError(true);
-      setChecksummedAddress(undefined);
-    }
+      } catch {
+        resolvedAddress = null;
+      }
+
+      if (cancelled) {
+        return;
+      }
+
+      if (resolvedAddress !== null) {
+        setNameResolver(resolver);
+        setError(false);
+        setChecksummedAddress(getAddress(resolvedAddress));
+      } else {
+        setNameResolver(undefined);
+        setError(true);
+        setChecksummedAddress(undefined);
+      }
+    };
+    resolveName();
+
+    return () => {
+      cancelled = true;
+    };
   }, [provider, addressOrName, urlFixer]);
 
-  return [checksummedAddress, isENS, error];
+  return [checksummedAddress, nameResolver, error];
 };
 
 export const useResolvedAddress = (

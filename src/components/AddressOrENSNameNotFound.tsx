@@ -3,20 +3,17 @@ import ContentFrame from "./ContentFrame";
 import StandardSubtitle from "./StandardSubtitle";
 
 type AddressOrENSNameNotFoundProps = {
-  addressOrENSName: string;
-  supportsENS: boolean;
+  addressOrName: string;
 };
 
 const AddressOrENSNameNotFound: React.FC<AddressOrENSNameNotFoundProps> = ({
-  addressOrENSName,
-  supportsENS,
+  addressOrName,
 }) => (
   <>
     <StandardSubtitle>Transaction Details</StandardSubtitle>
     <ContentFrame>
       <div className="py-4 text-sm">
-        "{addressOrENSName}" is not an ETH address
-        {supportsENS && " or ENS name"}.
+        "{addressOrName}" is not an ETH address or supported name.
       </div>
     </ContentFrame>
   </>

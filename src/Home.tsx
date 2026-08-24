@@ -4,6 +4,7 @@ import { FC, lazy, memo, useContext, useState } from "react";
 import { NavLink } from "react-router";
 import Logo from "./Logo";
 import SourcifyMenu from "./SourcifyMenu";
+import { supportsGNS } from "./api/name-resolver/GNSNameResolver";
 import Timestamp from "./components/Timestamp";
 import { useGenericSearch } from "./search/search";
 import { blockURL, slotURL } from "./url";
@@ -54,6 +55,8 @@ const Home: FC = () => {
                 ) !== null
                   ? " / ENS name"
                   : ""
+              }${
+                supportsGNS(provider._network.chainId) ? " / .gwei name" : ""
               }`}
               onChange={handleChange}
               ref={searchRef}
